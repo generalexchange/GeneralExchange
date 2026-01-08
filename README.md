@@ -1,4 +1,4 @@
-# General Exchange - News & Portfolio Dashboard
+# General Exchange - Solana Trade Engine
 
 A modern TypeScript React application featuring a professional trading platform with AI-powered risk management, news homepage, login system, and investment dashboard.
 
