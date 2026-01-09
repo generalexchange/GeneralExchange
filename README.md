@@ -1,6 +1,6 @@
 # General Exchange - Interactive Trade Engine
 
-A Decentralized trading platform enabling 24/7, non-custodial execution through on-chain liquidity pools- with risk management, integrated news, and Interactive Brokers integration.
+A Decentralized trading platform enabling 24/7, non-custodial execution through on-chain liquidity pools.
 
 ## Features
 
