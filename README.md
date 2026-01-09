@@ -1,12 +1,12 @@
-# General Exchange - Solana Trade Engine
+# General Exchange - Interactive Trade Engine
 
-A modern TypeScript React application featuring a professional trading platform with AI-powered risk management, news homepage, login system, and investment dashboard.
+A Decentralized trading platform enabling 24/7, non-custodial execution through on-chain liquidity pools- with risk management, integrated news, and Interactive Brokers integration.
 
 ## Features
 
-- **Professional Trading Platform**: AI-powered risk management for options trading professionals
-- **Homepage**: Professional landing page with Bloomberg/Reuters-level positioning
-- **Login Page**: Secure login form with validation
+- **State-of-the-art Interface**: Experience a trading machine - simply unexcelled
+- **Integrated News**: Business news from our in-house platform
+- **Crypto On-Ramp**: Secure login form with validation
 - **Dashboard**: Investment portfolio tracker with charts and transaction history
 - **Interactive Brokers Integration**: Connect with professional trading accounts
 - **Fully Responsive**: Mobile-first design that works on all devices
