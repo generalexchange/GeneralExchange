@@ -4,7 +4,7 @@ A Decentralized trading platform enabling 24/7, non-custodial execution through.
 
 ## Features
 
-- **State-of-the-art Interface**: Experience a trading machine - simply unexcelled
+- **State-of-the-art Interface**: Experience a trading machine
 - **Integrated News**: Business news from our in-house platform
 - **On-Chain Execution**: Trades routed through Solana liquidity pools
 - **Dashboard**: Investment portfolio tracker with charts and transaction history
