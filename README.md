@@ -20,15 +20,38 @@ non-custodial principles and continuous availability.
 
 ## Getting Started
 
-1. Install dependencies:
-```bash
-npm install
-```
+Download & Install
+Supported Platforms
 
-2. Run the development server:
-```bash
-npm run dev
-```
+macOS (Intel & Apple Silicon)
+
+Windows 10+
+
+Installation Instructions
+
+Download the installer for your platform:
+
+macOS Installer
+
+Windows Installer
+
+Run the installer and follow the on-screen instructions.
+
+On macOS: Drag the app to your Applications folder
+
+On Windows: Run the .exe and follow the wizard
+
+Launch the application
+
+macOS: Open from Applications or Launchpad
+
+Windows: Open from Start Menu or Desktop shortcut
+
+Get started trading
+
+Sign in with your account or create a new one
+
+Configure your portfolio dashboard and start exploring the platform
 
 3. Open your browser to `http://localhost:5173`
 
