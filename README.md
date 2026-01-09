@@ -2,6 +2,14 @@
 
 A Decentralized trading platform enabling 24/7, non-custodial execution through.
 
+## Rationale
+
+Modern trading platforms are fragmented across custodians, market hours, asset classes, and interfaces. Retail users are often constrained by slow settlement,
+limited access windows, opaque execution paths, and tooling that does not scale from casual investing to professional trading workflows.  General Exchange
+addresses these issues by providing a unified, high-performance trading interface that supports both on-chain and traditional market execution while maintaining
+non-custodial principles and continuous availability.
+
+
 ## Features
 
 - **State-of-the-art Interface**: Experience a trading machine
@@ -9,15 +17,6 @@ A Decentralized trading platform enabling 24/7, non-custodial execution through.
 - **On-Chain Execution**: Trades routed through Solana liquidity pools
 - **Dashboard**: Investment portfolio tracker with charts and transaction history
 - **Interactive Brokers Integration**: Connect with professional trading accounts
-
-## Tech Stack
-
-- React 18 with TypeScript
-- React Router for navigation
-- Tailwind CSS for styling
-- Recharts for data visualization
-- Lucide React for icons
-- Vite for fast development
 
 ## Getting Started
 
