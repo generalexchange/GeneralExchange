@@ -1,16 +1,14 @@
 # General Exchange - Interactive Trade Engine
 
-A Decentralized trading platform enabling 24/7, non-custodial execution through on-chain liquidity pools.
+A Decentralized trading platform enabling 24/7, non-custodial execution through.
 
 ## Features
 
 - **State-of-the-art Interface**: Experience a trading machine - simply unexcelled
 - **Integrated News**: Business news from our in-house platform
-- **Crypto On-Ramp**: Secure login form with validation
+- **On-Chain Execution**: Trades routed through Solana liquidity pools
 - **Dashboard**: Investment portfolio tracker with charts and transaction history
 - **Interactive Brokers Integration**: Connect with professional trading accounts
-- **Fully Responsive**: Mobile-first design that works on all devices
-- **Dark Mode**: Toggle between light and dark themes
 
 ## Tech Stack
 
