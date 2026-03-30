@@ -439,14 +439,14 @@ export const Homepage: React.FC = () => {
           );
         })}
 
-        {/* Bridge Observer — newspaper grid (future: bridgeobserver.com API) */}
+        {/* Bridge Observer — modern wire grid (future: bridgeobserver.com API) */}
         <section
-          className="bg-[#0b0c0f] border-b border-white/[0.06] scroll-mt-[calc(3.75rem+1px)]"
+          className="bg-[#14161c] border-b border-white/[0.07] scroll-mt-[calc(3.75rem+1px)]"
           aria-labelledby="bridge-observer-heading"
         >
           <div className="max-w-[1100px] mx-auto px-5 sm:px-8 lg:px-10 py-16 sm:py-20 lg:py-24">
-            <header className="text-center border-y border-white/[0.12] py-8 sm:py-10">
-              <p className="text-[10px] sm:text-[11px] tracking-[0.32em] uppercase text-neutral-500 mb-3">
+            <header className="text-center border border-white/[0.12] rounded-[24px] bg-white/[0.02] py-8 sm:py-10 px-5 sm:px-8">
+              <p className="text-[10px] sm:text-[11px] tracking-[0.32em] uppercase text-neutral-400 mb-3">
                 General Exchange — Wire
               </p>
               <h2
@@ -455,13 +455,13 @@ export const Homepage: React.FC = () => {
               >
                 Bridge Observer
               </h2>
-              <p className="mt-4 text-xs text-neutral-500 tabular-nums max-w-md mx-auto leading-relaxed">
+              <p className="mt-4 text-xs text-neutral-400 tabular-nums max-w-md mx-auto leading-relaxed">
                 One architecture. Three execution-ready layers. Front page previews capability; sync from{' '}
                 <a
                   href={BRIDGE_OBSERVER_ORIGIN}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#c6a575] hover:text-[#d4b896] underline underline-offset-4 decoration-white/20"
+                  className="text-[#d6ba8b] hover:text-[#e3ccaa] underline underline-offset-4 decoration-white/20"
                 >
                   bridgeobserver.com
                 </a>{' '}
@@ -469,56 +469,56 @@ export const Homepage: React.FC = () => {
               </p>
             </header>
 
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 py-6 border-b border-white/[0.08] text-[11px] uppercase tracking-[0.2em] text-neutral-500">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 py-6 text-[11px] uppercase tracking-[0.2em] text-neutral-400">
               <span>Capability — desk breadth</span>
               <div className="flex flex-wrap gap-x-8 gap-y-2">
                 <a
                   href={BRIDGE_OBSERVER_ORIGIN}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#c6a575] hover:text-[#d4b896] transition-colors"
+                  className="text-[#d6ba8b] hover:text-[#e3ccaa] transition-colors"
                 >
                   Bridge Observer
                 </a>
-                <Link to="/features" className="text-neutral-400 hover:text-neutral-200 transition-colors">
+                <Link to="/features" className="text-neutral-300 hover:text-neutral-100 transition-colors">
                   Capability map
                 </Link>
               </div>
             </div>
 
             <div
-              className="grid grid-cols-1 md:grid-cols-3 md:divide-x md:divide-white/[0.1] border-b border-white/[0.08]"
+              className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4"
               role="list"
             >
               {SUITES.map(({ layer, title, tags, body, feedCategory, timeLabel }) => (
                 <article
                   key={title}
                   role="listitem"
-                  className="py-10 md:py-12 px-2 sm:px-4 md:px-6 border-b border-white/[0.08] md:border-b-0"
+                  className="rounded-2xl border border-white/[0.1] bg-white/[0.03] py-8 sm:py-10 px-5 sm:px-6 transition-colors hover:bg-white/[0.05]"
                 >
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-neutral-500 mb-4 flex flex-wrap gap-x-2 gap-y-1">
-                    <span className="text-[#c6a575]/85">Layer {layer}</span>
-                    <span className="text-neutral-600" aria-hidden>
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-neutral-400 mb-5 flex flex-wrap gap-x-2 gap-y-1">
+                    <span className="text-[#d6ba8b]">Layer {layer}</span>
+                    <span className="text-neutral-500" aria-hidden>
                       |
                     </span>
                     <span>{feedCategory}</span>
-                    <span className="text-neutral-600" aria-hidden>
+                    <span className="text-neutral-500" aria-hidden>
                       |
                     </span>
                     <span className="tabular-nums">{timeLabel}</span>
                   </p>
-                  <h3 className="font-display text-xl sm:text-2xl text-neutral-100 font-normal leading-snug tracking-tight mb-4">
+                  <h3 className="font-display text-xl sm:text-2xl text-neutral-100 font-normal leading-snug tracking-tight mb-3">
                     {title}
                   </h3>
-                  <p className="text-sm text-neutral-400 leading-[1.65] mb-5">{body}</p>
-                  <p className="text-[11px] text-neutral-600 leading-relaxed border-t border-white/[0.06] pt-4">
+                  <p className="text-sm text-neutral-300 leading-[1.65] mb-6">{body}</p>
+                  <p className="text-[11px] text-neutral-500 leading-relaxed border-t border-white/[0.08] pt-4">
                     {tags.join(' · ')}
                   </p>
                 </article>
               ))}
             </div>
 
-            <p className="text-center text-[11px] text-neutral-600 pt-8 max-w-lg mx-auto leading-relaxed">
+            <p className="text-center text-[11px] text-neutral-500 pt-8 max-w-lg mx-auto leading-relaxed">
               Preview layout only. Swap copy for a live Bridge Observer feed when your endpoint is ready.
             </p>
           </div>
