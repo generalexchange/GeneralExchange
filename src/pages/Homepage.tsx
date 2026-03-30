@@ -28,26 +28,32 @@ const LIVE_QUOTES: { symbol: string; pct: number }[] = [
 
 const BENEFITS = [
   {
+    facet: 'Risk · Governance · Alignment',
     title: 'Scale with conviction',
     body: 'Risk frameworks that grow with your book—clear limits, audit trails, and desk-wide alignment.',
   },
   {
+    facet: 'Spend · Telemetry · ROI',
     title: 'Cost-aware engineering',
     body: 'Unify research, execution, and reporting so every dollar of infrastructure maps to measurable outcomes.',
   },
   {
+    facet: 'SoD · Policy · Second line',
     title: 'Institutional-grade controls',
     body: 'Segregation of duties, documented workflows, and governance that satisfies the second line.',
   },
   {
+    facet: 'Offerings · Brand · Trust',
     title: 'New revenue-ready workflows',
     body: 'Productize research and execution services without compromising the standards your clients expect.',
   },
   {
+    facet: 'Models · Data · Approvals',
     title: 'Decentralized operational risk',
     body: 'Clear ownership of models, data, and approvals—fewer single points of failure across the stack.',
   },
   {
+    facet: 'Runbooks · Scenarios · Drills',
     title: 'Continuity you can rehearse',
     body: 'Recovery paths, runbooks, and scenario libraries so teams respond with discipline—not improvisation.',
   },
@@ -55,23 +61,33 @@ const BENEFITS = [
 
 const SUITES = [
   {
+    layer: '01',
     icon: BarChart3,
     title: 'Risk & analytics core',
     tags: ['Surface-aware', 'Attribution', 'Limits'],
     body: 'Greeks, stress grids, and performance decomposition in one disciplined layer for options and multi-leg books.',
   },
   {
+    layer: '02',
     icon: Building2,
     title: 'Execution fabric',
     tags: ['Routing', 'Transparency', 'Adapters'],
     body: 'Smart connectivity and clear intent-to-fill lineage—built for desks that cannot afford ambiguity at the wire.',
   },
   {
+    layer: '03',
     icon: LayoutGrid,
     title: 'Unified workspace',
     tags: ['Single pane', 'Collaboration', 'Context'],
     body: 'Research, risk, and execution share one calm surface—fewer handoffs, clearer ownership across the desk.',
   },
+] as const;
+
+const CAPABILITY_STRIP = [
+  { label: 'Book governance', detail: 'Limits & attestation' },
+  { label: 'Lineage', detail: 'Model & data maps' },
+  { label: 'Latency envelope', detail: 'Measured paths' },
+  { label: 'Recovery', detail: 'Rehearsed exits' },
 ] as const;
 
 export const Homepage: React.FC = () => {
@@ -205,78 +221,127 @@ export const Homepage: React.FC = () => {
           </div>
         </section>
 
-        {/* Platform advantages — eSignus-style light band */}
+        {/* Platform advantages — symmetrical matrix grid */}
         <section className="bg-[#efeeeb] text-[#1a1b1e] border-b border-neutral-200/60">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-20 sm:py-24 lg:py-28">
-            <div className="max-w-3xl mb-14 sm:mb-16">
-              <p className="text-xs font-semibold tracking-[0.16em] uppercase text-[#8b7355]/90 mb-4">Platform advantages</p>
-              <h2 className="font-display text-3xl sm:text-4xl lg:text-[2.75rem] leading-tight font-normal text-[#121317] tracking-tight">
-                Elevate the institutional workflow
-              </h2>
-              <p className="mt-5 text-base text-neutral-600 leading-relaxed max-w-2xl font-light">
-                The same rigor you expect from a tier-one counterparty—applied to how you research, risk-manage, and deliver outcomes.
-              </p>
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-12 xl:gap-8 xl:items-start mb-12 lg:mb-14">
+              <header className="xl:col-span-5 space-y-5">
+                <p className="text-xs font-semibold tracking-[0.16em] uppercase text-[#8b7355]/90">Platform advantages</p>
+                <h2 className="font-display text-3xl sm:text-4xl lg:text-[2.75rem] leading-tight font-normal text-[#121317] tracking-tight">
+                  Elevate the institutional workflow
+                </h2>
+                <p className="text-base text-neutral-600 leading-relaxed max-w-lg font-light">
+                  The same rigor you expect from a tier-one counterparty—applied to how you research, risk-manage, and deliver outcomes.
+                </p>
+              </header>
+              <aside
+                className="xl:col-span-7 grid grid-cols-2 gap-3 sm:gap-4 max-w-xl xl:max-w-none xl:justify-self-end w-full"
+                aria-label="Capability summary"
+              >
+                {CAPABILITY_STRIP.map(({ label, detail }) => (
+                  <div
+                    key={label}
+                    className="rounded-2xl border border-neutral-200/60 bg-white/60 px-4 py-4 sm:px-5 sm:py-5 flex flex-col justify-center min-h-[5.5rem] shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]"
+                  >
+                    <p className="text-[11px] font-semibold tracking-[0.12em] uppercase text-[#6b5d4a]">{label}</p>
+                    <p className="text-sm text-neutral-700 mt-1.5 leading-snug">{detail}</p>
+                  </div>
+                ))}
+              </aside>
             </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
-              {BENEFITS.map(({ title, body }) => (
-                <div
-                  key={title}
-                  className="group rounded-3xl bg-white/70 p-6 sm:p-7 border border-neutral-200/50 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_32px_-12px_rgba(0,0,0,0.08)] transition-all duration-300"
-                >
-                  <div className="h-1 w-10 bg-[#c6a575]/70 rounded-full mb-4 group-hover:w-14 transition-all" />
-                  <h3 className="text-lg font-semibold text-[#121317] mb-2">{title}</h3>
-                  <p className="text-sm text-neutral-600 leading-relaxed">{body}</p>
-                </div>
-              ))}
+
+            <div className="rounded-[1.75rem] p-px bg-gradient-to-br from-neutral-300/65 via-neutral-200/45 to-neutral-300/50 shadow-[0_1px_0_rgba(255,255,255,0.8)_inset]">
+              <div
+                className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-px rounded-[calc(1.75rem-1px)] overflow-hidden bg-neutral-300/45"
+                style={{ gridAutoRows: '1fr' }}
+              >
+                {BENEFITS.map(({ facet, title, body }, idx) => (
+                  <div
+                    key={title}
+                    className="group bg-[#faf9f6] hover:bg-[#f7f6f2] transition-colors duration-300 p-6 sm:p-8 lg:p-9 flex flex-col min-h-[14.5rem] sm:min-h-[15.5rem]"
+                  >
+                    <div className="flex items-start justify-between gap-4 mb-5">
+                      <span className="font-mono text-[10px] sm:text-xs tabular-nums tracking-widest text-[#8b7355]/90 border border-[#c6a575]/25 rounded-full px-2.5 py-1 bg-white/70">
+                        {String(idx + 1).padStart(2, '0')}
+                      </span>
+                      <span className="text-[10px] sm:text-[11px] font-medium tracking-wide text-neutral-500 text-right leading-snug max-w-[58%]">
+                        {facet}
+                      </span>
+                    </div>
+                    <h3 className="text-lg font-semibold text-[#121317] mb-3 leading-snug">{title}</h3>
+                    <p className="text-sm text-neutral-600 leading-relaxed flex-1">{body}</p>
+                    <div className="mt-5 h-0.5 w-8 rounded-full bg-[#c6a575]/50 group-hover:w-14 transition-all duration-300" />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Suite solutions */}
+        {/* Suite solutions — symmetrical 3-up matrix */}
         <section className="relative bg-[#0c0d11] border-b border-white/[0.04]">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_75%_55%_at_100%_0%,rgba(198,165,117,0.05),transparent_52%)]" />
           <div className="relative max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-20 sm:py-24 lg:py-28">
-            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-14 sm:mb-16">
-              <div className="max-w-2xl">
-                <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-[#c6a575]/90 mb-4">Solutions</p>
-                <h2 className="font-display text-3xl sm:text-4xl lg:text-[2.65rem] leading-tight font-normal text-neutral-50">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-end mb-10 lg:mb-12">
+              <div className="lg:col-span-8 space-y-4">
+                <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-[#c6a575]/90">Solutions</p>
+                <h2 className="font-display text-3xl sm:text-4xl lg:text-[2.65rem] leading-tight font-normal text-neutral-50 max-w-3xl">
                   One architecture. Three execution-ready layers.
                 </h2>
+                <p className="text-sm text-neutral-500 max-w-2xl leading-relaxed hidden sm:block">
+                  Each column is a bounded capability domain—same depth, same vertical rhythm—so leaders can compare scope at a glance.
+                </p>
               </div>
-              <Link
-                to="/features"
-                className="inline-flex items-center gap-1 text-sm font-medium text-[#c6a575] hover:text-[#d4b896] transition-colors shrink-0"
-              >
-                View full capability map
-                <ChevronRight className="w-4 h-4" />
-              </Link>
-            </div>
-            <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
-              {SUITES.map(({ icon: Icon, title, tags, body }) => (
-                <article
-                  key={title}
-                  className="flex flex-col rounded-[28px] border border-white/[0.06] bg-white/[0.025] p-6 sm:p-8 hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-300 h-full shadow-[0_8px_40px_-24px_rgba(0,0,0,0.35)]"
+              <div className="lg:col-span-4 flex lg:justify-end">
+                <Link
+                  to="/features"
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-[#c6a575] hover:text-[#d4b896] transition-colors px-5 py-2.5 rounded-full border border-[#c6a575]/25 hover:border-[#c6a575]/45 bg-white/[0.02]"
                 >
-                  <div className="w-12 h-12 rounded-2xl border border-white/[0.08] bg-white/[0.03] flex items-center justify-center mb-5">
-                    <Icon className="w-5 h-5 text-[#c6a575]" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-neutral-100 mb-3">{title}</h3>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {tags.map((t) => (
-                      <span
-                        key={t}
-                        className="text-[10px] uppercase tracking-wider text-neutral-500 border border-white/[0.08] px-2.5 py-1 rounded-full bg-white/[0.02]"
-                      >
-                        {t}
+                  View full capability map
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+
+            <div className="rounded-[1.75rem] p-px bg-gradient-to-br from-white/[0.12] via-white/[0.06] to-white/[0.1]">
+              <div
+                className="grid grid-cols-1 lg:grid-cols-3 gap-px rounded-[calc(1.75rem-1px)] overflow-hidden bg-white/[0.08]"
+                style={{ gridAutoRows: '1fr' }}
+              >
+                {SUITES.map(({ layer, icon: Icon, title, tags, body }) => (
+                  <article
+                    key={title}
+                    className="group bg-[#101218] hover:bg-[#12141c] transition-colors duration-300 p-7 sm:p-8 lg:p-10 flex flex-col min-h-[22rem]"
+                  >
+                    <div className="flex items-start justify-between gap-4 mb-6">
+                      <span className="font-mono text-xs tabular-nums tracking-[0.2em] text-[#c6a575]/85">
+                        Layer {layer}
                       </span>
-                    ))}
-                  </div>
-                  <p className="text-sm text-neutral-400 leading-relaxed flex-1">{body}</p>
-                  <Link to="/features" className="mt-6 inline-flex items-center gap-1 text-xs font-semibold tracking-wide text-[#c6a575] hover:text-[#d4b896]">
-                    Learn more <ArrowRight className="w-3 h-3" />
-                  </Link>
-                </article>
-              ))}
+                      <div className="w-11 h-11 rounded-2xl border border-white/[0.08] bg-white/[0.04] flex items-center justify-center shrink-0">
+                        <Icon className="w-5 h-5 text-[#c6a575]" />
+                      </div>
+                    </div>
+                    <h3 className="text-lg font-semibold text-neutral-100 mb-4 leading-snug">{title}</h3>
+                    <div className="flex flex-wrap gap-2 mb-5">
+                      {tags.map((t) => (
+                        <span
+                          key={t}
+                          className="text-[10px] uppercase tracking-wider text-neutral-400 border border-white/[0.07] px-2.5 py-1 rounded-full bg-white/[0.02]"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="text-sm text-neutral-400 leading-relaxed flex-1">{body}</p>
+                    <Link
+                      to="/features"
+                      className="mt-8 inline-flex items-center gap-1.5 text-xs font-semibold tracking-wide text-[#c6a575] hover:text-[#d4b896]"
+                    >
+                      Learn more <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                  </article>
+                ))}
+              </div>
             </div>
           </div>
         </section>
