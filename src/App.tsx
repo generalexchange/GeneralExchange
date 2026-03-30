@@ -22,6 +22,7 @@ import { Features } from './pages/Features';
 import { Pricing } from './pages/Pricing';
 import { RequestAccess } from './pages/RequestAccess';
 import { Newsletter } from './pages/Newsletter';
+import { BridgeObserver } from './pages/BridgeObserver';
 
 // Page transition wrapper
 const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -47,6 +48,7 @@ const AnimatedRoutes: React.FC = () => {
         <Route path="/" element={<PageTransition><Homepage /></PageTransition>} />
         <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
         <Route path="/request-access" element={<PageTransition><RequestAccess /></PageTransition>} />
+        <Route path="/bridge-observer" element={<PageTransition><BridgeObserver /></PageTransition>} />
         <Route path="/dashboard" element={<PageTransition><Dashboard /></PageTransition>} />
         <Route path="/company/:symbol" element={<PageTransition><CompanyDetails /></PageTransition>} />
         <Route path="/our-team" element={<PageTransition><OurTeam /></PageTransition>} />

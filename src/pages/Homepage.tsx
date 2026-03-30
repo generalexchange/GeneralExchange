@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import {
   TrendingUp,
   Brain,
-  ArrowRight,
+  Newspaper,
   Activity,
   MapPin,
   Lock,
@@ -205,17 +205,17 @@ export const Homepage: React.FC = () => {
 
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2">
                   <Link
-                    to="/request-access"
-                    className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-neutral-100 text-[#0c0d10] text-sm font-semibold tracking-wide rounded-full hover:bg-white transition-all duration-300 group shadow-[0_8px_32px_-8px_rgba(0,0,0,0.4)]"
+                    to="/bridge-observer"
+                    className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-neutral-100 text-[#0c0d10] text-sm font-semibold tracking-wide rounded-full hover:bg-white transition-all duration-300 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.4)]"
                   >
-                    Start trading smarter
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                    Bridge Observer
+                    <Newspaper className="w-4 h-4" />
                   </Link>
                   <Link
-                    to="/features#feature-backtesting"
+                    to="/request-access"
                     className="inline-flex items-center justify-center px-8 py-3.5 border border-white/[0.1] text-sm font-medium text-neutral-200 rounded-full bg-white/[0.02] hover:bg-white/[0.06] hover:border-white/[0.14] transition-all duration-300"
                   >
-                    Explore platform
+                    Request Access
                   </Link>
                 </div>
               </div>
