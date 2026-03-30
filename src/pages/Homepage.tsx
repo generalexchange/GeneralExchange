@@ -191,6 +191,7 @@ export const Homepage: React.FC = () => {
                   <li><Link to="/risk-management" className="text-gray-500 hover:text-blue-500 transition-colors text-sm">Risk Management</Link></li>
                   <li><Link to="/execution" className="text-gray-500 hover:text-blue-500 transition-colors text-sm">Execution</Link></li>
                   <li><Link to="/automation" className="text-gray-500 hover:text-blue-500 transition-colors text-sm">Automation</Link></li>
+                  <li><Link to="/performance" className="text-gray-500 hover:text-blue-500 transition-colors text-sm">Performance</Link></li>
                 </ul>
               </div>
 

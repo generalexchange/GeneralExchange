@@ -24,6 +24,7 @@ import { Strategy } from './pages/Strategy';
 import { RiskManagement } from './pages/RiskManagement';
 import { Execution } from './pages/Execution';
 import { Automation } from './pages/Automation';
+import { Performance } from './pages/Performance';
 
 // Page transition wrapper
 const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -62,6 +63,7 @@ const AnimatedRoutes: React.FC = () => {
         <Route path="/risk-management" element={<PageTransition><RiskManagement /></PageTransition>} />
         <Route path="/execution" element={<PageTransition><Execution /></PageTransition>} />
         <Route path="/automation" element={<PageTransition><Automation /></PageTransition>} />
+        <Route path="/performance" element={<PageTransition><Performance /></PageTransition>} />
       </Routes>
     </AnimatePresence>
   );
