@@ -17,6 +17,9 @@ import {
   LayoutGrid,
   ChevronRight,
   Check,
+  Newspaper,
+  ExternalLink,
+  Clock,
 } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { SEO } from '../components/SEO';
@@ -147,6 +150,8 @@ const SUITES = [
     title: 'Risk & analytics core',
     tags: ['Surface-aware', 'Attribution', 'Limits'],
     body: 'Greeks, stress grids, and performance decomposition in one disciplined layer for options and multi-leg books.',
+    feedCategory: 'Desk intelligence',
+    timeLabel: 'Live',
   },
   {
     layer: '02',
@@ -154,6 +159,8 @@ const SUITES = [
     title: 'Execution fabric',
     tags: ['Routing', 'Transparency', 'Adapters'],
     body: 'Smart connectivity and clear intent-to-fill lineage—built for desks that cannot afford ambiguity at the wire.',
+    feedCategory: 'Infrastructure',
+    timeLabel: '2m ago',
   },
   {
     layer: '03',
@@ -161,8 +168,12 @@ const SUITES = [
     title: 'Unified workspace',
     tags: ['Single pane', 'Collaboration', 'Context'],
     body: 'Research, risk, and execution share one calm surface—fewer handoffs, clearer ownership across the desk.',
+    feedCategory: 'Workflow',
+    timeLabel: '8m ago',
   },
 ] as const;
+
+const BRIDGE_OBSERVER_ORIGIN = 'https://bridgeobserver.com';
 
 const CAPABILITY_STRIP = [
   { label: 'Book governance', detail: 'Limits & attestation' },
@@ -339,6 +350,59 @@ export const Homepage: React.FC = () => {
         {BENEFITS.map(({ facet, title, body, lede, bullets, panelSummary, panelItems }, idx) => {
           const n = String(idx + 1).padStart(2, '0');
           const light = idx % 2 === 0;
+          /** Sections 01, 03, 05: panel left, narrative right */
+          const flipLayout = idx % 2 === 0;
+          const mainColumn = (
+            <div
+              className={`lg:col-span-7 space-y-6 sm:space-y-8 min-w-0 ${flipLayout ? 'lg:order-2' : 'lg:order-1'}`}
+            >
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                <span className="font-mono text-sm tabular-nums tracking-[0.25em] text-[#8b7355] border border-[#c6a575]/35 rounded-full px-3 py-1.5 bg-white/80">
+                  {n}
+                </span>
+                <span className="text-xs sm:text-sm font-medium tracking-wide text-neutral-500">{facet}</span>
+              </div>
+              <h3 className="font-display text-3xl sm:text-4xl lg:text-[2.85rem] xl:text-[3.1rem] leading-[1.08] font-normal text-[#121317]">
+                {title}
+              </h3>
+              <p className="text-lg sm:text-xl text-neutral-700 leading-relaxed max-w-2xl font-normal">{body}</p>
+              <p className="text-base text-neutral-600 leading-relaxed max-w-2xl border-l-2 border-[#c6a575]/60 pl-5">{lede}</p>
+              <ul className="space-y-4 pt-2 max-w-2xl">
+                {bullets.map((item) => (
+                  <li key={item} className="flex gap-3 text-base text-neutral-700 leading-relaxed">
+                    <Check className="w-5 h-5 shrink-0 text-[#8b7355] mt-0.5" strokeWidth={2} aria-hidden />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+          const panelColumn = (
+            <div className={`lg:col-span-5 w-full min-w-0 ${flipLayout ? 'lg:order-1' : 'lg:order-2'}`}>
+              <div className="rounded-[1.75rem] lg:rounded-[2rem] border border-neutral-200/60 bg-white/85 p-6 sm:p-8 lg:p-10 shadow-[0_20px_60px_-28px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,1)]">
+                <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-[#8b7355]/90 mb-6">
+                  {panelSummary}
+                </p>
+                <dl className="space-y-0 divide-y divide-neutral-200/70">
+                  {panelItems.map(({ k, v }) => (
+                    <div key={k} className="flex justify-between gap-6 py-4 first:pt-0">
+                      <dt className="text-sm font-medium text-neutral-600">{k}</dt>
+                      <dd className="text-sm text-right font-semibold text-[#121317] tabular-nums">{v}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <div className="mt-8 pt-6 border-t border-neutral-200/60">
+                  <Link
+                    to="/features"
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-[#6b5d4a] hover:text-[#121317] transition-colors"
+                  >
+                    Explore the full platform
+                    <ChevronRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          );
           return (
             <section
               key={title}
@@ -351,120 +415,155 @@ export const Homepage: React.FC = () => {
             >
               <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-16 sm:py-20 lg:py-24 w-full flex flex-col justify-center">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 xl:gap-20 items-start lg:items-center">
-                  <div className="lg:col-span-7 space-y-6 sm:space-y-8 min-w-0">
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                      <span className="font-mono text-sm tabular-nums tracking-[0.25em] text-[#8b7355] border border-[#c6a575]/35 rounded-full px-3 py-1.5 bg-white/80">
-                        {n}
-                      </span>
-                      <span className="text-xs sm:text-sm font-medium tracking-wide text-neutral-500">{facet}</span>
-                    </div>
-                    <h3 className="font-display text-3xl sm:text-4xl lg:text-[2.85rem] xl:text-[3.1rem] leading-[1.08] font-normal text-[#121317]">
-                      {title}
-                    </h3>
-                    <p className="text-lg sm:text-xl text-neutral-700 leading-relaxed max-w-2xl font-normal">{body}</p>
-                    <p className="text-base text-neutral-600 leading-relaxed max-w-2xl border-l-2 border-[#c6a575]/60 pl-5">{lede}</p>
-                    <ul className="space-y-4 pt-2 max-w-2xl">
-                      {bullets.map((item) => (
-                        <li key={item} className="flex gap-3 text-base text-neutral-700 leading-relaxed">
-                          <Check className="w-5 h-5 shrink-0 text-[#8b7355] mt-0.5" strokeWidth={2} aria-hidden />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className="lg:col-span-5 w-full min-w-0">
-                    <div className="rounded-[1.75rem] lg:rounded-[2rem] border border-neutral-200/60 bg-white/85 p-6 sm:p-8 lg:p-10 shadow-[0_20px_60px_-28px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,1)]">
-                      <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-[#8b7355]/90 mb-6">
-                        {panelSummary}
-                      </p>
-                      <dl className="space-y-0 divide-y divide-neutral-200/70">
-                        {panelItems.map(({ k, v }) => (
-                          <div key={k} className="flex justify-between gap-6 py-4 first:pt-0">
-                            <dt className="text-sm font-medium text-neutral-600">{k}</dt>
-                            <dd className="text-sm text-right font-semibold text-[#121317] tabular-nums">{v}</dd>
-                          </div>
-                        ))}
-                      </dl>
-                      <div className="mt-8 pt-6 border-t border-neutral-200/60">
-                        <Link
-                          to="/features"
-                          className="inline-flex items-center gap-2 text-sm font-semibold text-[#6b5d4a] hover:text-[#121317] transition-colors"
-                        >
-                          Explore the full platform
-                          <ChevronRight className="w-4 h-4" />
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
+                  {mainColumn}
+                  {panelColumn}
                 </div>
               </div>
             </section>
           );
         })}
 
-        {/* Suite solutions — symmetrical 3-up matrix */}
-        <section className="relative bg-[#0c0d11] border-b border-white/[0.04]">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_75%_55%_at_100%_0%,rgba(198,165,117,0.05),transparent_52%)]" />
+        {/* Bridge Observer wire — newsfeed surface (future: bridgeobserver.com API) */}
+        <section className="relative bg-[#0c0d11] border-b border-white/[0.04] scroll-mt-[calc(3.75rem+1px)]">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_0%_0%,rgba(198,165,117,0.06),transparent_50%)]" />
           <div className="relative max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-20 sm:py-24 lg:py-28">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-end mb-10 lg:mb-12">
-              <div className="lg:col-span-8 space-y-4">
-                <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-[#c6a575]/90">Solutions</p>
-                <h2 className="font-display text-3xl sm:text-4xl lg:text-[2.65rem] leading-tight font-normal text-neutral-50 max-w-3xl">
+            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-10 lg:gap-14 mb-12 lg:mb-14">
+              <div className="space-y-5 max-w-2xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl border border-white/[0.1] bg-white/[0.04] flex items-center justify-center">
+                    <Newspaper className="w-5 h-5 text-[#c6a575]" aria-hidden />
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-semibold tracking-[0.22em] uppercase text-[#c6a575]/90">
+                      Bridge Observer · Wire
+                    </p>
+                    <p className="text-xs text-neutral-500 mt-0.5">General Exchange solutions stream</p>
+                  </div>
+                </div>
+                <h2 className="font-display text-3xl sm:text-4xl lg:text-[2.65rem] leading-tight font-normal text-neutral-50">
                   One architecture. Three execution-ready layers.
                 </h2>
-                <p className="text-sm text-neutral-500 max-w-2xl leading-relaxed hidden sm:block">
-                  Each column is a bounded capability domain—same depth, same vertical rhythm—so leaders can compare scope at a glance.
+                <p className="text-sm text-neutral-400 leading-relaxed">
+                  Headlines mirror how capability maps land in your terminal—each item maps a product layer you will soon pull live from{' '}
+                  <a
+                    href={BRIDGE_OBSERVER_ORIGIN}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#c6a575] hover:text-[#d4b896] font-medium underline-offset-2 hover:underline"
+                  >
+                    bridgeobserver.com
+                  </a>
+                  .
                 </p>
               </div>
-              <div className="lg:col-span-4 flex lg:justify-end">
+              <div className="shrink-0 flex flex-col sm:flex-row gap-3 lg:pt-2">
+                <a
+                  href={BRIDGE_OBSERVER_ORIGIN}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 text-sm font-semibold text-[#0c0d10] bg-[#c6a575] hover:bg-[#d4b896] transition-colors px-6 py-3 rounded-full"
+                >
+                  Open Bridge Observer
+                  <ExternalLink className="w-4 h-4" />
+                </a>
                 <Link
                   to="/features"
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-[#c6a575] hover:text-[#d4b896] transition-colors px-5 py-2.5 rounded-full border border-[#c6a575]/25 hover:border-[#c6a575]/45 bg-white/[0.02]"
+                  className="inline-flex items-center justify-center gap-2 text-sm font-semibold text-[#c6a575] hover:text-[#d4b896] px-6 py-3 rounded-full border border-[#c6a575]/30 hover:border-[#c6a575]/50 bg-white/[0.02]"
                 >
-                  View full capability map
+                  View capability map
                   <ChevronRight className="w-4 h-4" />
                 </Link>
               </div>
             </div>
 
-            <div className="rounded-[1.75rem] p-px bg-gradient-to-br from-white/[0.12] via-white/[0.06] to-white/[0.1]">
-              <div
-                className="grid grid-cols-1 lg:grid-cols-3 gap-px rounded-[calc(1.75rem-1px)] overflow-hidden bg-white/[0.08]"
-                style={{ gridAutoRows: '1fr' }}
-              >
-                {SUITES.map(({ layer, icon: Icon, title, tags, body }) => (
+            <div className="rounded-[1.75rem] border border-white/[0.08] bg-[#0e1016]/90 overflow-hidden shadow-[0_24px_64px_-28px_rgba(0,0,0,0.55)]">
+              <div className="px-5 py-4 sm:px-6 border-b border-white/[0.06] flex flex-wrap items-center justify-between gap-3 bg-white/[0.02]">
+                <span className="text-[11px] font-semibold tracking-widest uppercase text-neutral-500">Live feed · preview</span>
+                <span className="inline-flex items-center gap-2 text-xs text-emerald-400/90">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-40" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
+                  </span>
+                  Connecting to Bridge Observer
+                </span>
+              </div>
+              <div className="divide-y divide-white/[0.06]">
+                {SUITES.map(({ layer, icon: Icon, title, tags, body, feedCategory, timeLabel }) => (
                   <article
                     key={title}
-                    className="group bg-[#101218] hover:bg-[#12141c] transition-colors duration-300 p-7 sm:p-8 lg:p-10 flex flex-col min-h-[22rem]"
+                    className="group p-5 sm:p-6 lg:p-8 hover:bg-white/[0.03] transition-colors duration-300 flex flex-col lg:flex-row lg:gap-10 gap-6"
                   >
-                    <div className="flex items-start justify-between gap-4 mb-6">
-                      <span className="font-mono text-xs tabular-nums tracking-[0.2em] text-[#c6a575]/85">
-                        Layer {layer}
+                    <div className="flex lg:flex-col lg:w-44 shrink-0 gap-4 lg:gap-3">
+                      <div className="flex items-center gap-3 lg:flex-col lg:items-start">
+                        <div className="w-12 h-12 rounded-2xl border border-white/[0.08] bg-white/[0.04] flex items-center justify-center">
+                          <Icon className="w-5 h-5 text-[#c6a575]" />
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2 text-[11px] text-neutral-500 uppercase tracking-wider">
+                          <span className="font-mono text-[#c6a575]/80 tabular-nums">Layer {layer}</span>
+                          <span className="text-neutral-600 hidden sm:inline">·</span>
+                          <span className="inline-flex items-center gap-1 text-neutral-400">
+                            <Clock className="w-3.5 h-3.5" aria-hidden />
+                            {timeLabel}
+                          </span>
+                        </div>
+                      </div>
+                      <span className="inline-flex w-fit rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 text-[10px] font-semibold tracking-wide text-neutral-400 uppercase">
+                        {feedCategory}
                       </span>
-                      <div className="w-11 h-11 rounded-2xl border border-white/[0.08] bg-white/[0.04] flex items-center justify-center shrink-0">
-                        <Icon className="w-5 h-5 text-[#c6a575]" />
+                    </div>
+                    <div className="min-w-0 flex-1 space-y-3">
+                      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                        <h3 className="text-lg sm:text-xl font-semibold text-neutral-100 leading-snug group-hover:text-white transition-colors">
+                          {title}
+                        </h3>
+                        <span className="text-xs text-neutral-600">via Bridge Observer</span>
+                      </div>
+                      <p className="text-sm sm:text-base text-neutral-400 leading-relaxed max-w-3xl">{body}</p>
+                      <div className="flex flex-wrap gap-2 pt-1">
+                        {tags.map((t) => (
+                          <span
+                            key={t}
+                            className="text-[10px] uppercase tracking-wider text-neutral-500 border border-white/[0.08] px-2.5 py-1 rounded-full bg-black/20"
+                          >
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                      <div className="pt-3 flex flex-wrap gap-4">
+                        <a
+                          href={BRIDGE_OBSERVER_ORIGIN}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#c6a575] hover:text-[#d4b896]"
+                        >
+                          Read on Bridge Observer
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                        <Link
+                          to="/features"
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-400 hover:text-neutral-200"
+                        >
+                          Open in platform docs
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </Link>
                       </div>
                     </div>
-                    <h3 className="text-lg font-semibold text-neutral-100 mb-4 leading-snug">{title}</h3>
-                    <div className="flex flex-wrap gap-2 mb-5">
-                      {tags.map((t) => (
-                        <span
-                          key={t}
-                          className="text-[10px] uppercase tracking-wider text-neutral-400 border border-white/[0.07] px-2.5 py-1 rounded-full bg-white/[0.02]"
-                        >
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                    <p className="text-sm text-neutral-400 leading-relaxed flex-1">{body}</p>
-                    <Link
-                      to="/features"
-                      className="mt-8 inline-flex items-center gap-1.5 text-xs font-semibold tracking-wide text-[#c6a575] hover:text-[#d4b896]"
-                    >
-                      Learn more <ArrowRight className="w-3.5 h-3.5" />
-                    </Link>
                   </article>
                 ))}
+              </div>
+              <div className="px-5 py-4 sm:px-6 bg-white/[0.02] border-t border-white/[0.06]">
+                <p className="text-xs text-neutral-500 text-center sm:text-left">
+                  Feed items are static previews today. Wire this list to Bridge Observer’s API at{' '}
+                  <a
+                    href={BRIDGE_OBSERVER_ORIGIN}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#c6a575] hover:underline"
+                  >
+                    bridgeobserver.com
+                  </a>{' '}
+                  when your endpoint is live.
+                </p>
               </div>
             </div>
           </div>
