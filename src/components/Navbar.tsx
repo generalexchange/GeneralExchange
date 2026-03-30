@@ -82,9 +82,6 @@ export const Navbar: React.FC<NavbarProps> = ({ searchQuery = '', onSearchChange
               <Link to="/pricing" className={navLink}>
                 Pricing
               </Link>
-              <Link to="/university" className={navLink}>
-                University
-              </Link>
             </div>
             <div className="flex items-center gap-2 sm:gap-3">
               <Link

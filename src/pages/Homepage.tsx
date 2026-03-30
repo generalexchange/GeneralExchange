@@ -455,18 +455,6 @@ export const Homepage: React.FC = () => {
               >
                 Bridge Observer
               </h2>
-              <p className="mt-4 text-xs text-neutral-300 tabular-nums max-w-md mx-auto leading-relaxed">
-                One architecture. Three execution-ready layers. Front page previews capability; sync from{' '}
-                <a
-                  href={BRIDGE_OBSERVER_ORIGIN}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[#d6ba8b] hover:text-[#e3ccaa] underline underline-offset-4 decoration-white/20"
-                >
-                  bridgeobserver.com
-                </a>{' '}
-                when live.
-              </p>
             </header>
 
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 py-6 text-[11px] uppercase tracking-[0.2em] text-neutral-300">
@@ -518,9 +506,6 @@ export const Homepage: React.FC = () => {
               ))}
             </div>
 
-            <p className="text-center text-[11px] text-neutral-400 pt-8 max-w-lg mx-auto leading-relaxed">
-              Preview layout only. Swap copy for a live Bridge Observer feed when your endpoint is ready.
-            </p>
           </div>
         </section>
 
