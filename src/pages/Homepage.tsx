@@ -441,12 +441,12 @@ export const Homepage: React.FC = () => {
 
         {/* Bridge Observer — modern wire grid (future: bridgeobserver.com API) */}
         <section
-          className="bg-[#14161c] border-b border-white/[0.07] scroll-mt-[calc(3.75rem+1px)]"
+          className="bg-[#1a1d24] border-b border-white/[0.08] scroll-mt-[calc(3.75rem+1px)]"
           aria-labelledby="bridge-observer-heading"
         >
           <div className="max-w-[1100px] mx-auto px-5 sm:px-8 lg:px-10 py-16 sm:py-20 lg:py-24">
-            <header className="text-center border border-white/[0.12] rounded-[24px] bg-white/[0.02] py-8 sm:py-10 px-5 sm:px-8">
-              <p className="text-[10px] sm:text-[11px] tracking-[0.32em] uppercase text-neutral-400 mb-3">
+            <header className="text-center border border-white/[0.14] rounded-[24px] bg-white/[0.04] py-8 sm:py-10 px-5 sm:px-8">
+              <p className="text-[10px] sm:text-[11px] tracking-[0.32em] uppercase text-neutral-300 mb-3">
                 General Exchange — Wire
               </p>
               <h2
@@ -455,7 +455,7 @@ export const Homepage: React.FC = () => {
               >
                 Bridge Observer
               </h2>
-              <p className="mt-4 text-xs text-neutral-400 tabular-nums max-w-md mx-auto leading-relaxed">
+              <p className="mt-4 text-xs text-neutral-300 tabular-nums max-w-md mx-auto leading-relaxed">
                 One architecture. Three execution-ready layers. Front page previews capability; sync from{' '}
                 <a
                   href={BRIDGE_OBSERVER_ORIGIN}
@@ -469,7 +469,7 @@ export const Homepage: React.FC = () => {
               </p>
             </header>
 
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 py-6 text-[11px] uppercase tracking-[0.2em] text-neutral-400">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 py-6 text-[11px] uppercase tracking-[0.2em] text-neutral-300">
               <span>Capability — desk breadth</span>
               <div className="flex flex-wrap gap-x-8 gap-y-2">
                 <a
@@ -480,7 +480,7 @@ export const Homepage: React.FC = () => {
                 >
                   Bridge Observer
                 </a>
-                <Link to="/features" className="text-neutral-300 hover:text-neutral-100 transition-colors">
+                <Link to="/features" className="text-neutral-200 hover:text-white transition-colors">
                   Capability map
                 </Link>
               </div>
@@ -494,9 +494,9 @@ export const Homepage: React.FC = () => {
                 <article
                   key={title}
                   role="listitem"
-                  className="rounded-2xl border border-white/[0.1] bg-white/[0.03] py-8 sm:py-10 px-5 sm:px-6 transition-colors hover:bg-white/[0.05]"
+                  className="rounded-2xl border border-white/[0.12] bg-white/[0.05] py-8 sm:py-10 px-5 sm:px-6 transition-colors hover:bg-white/[0.07]"
                 >
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-neutral-400 mb-5 flex flex-wrap gap-x-2 gap-y-1">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-neutral-300 mb-5 flex flex-wrap gap-x-2 gap-y-1">
                     <span className="text-[#d6ba8b]">Layer {layer}</span>
                     <span className="text-neutral-500" aria-hidden>
                       |
@@ -510,15 +510,15 @@ export const Homepage: React.FC = () => {
                   <h3 className="font-display text-xl sm:text-2xl text-neutral-100 font-normal leading-snug tracking-tight mb-3">
                     {title}
                   </h3>
-                  <p className="text-sm text-neutral-300 leading-[1.65] mb-6">{body}</p>
-                  <p className="text-[11px] text-neutral-500 leading-relaxed border-t border-white/[0.08] pt-4">
+                  <p className="text-sm text-neutral-200 leading-[1.65] mb-6">{body}</p>
+                  <p className="text-[11px] text-neutral-400 leading-relaxed border-t border-white/[0.1] pt-4">
                     {tags.join(' · ')}
                   </p>
                 </article>
               ))}
             </div>
 
-            <p className="text-center text-[11px] text-neutral-500 pt-8 max-w-lg mx-auto leading-relaxed">
+            <p className="text-center text-[11px] text-neutral-400 pt-8 max-w-lg mx-auto leading-relaxed">
               Preview layout only. Swap copy for a live Bridge Observer feed when your endpoint is ready.
             </p>
           </div>
