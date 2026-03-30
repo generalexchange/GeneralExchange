@@ -174,7 +174,7 @@ export const Homepage: React.FC = () => {
               <div className="col-span-2 md:col-span-1">
                 <h3 className="text-2xl font-serif font-bold text-white mb-3">General Exchange</h3>
                 <p className="text-gray-500 text-sm leading-relaxed mb-4">
-                  Professional trading intelligence with AI-powered risk management
+                  Enterprise Trade Intelligence
                 </p>
                 <div className="flex items-center space-x-2">
                   <MapPin className="w-4 h-4 text-green-500" />
@@ -195,7 +195,7 @@ export const Homepage: React.FC = () => {
               <div>
                 <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Company</h4>
                 <ul className="space-y-2">
-                  <li><Link to="/investor-relations" className="text-gray-500 hover:text-blue-500 transition-colors text-sm">Investor Relations</Link></li>
+                  <li><Link to="/community" className="text-gray-500 hover:text-blue-500 transition-colors text-sm">Community</Link></li>
                   <li><Link to="/documents" className="text-gray-500 hover:text-blue-500 transition-colors text-sm">Documents</Link></li>
                 </ul>
               </div>
@@ -215,7 +215,6 @@ export const Homepage: React.FC = () => {
                 <ul className="space-y-2">
                   <li><Link to="/newsletter" className="text-gray-500 hover:text-blue-500 transition-colors text-sm">Newsletter</Link></li>
                   <li><Link to="/dashboard" className="text-gray-500 hover:text-blue-500 transition-colors text-sm">Wallet</Link></li>
-                  <li><Link to="/community" className="text-gray-500 hover:text-blue-500 transition-colors text-sm">Community</Link></li>
                 </ul>
               </div>
             </div>
