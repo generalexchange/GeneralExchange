@@ -12,7 +12,6 @@ import {
   MapPin,
   Lock,
   Sparkles,
-  ChevronRight,
   Check,
 } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
@@ -30,8 +29,6 @@ const BENEFITS: {
   body: string;
   lede: string;
   bullets: readonly string[];
-  panelSummary: string;
-  panelItems: readonly { k: string; v: string }[];
 }[] = [
   {
     facet: 'Risk · Governance · Alignment',
@@ -42,12 +39,6 @@ const BENEFITS: {
       'Position- and desk-level limits with breach paths tied to named approvers',
       'Immutable audit trails connecting models, overrides, and settlement outcomes',
       'One vocabulary from research pod to risk committee—no shadow metrics',
-    ],
-    panelSummary: 'What desks get',
-    panelItems: [
-      { k: 'Limit posture', v: 'Realtime, book-aware' },
-      { k: 'Evidence', v: 'Replay-friendly logs' },
-      { k: 'Alignment', v: 'Shared risk language' },
     ],
   },
   {
@@ -60,12 +51,6 @@ const BENEFITS: {
       'Chargeback-ready views for data, compute, and venue connectivity',
       'Trim duplicate pipes by design—not by spreadsheet archaeology',
     ],
-    panelSummary: 'Economics lens',
-    panelItems: [
-      { k: 'Visibility', v: 'End-to-end paths' },
-      { k: 'Attribution', v: 'Cost → decision' },
-      { k: 'Cadence', v: 'Quarterly & ad hoc' },
-    ],
   },
   {
     facet: 'SoD · Policy · Second line',
@@ -76,12 +61,6 @@ const BENEFITS: {
       'Maker-checker flows for model changes, limit exceptions, and release windows',
       'Policy packs versioned next to the features they govern—no orphan PDFs',
       'Evidence bundles formatted for internal audit and regulatory dialogue',
-    ],
-    panelSummary: 'Control map',
-    panelItems: [
-      { k: 'SoD', v: 'Role-bound paths' },
-      { k: 'Policy', v: 'Version-locked' },
-      { k: 'Evidence', v: 'Export-ready' },
     ],
   },
   {
@@ -94,12 +73,6 @@ const BENEFITS: {
       'Service tiers with entitlements mapped to risk and data scopes',
       'CRM-grade lineage so client statements match internal ledgers',
     ],
-    panelSummary: 'Go-to-market',
-    panelItems: [
-      { k: 'Brand', v: 'Coherent voice' },
-      { k: 'Offers', v: 'Tiered & entitlements' },
-      { k: 'Trust', v: 'Single source' },
-    ],
   },
   {
     facet: 'Models · Data · Approvals',
@@ -111,12 +84,6 @@ const BENEFITS: {
       'Approval chains that resist “rubber stamp” drift via time-boxed attestations',
       'Failure domains mapped so incidents have a first owner, not a group chat',
     ],
-    panelSummary: 'Ownership',
-    panelItems: [
-      { k: 'Models', v: 'Named stewards' },
-      { k: 'Data', v: 'Source of truth' },
-      { k: 'Approvals', v: 'Time-bound' },
-    ],
   },
   {
     facet: 'Runbooks · Scenarios · Drills',
@@ -127,12 +94,6 @@ const BENEFITS: {
       'Scenario libraries aligned to historical stress windows and hypothetical shocks',
       'Runbooks with checklists, comms templates, and escalation trees',
       'Scheduled drills with scored outcomes fed back into control design',
-    ],
-    panelSummary: 'Resilience',
-    panelItems: [
-      { k: 'Scenarios', v: 'Curated library' },
-      { k: 'Runbooks', v: 'Checklist-led' },
-      { k: 'Drills', v: 'Measured learning' },
     ],
   },
 ];
@@ -177,9 +138,6 @@ const IBM = {
   text70: '#424242',
   plaque: '#ffffff',
 } as const;
-
-const ANIM_SLOT =
-  'min-h-[clamp(200px,28vw,380px)] rounded-lg border border-dashed border-[#c6c6c6] bg-[#e8e8e8]/40';
 
 const CAPABILITY_STRIP = [
   { label: 'Book governance', detail: 'Limits & attestation' },
@@ -319,7 +277,7 @@ export const Homepage: React.FC = () => {
           </div>
         </section>
 
-        {/* Platform advantages — intro: copy left, capability grid right; slot for motion */}
+        {/* Platform advantages — intro: copy left, capability grid right */}
         <section
           className="border-b"
           style={{ backgroundColor: IBM.bg00, color: IBM.text, borderColor: IBM.border }}
@@ -374,17 +332,11 @@ export const Homepage: React.FC = () => {
                 </div>
               </aside>
             </div>
-            {/* Reserved: motion / diagram — mount Lottie, canvas, or video here */}
-            <div
-              className={`mt-12 lg:mt-16 w-full ${ANIM_SLOT}`}
-              data-animation-slot="platform-advantages-intro"
-              aria-label="Illustration area"
-            />
           </div>
         </section>
 
         {/* Brochure chapters: one full viewport per advantage */}
-        {BENEFITS.map(({ facet, title, body, lede, bullets, panelSummary, panelItems }, idx) => {
+        {BENEFITS.map(({ facet, title, body, lede, bullets }, idx) => {
           const n = String(idx + 1).padStart(2, '0');
           const light = idx % 2 === 0;
           const sectionBg = light ? IBM.bg00 : IBM.bg10;
@@ -449,38 +401,11 @@ export const Homepage: React.FC = () => {
           const panelColumn = (
             <div className={`lg:col-span-5 w-full min-w-0 ${flipLayout ? 'lg:order-1' : 'lg:order-2'}`}>
               <div
-                className="rounded-[1.75rem] lg:rounded-[2rem] border p-6 sm:p-8 lg:p-10 shadow-[0_2px_12px_rgba(0,0,0,0.06)]"
+                className="rounded-[1.75rem] lg:rounded-[2rem] border min-h-[240px] sm:min-h-[280px] lg:min-h-[min(52vh,440px)] shadow-[0_2px_12px_rgba(0,0,0,0.06)]"
                 style={{ borderColor: IBM.border, backgroundColor: IBM.plaque }}
-              >
-                <p
-                  className="text-[11px] font-semibold tracking-[0.2em] uppercase mb-6"
-                  style={{ color: IBM.text60 }}
-                >
-                  {panelSummary}
-                </p>
-                <dl className="space-y-0 divide-y divide-[#d8d8d8]">
-                  {panelItems.map(({ k, v }) => (
-                    <div key={k} className="flex justify-between gap-6 py-4 first:pt-0">
-                      <dt className="text-sm font-medium" style={{ color: IBM.text60 }}>
-                        {k}
-                      </dt>
-                      <dd className="text-sm text-right font-semibold tabular-nums" style={{ color: IBM.text }}>
-                        {v}
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
-                <div className="mt-8 pt-6" style={{ borderTop: `1px solid ${IBM.border}` }}>
-                  <Link
-                    to="/features"
-                    className="inline-flex items-center gap-2 text-sm font-semibold transition-colors hover:opacity-80"
-                    style={{ color: IBM.text70 }}
-                  >
-                    Explore the full platform
-                    <ChevronRight className="w-4 h-4" />
-                  </Link>
-                </div>
-              </div>
+                data-illustration-slot={`platform-advantage-${n}-panel`}
+                aria-label="Illustration"
+              />
             </div>
           );
           return (
@@ -499,12 +424,6 @@ export const Homepage: React.FC = () => {
                   {mainColumn}
                   {panelColumn}
                 </div>
-                {/* Reserved: chapter motion — mount animation per `platform-advantage-${n}` */}
-                <div
-                  className={`mt-12 lg:mt-16 w-full ${ANIM_SLOT}`}
-                  data-animation-slot={`platform-advantage-${n}`}
-                  aria-label="Illustration area"
-                />
               </div>
             </section>
           );
