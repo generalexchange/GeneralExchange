@@ -514,30 +514,36 @@ export const Homepage: React.FC = () => {
           </div>
         </section>
 
-        {/* Trust + CTA */}
-        <section className="bg-[#efeeeb] text-[#1a1b1e] border-b border-neutral-200/60">
+        {/* Trust + CTA — same smoky gray system as platform bands */}
+        <section
+          className="border-b"
+          style={{ backgroundColor: IBM.bg00, color: IBM.text, borderColor: IBM.border }}
+        >
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-16 sm:py-20">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10 p-8 sm:p-10 rounded-[28px] border border-neutral-200/50 bg-white/65 backdrop-blur-md shadow-[0_8px_40px_-20px_rgba(0,0,0,0.06)]">
-              <div className="flex flex-wrap items-center gap-x-10 gap-y-4">
-                <div className="flex items-center gap-2 text-neutral-400">
-                  <Lock className="w-4 h-4 text-[#8b7355]" />
+            <div
+              className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10 p-8 sm:p-10 rounded-[28px] border shadow-[0_8px_40px_-20px_rgba(0,0,0,0.08)]"
+              style={{ borderColor: IBM.border, backgroundColor: IBM.plaque }}
+            >
+              <div className="flex flex-wrap items-center gap-x-10 gap-y-4 text-[#3f3f46]">
+                <div className="flex items-center gap-2">
+                  <Lock className="w-4 h-4 shrink-0 text-[#3f3f46]" strokeWidth={2} aria-hidden />
                   <span className="text-xs font-semibold tracking-[0.15em] uppercase">Designed for regulated environments</span>
                 </div>
-                <div className="flex items-center gap-2 text-neutral-400">
-                  <Sparkles className="w-4 h-4 text-[#8b7355]" />
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 shrink-0 text-[#3f3f46]" strokeWidth={2} aria-hidden />
                   <span className="text-xs font-semibold tracking-[0.15em] uppercase">Model & data lineage by default</span>
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 shrink-0">
                 <Link
                   to="/pricing"
-                  className="inline-flex items-center justify-center px-7 py-3.5 bg-[#121317] text-neutral-100 text-sm font-semibold rounded-full hover:bg-neutral-800 transition-all duration-300 shadow-md shadow-black/10"
+                  className="inline-flex items-center justify-center px-7 py-3.5 text-sm font-semibold rounded-full transition-colors border border-[#3f3f46] text-[#3f3f46] bg-transparent hover:bg-[#3f3f46]/10"
                 >
                   View pricing
                 </Link>
                 <Link
                   to="/request-access"
-                  className="inline-flex items-center justify-center px-7 py-3.5 border border-neutral-300/80 text-sm font-medium text-[#121317] rounded-full bg-white/50 hover:bg-white/90 transition-all duration-300"
+                  className="inline-flex items-center justify-center px-7 py-3.5 text-sm font-semibold rounded-full transition-colors border border-[#3f3f46] text-[#3f3f46] bg-transparent hover:bg-[#3f3f46]/10"
                 >
                   Speak with us
                 </Link>
