@@ -12,7 +12,7 @@ import {
   Brain, 
   ArrowRight,
   Activity,
-  Lock
+  MapPin
 } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { SEO } from '../components/SEO';
@@ -22,8 +22,8 @@ export const Homepage: React.FC = () => {
     <div className="min-h-screen bg-[#0a0a0a]">
       <SEO 
         title="General Exchange - Algorithmic Trade Engine"
-        description="Professional algorithmic risk management platform for options trading professionals. Connect with Interactive Brokers for real-time AI analysis, risk alerts, and trade optimization."
-        keywords="options trading platform, algorithmic trading, risk management software, Interactive Brokers integration, AI trading tools, options analysis, trading algorithms, professional trading platform, options strategy, trading risk management"
+        description="Professional algorithmic risk management platform for options trading professionals. Educational use; real-time analysis, risk context, and trade workflow tools."
+        keywords="options trading platform, algorithmic trading, risk management software, AI trading tools, options analysis, trading algorithms, professional trading platform, options strategy, trading risk management"
         canonical="https://generalexchange.com/"
         structuredData={{
           '@context': 'https://schema.org',
@@ -58,7 +58,7 @@ export const Homepage: React.FC = () => {
               <div className="space-y-4 sm:space-y-8">
                 <div className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-600/10 border border-blue-500/20 rounded-full">
                   <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
-                  <span className="text-blue-400 text-sm font-medium">Connect with Interactive Brokers</span>
+                  <span className="text-blue-400 text-sm font-medium">For Educational Purposes Only</span>
                 </div>
                 
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight">
@@ -127,13 +127,15 @@ export const Homepage: React.FC = () => {
                       ))}
                     </div>
                     
-                    {/* Risk Alert */}
+                    {/* Bridge Observer add-on */}
                     <div className="mt-6 p-4 bg-blue-600/20 border border-blue-500/30 rounded-lg">
                       <div className="flex items-start space-x-3">
                         <Shield className="w-5 h-5 text-blue-400 mt-0.5" />
                         <div>
-                          <div className="text-sm font-semibold text-white mb-1">Risk Alert: Portfolio Volatility Detected</div>
-                          <div className="text-xs text-gray-400">AI suggests rebalancing tech positions. View recommendations →</div>
+                          <div className="text-sm font-semibold text-white mb-1">Bridge Observer — news proxy add-on</div>
+                          <div className="text-xs text-gray-400">
+                            Bridge Observer, the news company, plugs in as an optional layer: a curated news proxy that routes headlines and market context into General Exchange so you stay informed without bouncing between terminals.
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -144,19 +146,21 @@ export const Homepage: React.FC = () => {
                 <div className="absolute -right-4 top-20 w-48 p-4 bg-[#1a1a1a] border border-green-500/30 rounded-lg shadow-xl">
                   <div className="flex items-center space-x-2 mb-2">
                     <TrendingUp className="w-4 h-4 text-green-500" />
-                    <span className="text-xs text-gray-400">Profit Alert</span>
+                    <span className="text-xs text-gray-400">Example long call</span>
                   </div>
-                  <div className="text-2xl font-bold text-green-400">+12.8%</div>
-                  <div className="text-xs text-gray-500">Above target</div>
+                  <div className="text-sm font-mono text-white leading-snug">NVDA $142.50C</div>
+                  <div className="text-xs text-gray-500 mt-1">Apr 18 · entry $4.10</div>
+                  <div className="text-lg font-bold text-green-400 mt-2">+Return 31.2%</div>
+                  <div className="text-xs text-gray-500">Illustrative; not a recommendation</div>
                 </div>
                 
                 <div className="absolute -left-4 bottom-20 w-48 p-4 bg-[#1a1a1a] border border-purple-500/30 rounded-lg shadow-xl">
                   <div className="flex items-center space-x-2 mb-2">
                     <Brain className="w-4 h-4 text-purple-500" />
-                    <span className="text-xs text-gray-400">AI Confidence</span>
+                    <span className="text-xs text-gray-400">Win Rate</span>
                   </div>
-                  <div className="text-2xl font-bold text-purple-400">94%</div>
-                  <div className="text-xs text-gray-500">High accuracy</div>
+                  <div className="text-2xl font-bold text-purple-400">72%</div>
+                  <div className="text-xs text-gray-500">Trailing 90 days · illustrative</div>
                 </div>
               </div>
             </div>
@@ -174,8 +178,8 @@ export const Homepage: React.FC = () => {
                   Professional trading intelligence with AI-powered risk management
                 </p>
                 <div className="flex items-center space-x-2">
-                  <Lock className="w-4 h-4 text-green-500" />
-                  <span className="text-xs text-gray-500">Enterprise-grade security</span>
+                  <MapPin className="w-4 h-4 text-green-500" />
+                  <span className="text-xs text-gray-500">Fort Worth, Texas</span>
                 </div>
               </div>
 
