@@ -166,6 +166,21 @@ const SUITES = [
 
 const BRIDGE_OBSERVER_ORIGIN = 'https://bridgeobserver.com';
 
+/** IBM-style cool grays (Carbon-adjacent) for light “product” bands */
+const IBM = {
+  bg00: '#f4f4f4',
+  bg10: '#e8e8e8',
+  wire: '#c6c6c6',
+  border: '#d8d8d8',
+  text: '#161616',
+  text60: '#525252',
+  text70: '#424242',
+  plaque: '#ffffff',
+} as const;
+
+const ANIM_SLOT =
+  'min-h-[clamp(200px,28vw,380px)] rounded-lg border border-dashed border-[#c6c6c6] bg-[#e8e8e8]/40';
+
 const CAPABILITY_STRIP = [
   { label: 'Book governance', detail: 'Limits & attestation' },
   { label: 'Lineage', detail: 'Model & data maps' },
@@ -304,16 +319,27 @@ export const Homepage: React.FC = () => {
           </div>
         </section>
 
-        {/* Platform advantages — intro: copy left, capability grid flush right (brochure opener) */}
-        <section className="bg-[#efeeeb] text-[#1a1b1e] border-b border-neutral-200/60">
+        {/* Platform advantages — intro: copy left, capability grid right; slot for motion */}
+        <section
+          className="border-b"
+          style={{ backgroundColor: IBM.bg00, color: IBM.text, borderColor: IBM.border }}
+        >
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-16 sm:py-20 lg:py-24">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-14 xl:gap-20 lg:items-center">
               <header className="space-y-5 min-w-0 lg:pr-4">
-                <p className="text-xs font-semibold tracking-[0.16em] uppercase text-[#8b7355]/90">Platform advantages</p>
-                <h2 className="font-display text-3xl sm:text-4xl lg:text-[2.75rem] leading-[1.1] font-normal text-[#121317] tracking-tight">
+                <p
+                  className="text-xs font-semibold tracking-[0.16em] uppercase"
+                  style={{ color: IBM.text60 }}
+                >
+                  Platform advantages
+                </p>
+                <h2 className="font-display text-3xl sm:text-4xl lg:text-[2.75rem] leading-[1.1] font-normal tracking-tight">
                   Elevate the institutional workflow
                 </h2>
-                <p className="text-base sm:text-lg text-neutral-600 leading-relaxed max-w-xl font-light">
+                <p
+                  className="text-base sm:text-lg leading-relaxed max-w-xl font-light"
+                  style={{ color: IBM.text70 }}
+                >
                   The same rigor you expect from a tier-one counterparty—applied to how you research, risk-manage, and deliver outcomes.
                 </p>
               </header>
@@ -325,15 +351,35 @@ export const Homepage: React.FC = () => {
                   {CAPABILITY_STRIP.map(({ label, detail }) => (
                     <div
                       key={label}
-                      className="rounded-2xl sm:rounded-[1.25rem] border border-neutral-200/55 bg-white/75 px-4 py-4 sm:px-6 sm:py-5 flex flex-col justify-center shadow-[0_8px_30px_-18px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.9)]"
+                      className="rounded-2xl sm:rounded-[1.25rem] border px-4 py-4 sm:px-6 sm:py-5 flex flex-col justify-center shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
+                      style={{
+                        borderColor: IBM.border,
+                        backgroundColor: IBM.plaque,
+                      }}
                     >
-                      <p className="text-[11px] font-semibold tracking-[0.14em] uppercase text-[#6b5d4a]">{label}</p>
-                      <p className="text-sm sm:text-base text-neutral-700 mt-2 leading-snug font-medium">{detail}</p>
+                      <p
+                        className="text-[11px] font-semibold tracking-[0.14em] uppercase"
+                        style={{ color: IBM.text60 }}
+                      >
+                        {label}
+                      </p>
+                      <p
+                        className="text-sm sm:text-base mt-2 leading-snug font-medium"
+                        style={{ color: IBM.text70 }}
+                      >
+                        {detail}
+                      </p>
                     </div>
                   ))}
                 </div>
               </aside>
             </div>
+            {/* Reserved: motion / diagram — mount Lottie, canvas, or video here */}
+            <div
+              className={`mt-12 lg:mt-16 w-full ${ANIM_SLOT}`}
+              data-animation-slot="platform-advantages-intro"
+              aria-label="Illustration area"
+            />
           </div>
         </section>
 
@@ -341,6 +387,7 @@ export const Homepage: React.FC = () => {
         {BENEFITS.map(({ facet, title, body, lede, bullets, panelSummary, panelItems }, idx) => {
           const n = String(idx + 1).padStart(2, '0');
           const light = idx % 2 === 0;
+          const sectionBg = light ? IBM.bg00 : IBM.bg10;
           /** Sections 01, 03, 05: panel left, narrative right */
           const flipLayout = idx % 2 === 0;
           const mainColumn = (
@@ -348,20 +395,51 @@ export const Homepage: React.FC = () => {
               className={`lg:col-span-7 space-y-6 sm:space-y-8 min-w-0 ${flipLayout ? 'lg:order-2' : 'lg:order-1'}`}
             >
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                <span className="font-mono text-sm tabular-nums tracking-[0.25em] text-[#8b7355] border border-[#c6a575]/35 rounded-full px-3 py-1.5 bg-white/80">
+                <span
+                  className="font-mono text-sm tabular-nums tracking-[0.25em] rounded-full px-3 py-1.5 border"
+                  style={{
+                    color: IBM.text60,
+                    borderColor: IBM.wire,
+                    backgroundColor: IBM.plaque,
+                  }}
+                >
                   {n}
                 </span>
-                <span className="text-xs sm:text-sm font-medium tracking-wide text-neutral-500">{facet}</span>
+                <span
+                  className="text-xs sm:text-sm font-medium tracking-wide"
+                  style={{ color: IBM.text60 }}
+                >
+                  {facet}
+                </span>
               </div>
-              <h3 className="font-display text-3xl sm:text-4xl lg:text-[2.85rem] xl:text-[3.1rem] leading-[1.08] font-normal text-[#121317]">
+              <h3 className="font-display text-3xl sm:text-4xl lg:text-[2.85rem] xl:text-[3.1rem] leading-[1.08] font-normal">
                 {title}
               </h3>
-              <p className="text-lg sm:text-xl text-neutral-700 leading-relaxed max-w-2xl font-normal">{body}</p>
-              <p className="text-base text-neutral-600 leading-relaxed max-w-2xl border-l-2 border-[#c6a575]/60 pl-5">{lede}</p>
+              <p
+                className="text-lg sm:text-xl leading-relaxed max-w-2xl font-normal"
+                style={{ color: IBM.text70 }}
+              >
+                {body}
+              </p>
+              <p
+                className="text-base leading-relaxed max-w-2xl border-l-2 pl-5"
+                style={{ color: IBM.text60, borderLeftColor: IBM.wire }}
+              >
+                {lede}
+              </p>
               <ul className="space-y-4 pt-2 max-w-2xl">
                 {bullets.map((item) => (
-                  <li key={item} className="flex gap-3 text-base text-neutral-700 leading-relaxed">
-                    <Check className="w-5 h-5 shrink-0 text-[#8b7355] mt-0.5" strokeWidth={2} aria-hidden />
+                  <li
+                    key={item}
+                    className="flex gap-3 text-base leading-relaxed"
+                    style={{ color: IBM.text70 }}
+                  >
+                    <Check
+                      className="w-5 h-5 shrink-0 mt-0.5"
+                      style={{ color: IBM.text60 }}
+                      strokeWidth={2}
+                      aria-hidden
+                    />
                     <span>{item}</span>
                   </li>
                 ))}
@@ -370,22 +448,33 @@ export const Homepage: React.FC = () => {
           );
           const panelColumn = (
             <div className={`lg:col-span-5 w-full min-w-0 ${flipLayout ? 'lg:order-1' : 'lg:order-2'}`}>
-              <div className="rounded-[1.75rem] lg:rounded-[2rem] border border-neutral-200/60 bg-white/85 p-6 sm:p-8 lg:p-10 shadow-[0_20px_60px_-28px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,1)]">
-                <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-[#8b7355]/90 mb-6">
+              <div
+                className="rounded-[1.75rem] lg:rounded-[2rem] border p-6 sm:p-8 lg:p-10 shadow-[0_2px_12px_rgba(0,0,0,0.06)]"
+                style={{ borderColor: IBM.border, backgroundColor: IBM.plaque }}
+              >
+                <p
+                  className="text-[11px] font-semibold tracking-[0.2em] uppercase mb-6"
+                  style={{ color: IBM.text60 }}
+                >
                   {panelSummary}
                 </p>
-                <dl className="space-y-0 divide-y divide-neutral-200/70">
+                <dl className="space-y-0 divide-y divide-[#d8d8d8]">
                   {panelItems.map(({ k, v }) => (
                     <div key={k} className="flex justify-between gap-6 py-4 first:pt-0">
-                      <dt className="text-sm font-medium text-neutral-600">{k}</dt>
-                      <dd className="text-sm text-right font-semibold text-[#121317] tabular-nums">{v}</dd>
+                      <dt className="text-sm font-medium" style={{ color: IBM.text60 }}>
+                        {k}
+                      </dt>
+                      <dd className="text-sm text-right font-semibold tabular-nums" style={{ color: IBM.text }}>
+                        {v}
+                      </dd>
                     </div>
                   ))}
                 </dl>
-                <div className="mt-8 pt-6 border-t border-neutral-200/60">
+                <div className="mt-8 pt-6" style={{ borderTop: `1px solid ${IBM.border}` }}>
                   <Link
                     to="/features"
-                    className="inline-flex items-center gap-2 text-sm font-semibold text-[#6b5d4a] hover:text-[#121317] transition-colors"
+                    className="inline-flex items-center gap-2 text-sm font-semibold transition-colors hover:opacity-80"
+                    style={{ color: IBM.text70 }}
                   >
                     Explore the full platform
                     <ChevronRight className="w-4 h-4" />
@@ -398,17 +487,24 @@ export const Homepage: React.FC = () => {
             <section
               key={title}
               id={`platform-advantage-${n}`}
-              className={`scroll-mt-[calc(3.75rem+1px)] min-h-screen flex items-stretch border-b ${
-                light
-                  ? 'bg-[#f7f6f2] text-[#1a1b1e] border-neutral-200/50'
-                  : 'bg-[#faf9f6] text-[#1a1b1e] border-neutral-200/45'
-              }`}
+              className="scroll-mt-[calc(3.75rem+1px)] min-h-screen flex items-stretch border-b"
+              style={{
+                backgroundColor: sectionBg,
+                color: IBM.text,
+                borderColor: IBM.border,
+              }}
             >
               <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-16 sm:py-20 lg:py-24 w-full flex flex-col justify-center">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 xl:gap-20 items-start lg:items-center">
                   {mainColumn}
                   {panelColumn}
                 </div>
+                {/* Reserved: chapter motion — mount animation per `platform-advantage-${n}` */}
+                <div
+                  className={`mt-12 lg:mt-16 w-full ${ANIM_SLOT}`}
+                  data-animation-slot={`platform-advantage-${n}`}
+                  aria-label="Illustration area"
+                />
               </div>
             </section>
           );
