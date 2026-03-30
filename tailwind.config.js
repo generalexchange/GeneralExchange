@@ -22,7 +22,9 @@ export default {
         },
       },
       fontFamily: {
+        sans: ['"DM Sans"', 'system-ui', 'Segoe UI', 'Roboto', 'sans-serif'],
         serif: ['Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif'],
+        display: ['"Instrument Serif"', 'Georgia', 'Cambria', 'serif'],
       },
     },
   },
