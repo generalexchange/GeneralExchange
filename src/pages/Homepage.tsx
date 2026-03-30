@@ -16,6 +16,7 @@ import {
   Sparkles,
   LayoutGrid,
   ChevronRight,
+  Check,
 } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { SEO } from '../components/SEO';
@@ -26,38 +27,118 @@ const LIVE_QUOTES: { symbol: string; pct: number }[] = [
   { symbol: 'NVDA', pct: 1.83 },
 ];
 
-const BENEFITS = [
+const BENEFITS: {
+  facet: string;
+  title: string;
+  body: string;
+  lede: string;
+  bullets: readonly string[];
+  panelSummary: string;
+  panelItems: readonly { k: string; v: string }[];
+}[] = [
   {
     facet: 'Risk · Governance · Alignment',
     title: 'Scale with conviction',
     body: 'Risk frameworks that grow with your book—clear limits, audit trails, and desk-wide alignment.',
+    lede: 'When the book doubles, your controls should tighten—not scramble. We treat scale as a risk program, not a dashboard exercise.',
+    bullets: [
+      'Position- and desk-level limits with breach paths tied to named approvers',
+      'Immutable audit trails connecting models, overrides, and settlement outcomes',
+      'One vocabulary from research pod to risk committee—no shadow metrics',
+    ],
+    panelSummary: 'What desks get',
+    panelItems: [
+      { k: 'Limit posture', v: 'Realtime, book-aware' },
+      { k: 'Evidence', v: 'Replay-friendly logs' },
+      { k: 'Alignment', v: 'Shared risk language' },
+    ],
   },
   {
     facet: 'Spend · Telemetry · ROI',
     title: 'Cost-aware engineering',
     body: 'Unify research, execution, and reporting so every dollar of infrastructure maps to measurable outcomes.',
+    lede: 'Infrastructure spend should be traceable to outcomes—latency saved, errors avoided, hours reclaimed.',
+    bullets: [
+      'Unified telemetry from research jobs through execution adapters',
+      'Chargeback-ready views for data, compute, and venue connectivity',
+      'Trim duplicate pipes by design—not by spreadsheet archaeology',
+    ],
+    panelSummary: 'Economics lens',
+    panelItems: [
+      { k: 'Visibility', v: 'End-to-end paths' },
+      { k: 'Attribution', v: 'Cost → decision' },
+      { k: 'Cadence', v: 'Quarterly & ad hoc' },
+    ],
   },
   {
     facet: 'SoD · Policy · Second line',
     title: 'Institutional-grade controls',
     body: 'Segregation of duties, documented workflows, and governance that satisfies the second line.',
+    lede: 'Controls are only as strong as the workflow around them. We bake segregation and documentation into the daily path.',
+    bullets: [
+      'Maker-checker flows for model changes, limit exceptions, and release windows',
+      'Policy packs versioned next to the features they govern—no orphan PDFs',
+      'Evidence bundles formatted for internal audit and regulatory dialogue',
+    ],
+    panelSummary: 'Control map',
+    panelItems: [
+      { k: 'SoD', v: 'Role-bound paths' },
+      { k: 'Policy', v: 'Version-locked' },
+      { k: 'Evidence', v: 'Export-ready' },
+    ],
   },
   {
     facet: 'Offerings · Brand · Trust',
     title: 'New revenue-ready workflows',
     body: 'Productize research and execution services without compromising the standards your clients expect.',
+    lede: 'Client-facing services demand the same discipline as proprietary trading—with clearer branding and consent.',
+    bullets: [
+      'White-label narratives and disclosure blocks tuned to your compliance stack',
+      'Service tiers with entitlements mapped to risk and data scopes',
+      'CRM-grade lineage so client statements match internal ledgers',
+    ],
+    panelSummary: 'Go-to-market',
+    panelItems: [
+      { k: 'Brand', v: 'Coherent voice' },
+      { k: 'Offers', v: 'Tiered & entitlements' },
+      { k: 'Trust', v: 'Single source' },
+    ],
   },
   {
     facet: 'Models · Data · Approvals',
     title: 'Decentralized operational risk',
     body: 'Clear ownership of models, data, and approvals—fewer single points of failure across the stack.',
+    lede: 'Operational risk shrinks when ownership is explicit—from datasets to sign-offs, everyone knows the accountable name.',
+    bullets: [
+      'RACI surfaces on models, signals, and vendor feeds—updated with each release',
+      'Approval chains that resist “rubber stamp” drift via time-boxed attestations',
+      'Failure domains mapped so incidents have a first owner, not a group chat',
+    ],
+    panelSummary: 'Ownership',
+    panelItems: [
+      { k: 'Models', v: 'Named stewards' },
+      { k: 'Data', v: 'Source of truth' },
+      { k: 'Approvals', v: 'Time-bound' },
+    ],
   },
   {
     facet: 'Runbooks · Scenarios · Drills',
     title: 'Continuity you can rehearse',
     body: 'Recovery paths, runbooks, and scenario libraries so teams respond with discipline—not improvisation.',
+    lede: 'Calm is a product of rehearsal. We keep scenarios, runbooks, and rollback paths beside production—not in a drawer.',
+    bullets: [
+      'Scenario libraries aligned to historical stress windows and hypothetical shocks',
+      'Runbooks with checklists, comms templates, and escalation trees',
+      'Scheduled drills with scored outcomes fed back into control design',
+    ],
+    panelSummary: 'Resilience',
+    panelItems: [
+      { k: 'Scenarios', v: 'Curated library' },
+      { k: 'Runbooks', v: 'Checklist-led' },
+      { k: 'Drills', v: 'Measured learning' },
+    ],
   },
-] as const;
+];
 
 const SUITES = [
   {
@@ -221,62 +302,105 @@ export const Homepage: React.FC = () => {
           </div>
         </section>
 
-        {/* Platform advantages — symmetrical matrix grid */}
+        {/* Platform advantages — intro: copy left, capability grid flush right (brochure opener) */}
         <section className="bg-[#efeeeb] text-[#1a1b1e] border-b border-neutral-200/60">
-          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-20 sm:py-24 lg:py-28">
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-12 xl:gap-8 xl:items-start mb-12 lg:mb-14">
-              <header className="xl:col-span-5 space-y-5">
+          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-16 sm:py-20 lg:py-24">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-14 xl:gap-20 lg:items-center">
+              <header className="space-y-5 min-w-0 lg:pr-4">
                 <p className="text-xs font-semibold tracking-[0.16em] uppercase text-[#8b7355]/90">Platform advantages</p>
-                <h2 className="font-display text-3xl sm:text-4xl lg:text-[2.75rem] leading-tight font-normal text-[#121317] tracking-tight">
+                <h2 className="font-display text-3xl sm:text-4xl lg:text-[2.75rem] leading-[1.1] font-normal text-[#121317] tracking-tight">
                   Elevate the institutional workflow
                 </h2>
-                <p className="text-base text-neutral-600 leading-relaxed max-w-lg font-light">
+                <p className="text-base sm:text-lg text-neutral-600 leading-relaxed max-w-xl font-light">
                   The same rigor you expect from a tier-one counterparty—applied to how you research, risk-manage, and deliver outcomes.
                 </p>
               </header>
-              <aside
-                className="xl:col-span-7 grid grid-cols-2 gap-3 sm:gap-4 max-w-xl xl:max-w-none xl:justify-self-end w-full"
-                aria-label="Capability summary"
-              >
-                {CAPABILITY_STRIP.map(({ label, detail }) => (
-                  <div
-                    key={label}
-                    className="rounded-2xl border border-neutral-200/60 bg-white/60 px-4 py-4 sm:px-5 sm:py-5 flex flex-col justify-center min-h-[5.5rem] shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]"
-                  >
-                    <p className="text-[11px] font-semibold tracking-[0.12em] uppercase text-[#6b5d4a]">{label}</p>
-                    <p className="text-sm text-neutral-700 mt-1.5 leading-snug">{detail}</p>
-                  </div>
-                ))}
-              </aside>
-            </div>
-
-            <div className="rounded-[1.75rem] p-px bg-gradient-to-br from-neutral-300/65 via-neutral-200/45 to-neutral-300/50 shadow-[0_1px_0_rgba(255,255,255,0.8)_inset]">
-              <div
-                className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-px rounded-[calc(1.75rem-1px)] overflow-hidden bg-neutral-300/45"
-                style={{ gridAutoRows: '1fr' }}
-              >
-                {BENEFITS.map(({ facet, title, body }, idx) => (
-                  <div
-                    key={title}
-                    className="group bg-[#faf9f6] hover:bg-[#f7f6f2] transition-colors duration-300 p-6 sm:p-8 lg:p-9 flex flex-col min-h-[14.5rem] sm:min-h-[15.5rem]"
-                  >
-                    <div className="flex items-start justify-between gap-4 mb-5">
-                      <span className="font-mono text-[10px] sm:text-xs tabular-nums tracking-widest text-[#8b7355]/90 border border-[#c6a575]/25 rounded-full px-2.5 py-1 bg-white/70">
-                        {String(idx + 1).padStart(2, '0')}
-                      </span>
-                      <span className="text-[10px] sm:text-[11px] font-medium tracking-wide text-neutral-500 text-right leading-snug max-w-[58%]">
-                        {facet}
-                      </span>
+              <aside className="min-w-0 w-full" aria-label="Capability summary grid">
+                <div
+                  className="grid grid-cols-2 gap-3 sm:gap-4 h-full"
+                  style={{ gridTemplateRows: 'repeat(2, minmax(5.75rem, 1fr))' }}
+                >
+                  {CAPABILITY_STRIP.map(({ label, detail }) => (
+                    <div
+                      key={label}
+                      className="rounded-2xl sm:rounded-[1.25rem] border border-neutral-200/55 bg-white/75 px-4 py-4 sm:px-6 sm:py-5 flex flex-col justify-center shadow-[0_8px_30px_-18px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.9)]"
+                    >
+                      <p className="text-[11px] font-semibold tracking-[0.14em] uppercase text-[#6b5d4a]">{label}</p>
+                      <p className="text-sm sm:text-base text-neutral-700 mt-2 leading-snug font-medium">{detail}</p>
                     </div>
-                    <h3 className="text-lg font-semibold text-[#121317] mb-3 leading-snug">{title}</h3>
-                    <p className="text-sm text-neutral-600 leading-relaxed flex-1">{body}</p>
-                    <div className="mt-5 h-0.5 w-8 rounded-full bg-[#c6a575]/50 group-hover:w-14 transition-all duration-300" />
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              </aside>
             </div>
           </div>
         </section>
+
+        {/* Brochure chapters: one full viewport per advantage */}
+        {BENEFITS.map(({ facet, title, body, lede, bullets, panelSummary, panelItems }, idx) => {
+          const n = String(idx + 1).padStart(2, '0');
+          const light = idx % 2 === 0;
+          return (
+            <section
+              key={title}
+              id={`platform-advantage-${n}`}
+              className={`scroll-mt-[calc(3.75rem+1px)] min-h-screen flex items-stretch border-b ${
+                light
+                  ? 'bg-[#f7f6f2] text-[#1a1b1e] border-neutral-200/50'
+                  : 'bg-[#faf9f6] text-[#1a1b1e] border-neutral-200/45'
+              }`}
+            >
+              <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-16 sm:py-20 lg:py-24 w-full flex flex-col justify-center">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 xl:gap-20 items-start lg:items-center">
+                  <div className="lg:col-span-7 space-y-6 sm:space-y-8 min-w-0">
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                      <span className="font-mono text-sm tabular-nums tracking-[0.25em] text-[#8b7355] border border-[#c6a575]/35 rounded-full px-3 py-1.5 bg-white/80">
+                        {n}
+                      </span>
+                      <span className="text-xs sm:text-sm font-medium tracking-wide text-neutral-500">{facet}</span>
+                    </div>
+                    <h3 className="font-display text-3xl sm:text-4xl lg:text-[2.85rem] xl:text-[3.1rem] leading-[1.08] font-normal text-[#121317]">
+                      {title}
+                    </h3>
+                    <p className="text-lg sm:text-xl text-neutral-700 leading-relaxed max-w-2xl font-normal">{body}</p>
+                    <p className="text-base text-neutral-600 leading-relaxed max-w-2xl border-l-2 border-[#c6a575]/60 pl-5">{lede}</p>
+                    <ul className="space-y-4 pt-2 max-w-2xl">
+                      {bullets.map((item) => (
+                        <li key={item} className="flex gap-3 text-base text-neutral-700 leading-relaxed">
+                          <Check className="w-5 h-5 shrink-0 text-[#8b7355] mt-0.5" strokeWidth={2} aria-hidden />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="lg:col-span-5 w-full min-w-0">
+                    <div className="rounded-[1.75rem] lg:rounded-[2rem] border border-neutral-200/60 bg-white/85 p-6 sm:p-8 lg:p-10 shadow-[0_20px_60px_-28px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,1)]">
+                      <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-[#8b7355]/90 mb-6">
+                        {panelSummary}
+                      </p>
+                      <dl className="space-y-0 divide-y divide-neutral-200/70">
+                        {panelItems.map(({ k, v }) => (
+                          <div key={k} className="flex justify-between gap-6 py-4 first:pt-0">
+                            <dt className="text-sm font-medium text-neutral-600">{k}</dt>
+                            <dd className="text-sm text-right font-semibold text-[#121317] tabular-nums">{v}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                      <div className="mt-8 pt-6 border-t border-neutral-200/60">
+                        <Link
+                          to="/features"
+                          className="inline-flex items-center gap-2 text-sm font-semibold text-[#6b5d4a] hover:text-[#121317] transition-colors"
+                        >
+                          Explore the full platform
+                          <ChevronRight className="w-4 h-4" />
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          );
+        })}
 
         {/* Suite solutions — symmetrical 3-up matrix */}
         <section className="relative bg-[#0c0d11] border-b border-white/[0.04]">
