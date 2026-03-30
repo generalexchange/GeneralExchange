@@ -33,67 +33,67 @@ const BENEFITS: {
   {
     facet: 'Risk · Governance · Alignment',
     title: 'Scale with conviction',
-    body: 'Risk frameworks that grow with your book—clear limits, audit trails, and desk-wide alignment.',
-    lede: 'When the book doubles, your controls should tighten—not scramble. We treat scale as a risk program, not a dashboard exercise.',
+    body: 'Run pre-trade checks, live exposure controls, and breach routing in one loop so risk response stays deterministic as volume grows.',
+    lede: 'Every order is evaluated against live book limits, scenario envelopes, and desk policies before release, then re-checked as fills and hedges change state.',
     bullets: [
-      'Position- and desk-level limits with breach paths tied to named approvers',
-      'Immutable audit trails connecting models, overrides, and settlement outcomes',
-      'One vocabulary from research pod to risk committee—no shadow metrics',
+      'Pre-trade gate that validates position, strategy, and liquidity constraints per desk',
+      'Intraday recalculation of net and gross exposure with policy-aware breach escalation',
+      'Time-ordered event ledger that links signal, order intent, override, fill, and settlement',
     ],
   },
   {
     facet: 'Spend · Telemetry · ROI',
     title: 'Cost-aware engineering',
-    body: 'Unify research, execution, and reporting so every dollar of infrastructure maps to measurable outcomes.',
-    lede: 'Infrastructure spend should be traceable to outcomes—latency saved, errors avoided, hours reclaimed.',
+    body: 'Instrument every execution path from strategy trigger to venue response so capacity decisions are tied to measurable desk output.',
+    lede: 'When a route slows or cost drifts, attribution points to the exact stage that changed: signal compute, adapter hop, venue response, or reconciliation.',
     bullets: [
-      'Unified telemetry from research jobs through execution adapters',
-      'Chargeback-ready views for data, compute, and venue connectivity',
-      'Trim duplicate pipes by design—not by spreadsheet archaeology',
+      'Latency budget views split by research runtime, risk checks, routing, and exchange acknowledgment',
+      'Cost lineage across data feeds, compute pools, and broker or venue transport',
+      'Capacity planner that exposes underused pipelines before spend expands',
     ],
   },
   {
     facet: 'SoD · Policy · Second line',
     title: 'Institutional-grade controls',
-    body: 'Segregation of duties, documented workflows, and governance that satisfies the second line.',
-    lede: 'Controls are only as strong as the workflow around them. We bake segregation and documentation into the daily path.',
+    body: 'Encode maker-checker controls directly into model, limit, and release flows so governance is enforced by process, not reminders.',
+    lede: 'Changes move through role-bound checkpoints with signed approvals, policy version references, and evidence artifacts generated at each step.',
     bullets: [
-      'Maker-checker flows for model changes, limit exceptions, and release windows',
-      'Policy packs versioned next to the features they govern—no orphan PDFs',
-      'Evidence bundles formatted for internal audit and regulatory dialogue',
+      'Role-segregated workflow for parameter edits, exception windows, and deployment cutovers',
+      'Policy attachments version-locked to features and enforced at runtime decision points',
+      'Audit-ready evidence bundle export with approver chain and execution impact snapshot',
     ],
   },
   {
     facet: 'Offerings · Brand · Trust',
     title: 'New revenue-ready workflows',
-    body: 'Productize research and execution services without compromising the standards your clients expect.',
-    lede: 'Client-facing services demand the same discipline as proprietary trading—with clearer branding and consent.',
+    body: 'Package desk capabilities into client-grade services with controlled entitlements, statement integrity, and reproducible outputs.',
+    lede: 'The same trade engine primitives used internally can be exposed externally with scoped permissions, disclosure controls, and service-level boundaries.',
     bullets: [
-      'White-label narratives and disclosure blocks tuned to your compliance stack',
-      'Service tiers with entitlements mapped to risk and data scopes',
-      'CRM-grade lineage so client statements match internal ledgers',
+      'Entitlement matrix maps accounts to strategy access, data visibility, and risk ceilings',
+      'White-label reporting blocks inherit approved metrics and controlled narrative templates',
+      'Client statement generator reconciles to internal ledger states with replay support',
     ],
   },
   {
     facet: 'Models · Data · Approvals',
     title: 'Decentralized operational risk',
-    body: 'Clear ownership of models, data, and approvals—fewer single points of failure across the stack.',
-    lede: 'Operational risk shrinks when ownership is explicit—from datasets to sign-offs, everyone knows the accountable name.',
+    body: 'Assign explicit ownership to models, datasets, and approval paths so incidents route to accountable operators without delay.',
+    lede: 'Each production artifact carries a steward, fallback owner, and review cadence, reducing hidden dependencies and single-point fragility.',
     bullets: [
-      'RACI surfaces on models, signals, and vendor feeds—updated with each release',
-      'Approval chains that resist “rubber stamp” drift via time-boxed attestations',
-      'Failure domains mapped so incidents have a first owner, not a group chat',
+      'Ownership graph spans factors, feature stores, vendor feeds, and release branches',
+      'Approval attestations expire on schedule to prevent stale authorizations',
+      'Failure domain map ties alerts to first responders with recovery playbook hooks',
     ],
   },
   {
     facet: 'Runbooks · Scenarios · Drills',
     title: 'Continuity you can rehearse',
-    body: 'Recovery paths, runbooks, and scenario libraries so teams respond with discipline—not improvisation.',
-    lede: 'Calm is a product of rehearsal. We keep scenarios, runbooks, and rollback paths beside production—not in a drawer.',
+    body: 'Run structured stress scenarios and recovery drills against live-like states so outage response is practiced, timed, and measurable.',
+    lede: 'Operational continuity improves when rollback plans, communication trees, and cutover steps are rehearsed in the same environment used for execution.',
     bullets: [
-      'Scenario libraries aligned to historical stress windows and hypothetical shocks',
-      'Runbooks with checklists, comms templates, and escalation trees',
-      'Scheduled drills with scored outcomes fed back into control design',
+      'Scenario catalog combining historical dislocations with desk-specific synthetic shocks',
+      'Runbook executor with timed checkpoints, dependency checks, and escalation triggers',
+      'Post-drill scorecards feeding control tuning, staffing plans, and release criteria',
     ],
   },
 ];
@@ -205,17 +205,17 @@ export const Homepage: React.FC = () => {
 
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2">
                   <Link
+                    to="/request-access"
+                    className="inline-flex items-center justify-center px-8 py-3.5 bg-neutral-100 text-[#0c0d10] text-sm font-semibold tracking-wide rounded-full hover:bg-white transition-all duration-300 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.4)]"
+                  >
+                    Request Access
+                  </Link>
+                  <Link
                     to="/bridge-observer"
-                    className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-neutral-100 text-[#0c0d10] text-sm font-semibold tracking-wide rounded-full hover:bg-white transition-all duration-300 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.4)]"
+                    className="inline-flex items-center justify-center gap-2 px-8 py-3.5 border border-[#2a2b31] text-sm font-semibold text-neutral-100 rounded-full bg-[#0f1014] hover:bg-[#15171d] hover:border-[#3a3d47] transition-all duration-300"
                   >
                     Bridge Observer
                     <Newspaper className="w-4 h-4" />
-                  </Link>
-                  <Link
-                    to="/request-access"
-                    className="inline-flex items-center justify-center px-8 py-3.5 border border-white/[0.1] text-sm font-medium text-neutral-200 rounded-full bg-white/[0.02] hover:bg-white/[0.06] hover:border-white/[0.14] transition-all duration-300"
-                  >
-                    Request Access
                   </Link>
                 </div>
               </div>
@@ -277,14 +277,14 @@ export const Homepage: React.FC = () => {
           </div>
         </section>
 
-        {/* Platform advantages — intro: copy left, capability grid right */}
+        {/* Platform advantages — editorial grid intro with minimal capability tiles */}
         <section
           className="border-b"
           style={{ backgroundColor: IBM.bg00, color: IBM.text, borderColor: IBM.border }}
         >
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-16 sm:py-20 lg:py-24">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-14 xl:gap-20 lg:items-center">
-              <header className="space-y-5 min-w-0 lg:pr-4">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 xl:gap-16 items-start">
+              <header className="lg:col-span-5 space-y-5 min-w-0 lg:pr-6">
                 <p
                   className="text-xs font-semibold tracking-[0.16em] uppercase"
                   style={{ color: IBM.text60 }}
@@ -300,16 +300,22 @@ export const Homepage: React.FC = () => {
                 >
                   The same rigor you expect from a tier-one counterparty—applied to how you research, risk-manage, and deliver outcomes.
                 </p>
-              </header>
-              <aside className="min-w-0 w-full" aria-label="Capability summary grid">
                 <div
-                  className="grid grid-cols-2 gap-3 sm:gap-4 h-full"
-                  style={{ gridTemplateRows: 'repeat(2, minmax(5.75rem, 1fr))' }}
+                  className="pt-5 border-t text-[11px] tracking-[0.14em] uppercase font-medium"
+                  style={{ color: IBM.text60, borderColor: IBM.border }}
+                >
+                  Deterministic pre-trade checks · live state updates · accountable post-trade evidence
+                </div>
+              </header>
+              <aside className="lg:col-span-7 min-w-0 w-full" aria-label="Capability summary grid">
+                <div
+                  className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 h-full"
+                  style={{ gridAutoRows: 'minmax(7rem, auto)' }}
                 >
                   {CAPABILITY_STRIP.map(({ label, detail }) => (
                     <div
                       key={label}
-                      className="rounded-2xl sm:rounded-[1.25rem] border px-4 py-4 sm:px-6 sm:py-5 flex flex-col justify-center shadow-[0_2px_10px_rgba(0,0,0,0.07)]"
+                      className="rounded-xl sm:rounded-2xl border px-5 py-5 sm:px-6 sm:py-6 flex flex-col justify-between shadow-[0_2px_10px_rgba(0,0,0,0.06)] min-h-[7rem]"
                       style={{
                         borderColor: IBM.border,
                         backgroundColor: IBM.plaque,
@@ -327,6 +333,7 @@ export const Homepage: React.FC = () => {
                       >
                         {detail}
                       </p>
+                      <span className="mt-5 block w-8 border-b" style={{ borderColor: IBM.wire }} aria-hidden />
                     </div>
                   ))}
                 </div>
@@ -346,7 +353,10 @@ export const Homepage: React.FC = () => {
             <div
               className={`lg:col-span-7 space-y-6 sm:space-y-8 min-w-0 ${flipLayout ? 'lg:order-2' : 'lg:order-1'}`}
             >
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              <div
+                className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 pb-5 border-b"
+                style={{ borderColor: IBM.border }}
+              >
                 <span
                   className="font-mono text-sm tabular-nums tracking-[0.25em] rounded-full px-3 py-1.5 border"
                   style={{
@@ -379,7 +389,7 @@ export const Homepage: React.FC = () => {
               >
                 {lede}
               </p>
-              <ul className="space-y-4 pt-2 max-w-2xl">
+              <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 pt-2 max-w-4xl">
                 {bullets.map((item) => (
                   <li
                     key={item}
