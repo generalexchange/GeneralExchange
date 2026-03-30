@@ -132,7 +132,7 @@ export const Homepage: React.FC = () => {
                       <div className="flex items-start space-x-3">
                         <Shield className="w-5 h-5 text-blue-400 mt-0.5" />
                         <div>
-                          <div className="text-sm font-semibold text-white mb-1">Bridge Observer · news proxy</div>
+                          <div className="text-sm font-semibold text-white mb-1">Bridge Observer · Breaking News</div>
                           <div className="text-xs text-gray-400">
                             Headlines and market context from Bridge Observer, piped in-platform—no extra windows.
                           </div>
@@ -151,7 +151,6 @@ export const Homepage: React.FC = () => {
                   <div className="text-sm font-mono text-white leading-snug">NVDA $142.50C</div>
                   <div className="text-xs text-gray-500 mt-1">Apr 18 · entry $4.10</div>
                   <div className="text-lg font-bold text-green-400 mt-2">+Return 31.2%</div>
-                  <div className="text-xs text-gray-500">Not investment advice</div>
                 </div>
                 
                 <div className="absolute -left-4 bottom-20 w-48 p-4 bg-[#1a1a1a] border border-purple-500/30 rounded-lg shadow-xl">
