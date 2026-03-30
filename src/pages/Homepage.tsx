@@ -169,7 +169,7 @@ export const Homepage: React.FC = () => {
         {/* Footer */}
         <footer className="border-t border-[#2a2a2a] bg-[#0a0a0a] py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
               {/* Brand */}
               <div className="col-span-2 md:col-span-1">
                 <h3 className="text-2xl font-serif font-bold text-white mb-3">General Exchange</h3>
@@ -211,6 +211,15 @@ export const Homepage: React.FC = () => {
                 <ul className="space-y-2">
                   <li><Link to="/documentation" className="text-gray-500 hover:text-blue-500 transition-colors text-sm">Documentation</Link></li>
                   <li><Link to="/help-center" className="text-gray-500 hover:text-blue-500 transition-colors text-sm">Help Center</Link></li>
+                </ul>
+              </div>
+
+              {/* Services */}
+              <div>
+                <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Services</h4>
+                <ul className="space-y-2">
+                  <li><Link to="/newsletter" className="text-gray-500 hover:text-blue-500 transition-colors text-sm">Newsletter</Link></li>
+                  <li><Link to="/dashboard" className="text-gray-500 hover:text-blue-500 transition-colors text-sm">Wallet</Link></li>
                   <li><Link to="/community" className="text-gray-500 hover:text-blue-500 transition-colors text-sm">Community</Link></li>
                 </ul>
               </div>

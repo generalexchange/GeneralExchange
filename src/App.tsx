@@ -25,6 +25,7 @@ import { RiskManagement } from './pages/RiskManagement';
 import { Execution } from './pages/Execution';
 import { Automation } from './pages/Automation';
 import { Performance } from './pages/Performance';
+import { Newsletter } from './pages/Newsletter';
 
 // Page transition wrapper
 const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -56,6 +57,7 @@ const AnimatedRoutes: React.FC = () => {
         <Route path="/documentation" element={<PageTransition><Documentation /></PageTransition>} />
         <Route path="/help-center" element={<PageTransition><HelpCenter /></PageTransition>} />
         <Route path="/community" element={<PageTransition><Community /></PageTransition>} />
+        <Route path="/newsletter" element={<PageTransition><Newsletter /></PageTransition>} />
         <Route path="/features" element={<PageTransition><Features /></PageTransition>} />
         <Route path="/pricing" element={<PageTransition><Pricing /></PageTransition>} />
         <Route path="/backtesting" element={<PageTransition><Backtesting /></PageTransition>} />
