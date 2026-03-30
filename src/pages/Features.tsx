@@ -3,8 +3,8 @@
  * Comprehensive overview of the algorithmic trading platform
  */
 
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { 
   TrendingUp, 
   Shield, 
@@ -24,14 +24,34 @@ import {
   Play
 } from 'lucide-react';
 import { SEO } from '../components/SEO';
+import { FeaturesPlatformSections } from '../components/FeaturesPlatformSections';
+
+const platformJumpLinks = [
+  { href: '#feature-backtesting', label: 'Backtesting' },
+  { href: '#feature-strategy', label: 'Strategy' },
+  { href: '#feature-risk-management', label: 'Risk' },
+  { href: '#feature-execution', label: 'Execution' },
+  { href: '#feature-automation', label: 'Automation' },
+  { href: '#feature-performance', label: 'Performance' },
+] as const;
 
 export const Features: React.FC = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!location.hash) return;
+    const id = location.hash.slice(1);
+    requestAnimationFrame(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }, [location.pathname, location.hash]);
+
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
       <SEO 
-        title="Learn More - General Exchange Features"
-        description="Discover how General Exchange combines quantitative finance, stochastic modeling, and AI-driven inference to build smarter algorithmic trading engines for options professionals."
-        keywords="algorithmic trading features, quantitative finance, options trading platform, AI trading, risk management, Black-Scholes, Monte Carlo simulation, machine learning trading"
+        title="Features — General Exchange"
+        description="Backtesting, strategy design, risk management, execution, automation, and performance analytics—plus quantitative engines for options professionals."
+        keywords="algorithmic trading features, backtesting, options platform, risk management, execution, trading automation, performance analytics, quantitative finance, General Exchange"
         canonical="https://generalexchange.com/features"
       />
       
@@ -47,6 +67,7 @@ export const Features: React.FC = () => {
             </Link>
             <div className="flex items-center space-x-4">
               <Link to="/" className="text-gray-400 hover:text-white transition-colors">Home</Link>
+              <Link to="/pricing" className="text-gray-400 hover:text-white transition-colors">Pricing</Link>
               <Link to="/request-access" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
                 Get Started
               </Link>
@@ -84,9 +105,24 @@ export const Features: React.FC = () => {
                 View Whitepaper
               </button>
             </div>
+
+            <p className="text-sm text-gray-500 mt-10 mb-3 uppercase tracking-wider font-semibold">Platform capabilities</p>
+            <nav className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm" aria-label="Platform sections">
+              {platformJumpLinks.map(({ href, label }) => (
+                <a
+                  key={href}
+                  href={href}
+                  className="text-blue-400/90 hover:text-blue-300 transition-colors"
+                >
+                  {label}
+                </a>
+              ))}
+            </nav>
             </div>
           </div>
         </section>
+
+      <FeaturesPlatformSections />
 
       {/* About the Engine */}
       <section className="py-16 sm:py-24 bg-[#0f0f0f]">

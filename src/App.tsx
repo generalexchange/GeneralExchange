@@ -21,12 +21,6 @@ import { Community } from './pages/Community';
 import { Features } from './pages/Features';
 import { Pricing } from './pages/Pricing';
 import { RequestAccess } from './pages/RequestAccess';
-import { Backtesting } from './pages/Backtesting';
-import { Strategy } from './pages/Strategy';
-import { RiskManagement } from './pages/RiskManagement';
-import { Execution } from './pages/Execution';
-import { Automation } from './pages/Automation';
-import { Performance } from './pages/Performance';
 import { Newsletter } from './pages/Newsletter';
 
 // Page transition wrapper
@@ -64,12 +58,6 @@ const AnimatedRoutes: React.FC = () => {
         <Route path="/newsletter" element={<PageTransition><Newsletter /></PageTransition>} />
         <Route path="/features" element={<PageTransition><Features /></PageTransition>} />
         <Route path="/pricing" element={<PageTransition><Pricing /></PageTransition>} />
-        <Route path="/backtesting" element={<PageTransition><Backtesting /></PageTransition>} />
-        <Route path="/strategy" element={<PageTransition><Strategy /></PageTransition>} />
-        <Route path="/risk-management" element={<PageTransition><RiskManagement /></PageTransition>} />
-        <Route path="/execution" element={<PageTransition><Execution /></PageTransition>} />
-        <Route path="/automation" element={<PageTransition><Automation /></PageTransition>} />
-        <Route path="/performance" element={<PageTransition><Performance /></PageTransition>} />
       </Routes>
     </AnimatePresence>
   );
