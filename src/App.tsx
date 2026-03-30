@@ -13,7 +13,9 @@ import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
 import { CompanyDetails } from './pages/CompanyDetails';
 import { OurTeam } from './pages/OurTeam';
-import { Documentation } from './pages/Documentation';
+import { University } from './pages/University';
+import { InvestorRelations } from './pages/InvestorRelations';
+import { Documents } from './pages/Documents';
 import { HelpCenter } from './pages/HelpCenter';
 import { Community } from './pages/Community';
 import { Features } from './pages/Features';
@@ -54,7 +56,9 @@ const AnimatedRoutes: React.FC = () => {
         <Route path="/dashboard" element={<PageTransition><Dashboard /></PageTransition>} />
         <Route path="/company/:symbol" element={<PageTransition><CompanyDetails /></PageTransition>} />
         <Route path="/our-team" element={<PageTransition><OurTeam /></PageTransition>} />
-        <Route path="/documentation" element={<PageTransition><Documentation /></PageTransition>} />
+        <Route path="/university" element={<PageTransition><University /></PageTransition>} />
+        <Route path="/investor-relations" element={<PageTransition><InvestorRelations /></PageTransition>} />
+        <Route path="/documents" element={<PageTransition><Documents /></PageTransition>} />
         <Route path="/help-center" element={<PageTransition><HelpCenter /></PageTransition>} />
         <Route path="/community" element={<PageTransition><Community /></PageTransition>} />
         <Route path="/newsletter" element={<PageTransition><Newsletter /></PageTransition>} />

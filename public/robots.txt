@@ -18,7 +18,9 @@ Allow: /
 Allow: /features
 Allow: /pricing
 Allow: /our-team
-Allow: /documentation
+Allow: /university
+Allow: /investor-relations
+Allow: /documents
 Allow: /help-center
 Allow: /community
 Allow: /request-access

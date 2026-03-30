@@ -199,9 +199,8 @@ export const Homepage: React.FC = () => {
               <div>
                 <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Company</h4>
                 <ul className="space-y-2">
-                  <li><Link to="/our-team" className="text-gray-500 hover:text-blue-500 transition-colors text-sm">Meet the Team</Link></li>
-                  <li><a href="#" className="text-gray-500 hover:text-blue-500 transition-colors text-sm">Contact Us</a></li>
-                  <li><a href="#" className="text-gray-500 hover:text-blue-500 transition-colors text-sm">Press</a></li>
+                  <li><Link to="/investor-relations" className="text-gray-500 hover:text-blue-500 transition-colors text-sm">Investor Relations</Link></li>
+                  <li><Link to="/documents" className="text-gray-500 hover:text-blue-500 transition-colors text-sm">Documents</Link></li>
                 </ul>
               </div>
 
@@ -209,7 +208,7 @@ export const Homepage: React.FC = () => {
               <div>
                 <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Resources</h4>
                 <ul className="space-y-2">
-                  <li><Link to="/documentation" className="text-gray-500 hover:text-blue-500 transition-colors text-sm">Documentation</Link></li>
+                  <li><Link to="/university" className="text-gray-500 hover:text-blue-500 transition-colors text-sm">University</Link></li>
                   <li><Link to="/help-center" className="text-gray-500 hover:text-blue-500 transition-colors text-sm">Help Center</Link></li>
                 </ul>
               </div>

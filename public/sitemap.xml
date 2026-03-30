@@ -25,10 +25,22 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://generalexchange.com/documentation</loc>
+    <loc>https://generalexchange.com/university</loc>
     <lastmod>2025-10-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://generalexchange.com/investor-relations</loc>
+    <lastmod>2025-10-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://generalexchange.com/documents</loc>
+    <lastmod>2025-10-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://generalexchange.com/help-center</loc>
