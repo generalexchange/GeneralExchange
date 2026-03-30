@@ -10,16 +10,10 @@ import {
   ArrowRight,
   Activity,
   MapPin,
-  Building2,
-  BarChart3,
   Lock,
   Sparkles,
-  LayoutGrid,
   ChevronRight,
   Check,
-  Newspaper,
-  ExternalLink,
-  Clock,
 } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { SEO } from '../components/SEO';
@@ -146,7 +140,6 @@ const BENEFITS: {
 const SUITES = [
   {
     layer: '01',
-    icon: BarChart3,
     title: 'Risk & analytics core',
     tags: ['Surface-aware', 'Attribution', 'Limits'],
     body: 'Greeks, stress grids, and performance decomposition in one disciplined layer for options and multi-leg books.',
@@ -155,7 +148,6 @@ const SUITES = [
   },
   {
     layer: '02',
-    icon: Building2,
     title: 'Execution fabric',
     tags: ['Routing', 'Transparency', 'Adapters'],
     body: 'Smart connectivity and clear intent-to-fill lineage—built for desks that cannot afford ambiguity at the wire.',
@@ -164,7 +156,6 @@ const SUITES = [
   },
   {
     layer: '03',
-    icon: LayoutGrid,
     title: 'Unified workspace',
     tags: ['Single pane', 'Collaboration', 'Context'],
     body: 'Research, risk, and execution share one calm surface—fewer handoffs, clearer ownership across the desk.',
@@ -423,149 +414,88 @@ export const Homepage: React.FC = () => {
           );
         })}
 
-        {/* Bridge Observer wire — newsfeed surface (future: bridgeobserver.com API) */}
-        <section className="relative bg-[#0c0d11] border-b border-white/[0.04] scroll-mt-[calc(3.75rem+1px)]">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_0%_0%,rgba(198,165,117,0.06),transparent_50%)]" />
-          <div className="relative max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-20 sm:py-24 lg:py-28">
-            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-10 lg:gap-14 mb-12 lg:mb-14">
-              <div className="space-y-5 max-w-2xl">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl border border-white/[0.1] bg-white/[0.04] flex items-center justify-center">
-                    <Newspaper className="w-5 h-5 text-[#c6a575]" aria-hidden />
-                  </div>
-                  <div>
-                    <p className="text-[11px] font-semibold tracking-[0.22em] uppercase text-[#c6a575]/90">
-                      Bridge Observer · Wire
-                    </p>
-                    <p className="text-xs text-neutral-500 mt-0.5">General Exchange solutions stream</p>
-                  </div>
-                </div>
-                <h2 className="font-display text-3xl sm:text-4xl lg:text-[2.65rem] leading-tight font-normal text-neutral-50">
-                  One architecture. Three execution-ready layers.
-                </h2>
-                <p className="text-sm text-neutral-400 leading-relaxed">
-                  Headlines mirror how capability maps land in your terminal—each item maps a product layer you will soon pull live from{' '}
-                  <a
-                    href={BRIDGE_OBSERVER_ORIGIN}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[#c6a575] hover:text-[#d4b896] font-medium underline-offset-2 hover:underline"
-                  >
-                    bridgeobserver.com
-                  </a>
-                  .
-                </p>
-              </div>
-              <div className="shrink-0 flex flex-col sm:flex-row gap-3 lg:pt-2">
+        {/* Bridge Observer — newspaper grid (future: bridgeobserver.com API) */}
+        <section
+          className="bg-[#0b0c0f] border-b border-white/[0.06] scroll-mt-[calc(3.75rem+1px)]"
+          aria-labelledby="bridge-observer-heading"
+        >
+          <div className="max-w-[1100px] mx-auto px-5 sm:px-8 lg:px-10 py-16 sm:py-20 lg:py-24">
+            <header className="text-center border-y border-white/[0.12] py-8 sm:py-10">
+              <p className="text-[10px] sm:text-[11px] tracking-[0.32em] uppercase text-neutral-500 mb-3">
+                General Exchange — Wire
+              </p>
+              <h2
+                id="bridge-observer-heading"
+                className="font-display text-[2rem] sm:text-[2.75rem] lg:text-[3.1rem] font-normal text-neutral-50 tracking-[-0.02em] leading-[1.05]"
+              >
+                Bridge Observer
+              </h2>
+              <p className="mt-4 text-xs text-neutral-500 tabular-nums max-w-md mx-auto leading-relaxed">
+                One architecture. Three execution-ready layers. Front page previews capability; sync from{' '}
                 <a
                   href={BRIDGE_OBSERVER_ORIGIN}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 text-sm font-semibold text-[#0c0d10] bg-[#c6a575] hover:bg-[#d4b896] transition-colors px-6 py-3 rounded-full"
+                  className="text-[#c6a575] hover:text-[#d4b896] underline underline-offset-4 decoration-white/20"
                 >
-                  Open Bridge Observer
-                  <ExternalLink className="w-4 h-4" />
+                  bridgeobserver.com
+                </a>{' '}
+                when live.
+              </p>
+            </header>
+
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 py-6 border-b border-white/[0.08] text-[11px] uppercase tracking-[0.2em] text-neutral-500">
+              <span>Capability — desk breadth</span>
+              <div className="flex flex-wrap gap-x-8 gap-y-2">
+                <a
+                  href={BRIDGE_OBSERVER_ORIGIN}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#c6a575] hover:text-[#d4b896] transition-colors"
+                >
+                  Bridge Observer
                 </a>
-                <Link
-                  to="/features"
-                  className="inline-flex items-center justify-center gap-2 text-sm font-semibold text-[#c6a575] hover:text-[#d4b896] px-6 py-3 rounded-full border border-[#c6a575]/30 hover:border-[#c6a575]/50 bg-white/[0.02]"
-                >
-                  View capability map
-                  <ChevronRight className="w-4 h-4" />
+                <Link to="/features" className="text-neutral-400 hover:text-neutral-200 transition-colors">
+                  Capability map
                 </Link>
               </div>
             </div>
 
-            <div className="rounded-[1.75rem] border border-white/[0.08] bg-[#0e1016]/90 overflow-hidden shadow-[0_24px_64px_-28px_rgba(0,0,0,0.55)]">
-              <div className="px-5 py-4 sm:px-6 border-b border-white/[0.06] flex flex-wrap items-center justify-between gap-3 bg-white/[0.02]">
-                <span className="text-[11px] font-semibold tracking-widest uppercase text-neutral-500">Live feed · preview</span>
-                <span className="inline-flex items-center gap-2 text-xs text-emerald-400/90">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-40" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
-                  </span>
-                  Connecting to Bridge Observer
-                </span>
-              </div>
-              <div className="divide-y divide-white/[0.06]">
-                {SUITES.map(({ layer, icon: Icon, title, tags, body, feedCategory, timeLabel }) => (
-                  <article
-                    key={title}
-                    className="group p-5 sm:p-6 lg:p-8 hover:bg-white/[0.03] transition-colors duration-300 flex flex-col lg:flex-row lg:gap-10 gap-6"
-                  >
-                    <div className="flex lg:flex-col lg:w-44 shrink-0 gap-4 lg:gap-3">
-                      <div className="flex items-center gap-3 lg:flex-col lg:items-start">
-                        <div className="w-12 h-12 rounded-2xl border border-white/[0.08] bg-white/[0.04] flex items-center justify-center">
-                          <Icon className="w-5 h-5 text-[#c6a575]" />
-                        </div>
-                        <div className="flex flex-wrap items-center gap-2 text-[11px] text-neutral-500 uppercase tracking-wider">
-                          <span className="font-mono text-[#c6a575]/80 tabular-nums">Layer {layer}</span>
-                          <span className="text-neutral-600 hidden sm:inline">·</span>
-                          <span className="inline-flex items-center gap-1 text-neutral-400">
-                            <Clock className="w-3.5 h-3.5" aria-hidden />
-                            {timeLabel}
-                          </span>
-                        </div>
-                      </div>
-                      <span className="inline-flex w-fit rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 text-[10px] font-semibold tracking-wide text-neutral-400 uppercase">
-                        {feedCategory}
-                      </span>
-                    </div>
-                    <div className="min-w-0 flex-1 space-y-3">
-                      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                        <h3 className="text-lg sm:text-xl font-semibold text-neutral-100 leading-snug group-hover:text-white transition-colors">
-                          {title}
-                        </h3>
-                        <span className="text-xs text-neutral-600">via Bridge Observer</span>
-                      </div>
-                      <p className="text-sm sm:text-base text-neutral-400 leading-relaxed max-w-3xl">{body}</p>
-                      <div className="flex flex-wrap gap-2 pt-1">
-                        {tags.map((t) => (
-                          <span
-                            key={t}
-                            className="text-[10px] uppercase tracking-wider text-neutral-500 border border-white/[0.08] px-2.5 py-1 rounded-full bg-black/20"
-                          >
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                      <div className="pt-3 flex flex-wrap gap-4">
-                        <a
-                          href={BRIDGE_OBSERVER_ORIGIN}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#c6a575] hover:text-[#d4b896]"
-                        >
-                          Read on Bridge Observer
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </a>
-                        <Link
-                          to="/features"
-                          className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-400 hover:text-neutral-200"
-                        >
-                          Open in platform docs
-                          <ArrowRight className="w-3.5 h-3.5" />
-                        </Link>
-                      </div>
-                    </div>
-                  </article>
-                ))}
-              </div>
-              <div className="px-5 py-4 sm:px-6 bg-white/[0.02] border-t border-white/[0.06]">
-                <p className="text-xs text-neutral-500 text-center sm:text-left">
-                  Feed items are static previews today. Wire this list to Bridge Observer’s API at{' '}
-                  <a
-                    href={BRIDGE_OBSERVER_ORIGIN}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[#c6a575] hover:underline"
-                  >
-                    bridgeobserver.com
-                  </a>{' '}
-                  when your endpoint is live.
-                </p>
-              </div>
+            <div
+              className="grid grid-cols-1 md:grid-cols-3 md:divide-x md:divide-white/[0.1] border-b border-white/[0.08]"
+              role="list"
+            >
+              {SUITES.map(({ layer, title, tags, body, feedCategory, timeLabel }) => (
+                <article
+                  key={title}
+                  role="listitem"
+                  className="py-10 md:py-12 px-2 sm:px-4 md:px-6 border-b border-white/[0.08] md:border-b-0"
+                >
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-neutral-500 mb-4 flex flex-wrap gap-x-2 gap-y-1">
+                    <span className="text-[#c6a575]/85">Layer {layer}</span>
+                    <span className="text-neutral-600" aria-hidden>
+                      |
+                    </span>
+                    <span>{feedCategory}</span>
+                    <span className="text-neutral-600" aria-hidden>
+                      |
+                    </span>
+                    <span className="tabular-nums">{timeLabel}</span>
+                  </p>
+                  <h3 className="font-display text-xl sm:text-2xl text-neutral-100 font-normal leading-snug tracking-tight mb-4">
+                    {title}
+                  </h3>
+                  <p className="text-sm text-neutral-400 leading-[1.65] mb-5">{body}</p>
+                  <p className="text-[11px] text-neutral-600 leading-relaxed border-t border-white/[0.06] pt-4">
+                    {tags.join(' · ')}
+                  </p>
+                </article>
+              ))}
             </div>
+
+            <p className="text-center text-[11px] text-neutral-600 pt-8 max-w-lg mx-auto leading-relaxed">
+              Preview layout only. Swap copy for a live Bridge Observer feed when your endpoint is ready.
+            </p>
           </div>
         </section>
 
