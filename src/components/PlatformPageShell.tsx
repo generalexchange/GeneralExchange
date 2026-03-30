@@ -1,10 +1,10 @@
 /**
- * Shared shell for immersive platform topic pages (full-viewport sections, dark terminal aesthetic)
+ * Shared shell for marketing pages — soft modern chrome
  */
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Activity, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 interface PlatformPageShellProps {
   children: React.ReactNode;
@@ -12,26 +12,27 @@ interface PlatformPageShellProps {
 
 export const PlatformPageShell: React.FC<PlatformPageShellProps> = ({ children }) => {
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
-      <nav className="bg-[#0a0a0a]/95 border-b border-[#1a1a1a] sticky top-0 z-50 backdrop-blur-sm">
+    <div className="min-h-screen bg-[#0b0c0f] text-white font-sans antialiased selection:bg-[#c6a575]/25">
+      <nav className="bg-[#0b0c0f]/92 border-b border-white/[0.05] sticky top-0 z-50 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14 sm:h-16">
-            <Link to="/" className="flex items-center space-x-2 group">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                <Activity className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-lg sm:text-xl font-serif font-bold text-white">General Exchange</span>
+            <Link to="/" className="flex items-center gap-2.5 group">
+              <span className="w-1.5 h-6 rounded-full bg-[#c6a575] group-hover:bg-[#d4b896] transition-colors" />
+              <span className="text-base sm:text-lg font-display font-normal text-neutral-100 tracking-tight">General Exchange</span>
             </Link>
             <div className="flex items-center gap-3 sm:gap-4">
-              <Link to="/" className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">
+              <Link
+                to="/"
+                className="text-sm text-neutral-400 hover:text-neutral-100 transition-colors hidden sm:inline"
+              >
                 Home
               </Link>
               <Link
                 to="/request-access"
-                className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+                className="inline-flex items-center gap-1 px-5 py-2.5 bg-neutral-100 text-[#0c0d10] text-sm font-semibold rounded-full hover:bg-white transition-all duration-300 shadow-md shadow-black/15"
               >
-                Get Started
-                <ArrowRight className="ml-1 w-4 h-4" />
+                Get started
+                <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           </div>

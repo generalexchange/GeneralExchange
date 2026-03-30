@@ -6,7 +6,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import {
   TrendingUp,
-  Shield,
   Brain,
   ArrowRight,
   Activity,
@@ -15,7 +14,7 @@ import {
   BarChart3,
   Lock,
   Sparkles,
-  Newspaper,
+  LayoutGrid,
   ChevronRight,
 } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
@@ -68,16 +67,16 @@ const SUITES = [
     body: 'Smart connectivity and clear intent-to-fill lineage—built for desks that cannot afford ambiguity at the wire.',
   },
   {
-    icon: Newspaper,
-    title: 'Bridge Observer',
-    tags: ['Breaking news', 'In-platform', 'Context'],
-    body: 'Curated headlines and market context streamed alongside your workflow—no tab fragmentation.',
+    icon: LayoutGrid,
+    title: 'Unified workspace',
+    tags: ['Single pane', 'Collaboration', 'Context'],
+    body: 'Research, risk, and execution share one calm surface—fewer handoffs, clearer ownership across the desk.',
   },
 ] as const;
 
 export const Homepage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-[#08090c] font-sans text-neutral-100 antialiased">
+    <div className="min-h-screen bg-[#0b0c0f] font-sans text-neutral-100 antialiased selection:bg-[#c6a575]/25">
       <SEO
         title="General Exchange - Algorithmic Trade Engine"
         description="Enterprise trade intelligence for options professionals. Integrated analytics, execution discipline, and market context."
@@ -105,19 +104,18 @@ export const Homepage: React.FC = () => {
 
       <div className="pt-14 sm:pt-[3.75rem]">
         {/* Hero */}
-        <section className="relative overflow-hidden border-b border-white/[0.06]">
+        <section className="relative overflow-hidden border-b border-white/[0.04]">
           <div
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(198,165,117,0.12),transparent_55%)]"
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_85%_70%_at_50%_-15%,rgba(198,165,117,0.09),transparent_58%)]"
             aria-hidden
           />
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:72px_72px] opacity-[0.35]" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:80px_80px] opacity-30" />
 
           <div className="relative max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-16 sm:py-24 lg:py-28">
             <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-14 lg:gap-20 items-center">
               <div className="space-y-8 lg:space-y-10">
-                <div className="flex items-center gap-3">
-                  <span className="h-px w-10 bg-[#c6a575]/70" aria-hidden />
-                  <span className="text-[11px] sm:text-xs font-semibold tracking-[0.2em] uppercase text-[#c6a575]">
+                <div className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 backdrop-blur-sm">
+                  <span className="text-[11px] sm:text-xs font-semibold tracking-[0.14em] uppercase text-[#d4b896]">
                     Connect With Interactive Brokers
                   </span>
                 </div>
@@ -136,14 +134,14 @@ export const Homepage: React.FC = () => {
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2">
                   <Link
                     to="/request-access"
-                    className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-neutral-100 text-[#0c0d10] text-sm font-semibold tracking-wide rounded-sm hover:bg-white transition-colors group shadow-[0_1px_0_rgba(255,255,255,0.08)_inset]"
+                    className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-neutral-100 text-[#0c0d10] text-sm font-semibold tracking-wide rounded-full hover:bg-white transition-all duration-300 group shadow-[0_8px_32px_-8px_rgba(0,0,0,0.4)]"
                   >
                     Start trading smarter
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                   </Link>
                   <Link
                     to="/features#feature-backtesting"
-                    className="inline-flex items-center justify-center px-7 py-3.5 border border-white/12 text-sm font-medium text-neutral-200 rounded-sm hover:border-[#c6a575]/35 hover:text-white transition-colors"
+                    className="inline-flex items-center justify-center px-8 py-3.5 border border-white/[0.1] text-sm font-medium text-neutral-200 rounded-full bg-white/[0.02] hover:bg-white/[0.06] hover:border-white/[0.14] transition-all duration-300"
                   >
                     Explore platform
                   </Link>
@@ -151,52 +149,41 @@ export const Homepage: React.FC = () => {
               </div>
 
               <div className="relative">
-                <div className="relative rounded-lg border border-white/[0.08] bg-[#0c0d12]/80 backdrop-blur-sm shadow-[0_24px_80px_-24px_rgba(0,0,0,0.85)] overflow-hidden">
-                  <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06]">
-                    <span className="text-[10px] font-semibold tracking-[0.25em] text-neutral-500 uppercase">General Exchange</span>
-                    <span className="text-[10px] text-neutral-600 font-mono tabular-nums">LIVE</span>
+                <div className="relative rounded-[28px] border border-white/[0.06] bg-[#101218]/75 backdrop-blur-xl shadow-[0_32px_64px_-28px_rgba(0,0,0,0.55)] overflow-hidden">
+                  <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.05]">
+                    <span className="text-[10px] font-semibold tracking-[0.2em] text-neutral-500 uppercase">General Exchange</span>
+                    <span className="text-[10px] text-neutral-500 font-mono tabular-nums px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400/90">
+                      LIVE
+                    </span>
                   </div>
-                  <div className="p-5 sm:p-6 space-y-6">
-                    <div>
-                      <p className="text-[10px] font-semibold tracking-[0.2em] text-neutral-500 uppercase mb-4">Live market analysis</p>
-                      <div className="space-y-2">
-                        {LIVE_QUOTES.map(({ symbol, pct }) => {
-                          const up = pct >= 0;
-                          return (
-                            <div
-                              key={symbol}
-                              className="flex items-center justify-between py-3 px-4 rounded-sm bg-white/[0.02] border border-white/[0.04] hover:border-white/[0.08] transition-colors"
-                            >
-                              <div className="flex items-center gap-3">
-                                <span className={`h-1.5 w-1.5 rounded-full ${up ? 'bg-emerald-500/90' : 'bg-red-400/90'}`} />
-                                <span className="font-mono text-sm font-medium text-neutral-200">{symbol}</span>
-                              </div>
-                              <div className="flex items-center gap-3">
-                                <span className={`text-sm font-medium tabular-nums ${up ? 'text-emerald-400/90' : 'text-red-400/90'}`}>
-                                  {up ? '+' : ''}
-                                  {pct.toFixed(2)}%
-                                </span>
-                                <Activity className={`w-3.5 h-3.5 ${up ? 'text-emerald-500/70' : 'text-red-400/70'}`} />
-                              </div>
+                  <div className="p-6 sm:p-7">
+                    <p className="text-[10px] font-semibold tracking-[0.18em] text-neutral-500 uppercase mb-4">Live market analysis</p>
+                    <div className="space-y-2.5">
+                      {LIVE_QUOTES.map(({ symbol, pct }) => {
+                        const up = pct >= 0;
+                        return (
+                          <div
+                            key={symbol}
+                            className="flex items-center justify-between py-3.5 px-4 rounded-2xl bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.045] transition-all duration-300"
+                          >
+                            <div className="flex items-center gap-3">
+                              <span className={`h-2 w-2 rounded-full ${up ? 'bg-emerald-400/85' : 'bg-rose-400/85'}`} />
+                              <span className="font-mono text-sm font-medium text-neutral-200">{symbol}</span>
                             </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                    <div className="rounded-sm border border-[#c6a575]/20 bg-[#c6a575]/[0.04] p-4">
-                      <div className="flex gap-3">
-                        <Shield className="w-4 h-4 shrink-0 text-[#c6a575] mt-0.5" />
-                        <div>
-                          <p className="text-sm font-medium text-neutral-100">Bridge Observer · Breaking News</p>
-                          <p className="text-xs text-neutral-500 mt-1.5 leading-relaxed">
-                            Headlines and market context from Bridge Observer, piped in-platform—no extra windows.
-                          </p>
-                        </div>
-                      </div>
+                            <div className="flex items-center gap-3">
+                              <span className={`text-sm font-medium tabular-nums ${up ? 'text-emerald-400/85' : 'text-rose-400/85'}`}>
+                                {up ? '+' : ''}
+                                {pct.toFixed(2)}%
+                              </span>
+                              <Activity className={`w-3.5 h-3.5 ${up ? 'text-emerald-500/60' : 'text-rose-400/60'}`} />
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
-                <div className="hidden sm:block absolute -right-2 top-[18%] w-[min(100%,200px)] p-4 rounded-sm border border-emerald-500/15 bg-[#0c0d12]/95 shadow-xl">
+                <div className="hidden sm:block absolute -right-2 top-[18%] w-[min(100%,200px)] p-4 rounded-2xl border border-emerald-500/12 bg-[#101218]/90 backdrop-blur-md shadow-lg shadow-black/20">
                   <div className="flex items-center gap-2 mb-2">
                     <TrendingUp className="w-3.5 h-3.5 text-emerald-500/80" />
                     <span className="text-[10px] text-neutral-500 uppercase tracking-wider">Long call leg</span>
@@ -205,7 +192,7 @@ export const Homepage: React.FC = () => {
                   <p className="text-[10px] text-neutral-600 mt-1">Apr 18 · entry $4.10</p>
                   <p className="text-sm font-semibold text-emerald-400/90 mt-2 tabular-nums">+Return 31.2%</p>
                 </div>
-                <div className="hidden sm:block absolute -left-2 bottom-[22%] w-[min(100%,200px)] p-4 rounded-sm border border-violet-500/15 bg-[#0c0d12]/95 shadow-xl">
+                <div className="hidden sm:block absolute -left-2 bottom-[22%] w-[min(100%,200px)] p-4 rounded-2xl border border-violet-500/12 bg-[#101218]/90 backdrop-blur-md shadow-lg shadow-black/20">
                   <div className="flex items-center gap-2 mb-2">
                     <Brain className="w-3.5 h-3.5 text-violet-400/80" />
                     <span className="text-[10px] text-neutral-500 uppercase tracking-wider">Win rate</span>
@@ -219,21 +206,24 @@ export const Homepage: React.FC = () => {
         </section>
 
         {/* Platform advantages — eSignus-style light band */}
-        <section className="bg-[#f3f2ef] text-[#1a1b1e] border-b border-neutral-200/80">
+        <section className="bg-[#efeeeb] text-[#1a1b1e] border-b border-neutral-200/60">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-20 sm:py-24 lg:py-28">
             <div className="max-w-3xl mb-14 sm:mb-16">
-              <p className="text-xs font-semibold tracking-[0.2em] uppercase text-[#8b7355] mb-4">Platform advantages</p>
+              <p className="text-xs font-semibold tracking-[0.16em] uppercase text-[#8b7355]/90 mb-4">Platform advantages</p>
               <h2 className="font-display text-3xl sm:text-4xl lg:text-[2.75rem] leading-tight font-normal text-[#121317] tracking-tight">
                 Elevate the institutional workflow
               </h2>
-              <p className="mt-5 text-base text-neutral-600 leading-relaxed max-w-2xl">
+              <p className="mt-5 text-base text-neutral-600 leading-relaxed max-w-2xl font-light">
                 The same rigor you expect from a tier-one counterparty—applied to how you research, risk-manage, and deliver outcomes.
               </p>
             </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
               {BENEFITS.map(({ title, body }) => (
-                <div key={title} className="group">
-                  <div className="h-px w-8 bg-[#c6a575] mb-4 group-hover:w-12 transition-all" />
+                <div
+                  key={title}
+                  className="group rounded-3xl bg-white/70 p-6 sm:p-7 border border-neutral-200/50 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_32px_-12px_rgba(0,0,0,0.08)] transition-all duration-300"
+                >
+                  <div className="h-1 w-10 bg-[#c6a575]/70 rounded-full mb-4 group-hover:w-14 transition-all" />
                   <h3 className="text-lg font-semibold text-[#121317] mb-2">{title}</h3>
                   <p className="text-sm text-neutral-600 leading-relaxed">{body}</p>
                 </div>
@@ -243,8 +233,8 @@ export const Homepage: React.FC = () => {
         </section>
 
         {/* Suite solutions */}
-        <section className="relative bg-[#0a0b0f] border-b border-white/[0.06]">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_100%_0%,rgba(198,165,117,0.06),transparent_50%)]" />
+        <section className="relative bg-[#0c0d11] border-b border-white/[0.04]">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_75%_55%_at_100%_0%,rgba(198,165,117,0.05),transparent_52%)]" />
           <div className="relative max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-20 sm:py-24 lg:py-28">
             <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-14 sm:mb-16">
               <div className="max-w-2xl">
@@ -265,15 +255,18 @@ export const Homepage: React.FC = () => {
               {SUITES.map(({ icon: Icon, title, tags, body }) => (
                 <article
                   key={title}
-                  className="flex flex-col rounded-lg border border-white/[0.08] bg-white/[0.02] p-6 sm:p-8 hover:border-[#c6a575]/25 transition-colors h-full"
+                  className="flex flex-col rounded-[28px] border border-white/[0.06] bg-white/[0.025] p-6 sm:p-8 hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-300 h-full shadow-[0_8px_40px_-24px_rgba(0,0,0,0.35)]"
                 >
-                  <div className="w-10 h-10 rounded-sm border border-white/10 flex items-center justify-center mb-5">
+                  <div className="w-12 h-12 rounded-2xl border border-white/[0.08] bg-white/[0.03] flex items-center justify-center mb-5">
                     <Icon className="w-5 h-5 text-[#c6a575]" />
                   </div>
                   <h3 className="text-lg font-semibold text-neutral-100 mb-3">{title}</h3>
                   <div className="flex flex-wrap gap-2 mb-4">
                     {tags.map((t) => (
-                      <span key={t} className="text-[10px] uppercase tracking-wider text-neutral-500 border border-white/10 px-2 py-0.5 rounded-sm">
+                      <span
+                        key={t}
+                        className="text-[10px] uppercase tracking-wider text-neutral-500 border border-white/[0.08] px-2.5 py-1 rounded-full bg-white/[0.02]"
+                      >
                         {t}
                       </span>
                     ))}
@@ -289,9 +282,9 @@ export const Homepage: React.FC = () => {
         </section>
 
         {/* Trust + CTA */}
-        <section className="bg-[#f3f2ef] text-[#1a1b1e] border-b border-neutral-200/80">
+        <section className="bg-[#efeeeb] text-[#1a1b1e] border-b border-neutral-200/60">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-16 sm:py-20">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10 p-8 sm:p-10 rounded-lg border border-neutral-200/90 bg-white/60 backdrop-blur-sm">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10 p-8 sm:p-10 rounded-[28px] border border-neutral-200/50 bg-white/65 backdrop-blur-md shadow-[0_8px_40px_-20px_rgba(0,0,0,0.06)]">
               <div className="flex flex-wrap items-center gap-x-10 gap-y-4">
                 <div className="flex items-center gap-2 text-neutral-400">
                   <Lock className="w-4 h-4 text-[#8b7355]" />
@@ -305,13 +298,13 @@ export const Homepage: React.FC = () => {
               <div className="flex flex-col sm:flex-row gap-3 shrink-0">
                 <Link
                   to="/pricing"
-                  className="inline-flex items-center justify-center px-6 py-3 bg-[#121317] text-neutral-100 text-sm font-semibold rounded-sm hover:bg-neutral-800 transition-colors"
+                  className="inline-flex items-center justify-center px-7 py-3.5 bg-[#121317] text-neutral-100 text-sm font-semibold rounded-full hover:bg-neutral-800 transition-all duration-300 shadow-md shadow-black/10"
                 >
                   View pricing
                 </Link>
                 <Link
                   to="/request-access"
-                  className="inline-flex items-center justify-center px-6 py-3 border border-neutral-300 text-sm font-medium text-[#121317] rounded-sm hover:border-[#121317] transition-colors"
+                  className="inline-flex items-center justify-center px-7 py-3.5 border border-neutral-300/80 text-sm font-medium text-[#121317] rounded-full bg-white/50 hover:bg-white/90 transition-all duration-300"
                 >
                   Speak with us
                 </Link>
@@ -321,7 +314,7 @@ export const Homepage: React.FC = () => {
         </section>
 
         {/* Footer */}
-        <footer className="bg-[#08090c] border-t border-white/[0.06] py-14">
+        <footer className="bg-[#0b0c0f] border-t border-white/[0.04] py-14">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
             <div className="grid grid-cols-2 md:grid-cols-5 gap-10 md:gap-8 mb-14">
               <div className="col-span-2 md:col-span-1">

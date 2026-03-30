@@ -70,12 +70,12 @@ export const HelpCenter: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-[#0b0c0f]">
       <Navbar showSearch={false} />
       
       <div className="pt-14 sm:pt-16">
         {/* Hero Section */}
-        <section className="py-20 bg-[#0a0a0a]">
+        <section className="py-20 bg-[#0b0c0f]">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">How can we help?</h1>
             <div className="relative max-w-2xl mx-auto">
@@ -92,7 +92,7 @@ export const HelpCenter: React.FC = () => {
         </section>
 
         {/* Support Channels */}
-        <section className="py-12 bg-[#0a0a0a] border-t border-[#2a2a2a]">
+        <section className="py-12 bg-[#0b0c0f] border-t border-[#2a2a2a]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-2xl font-bold text-white mb-8 text-center">Get in Touch</h2>
             <div className="grid md:grid-cols-3 gap-6">
@@ -120,7 +120,7 @@ export const HelpCenter: React.FC = () => {
         </section>
 
         {/* FAQs */}
-        <section className="py-20 bg-[#0a0a0a]">
+        <section className="py-20 bg-[#0b0c0f]">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-3xl font-bold text-white mb-12 text-center">
               Frequently Asked Questions
@@ -154,7 +154,7 @@ export const HelpCenter: React.FC = () => {
         </section>
 
         {/* Footer */}
-        <footer className="border-t border-[#2a2a2a] bg-[#0a0a0a] py-12">
+        <footer className="border-t border-[#2a2a2a] bg-[#0b0c0f] py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <p className="text-gray-500 text-sm">

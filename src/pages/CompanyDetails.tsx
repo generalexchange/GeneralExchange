@@ -317,7 +317,7 @@ export const CompanyDetails: React.FC = () => {
   const isPositive = companyData.change >= 0;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] pt-14 sm:pt-16">
+    <div className="min-h-screen bg-[#0b0c0f] pt-14 sm:pt-16">
       {/* Header */}
       <div className="bg-[#1a1a1a] border-b border-[#2a2a2a] sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4">

@@ -47,12 +47,12 @@ export const OurTeam: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-[#0b0c0f]">
       <Navbar showSearch={false} />
       
       <div className="pt-14 sm:pt-16">
         {/* Hero Section */}
-        <section className="py-20 sm:py-32 bg-[#0a0a0a]">
+        <section className="py-20 sm:py-32 bg-[#0b0c0f]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
@@ -103,7 +103,7 @@ export const OurTeam: React.FC = () => {
         </section>
 
         {/* Company Values */}
-        <section className="py-20 bg-[#0a0a0a] border-t border-[#2a2a2a]">
+        <section className="py-20 bg-[#0b0c0f] border-t border-[#2a2a2a]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Our Values</h2>
@@ -145,7 +145,7 @@ export const OurTeam: React.FC = () => {
         </section>
 
         {/* Footer */}
-        <footer className="border-t border-[#2a2a2a] bg-[#0a0a0a] py-12">
+        <footer className="border-t border-[#2a2a2a] bg-[#0b0c0f] py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <p className="text-gray-500 text-sm">

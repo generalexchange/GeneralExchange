@@ -47,7 +47,7 @@ export const Features: React.FC = () => {
   }, [location.pathname, location.hash]);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-[#0b0c0f]">
       <SEO 
         title="Features — General Exchange"
         description="Backtesting, strategy design, risk management, execution, automation, and performance analytics—plus quantitative engines for options professionals."
@@ -56,20 +56,26 @@ export const Features: React.FC = () => {
       />
       
       {/* Navigation */}
-      <nav className="bg-[#0a0a0a] border-b border-[#1a1a1a] sticky top-0 z-50">
+      <nav className="bg-[#0b0c0f]/95 border-b border-white/[0.05] sticky top-0 z-50 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                <Activity className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-lg sm:text-2xl font-serif font-bold text-white">General Exchange</span>
+            <Link to="/" className="flex items-center gap-2.5 group">
+              <span className="w-1.5 h-6 rounded-full bg-[#c6a575] group-hover:bg-[#d4b896] transition-colors" />
+              <span className="text-lg sm:text-xl font-display font-normal text-neutral-100 tracking-tight">General Exchange</span>
             </Link>
-            <div className="flex items-center space-x-4">
-              <Link to="/" className="text-gray-400 hover:text-white transition-colors">Home</Link>
-              <Link to="/pricing" className="text-gray-400 hover:text-white transition-colors">Pricing</Link>
-              <Link to="/request-access" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+            <div className="flex items-center gap-4 sm:gap-5">
+              <Link to="/" className="text-sm text-neutral-400 hover:text-neutral-100 transition-colors">
+                Home
+              </Link>
+              <Link to="/pricing" className="text-sm text-neutral-400 hover:text-neutral-100 transition-colors">
+                Pricing
+              </Link>
+              <Link
+                to="/request-access"
+                className="inline-flex items-center gap-1 px-5 py-2.5 bg-neutral-100 text-[#0c0d10] text-sm font-semibold rounded-full hover:bg-white transition-all shadow-md shadow-black/15"
+              >
                 Get Started
+                <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           </div>
@@ -77,7 +83,7 @@ export const Features: React.FC = () => {
       </nav>
 
         {/* Hero Section */}
-      <section className="relative overflow-hidden bg-[#0a0a0a] py-16 sm:py-24">
+      <section className="relative overflow-hidden bg-[#0b0c0f] py-16 sm:py-24">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.03)_1px,transparent_1px)] bg-[size:64px_64px]"></div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -189,7 +195,7 @@ export const Features: React.FC = () => {
         </section>
 
       {/* Key Features */}
-      <section className="py-16 sm:py-24 bg-[#0a0a0a]">
+      <section className="py-16 sm:py-24 bg-[#0b0c0f]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
@@ -377,7 +383,7 @@ export const Features: React.FC = () => {
         </section>
 
       {/* Risk Visualization */}
-      <section className="py-16 sm:py-24 bg-[#0a0a0a]">
+      <section className="py-16 sm:py-24 bg-[#0b0c0f]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
@@ -484,7 +490,7 @@ export const Features: React.FC = () => {
       </section>
 
       {/* Compliance & Safety */}
-      <section className="py-16 sm:py-24 bg-[#0a0a0a]">
+      <section className="py-16 sm:py-24 bg-[#0b0c0f]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-8">
             <div className="w-16 h-16 bg-yellow-500/20 rounded-xl flex items-center justify-center mx-auto mb-6">
@@ -543,7 +549,7 @@ export const Features: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#0a0a0a] border-t border-[#1a1a1a] py-8">
+      <footer className="bg-[#0b0c0f] border-t border-[#1a1a1a] py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="flex items-center justify-center space-x-2 mb-4">

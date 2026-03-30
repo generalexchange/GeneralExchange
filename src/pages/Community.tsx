@@ -70,12 +70,12 @@ export const Community: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-[#0b0c0f]">
       <Navbar showSearch={false} />
       
       <div className="pt-14 sm:pt-16">
         {/* Hero Section */}
-        <section className="py-20 bg-[#0a0a0a]">
+        <section className="py-20 bg-[#0b0c0f]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
@@ -106,7 +106,7 @@ export const Community: React.FC = () => {
         </section>
 
         {/* Recent Discussions */}
-        <section className="py-12 bg-[#0a0a0a] border-t border-[#2a2a2a]">
+        <section className="py-12 bg-[#0b0c0f] border-t border-[#2a2a2a]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-3xl font-bold text-white">Trending Discussions</h2>
@@ -152,7 +152,7 @@ export const Community: React.FC = () => {
         </section>
 
         {/* Upcoming Events */}
-        <section className="py-20 bg-[#0a0a0a] border-t border-[#2a2a2a]">
+        <section className="py-20 bg-[#0b0c0f] border-t border-[#2a2a2a]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-3xl font-bold text-white mb-8">Upcoming Events</h2>
             <div className="grid md:grid-cols-3 gap-6">
@@ -182,7 +182,7 @@ export const Community: React.FC = () => {
         </section>
 
         {/* Footer */}
-        <footer className="border-t border-[#2a2a2a] bg-[#0a0a0a] py-12 mt-20">
+        <footer className="border-t border-[#2a2a2a] bg-[#0b0c0f] py-12 mt-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <p className="text-gray-500 text-sm">

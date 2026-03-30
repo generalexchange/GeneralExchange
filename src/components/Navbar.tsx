@@ -43,13 +43,15 @@ export const Navbar: React.FC<NavbarProps> = ({ searchQuery = '', onSearchChange
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 border-b ${
-        onHome ? 'border-white/[0.06] bg-[#08090c]/90 backdrop-blur-md' : 'border-neutral-800 bg-[#08090c]/95 backdrop-blur-md'
+        onHome
+          ? 'border-white/[0.05] bg-[#0b0c0f]/88 backdrop-blur-xl'
+          : 'border-white/[0.05] bg-[#0b0c0f]/92 backdrop-blur-xl'
       } ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}
     >
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
         <div className="flex justify-between items-center gap-4 h-14 sm:h-[3.75rem]">
-          <Link to="/" className="flex items-center gap-2 shrink-0 group">
-            <span className="w-[2px] h-6 bg-[#c6a575] rounded-full group-hover:bg-[#d4b896] transition-colors" aria-hidden />
+          <Link to="/" className="flex items-center gap-2.5 shrink-0 group">
+            <span className="w-1.5 h-6 bg-[#c6a575] rounded-full group-hover:bg-[#d4b896] transition-colors" aria-hidden />
             <span className="text-[15px] sm:text-base font-display font-normal text-neutral-100 tracking-tight">
               General Exchange
             </span>
@@ -66,7 +68,7 @@ export const Navbar: React.FC<NavbarProps> = ({ searchQuery = '', onSearchChange
                   placeholder="Search..."
                   value={searchQuery}
                   onChange={(e) => onSearchChange(e.target.value)}
-                  className="block w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-1.5 sm:py-2 border border-white/10 rounded-md bg-white/[0.04] text-neutral-100 placeholder-neutral-500 focus:outline-none focus:ring-1 focus:ring-[#c6a575]/50 focus:border-[#c6a575]/30 transition-all text-xs sm:text-sm"
+                  className="block w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-1.5 sm:py-2 border border-white/[0.08] rounded-full bg-white/[0.04] text-neutral-100 placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-[#c6a575]/30 focus:border-[#c6a575]/25 transition-all text-xs sm:text-sm"
                 />
               </div>
             </div>
@@ -93,10 +95,10 @@ export const Navbar: React.FC<NavbarProps> = ({ searchQuery = '', onSearchChange
               </Link>
               <Link
                 to="/login"
-                className={`inline-flex items-center justify-center px-4 sm:px-5 py-2 rounded-sm text-[13px] font-semibold tracking-wide transition-all border ${
+                className={`inline-flex items-center justify-center px-4 sm:px-5 py-2 rounded-full text-[13px] font-semibold tracking-wide transition-all duration-300 border ${
                   isActive('/login')
                     ? 'bg-[#c6a575] border-[#c6a575] text-[#0c0d10]'
-                    : 'border-white/15 text-neutral-200 hover:border-[#c6a575]/40 hover:text-white'
+                    : 'border-white/[0.12] text-neutral-200 bg-white/[0.03] hover:bg-white/[0.07] hover:border-[#c6a575]/35'
                 }`}
               >
                 Sign in

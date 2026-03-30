@@ -43,7 +43,7 @@ export const NewsCarousel: React.FC<NewsCarouselProps> = ({ articles }) => {
           backgroundImage: `url(${currentArticle.imageUrl})`,
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/80 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0b0c0f] via-[#0b0c0f]/80 to-transparent" />
       </div>
 
       {/* Content */}

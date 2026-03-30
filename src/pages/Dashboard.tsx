@@ -61,7 +61,7 @@ export const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-[#0b0c0f]">
       {/* Minimal Header with Auto-Hide */}
       <nav className={`bg-[#1a1a1a] border-b border-[#2a2a2a] fixed top-0 left-0 right-0 z-50 backdrop-blur-sm bg-[#1a1a1a]/95 transition-transform duration-300 ${
         isHeaderVisible ? 'translate-y-0' : '-translate-y-full'

@@ -51,7 +51,7 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex flex-col">
+    <div className="min-h-screen bg-[#0b0c0f] flex flex-col">
       {/* Logo Header */}
       <div className="py-6 px-4">
         <Link to="/" className="inline-block">
@@ -180,7 +180,7 @@ export const Login: React.FC = () => {
       </div>
 
       {/* Minimal Footer */}
-      <footer className="border-t border-[#2a2a2a] bg-[#0a0a0a] py-6">
+      <footer className="border-t border-[#2a2a2a] bg-[#0b0c0f] py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center text-gray-500 text-sm">
             © {new Date().getFullYear()} General Exchange. All rights reserved.

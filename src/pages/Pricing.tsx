@@ -85,7 +85,7 @@ export const Pricing: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-[#0b0c0f]">
       <SEO 
         title="Pricing Plans - Affordable Trading Solutions"
         description="Transparent pricing for professional traders. Choose from Starter ($49/mo), Professional ($149/mo), or Enterprise ($499/mo) plans. 14-day free trial, no credit card required."
@@ -124,7 +124,7 @@ export const Pricing: React.FC = () => {
       
       <div className="pt-14 sm:pt-16">
         {/* Hero Section */}
-        <section className="py-20 bg-[#0a0a0a]">
+        <section className="py-20 bg-[#0b0c0f]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
@@ -240,7 +240,7 @@ export const Pricing: React.FC = () => {
         </section>
 
         {/* FAQ Section */}
-        <section className="py-20 bg-[#0a0a0a] border-t border-[#2a2a2a]">
+        <section className="py-20 bg-[#0b0c0f] border-t border-[#2a2a2a]">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-3xl font-bold text-white mb-12 text-center">
               Frequently Asked Questions
@@ -305,7 +305,7 @@ export const Pricing: React.FC = () => {
         </section>
 
         {/* Footer */}
-        <footer className="border-t border-[#2a2a2a] bg-[#0a0a0a] py-12">
+        <footer className="border-t border-[#2a2a2a] bg-[#0b0c0f] py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <p className="text-gray-500 text-sm">
