@@ -37,7 +37,7 @@ export const FeaturesPlatformSections: React.FC = () => {
           <div className="absolute top-1/4 -right-32 w-96 h-96 bg-blue-600/20 rounded-full blur-[128px]" />
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
             <p className="text-blue-400 text-sm font-semibold tracking-widest uppercase mb-4">Backtesting</p>
-            <h2 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white max-w-4xl leading-[1.05] mb-8">
+            <h2 className="text-3xl sm:text-5xl lg:text-7xl font-bold text-white max-w-4xl leading-tight break-words mb-8">
               Replay the market with{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">
                 institutional-grade fidelity
@@ -103,7 +103,7 @@ export const FeaturesPlatformSections: React.FC = () => {
           <div className="absolute bottom-0 left-0 w-[min(100%,32rem)] h-64 bg-violet-600/25 rounded-full blur-[100px]" />
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
             <p className="text-violet-400 text-sm font-semibold tracking-widest uppercase mb-4">Strategy</p>
-            <h2 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white max-w-4xl leading-[1.05] mb-8">
+            <h2 className="text-3xl sm:text-5xl lg:text-7xl font-bold text-white max-w-4xl leading-tight break-words mb-8">
               From thesis to{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-300">executable logic</span>
             </h2>
@@ -166,7 +166,7 @@ export const FeaturesPlatformSections: React.FC = () => {
           <div className="absolute top-1/3 left-1/4 w-72 h-72 bg-emerald-600/20 rounded-full blur-[120px]" />
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
             <p className="text-emerald-400 text-sm font-semibold tracking-widest uppercase mb-4">Risk Management</p>
-            <h2 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white max-w-4xl leading-[1.05] mb-8">
+            <h2 className="text-3xl sm:text-5xl lg:text-7xl font-bold text-white max-w-4xl leading-tight break-words mb-8">
               See the whole book before{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">the market does</span>
             </h2>
@@ -233,10 +233,10 @@ export const FeaturesPlatformSections: React.FC = () => {
       <div id="feature-execution" className={scrollClass}>
         <section className="relative min-h-screen flex flex-col justify-center overflow-hidden border-t border-[#1a1a1a]">
           <div className="absolute inset-0 bg-[linear-gradient(rgba(249,115,22,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(249,115,22,0.06)_1px,transparent_1px)] bg-[size:48px_48px]" />
-          <div className="absolute -bottom-20 right-0 w-[28rem] h-[28rem] bg-orange-600/20 rounded-full blur-[120px]" />
+          <div className="absolute -bottom-20 right-0 w-[18rem] sm:w-[24rem] lg:w-[28rem] h-[18rem] sm:h-[24rem] lg:h-[28rem] bg-orange-600/20 rounded-full blur-[120px]" />
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
             <p className="text-orange-400 text-sm font-semibold tracking-widest uppercase mb-4">Execution</p>
-            <h2 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white max-w-4xl leading-[1.05] mb-8">
+            <h2 className="text-3xl sm:text-5xl lg:text-7xl font-bold text-white max-w-4xl leading-tight break-words mb-8">
               Route intent to{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-300">confirmed fills</span>
             </h2>
@@ -291,7 +291,7 @@ export const FeaturesPlatformSections: React.FC = () => {
           <div className="absolute top-20 right-20 w-80 h-80 bg-pink-600/15 rounded-full blur-[100px]" />
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
             <p className="text-pink-400 text-sm font-semibold tracking-widest uppercase mb-4">Automation</p>
-            <h2 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white max-w-4xl leading-[1.05] mb-8">
+            <h2 className="text-3xl sm:text-5xl lg:text-7xl font-bold text-white max-w-4xl leading-tight break-words mb-8">
               Run the desk on{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-blue-400">rails you trust</span>
             </h2>
@@ -345,7 +345,7 @@ export const FeaturesPlatformSections: React.FC = () => {
           <div className="absolute top-1/4 right-1/4 w-80 h-80 bg-cyan-500/15 rounded-full blur-[120px]" />
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
             <p className="text-cyan-400 text-sm font-semibold tracking-widest uppercase mb-4">Performance</p>
-            <h2 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white max-w-4xl leading-[1.05] mb-8">
+            <h2 className="text-3xl sm:text-5xl lg:text-7xl font-bold text-white max-w-4xl leading-tight break-words mb-8">
               Measure what the book{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-sky-300">actually earned</span>
             </h2>

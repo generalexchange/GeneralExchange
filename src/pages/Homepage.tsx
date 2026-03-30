@@ -565,7 +565,7 @@ export const Homepage: React.FC = () => {
         {/* Footer */}
         <footer className="bg-[#0b0c0f] border-t border-white/[0.04] py-14">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-10 md:gap-8 mb-14">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8 md:gap-8 mb-14">
               <div className="col-span-2 md:col-span-1">
                 <div className="flex items-center gap-2 mb-4">
                   <span className="w-[2px] h-5 bg-[#c6a575]" />

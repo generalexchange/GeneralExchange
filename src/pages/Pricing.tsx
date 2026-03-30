@@ -135,10 +135,10 @@ export const Pricing: React.FC = () => {
               </p>
 
               {/* Billing Toggle */}
-              <div className="inline-flex items-center space-x-4 p-2 bg-[#1a1a1a] rounded-lg border border-white/10">
+              <div className="inline-flex flex-wrap items-center justify-center gap-2 sm:gap-4 p-2 bg-[#1a1a1a] rounded-lg border border-white/10">
                 <button
                   onClick={() => setBillingCycle('monthly')}
-                  className={`px-6 py-2 rounded-lg font-semibold transition-colors ${
+                  className={`px-4 sm:px-6 py-2 rounded-lg text-sm sm:text-base font-semibold transition-colors ${
                     billingCycle === 'monthly'
                       ? 'bg-blue-600 text-white'
                       : 'text-gray-400 hover:text-white'
@@ -148,7 +148,7 @@ export const Pricing: React.FC = () => {
                 </button>
                 <button
                   onClick={() => setBillingCycle('annual')}
-                  className={`px-6 py-2 rounded-lg font-semibold transition-colors ${
+                  className={`px-4 sm:px-6 py-2 rounded-lg text-sm sm:text-base font-semibold transition-colors ${
                     billingCycle === 'annual'
                       ? 'bg-blue-600 text-white'
                       : 'text-gray-400 hover:text-white'

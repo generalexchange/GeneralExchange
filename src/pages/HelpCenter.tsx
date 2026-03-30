@@ -133,9 +133,9 @@ export const HelpCenter: React.FC = () => {
                 >
                   <button
                     onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
-                    className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-[#2a2a2a] transition-colors"
+                    className="w-full px-4 sm:px-6 py-4 flex items-start justify-between gap-3 text-left hover:bg-[#2a2a2a] transition-colors"
                   >
-                    <span className="text-lg font-semibold text-white">{faq.question}</span>
+                    <span className="text-base sm:text-lg font-semibold text-white min-w-0">{faq.question}</span>
                     <ChevronDown
                       className={`w-5 h-5 text-gray-400 transition-transform ${
                         expandedFaq === index ? 'transform rotate-180' : ''

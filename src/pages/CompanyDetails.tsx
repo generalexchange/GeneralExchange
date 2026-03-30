@@ -321,7 +321,7 @@ export const CompanyDetails: React.FC = () => {
       {/* Header */}
       <div className="bg-[#1a1a1a] border-b border-[#2a2a2a] sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <button
               onClick={() => navigate(-1)}
               className="flex items-center space-x-2 text-gray-400 hover:text-white transition-colors"
@@ -330,7 +330,7 @@ export const CompanyDetails: React.FC = () => {
               <span className="text-sm">Back</span>
             </button>
             
-            <div className="flex items-center space-x-4">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4 min-w-0">
               <h1 className="text-xl sm:text-2xl font-bold text-white">{companyData.symbol}</h1>
               <div className="flex items-center space-x-2">
                 {isPositive ? (
@@ -338,7 +338,7 @@ export const CompanyDetails: React.FC = () => {
                 ) : (
                   <TrendingDown className="w-5 h-5 text-red-500" />
                 )}
-                <span className={`text-lg font-bold ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+                <span className={`text-sm sm:text-lg font-bold break-words ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
                   ${companyData.price.toFixed(2)} ({isPositive ? '+' : ''}{companyData.changePercent.toFixed(2)}%)
                 </span>
               </div>
@@ -357,7 +357,7 @@ export const CompanyDetails: React.FC = () => {
             </div>
             
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <p className="text-xs text-gray-500 mb-1">Market Cap</p>
                   <p className="text-lg font-bold text-white">{companyData.marketCap}</p>
@@ -533,7 +533,7 @@ export const CompanyDetails: React.FC = () => {
 
             {/* Greeks Dot Plot Visualization */}
             <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-6">
-              <div className="grid grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {['2024-01-19', '2024-02-16', '2024-03-15', '2024-04-19'].map(exp => {
                   const expOptions = optionsChain.filter(opt => opt.expiration === exp);
                   const daysToExp = Math.ceil((new Date(exp).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
@@ -583,7 +583,7 @@ export const CompanyDetails: React.FC = () => {
             </div>
 
             {/* Dynamic Legend and Formula */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-4">
                 <h5 className="text-sm font-semibold text-white mb-3">
                   {activeGreek === 'theta' ? 'Time Decay Intensity' : 

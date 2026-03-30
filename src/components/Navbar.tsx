@@ -38,7 +38,7 @@ export const Navbar: React.FC<NavbarProps> = ({ searchQuery = '', onSearchChange
   }, [lastScrollY]);
 
   const navLink =
-    'text-[11px] sm:text-[13px] font-medium tracking-wide text-neutral-400 hover:text-neutral-100 transition-colors whitespace-nowrap';
+    'text-xs sm:text-[13px] font-medium tracking-wide text-neutral-400 hover:text-neutral-100 transition-colors whitespace-nowrap';
 
   return (
     <nav
@@ -75,7 +75,7 @@ export const Navbar: React.FC<NavbarProps> = ({ searchQuery = '', onSearchChange
           )}
 
           <div className="flex items-center gap-2 sm:gap-6 lg:gap-8 min-w-0">
-            <div className="flex items-center gap-3 sm:gap-5 lg:gap-8 overflow-x-auto scrollbar-hide max-w-[42vw] sm:max-w-none">
+            <div className="flex items-center gap-3 sm:gap-5 lg:gap-8 overflow-x-auto sm:overflow-visible scrollbar-hide max-w-[55vw] sm:max-w-none pr-1">
               <Link to="/features" className={navLink}>
                 Platform
               </Link>
