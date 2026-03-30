@@ -127,16 +127,16 @@ const SUITES = [
 
 const BRIDGE_OBSERVER_ORIGIN = 'https://bridgeobserver.com';
 
-/** Dark charcoal product bands — Platform advantages + brochure 01–06 */
+/** Smoky gray product bands — Platform advantages + brochure 01–06 */
 const IBM = {
-  bg00: '#17181c',
-  bg10: '#121317',
-  wire: '#5c5d66',
-  border: 'rgba(255,255,255,0.1)',
-  text: '#f4f4f5',
-  text60: '#a0a1a9',
-  text70: '#d0d1d6',
-  plaque: '#1e1f26',
+  bg00: '#d8d8df',
+  bg10: '#cbcbd4',
+  wire: '#6e6e78',
+  border: 'rgba(0,0,0,0.09)',
+  text: '#18181b',
+  text60: '#52525c',
+  text70: '#3f3f46',
+  plaque: '#e6e6ec',
 } as const;
 
 const CAPABILITY_STRIP = [
@@ -309,7 +309,7 @@ export const Homepage: React.FC = () => {
                   {CAPABILITY_STRIP.map(({ label, detail }) => (
                     <div
                       key={label}
-                      className="rounded-2xl sm:rounded-[1.25rem] border px-4 py-4 sm:px-6 sm:py-5 flex flex-col justify-center shadow-[0_2px_12px_rgba(0,0,0,0.35)]"
+                      className="rounded-2xl sm:rounded-[1.25rem] border px-4 py-4 sm:px-6 sm:py-5 flex flex-col justify-center shadow-[0_2px_10px_rgba(0,0,0,0.07)]"
                       style={{
                         borderColor: IBM.border,
                         backgroundColor: IBM.plaque,
@@ -401,7 +401,7 @@ export const Homepage: React.FC = () => {
           const panelColumn = (
             <div className={`lg:col-span-5 w-full min-w-0 ${flipLayout ? 'lg:order-1' : 'lg:order-2'}`}>
               <div
-                className="rounded-[1.75rem] lg:rounded-[2rem] border min-h-[240px] sm:min-h-[280px] lg:min-h-[min(52vh,440px)] shadow-[0_2px_16px_rgba(0,0,0,0.4)]"
+                className="rounded-[1.75rem] lg:rounded-[2rem] border min-h-[240px] sm:min-h-[280px] lg:min-h-[min(52vh,440px)] shadow-[0_2px_12px_rgba(0,0,0,0.08)]"
                 style={{ borderColor: IBM.border, backgroundColor: IBM.plaque }}
                 data-illustration-slot={`platform-advantage-${n}-panel`}
                 aria-label="Illustration"
