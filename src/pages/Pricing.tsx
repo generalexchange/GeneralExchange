@@ -10,6 +10,7 @@ import { Check, X } from 'lucide-react';
 
 export const Pricing: React.FC = () => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
+  const [networkSelection, setNetworkSelection] = useState<'solana' | 'polygon'>('solana');
 
   const plans = [
     {
@@ -83,6 +84,11 @@ export const Pricing: React.FC = () => {
     const percentage = Math.round((savings / monthlyTotal) * 100);
     return { amount: savings, percentage };
   };
+
+  const selectedNetworkFee =
+    networkSelection === 'solana'
+      ? '$0.0001 - $0.005 per transaction'
+      : '$0.001 - $0.01 per transaction';
 
   return (
     <div className="min-h-screen bg-[#0b0c0f]">
@@ -160,6 +166,15 @@ export const Pricing: React.FC = () => {
                   </span>
                 </button>
               </div>
+
+              <div
+                className="mt-6 inline-flex flex-wrap items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#151515] px-4 py-2.5 text-xs sm:text-sm text-gray-300"
+                title="Execution is optimized for speed using off-chain infrastructure. Blockchain networks are used for settlement and verification."
+              >
+                <span className="font-semibold text-emerald-400">Execution: Solana</span>
+                <span className="text-gray-500">|</span>
+                <span className="font-semibold text-violet-400">Settlement: Polygon</span>
+              </div>
             </div>
 
             {/* Pricing Cards */}
@@ -235,6 +250,96 @@ export const Pricing: React.FC = () => {
                   </div>
                 );
               })}
+            </div>
+
+            {/* Execution & Network Fees */}
+            <div className="mt-16 rounded-2xl border border-white/10 bg-[#141414] p-6 sm:p-8">
+              <div className="mb-6">
+                <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">Execution &amp; Network Fees</h2>
+                <p className="text-gray-300 max-w-4xl">
+                  General Exchange uses a hybrid execution model. Trades are executed in real time using high-performance infrastructure,
+                  while blockchain networks are used for settlement and verification.
+                </p>
+              </div>
+
+              <div className="mb-5 inline-flex rounded-lg border border-white/10 bg-[#101010] p-1">
+                <button
+                  onClick={() => setNetworkSelection('solana')}
+                  className={`px-4 py-2 text-sm rounded-md transition-colors ${
+                    networkSelection === 'solana'
+                      ? 'bg-emerald-600/20 text-emerald-300 border border-emerald-500/40'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  Solana
+                </button>
+                <button
+                  onClick={() => setNetworkSelection('polygon')}
+                  className={`px-4 py-2 text-sm rounded-md transition-colors ${
+                    networkSelection === 'polygon'
+                      ? 'bg-violet-600/20 text-violet-300 border border-violet-500/40'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  Polygon
+                </button>
+              </div>
+              <p className="text-sm text-gray-400 mb-8">
+                Selected network fee range: <span className="text-white font-semibold">{selectedNetworkFee}</span>
+              </p>
+
+              <div className="grid md:grid-cols-2 gap-6 mb-8">
+                <div className="rounded-xl border border-emerald-500/35 bg-emerald-500/5 p-6 shadow-[0_0_24px_rgba(16,185,129,0.12)] hover:border-emerald-400/50 transition-colors">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-xl font-bold text-white">Solana - Execution Network</h3>
+                    <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                      Primary
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-300 mb-2">
+                    <span className="text-gray-400">Role:</span> Real-time trade execution
+                  </p>
+                  <p className="text-sm text-gray-300 mb-2">
+                    <span className="text-gray-400">Description:</span> Ultra-fast, low-latency transaction layer optimized for trading activity
+                  </p>
+                  <p className="text-sm text-gray-200 font-medium">
+                    <span className="text-gray-400">Fee range:</span> $0.0001 - $0.005 per transaction
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-violet-500/35 bg-violet-500/5 p-6 hover:border-violet-400/50 transition-colors">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-xl font-bold text-white">Polygon - Settlement Network</h3>
+                    <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-violet-500/20 text-violet-300 border border-violet-500/40">
+                      Secondary
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-300 mb-2">
+                    <span className="text-gray-400">Role:</span> Settlement, payments, and account-level operations
+                  </p>
+                  <p className="text-sm text-gray-300 mb-2">
+                    <span className="text-gray-400">Description:</span> Low-cost, Ethereum-compatible network for reliable transaction finalization
+                  </p>
+                  <p className="text-sm text-gray-200 font-medium">
+                    <span className="text-gray-400">Fee range:</span> $0.001 - $0.01 per transaction
+                  </p>
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-white/10 bg-[#101010] p-5 sm:p-6 mb-6">
+                <h3 className="text-lg font-bold text-white mb-4">How Pricing Works</h3>
+                <ol className="space-y-3 text-sm text-gray-300">
+                  <li><span className="text-white font-semibold mr-2">1.</span>Trade is executed instantly (off-chain optimized engine)</li>
+                  <li><span className="text-white font-semibold mr-2">2.</span>Signal and order are processed in real time</li>
+                  <li><span className="text-white font-semibold mr-2">3.</span>Transaction is settled on-chain (Solana or Polygon)</li>
+                  <li><span className="text-white font-semibold mr-2">4.</span>Network fee is applied based on selected network</li>
+                </ol>
+              </div>
+
+              <div className="rounded-xl border border-white/10 bg-[#101010] p-5 text-sm text-gray-200">
+                <span className="font-semibold text-white">Transparency:</span>{' '}
+                General Exchange does not mark up blockchain network fees. All network costs are passed directly to the user.
+              </div>
             </div>
           </div>
         </section>
