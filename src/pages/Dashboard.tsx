@@ -17,6 +17,7 @@ import { OrderBookPreview } from '../components/dashboard/OrderBookPreview';
 import { PredictionOutlookPanel } from '../components/dashboard/PredictionOutlookPanel';
 import { IntelligenceStatusBar } from '../components/dashboard/IntelligenceStatusBar';
 import { OptionsContextPanel } from '../components/dashboard/OptionsContextPanel';
+import { TradeEngineModal } from '../components/dashboard/TradeEngineModal';
 import {
   ChartSkeleton,
   MetricCardsSkeleton,
@@ -47,19 +48,38 @@ function LayerHeader({
   step,
   title,
   subtitle,
+  headingId,
+  stepButtonProps,
 }: {
   step: string;
   title: string;
   subtitle: string;
+  headingId?: string;
+  /** When set, the step badge is a button (e.g. open trade engine config). */
+  stepButtonProps?: { onClick: () => void; 'aria-label': string };
 }) {
+  const stepClassName =
+    'font-mono text-xs text-cyan-400/90 tabular-nums border border-cyan-500/30 rounded-lg px-2 py-1 bg-cyan-500/5';
+
   return (
     <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-4">
       <div className="flex items-center gap-3">
-        <span className="font-mono text-xs text-cyan-400/90 tabular-nums border border-cyan-500/30 rounded-lg px-2 py-1 bg-cyan-500/5">
-          {step}
-        </span>
+        {stepButtonProps ? (
+          <button
+            type="button"
+            onClick={stepButtonProps.onClick}
+            aria-label={stepButtonProps['aria-label']}
+            className={`${stepClassName} cursor-pointer transition-all hover:border-cyan-400/50 hover:bg-cyan-500/15 hover:shadow-[0_0_20px_-8px_rgba(34,211,238,0.45)] focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050608]`}
+          >
+            {step}
+          </button>
+        ) : (
+          <span className={stepClassName}>{step}</span>
+        )}
         <div>
-          <h2 className="text-lg sm:text-xl font-semibold text-white tracking-tight">{title}</h2>
+          <h2 id={headingId} className="text-lg sm:text-xl font-semibold text-white tracking-tight">
+            {title}
+          </h2>
           <p className="text-sm text-zinc-500 mt-0.5">{subtitle}</p>
         </div>
       </div>
@@ -71,7 +91,7 @@ export const Dashboard: React.FC = () => {
   const [selectedModel, setSelectedModel] = useState<ModelId>('xgboost');
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const activeName = MODELS.find((m) => m.id === selectedModel)?.name ?? 'Model';
+  const [tradeEngineModalOpen, setTradeEngineModalOpen] = useState(false);
   const predictionData = getPredictionSeriesForModel(selectedModel);
   const outlook = getPredictionOutlook(selectedModel, predictionData);
   const tradeSetup = buildTradeSetupFromSeries(predictionData, outlook);
@@ -98,6 +118,7 @@ export const Dashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#050608] text-zinc-100">
+      <TradeEngineModal open={tradeEngineModalOpen} onClose={() => setTradeEngineModalOpen(false)} />
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_90%_70%_at_50%_-25%,rgba(34,197,94,0.06),transparent_55%),radial-gradient(ellipse_60%_40%_at_100%_10%,rgba(139,92,246,0.07),transparent_45%)]" />
 
       <header className="relative z-30 border-b border-white/10 bg-[#080a0d]/85 backdrop-blur-xl">
@@ -110,9 +131,6 @@ export const Dashboard: React.FC = () => {
                   General Exchange
                 </span>
               </Link>
-              <span className="hidden md:inline text-xs text-zinc-500 border-l border-white/10 pl-3 truncate">
-                Command center · {activeName}
-              </span>
             </div>
 
             <div className="relative z-40 min-w-0 col-span-2 col-start-1 row-start-2 sm:col-span-1 sm:col-start-2 sm:row-start-1 w-full">
@@ -169,14 +187,19 @@ export const Dashboard: React.FC = () => {
 
         <IntelligenceStatusBar key={selectedModel} items={intelligenceFeed} />
 
-        {/* 01 Market */}
+        {/* 01 Market Engine */}
         <section className="mb-10 sm:mb-12" aria-labelledby="layer-market">
           <LayerHeader
             step="01"
-            title="Market layer"
+            title="Market Engine"
+            headingId="layer-market"
             subtitle="Paper portfolio intraday · buying power · tape and depth (mock)"
+            stepButtonProps={{
+              onClick: () => setTradeEngineModalOpen(true),
+              'aria-label': 'Open market trade engine configuration',
+            }}
           />
-          <div id="layer-market" className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5">
             <div className="lg:col-span-2">
               {loading ? (
                 <ChartSkeleton className="min-h-[420px] sm:min-h-[480px]" />
