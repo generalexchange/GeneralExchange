@@ -18,6 +18,7 @@ import { PredictionOutlookPanel } from '../components/dashboard/PredictionOutloo
 import { IntelligenceStatusBar } from '../components/dashboard/IntelligenceStatusBar';
 import { OptionsContextPanel } from '../components/dashboard/OptionsContextPanel';
 import { TradeEngineModal } from '../components/dashboard/TradeEngineModal';
+import { PortfolioAnalyticsModal } from '../components/dashboard/PortfolioAnalyticsModal';
 import {
   ChartSkeleton,
   MetricCardsSkeleton,
@@ -92,6 +93,7 @@ export const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [tradeEngineModalOpen, setTradeEngineModalOpen] = useState(false);
+  const [portfolioAnalyticsOpen, setPortfolioAnalyticsOpen] = useState(false);
   const predictionData = getPredictionSeriesForModel(selectedModel);
   const outlook = getPredictionOutlook(selectedModel, predictionData);
   const tradeSetup = buildTradeSetupFromSeries(predictionData, outlook);
@@ -119,6 +121,11 @@ export const Dashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#050608] text-zinc-100">
       <TradeEngineModal open={tradeEngineModalOpen} onClose={() => setTradeEngineModalOpen(false)} />
+      <PortfolioAnalyticsModal
+        open={portfolioAnalyticsOpen}
+        onClose={() => setPortfolioAnalyticsOpen(false)}
+        onOpenTradeEngine={() => setTradeEngineModalOpen(true)}
+      />
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_90%_70%_at_50%_-25%,rgba(34,197,94,0.06),transparent_55%),radial-gradient(ellipse_60%_40%_at_100%_10%,rgba(139,92,246,0.07),transparent_45%)]" />
 
       <header className="relative z-30 border-b border-white/10 bg-[#080a0d]/85 backdrop-blur-xl">
@@ -172,17 +179,13 @@ export const Dashboard: React.FC = () => {
             title="Market Engine"
             headingId="layer-market"
             subtitle="Paper portfolio intraday · buying power · tape and depth (mock)"
-            stepButtonProps={{
-              onClick: () => setTradeEngineModalOpen(true),
-              'aria-label': 'Open market trade engine configuration',
-            }}
           />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5">
             <div className="lg:col-span-2">
               {loading ? (
                 <ChartSkeleton className="min-h-[420px] sm:min-h-[480px]" />
               ) : (
-                <MarketChart data={MARKET_SERIES} />
+                <MarketChart data={MARKET_SERIES} onOpenAnalytics={() => setPortfolioAnalyticsOpen(true)} />
               )}
             </div>
             <div className="lg:col-span-1">
