@@ -6,9 +6,11 @@ interface MetricCardProps {
   name: string;
   value: string;
   trend: 'up' | 'down';
-  /** Higher-is-better metrics: up arrow is green. Lower-is-better: invert if needed via invertTrendColors */
+  /** Higher-is-better metrics: up arrow is green. Lower-is-better: invert via invertTrendColors */
   invertTrendColors?: boolean;
   sparkline?: { v: number }[];
+  /** Native tooltip on metric name (hover) */
+  metricTooltip: string;
 }
 
 export const MetricCard: React.FC<MetricCardProps> = ({
@@ -17,6 +19,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
   trend,
   invertTrendColors = false,
   sparkline,
+  metricTooltip,
 }) => {
   const upGood = !invertTrendColors;
   const isPositiveVisual = trend === 'up' ? upGood : !upGood;
@@ -25,14 +28,19 @@ export const MetricCard: React.FC<MetricCardProps> = ({
     sparkline ?? Array.from({ length: 12 }, (_, i) => ({ v: 40 + Math.sin(i * 0.6) * 15 + i }));
 
   return (
-    <div className="rounded-xl border border-white/10 bg-gradient-to-br from-white/[0.06] to-transparent backdrop-blur-md p-4 sm:p-5 shadow-lg shadow-black/20">
-      <p className="text-[11px] uppercase tracking-wider text-zinc-500 font-medium mb-1">{name}</p>
+    <div className="rounded-xl border border-white/10 bg-gradient-to-br from-white/[0.07] to-transparent backdrop-blur-md p-4 sm:p-5 shadow-lg shadow-black/20 transition-all duration-300 hover:border-white/20 hover:shadow-[0_8px_32px_-12px_rgba(167,139,246,0.15)]">
+      <p className="text-[11px] uppercase tracking-wider text-zinc-500 font-medium leading-snug mb-1">
+        <span title={metricTooltip} className="cursor-help border-b border-dotted border-zinc-600/60">
+          {name}
+        </span>
+      </p>
       <div className="flex items-end justify-between gap-2">
         <p className="text-2xl sm:text-3xl font-semibold text-white tabular-nums">{value}</p>
         <div
           className={`flex items-center gap-1 text-xs font-semibold ${
             isPositiveVisual ? 'text-emerald-400' : 'text-rose-400'
           }`}
+          title={trend === 'up' ? 'Trend up vs prior window' : 'Trend down vs prior window'}
         >
           <TrendIcon className="w-4 h-4" />
         </div>

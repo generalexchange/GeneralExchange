@@ -11,7 +11,7 @@ import {
 } from 'recharts';
 import type { PredictionPoint } from './mockMlDashboardData';
 
-interface PricePredictionChartProps {
+interface PredictionChartProps {
   data: PredictionPoint[];
 }
 
@@ -37,18 +37,18 @@ const CustomTooltip = ({
   );
 };
 
-export const PricePredictionChart: React.FC<PricePredictionChartProps> = ({ data }) => {
+export const PredictionChart: React.FC<PredictionChartProps> = ({ data }) => {
   const chartData = data.map((d) => ({
     ...d,
     confidenceSpan: d.confidenceHigh - d.confidenceLow,
   }));
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-4 sm:p-6 shadow-[0_12px_48px_-24px_rgba(0,0,0,0.6)]">
+    <div className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-4 sm:p-6 shadow-[0_12px_48px_-24px_rgba(0,0,0,0.6)] transition-all duration-300 hover:border-violet-500/25 hover:shadow-[0_16px_56px_-20px_rgba(167,139,246,0.12)]">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
         <div>
-          <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-blue-400/90">Price vs prediction</p>
-          <p className="text-sm text-zinc-500 mt-1">Intraday mock series · shaded band = confidence envelope</p>
+          <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-violet-400/90">Prediction vs actual</p>
+          <p className="text-sm text-zinc-500 mt-1">Model output · shaded band = confidence envelope</p>
         </div>
         <div className="flex flex-wrap gap-4 text-xs">
           <span className="flex items-center gap-2 text-zinc-300">
@@ -65,7 +65,7 @@ export const PricePredictionChart: React.FC<PricePredictionChartProps> = ({ data
           </span>
         </div>
       </div>
-      <div className="h-[280px] sm:h-[340px] w-full">
+      <div className="h-[280px] sm:h-[320px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" vertical={false} />
@@ -107,6 +107,7 @@ export const PricePredictionChart: React.FC<PricePredictionChartProps> = ({ data
               stroke="#34d399"
               strokeWidth={2.5}
               dot={false}
+              activeDot={{ r: 5, fill: '#34d399', stroke: '#fff', strokeWidth: 1 }}
               isAnimationActive
               animationDuration={750}
               animationEasing="ease-out"
@@ -117,6 +118,7 @@ export const PricePredictionChart: React.FC<PricePredictionChartProps> = ({ data
               stroke="#a78bfa"
               strokeWidth={2.5}
               dot={false}
+              activeDot={{ r: 5, fill: '#a78bfa', stroke: '#fff', strokeWidth: 1 }}
               isAnimationActive
               animationDuration={750}
               animationEasing="ease-out"

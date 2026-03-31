@@ -40,6 +40,37 @@ export const MODELS: ModelMeta[] = [
   },
 ];
 
+export interface OrderBookLevel {
+  price: number;
+  size: number;
+}
+
+export const ORDER_BOOK_MOCK: { bids: OrderBookLevel[]; asks: OrderBookLevel[] } = {
+  bids: [
+    { price: 185.22, size: 1800 },
+    { price: 185.18, size: 2400 },
+    { price: 185.14, size: 900 },
+    { price: 185.10, size: 3200 },
+    { price: 185.06, size: 1100 },
+    { price: 185.02, size: 2750 },
+  ],
+  asks: [
+    { price: 185.26, size: 950 },
+    { price: 185.30, size: 1600 },
+    { price: 185.34, size: 2100 },
+    { price: 185.38, size: 800 },
+    { price: 185.42, size: 1900 },
+    { price: 185.46, size: 1300 },
+  ],
+};
+
+export const METRIC_TOOLTIPS = {
+  mae: 'Mean absolute error: average absolute gap between predicted and realized price levels over the window.',
+  mse: 'Mean squared error: penalizes large misses more heavily; useful for variance of forecast error.',
+  rmse: 'Root mean squared error: same units as price; common scale for comparing model revisions.',
+  directionalAccuracy: 'Share of intervals where predicted direction (up/down/hold) matched realized direction.',
+} as const;
+
 export const PRICE_SERIES: PredictionPoint[] = [
   { time: '09:30', actual: 182.4, predicted: 182.1, confidenceLow: 181.2, confidenceHigh: 183.1 },
   { time: '09:45', actual: 182.9, predicted: 182.6, confidenceLow: 181.6, confidenceHigh: 183.5 },
@@ -54,6 +85,13 @@ export const PRICE_SERIES: PredictionPoint[] = [
   { time: '12:00', actual: 184.6, predicted: 185.0, confidenceLow: 183.9, confidenceHigh: 186.1 },
   { time: '12:15', actual: 185.3, predicted: 185.1, confidenceLow: 184.1, confidenceHigh: 186.0 },
 ];
+
+/** Live market mock: price + volume aligned to prediction timestamps */
+export const MARKET_SERIES = PRICE_SERIES.map((p, i) => ({
+  time: p.time,
+  price: p.actual,
+  volume: 1_420_000 + i * 52_000 + (i % 3) * 18_000,
+}));
 
 export const METRICS_MOCK = {
   mae: { value: '0.42', trend: 'down' as const },
@@ -101,3 +139,15 @@ export const ERROR_OVER_TIME = [
   { t: 'W5', err: 0.52 },
   { t: 'W6', err: 0.48 },
 ];
+
+/** Slightly different predicted paths per model (front-end mock only). */
+export function getPredictionSeriesForModel(modelId: ModelId): PredictionPoint[] {
+  const shift = modelId === 'lstm' ? 0.12 : modelId === 'rl' ? -0.18 : 0;
+  const widen = modelId === 'lstm' ? 0.15 : modelId === 'rl' ? 0.05 : 0;
+  return PRICE_SERIES.map((p) => ({
+    ...p,
+    predicted: Math.round((p.predicted + shift) * 100) / 100,
+    confidenceLow: p.confidenceLow - widen,
+    confidenceHigh: p.confidenceHigh + widen,
+  }));
+}

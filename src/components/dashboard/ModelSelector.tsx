@@ -9,7 +9,7 @@ interface ModelSelectorProps {
 
 export const ModelSelector: React.FC<ModelSelectorProps> = ({ models, selectedId, onSelect }) => {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl shadow-[0_8px_40px_-20px_rgba(0,0,0,0.5)] p-5 sm:p-6">
+    <div className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl shadow-[0_8px_40px_-20px_rgba(0,0,0,0.5)] p-5 sm:p-6 transition-all duration-300 hover:border-emerald-500/15">
       <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-emerald-400/90 mb-4">Model selection</p>
       <div className="space-y-3">
         {models.map((m) => {
@@ -19,7 +19,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({ models, selectedId
               key={m.id}
               type="button"
               onClick={() => onSelect(m.id)}
-              className={`w-full text-left rounded-xl border px-4 py-3 transition-all duration-200 ${
+              className={`w-full text-left rounded-xl border px-4 py-3 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] ${
                 selected
                   ? 'border-violet-400/50 bg-violet-500/10 shadow-[0_0_24px_-8px_rgba(139,92,246,0.4)]'
                   : 'border-white/10 bg-black/20 hover:border-white/20 hover:bg-white/[0.03]'

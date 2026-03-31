@@ -1,10 +1,10 @@
 import React from 'react';
 
-interface ConfusionMatrixProps {
+interface ConfusionMatrixGridProps {
   rows: { predicted: string; actuals: Record<string, number> }[];
 }
 
-export const ConfusionMatrix: React.FC<ConfusionMatrixProps> = ({ rows }) => {
+export const ConfusionMatrixGrid: React.FC<ConfusionMatrixGridProps> = ({ rows }) => {
   const cols = ['Up', 'Down', 'Hold'];
   const maxVal = Math.max(
     ...rows.flatMap((r) => cols.map((c) => r.actuals[c] ?? 0)),
@@ -12,9 +12,11 @@ export const ConfusionMatrix: React.FC<ConfusionMatrixProps> = ({ rows }) => {
   );
 
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.03] backdrop-blur-md p-4 sm:p-5">
+    <div className="rounded-xl border border-white/10 bg-white/[0.03] backdrop-blur-md p-4 sm:p-5 h-full transition-all hover:border-cyan-500/20">
       <p className="text-[11px] uppercase tracking-wider text-cyan-400/90 font-semibold mb-1">Confusion matrix</p>
-      <p className="text-xs text-zinc-500 mb-4">Predicted vs realized direction (mock counts)</p>
+      <p className="text-xs text-zinc-500 mb-4" title="Rows: model prediction. Columns: realized outcome.">
+        Predicted vs realized direction (mock counts)
+      </p>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[280px] text-sm border-separate border-spacing-2">
           <thead>
@@ -37,11 +39,11 @@ export const ConfusionMatrix: React.FC<ConfusionMatrixProps> = ({ rows }) => {
                   return (
                     <td key={c} className="p-0">
                       <div
-                        className="rounded-lg p-3 text-center font-mono text-white text-sm border border-white/10"
+                        className="rounded-lg p-3 text-center font-mono text-white text-sm border border-white/10 transition-transform duration-200 hover:scale-[1.03] hover:z-10 hover:border-white/25 cursor-default"
                         style={{
                           backgroundColor: `rgba(6, 182, 212, ${0.12 + intensity * 0.55})`,
                         }}
-                        title={`${v}`}
+                        title={`Count: ${v}`}
                       >
                         {v}
                       </div>
