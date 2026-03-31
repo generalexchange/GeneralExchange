@@ -3,7 +3,7 @@
  * Shows company bio, recent news, and options chain
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, TrendingUp, TrendingDown, Calendar, Users, MapPin, Globe, ExternalLink } from 'lucide-react';
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
@@ -52,6 +52,7 @@ interface OptionContract {
 export const CompanyDetails: React.FC = () => {
   const navigate = useNavigate();
   const { symbol } = useParams<{ symbol: string }>();
+  const [companyMetaOpen, setCompanyMetaOpen] = useState(false);
 
   // Comprehensive company database
   const companyDatabase: Record<string, CompanyDetails> = {
@@ -290,7 +291,13 @@ export const CompanyDetails: React.FC = () => {
             </button>
             
             <div className="flex flex-wrap items-center gap-2 sm:gap-4 min-w-0">
-              <h1 className="text-xl sm:text-2xl font-bold text-white">{companyData.symbol}</h1>
+              <button
+                type="button"
+                onClick={() => setCompanyMetaOpen(true)}
+                className="text-xl sm:text-2xl font-bold text-white underline decoration-white/30 underline-offset-4 hover:decoration-white transition-colors"
+              >
+                {companyData.symbol}
+              </button>
               <div className="flex items-center space-x-2">
                 {isPositive ? (
                   <TrendingUp className="w-5 h-5 text-green-500" />
@@ -307,51 +314,6 @@ export const CompanyDetails: React.FC = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6">
-        {/* Company Info Card */}
-        <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-6 mb-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
-              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">{companyData.fullName}</h2>
-              <p className="text-gray-300 leading-relaxed mb-4">{companyData.description}</p>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs text-gray-500 mb-1">Market Cap</p>
-                  <p className="text-lg font-bold text-white">{companyData.marketCap}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 mb-1">Volume</p>
-                  <p className="text-lg font-bold text-white">{companyData.volume}</p>
-                </div>
-              </div>
-              
-              <div className="space-y-3 pt-4 border-t border-[#2a2a2a]">
-                <div className="flex items-center space-x-3">
-                  <Calendar className="w-4 h-4 text-gray-400" />
-                  <span className="text-sm text-gray-300">Founded: {companyData.founded}</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <MapPin className="w-4 h-4 text-gray-400" />
-                  <span className="text-sm text-gray-300">{companyData.headquarters}</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Users className="w-4 h-4 text-gray-400" />
-                  <span className="text-sm text-gray-300">{companyData.employees} employees</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Globe className="w-4 h-4 text-gray-400" />
-                  <a href={companyData.website} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 text-sm text-blue-400 hover:text-blue-300">
-                    <span>Official Website</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div className="space-y-6">
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
             <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-6">
@@ -443,6 +405,61 @@ export const CompanyDetails: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {companyMetaOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/70"
+            onClick={() => setCompanyMetaOpen(false)}
+            aria-label="Close company information"
+          />
+          <div className="relative w-full max-w-3xl rounded-xl border border-[#2a2a2a] bg-[#151515] p-5 sm:p-6 shadow-2xl">
+            <div className="flex items-center justify-between gap-4 mb-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-white">{companyData.fullName}</h2>
+              <button
+                type="button"
+                onClick={() => setCompanyMetaOpen(false)}
+                className="rounded-md border border-[#2a2a2a] px-3 py-1.5 text-sm text-gray-300 hover:text-white hover:border-[#3a3a3a]"
+              >
+                Close
+              </button>
+            </div>
+            <p className="text-gray-300 leading-relaxed mb-4">{companyData.description}</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              <div>
+                <p className="text-xs text-gray-500 mb-1">Market Cap</p>
+                <p className="text-lg font-bold text-white">{companyData.marketCap}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 mb-1">Volume</p>
+                <p className="text-lg font-bold text-white">{companyData.volume}</p>
+              </div>
+            </div>
+            <div className="space-y-3 pt-4 border-t border-[#2a2a2a]">
+              <div className="flex items-center space-x-3">
+                <Calendar className="w-4 h-4 text-gray-400" />
+                <span className="text-sm text-gray-300">Founded: {companyData.founded}</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <MapPin className="w-4 h-4 text-gray-400" />
+                <span className="text-sm text-gray-300">{companyData.headquarters}</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <Users className="w-4 h-4 text-gray-400" />
+                <span className="text-sm text-gray-300">{companyData.employees} employees</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <Globe className="w-4 h-4 text-gray-400" />
+                <a href={companyData.website} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 text-sm text-blue-400 hover:text-blue-300">
+                  <span>Official Website</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
