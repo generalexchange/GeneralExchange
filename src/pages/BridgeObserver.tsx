@@ -20,7 +20,7 @@ export const BridgeObserver: React.FC = () => {
             <div className="max-w-3xl space-y-6">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/[0.1] bg-white/[0.03] px-4 py-2">
                 <Newspaper className="w-4 h-4 text-[#c6a575]" aria-hidden />
-                <span className="text-[11px] font-semibold tracking-[0.16em] uppercase text-neutral-300">
+                <span className="font-serif text-[11px] font-medium tracking-[0.12em] uppercase text-neutral-300">
                   Bridge Observer
                 </span>
               </div>

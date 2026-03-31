@@ -451,7 +451,7 @@ export const Homepage: React.FC = () => {
               </p>
               <h2
                 id="bridge-observer-heading"
-                className="text-[2rem] sm:text-[2.6rem] lg:text-[2.9rem] font-semibold text-neutral-50 tracking-[-0.02em] leading-[1.02]"
+                className="font-serif text-[2rem] sm:text-[2.6rem] lg:text-[2.9rem] font-medium text-neutral-50 tracking-[-0.01em] leading-[1.04]"
               >
                 Bridge Observer
               </h2>
@@ -554,7 +554,7 @@ export const Homepage: React.FC = () => {
               <div className="col-span-2 md:col-span-1">
                 <div className="flex items-center gap-2 mb-4">
                   <span className="w-[2px] h-5 bg-[#c6a575]" />
-                  <h3 className="font-display text-lg text-neutral-100">General Exchange</h3>
+                  <h3 className="font-serif text-lg text-neutral-100 tracking-[-0.01em]">General Exchange</h3>
                 </div>
                 <p className="text-neutral-500 text-sm leading-relaxed mb-4">Enterprise Trade Intelligence</p>
                 <div className="flex items-center gap-2 text-neutral-600">

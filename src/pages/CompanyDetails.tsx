@@ -3,9 +3,10 @@
  * Shows company bio, recent news, and options chain
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, TrendingUp, TrendingDown, Calendar, Users, MapPin, Globe, ExternalLink, Activity, Zap } from 'lucide-react';
+import { ArrowLeft, TrendingUp, TrendingDown, Calendar, Users, MapPin, Globe, ExternalLink } from 'lucide-react';
+import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 interface CompanyDetails {
   symbol: string;
@@ -51,54 +52,6 @@ interface OptionContract {
 export const CompanyDetails: React.FC = () => {
   const navigate = useNavigate();
   const { symbol } = useParams<{ symbol: string }>();
-  const [activeTab, setActiveTab] = useState<'overview' | 'options'>('overview');
-  const [activeGreek, setActiveGreek] = useState<'theta' | 'gamma' | 'delta'>('theta');
-
-  // Greeks calculation functions
-  const calculateGreeks = (option: OptionContract, currentPrice: number) => {
-    const timeToExp = (new Date(option.expiration).getTime() - Date.now()) / (1000 * 60 * 60 * 24 * 365);
-    const moneyness = option.strike / currentPrice;
-    
-    if (timeToExp <= 0) {
-      return { theta: 0, gamma: 0, delta: option.type === 'CALL' ? 1 : -1 };
-    }
-
-    // Simplified Greeks calculation
-    const theta = -Math.exp(-timeToExp * 2) * (1 - Math.abs(moneyness - 1)) * 0.1;
-    const gamma = Math.random() * 0.05 + 0.01;
-    const delta = option.type === 'CALL' ? Math.random() * 0.8 + 0.1 : Math.random() * 0.8 - 0.9;
-    
-    return { theta, gamma, delta };
-  };
-
-  const getGreekValue = (option: OptionContract, currentPrice: number) => {
-    const greeks = calculateGreeks(option, currentPrice);
-    return activeGreek === 'theta' ? greeks.theta : 
-           activeGreek === 'gamma' ? greeks.gamma : 
-           greeks.delta;
-  };
-
-  const getDotProperties = (option: OptionContract, currentPrice: number) => {
-    const greekValue = getGreekValue(option, currentPrice);
-    const moneyness = option.strike / currentPrice;
-    const isATM = Math.abs(moneyness - 1) < 0.05;
-    const intensity = Math.abs(greekValue);
-    
-    let dotSize, dotColor;
-    
-    if (activeGreek === 'theta') {
-      dotSize = Math.max(4, Math.min(20, intensity * 200));
-      dotColor = isATM ? '#ef4444' : intensity > 0.05 ? '#f59e0b' : '#10b981';
-    } else if (activeGreek === 'gamma') {
-      dotSize = Math.max(4, Math.min(20, intensity * 1000));
-      dotColor = intensity > 0.03 ? '#f59e0b' : intensity > 0.01 ? '#eab308' : '#10b981';
-    } else { // delta
-      dotSize = Math.max(4, Math.min(20, intensity * 25));
-      dotColor = intensity > 0.7 ? '#3b82f6' : intensity > 0.3 ? '#60a5fa' : '#93c5fd';
-    }
-    
-    return { dotSize, dotColor, greekValue };
-  };
 
   // Comprehensive company database
   const companyDatabase: Record<string, CompanyDetails> = {
@@ -315,6 +268,12 @@ export const CompanyDetails: React.FC = () => {
   const optionsChain = getCompanyOptions(companyData.symbol, companyData.price);
 
   const isPositive = companyData.change >= 0;
+  const priceSeries = Array.from({ length: 12 }, (_, i) => {
+    const drift = (i - 6) * (companyData.change / 18);
+    const wave = Math.sin(i * 0.65) * Math.max(0.18, Math.abs(companyData.change) * 0.08);
+    const close = Number((companyData.price + drift + wave).toFixed(2));
+    return { t: `${9 + Math.floor(i / 2)}:${i % 2 === 0 ? '00' : '30'}`, p: close };
+  });
 
   return (
     <div className="min-h-screen bg-[#0b0c0f] pt-14 sm:pt-16">
@@ -393,46 +352,36 @@ export const CompanyDetails: React.FC = () => {
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="flex space-x-1 mb-6">
-          <button
-            onClick={() => setActiveTab('overview')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              activeTab === 'overview'
-                ? 'bg-blue-600 text-white'
-                : 'bg-[#1a1a1a] text-gray-400 hover:text-white border border-[#2a2a2a]'
-            }`}
-          >
-            Overview & News
-          </button>
-          <button
-            onClick={() => setActiveTab('options')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              activeTab === 'options'
-                ? 'bg-blue-600 text-white'
-                : 'bg-[#1a1a1a] text-gray-400 hover:text-white border border-[#2a2a2a]'
-            }`}
-          >
-            Options Chain
-          </button>
-        </div>
+        <div className="space-y-6">
+          <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-white">Current Price</h3>
+              <span className="text-sm font-mono text-gray-300">${companyData.price.toFixed(2)}</span>
+            </div>
+            <div className="h-[220px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={priceSeries}>
+                  <XAxis dataKey="t" tick={{ fill: '#71717a', fontSize: 11 }} tickLine={false} axisLine={false} />
+                  <YAxis tick={{ fill: '#71717a', fontSize: 11 }} tickLine={false} axisLine={false} width={44} domain={['dataMin - 1', 'dataMax + 1']} />
+                  <Tooltip
+                    contentStyle={{ background: '#0b0b0b', border: '1px solid #27272a', borderRadius: '8px' }}
+                    labelStyle={{ color: '#a1a1aa' }}
+                  />
+                  <Line dataKey="p" type="monotone" stroke="#e4e4e7" strokeWidth={2.2} dot={false} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
 
-        {/* Tab Content */}
-        {activeTab === 'overview' && (
-          <div className="space-y-6">
-            {/* Recent News */}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
             <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-6">
               <h3 className="text-xl font-bold text-white mb-4">Recent News</h3>
               <div className="space-y-4">
                 {recentNews.map((article) => (
                   <div key={article.id} className="border-b border-[#2a2a2a] pb-4 last:border-b-0 last:pb-0">
-                    <div className="flex items-start justify-between mb-2">
-                      <h4 className="text-lg font-semibold text-white hover:text-blue-400 cursor-pointer transition-colors">
-                        {article.title}
-                      </h4>
-                      <span className="text-xs text-gray-500 bg-gray-800 px-2 py-1 rounded">
-                        {article.category}
-                      </span>
+                    <div className="flex items-start justify-between mb-2 gap-3">
+                      <h4 className="text-base font-semibold text-white">{article.title}</h4>
+                      <span className="text-xs text-gray-500 bg-gray-800 px-2 py-1 rounded whitespace-nowrap">{article.category}</span>
                     </div>
                     <p className="text-gray-300 text-sm mb-2">{article.summary}</p>
                     <div className="flex items-center space-x-4 text-xs text-gray-500">
@@ -444,239 +393,55 @@ export const CompanyDetails: React.FC = () => {
               </div>
             </div>
 
-            {/* Company Details */}
             <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-6">
-              <h3 className="text-xl font-bold text-white mb-4">Company Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-500 mb-1">Sector</p>
-                  <p className="text-white">{companyData.sector}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 mb-1">Industry</p>
-                  <p className="text-white">{companyData.industry}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 mb-1">CEO</p>
-                  <p className="text-white">{companyData.ceo}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 mb-1">Headquarters</p>
-                  <p className="text-white">{companyData.headquarters}</p>
-                </div>
+              <h3 className="text-xl font-bold text-white mb-4">Options Chain</h3>
+              <p className="text-xs text-gray-500 mb-3">Placed in the main overview area. Premiums are synthetic mock values.</p>
+              <div className="overflow-auto max-h-[430px] border border-[#2a2a2a] rounded-lg">
+                <table className="w-full min-w-[620px] text-xs border-collapse">
+                  <thead className="sticky top-0 bg-[#151515] border-b border-[#2a2a2a]">
+                    <tr className="text-gray-400">
+                      <th className="p-2 text-left font-medium">Type</th>
+                      <th className="p-2 text-left font-medium">Strike</th>
+                      <th className="p-2 text-left font-medium">Expiry</th>
+                      <th className="p-2 text-right font-medium">Bid</th>
+                      <th className="p-2 text-right font-medium">Ask</th>
+                      <th className="p-2 text-right font-medium">Vol</th>
+                      <th className="p-2 text-right font-medium">OI</th>
+                      <th className="p-2 text-right font-medium">IV</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {optionsChain.slice(0, 28).map((opt) => (
+                      <tr key={opt.id} className="border-b border-[#232323] last:border-0">
+                        <td className="p-2 text-gray-200">{opt.type}</td>
+                        <td className="p-2 text-white font-mono">${opt.strike.toFixed(0)}</td>
+                        <td className="p-2 text-gray-300">{opt.expiration}</td>
+                        <td className="p-2 text-right text-gray-300 font-mono">{opt.bid.toFixed(2)}</td>
+                        <td className="p-2 text-right text-gray-300 font-mono">{opt.ask.toFixed(2)}</td>
+                        <td className="p-2 text-right text-gray-400 font-mono">{opt.volume.toLocaleString()}</td>
+                        <td className="p-2 text-right text-gray-400 font-mono">{opt.openInterest.toLocaleString()}</td>
+                        <td className="p-2 text-right text-gray-300 font-mono">{(opt.impliedVolatility * 100).toFixed(1)}%</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
-        )}
 
-        {activeTab === 'options' && (
-          <div className="space-y-6">
-            {/* Greeks Analysis Header */}
-            <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <Activity className="w-5 h-5 text-blue-500" />
-                  <div>
-                    <h3 className="text-xl font-bold text-white">Greeks Analysis</h3>
-                    <p className="text-sm text-gray-400">Options risk visualization for {companyData.symbol} at ${companyData.price.toFixed(2)}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-sm text-gray-400">Current Price</div>
-                  <div className="text-lg font-bold text-white">${companyData.price.toFixed(2)}</div>
-                </div>
-              </div>
-              
-              {/* Greek Toggle Buttons */}
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setActiveGreek('theta')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    activeGreek === 'theta'
-                      ? 'bg-red-500/20 text-red-400 border border-red-500/30'
-                      : 'bg-[#2a2a2a] text-gray-400 hover:text-white hover:bg-[#3a3a3a]'
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    <TrendingDown className="w-4 h-4" />
-                    Theta (Time Decay)
-                  </div>
-                </button>
-                <button
-                  onClick={() => setActiveGreek('gamma')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    activeGreek === 'gamma'
-                      ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
-                      : 'bg-[#2a2a2a] text-gray-400 hover:text-white hover:bg-[#3a3a3a]'
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    <Zap className="w-4 h-4" />
-                    Gamma (Acceleration)
-                  </div>
-                </button>
-                <button
-                  onClick={() => setActiveGreek('delta')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    activeGreek === 'delta'
-                      ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                      : 'bg-[#2a2a2a] text-gray-400 hover:text-white hover:bg-[#3a3a3a]'
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    <TrendingUp className="w-4 h-4" />
-                    Delta (Price Sensitivity)
-                  </div>
-                </button>
-              </div>
-            </div>
-
-            {/* Greeks Dot Plot Visualization */}
-            <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                {['2024-01-19', '2024-02-16', '2024-03-15', '2024-04-19'].map(exp => {
-                  const expOptions = optionsChain.filter(opt => opt.expiration === exp);
-                  const daysToExp = Math.ceil((new Date(exp).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
-                  
-                  return (
-                    <div key={exp} className="space-y-3">
-                      <div className="text-center">
-                        <div className="text-sm font-semibold text-white">
-                          {new Date(exp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                        </div>
-                        <div className="text-xs text-gray-400">{daysToExp} days</div>
-                      </div>
-                      
-                      {/* Dot Plot */}
-                      <div className="space-y-2">
-                        {expOptions
-                          .sort((a, b) => a.strike - b.strike)
-                          .map(option => {
-                            const { dotSize, dotColor, greekValue } = getDotProperties(option, companyData.price);
-                            
-                            return (
-                              <div key={`${option.strike}-${exp}`} className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                  <div 
-                                    className="rounded-full"
-                                    style={{
-                                      width: `${dotSize}px`,
-                                      height: `${dotSize}px`,
-                                      backgroundColor: dotColor
-                                    }}
-                                  ></div>
-                                  <div className="text-xs text-gray-300">
-                                    ${option.strike}
-                                  </div>
-                                </div>
-                                <div className="text-xs text-gray-500">
-                                  {greekValue.toFixed(3)}
-                                </div>
-                              </div>
-                            );
-                          })}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Dynamic Legend and Formula */}
+          <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-6">
+            <h3 className="text-xl font-bold text-white mb-4">Recent News Details</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-4">
-                <h5 className="text-sm font-semibold text-white mb-3">
-                  {activeGreek === 'theta' ? 'Time Decay Intensity' : 
-                   activeGreek === 'gamma' ? 'Price Acceleration' : 
-                   'Price Sensitivity'}
-                </h5>
-                <div className="space-y-2">
-                  {activeGreek === 'theta' ? (
-                    <>
-                      <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 bg-red-500 rounded-full"></div>
-                        <span className="text-xs text-gray-300">ATM Options (Fastest Decay)</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                        <span className="text-xs text-gray-300">High Decay</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span className="text-xs text-gray-300">Low Decay</span>
-                      </div>
-                    </>
-                  ) : activeGreek === 'gamma' ? (
-                    <>
-                      <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 bg-yellow-500 rounded-full"></div>
-                        <span className="text-xs text-gray-300">High Acceleration</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 bg-yellow-300 rounded-full"></div>
-                        <span className="text-xs text-gray-300">Medium Acceleration</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span className="text-xs text-gray-300">Low Acceleration</span>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
-                        <span className="text-xs text-gray-300">High Sensitivity</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 bg-blue-400 rounded-full"></div>
-                        <span className="text-xs text-gray-300">Medium Sensitivity</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-blue-300 rounded-full"></div>
-                        <span className="text-xs text-gray-300">Low Sensitivity</span>
-                      </div>
-                    </>
-                  )}
+              {recentNews.map((article) => (
+                <div key={`detail-${article.id}`} className="border border-[#2a2a2a] rounded-lg p-4">
+                  <p className="text-xs text-gray-500 mb-1">{article.source} · {article.date}</p>
+                  <p className="text-sm text-white font-medium mb-2">{article.title}</p>
+                  <p className="text-sm text-gray-300">{article.summary}</p>
                 </div>
-              </div>
-              
-              <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-4">
-                <h5 className="text-sm font-semibold text-white mb-3">
-                  {activeGreek === 'theta' ? 'Theta Formula' : 
-                   activeGreek === 'gamma' ? 'Gamma Formula' : 
-                   'Delta Formula'}
-                </h5>
-                <div className="text-xs text-gray-300 space-y-1">
-                  {activeGreek === 'theta' ? (
-                    <>
-                      <div><span className="text-blue-400">θ</span> = -e^(-2t) × (1 - |K/S - 1|) × 0.1</div>
-                      <div><span className="text-blue-400">t</span> = Time to expiration</div>
-                      <div><span className="text-blue-400">K</span> = Strike price</div>
-                      <div><span className="text-blue-400">S</span> = Current price (${companyData.price.toFixed(2)})</div>
-                      <div className="text-yellow-400 mt-2">Larger dots = Faster decay</div>
-                    </>
-                  ) : activeGreek === 'gamma' ? (
-                    <>
-                      <div><span className="text-blue-400">γ</span> = N'(d1) / (S × σ × √T)</div>
-                      <div><span className="text-blue-400">S</span> = Current price (${companyData.price.toFixed(2)})</div>
-                      <div><span className="text-blue-400">σ</span> = Implied volatility</div>
-                      <div><span className="text-blue-400">T</span> = Time to expiration</div>
-                      <div className="text-yellow-400 mt-2">Larger dots = Higher acceleration</div>
-                    </>
-                  ) : (
-                    <>
-                      <div><span className="text-blue-400">Δ</span> = N(d1) for calls, N(d1) - 1 for puts</div>
-                      <div><span className="text-blue-400">d1</span> = (ln(S/K) + (r + σ²/2)T) / (σ√T)</div>
-                      <div><span className="text-blue-400">S</span> = Current price (${companyData.price.toFixed(2)})</div>
-                      <div><span className="text-blue-400">K</span> = Strike price</div>
-                      <div className="text-yellow-400 mt-2">Larger dots = Higher sensitivity</div>
-                    </>
-                  )}
-                </div>
-              </div>
+              ))}
             </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
