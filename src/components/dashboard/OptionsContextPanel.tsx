@@ -17,10 +17,10 @@ interface OptionsContextPanelProps {
 
 export const OptionsContextPanel: React.FC<OptionsContextPanelProps> = ({ context }) => {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-4 sm:p-5 h-full transition-all duration-300 hover:border-emerald-500/20">
+    <div className="rounded-2xl border border-white/[0.06] bg-[#0a0a0a] backdrop-blur-xl p-4 sm:p-5 h-full transition-all duration-300 hover:border-white/10">
       <div className="flex items-center gap-2 mb-3">
-        <Sigma className="w-4 h-4 text-emerald-400/90" aria-hidden />
-        <p className="text-[11px] font-semibold tracking-[0.18em] uppercase text-emerald-400/90">Options context</p>
+        <Sigma className="w-4 h-4 text-zinc-400" aria-hidden />
+        <p className="text-[11px] font-semibold tracking-[0.18em] uppercase text-zinc-400">Options context</p>
       </div>
       <p className="text-[11px] text-zinc-500 mb-4">Mock greeks & terms · same underlying as chart</p>
       <dl className="grid grid-cols-2 gap-x-3 gap-y-3 text-xs">

@@ -60,7 +60,7 @@ function LayerHeader({
   stepButtonProps?: { onClick: () => void; 'aria-label': string };
 }) {
   const stepClassName =
-    'font-mono text-xs text-cyan-400/90 tabular-nums border border-cyan-500/30 rounded-lg px-2 py-1 bg-cyan-500/5';
+    'font-mono text-xs text-zinc-400 tabular-nums border border-white/10 rounded-lg px-2 py-1 bg-white/[0.03]';
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-4">
@@ -70,7 +70,7 @@ function LayerHeader({
             type="button"
             onClick={stepButtonProps.onClick}
             aria-label={stepButtonProps['aria-label']}
-            className={`${stepClassName} cursor-pointer transition-all hover:border-cyan-400/50 hover:bg-cyan-500/15 hover:shadow-[0_0_20px_-8px_rgba(34,211,238,0.45)] focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050608]`}
+            className={`${stepClassName} cursor-pointer transition-all hover:border-white/20 hover:bg-white/[0.06] hover:shadow-none focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[#080808]`}
           >
             {step}
           </button>
@@ -119,21 +119,21 @@ export const Dashboard: React.FC = () => {
   }, [selectedModel]);
 
   return (
-    <div className="min-h-screen bg-[#050608] text-zinc-100">
+    <div className="min-h-screen bg-[#080808] text-zinc-100">
       <TradeEngineModal open={tradeEngineModalOpen} onClose={() => setTradeEngineModalOpen(false)} />
       <PortfolioAnalyticsModal
         open={portfolioAnalyticsOpen}
         onClose={() => setPortfolioAnalyticsOpen(false)}
         onOpenTradeEngine={() => setTradeEngineModalOpen(true)}
       />
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_90%_70%_at_50%_-25%,rgba(34,197,94,0.06),transparent_55%),radial-gradient(ellipse_60%_40%_at_100%_10%,rgba(139,92,246,0.07),transparent_45%)]" />
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_90%_70%_at_50%_-30%,rgba(255,255,255,0.04),transparent_55%),radial-gradient(ellipse_55%_45%_at_100%_0%,rgba(255,255,255,0.03),transparent_45%)]" />
 
-      <header className="relative z-30 border-b border-white/10 bg-[#080a0d]/85 backdrop-blur-xl">
+      <header className="relative z-30 border-b border-white/[0.06] bg-[#0c0c0c]/90 backdrop-blur-xl">
         <div className="max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-10 py-3 sm:py-0 sm:min-h-16 sm:flex sm:items-center">
           <div className="grid w-full grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-3 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center sm:gap-x-4 lg:h-16 lg:items-center">
             <div className="flex items-center gap-2 sm:gap-3 min-w-0 col-start-1 row-start-1">
               <Link to="/" className="flex items-center gap-2 shrink-0 group min-w-0">
-                <LayoutGrid className="w-5 h-5 shrink-0 text-emerald-400/90 transition-transform group-hover:scale-105" aria-hidden />
+                <LayoutGrid className="w-5 h-5 shrink-0 text-zinc-400 transition-transform group-hover:scale-105" aria-hidden />
                 <span className="text-sm sm:text-base font-semibold text-white tracking-tight truncate">
                   General Exchange
                 </span>
@@ -156,7 +156,7 @@ export const Dashboard: React.FC = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search symbol or company…"
                   autoComplete="off"
-                  className="w-full rounded-xl border border-white/10 bg-white/[0.05] py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-zinc-500 outline-none ring-emerald-500/30 transition-shadow focus:ring-2 touch-manipulation"
+                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-zinc-600 outline-none ring-white/10 transition-shadow focus:ring-2 touch-manipulation"
                 />
                 <StockSearchResults query={searchQuery} />
               </div>
@@ -251,7 +251,7 @@ export const Dashboard: React.FC = () => {
               ) : (
                 <div
                   key={selectedModel}
-                  className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-4 sm:p-6 animate-dash-fade-in"
+                  className="rounded-2xl border border-white/[0.06] bg-[#0a0a0a] backdrop-blur-xl p-4 sm:p-6 animate-dash-fade-in"
                 >
                   <MetricsPanel metrics={METRICS_MOCK} modelEdge={modelEdge} confusionRows={CONFUSION_MATRIX} />
                 </div>

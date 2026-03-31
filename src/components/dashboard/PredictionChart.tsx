@@ -20,7 +20,6 @@ export interface TradeLevelOverlay {
 
 interface PredictionChartProps {
   data: PredictionPoint[];
-  /** Horizontal levels for trade setup visualization (mock). */
   tradeLevels?: TradeLevelOverlay | null;
 }
 
@@ -38,12 +37,12 @@ const CustomTooltip = ({
   const err = (p.predicted - p.actual).toFixed(3);
   const pctErr = p.actual !== 0 ? (((p.predicted - p.actual) / p.actual) * 100).toFixed(2) : '0';
   return (
-    <div className="rounded-lg border border-white/15 bg-[#0f1118]/95 backdrop-blur-md px-3 py-2 shadow-xl text-xs">
-      <p className="text-zinc-400 font-mono mb-1">{p.time}</p>
-      <p className="text-emerald-300 font-medium">Actual: {p.actual.toFixed(2)}</p>
-      <p className="text-violet-300 font-medium">Predicted: {p.predicted.toFixed(2)}</p>
-      <p className="text-amber-200/90 mt-1">Δ level: {err}</p>
-      <p className="text-zinc-500 text-[11px]">Δ %: {pctErr}%</p>
+    <div className="rounded-lg border border-white/10 bg-[#0c0c0c] px-3 py-2 text-xs shadow-xl">
+      <p className="text-zinc-500 font-mono mb-1">{p.time}</p>
+      <p className="text-zinc-200 font-medium">Actual: {p.actual.toFixed(2)}</p>
+      <p className="text-zinc-400 font-medium">Predicted: {p.predicted.toFixed(2)}</p>
+      <p className="text-zinc-500 mt-1">Δ level: {err}</p>
+      <p className="text-zinc-600 text-[11px]">Δ %: {pctErr}%</p>
     </div>
   );
 };
@@ -54,32 +53,29 @@ export const PredictionChart: React.FC<PredictionChartProps> = ({ data, tradeLev
     confidenceSpan: d.confidenceHigh - d.confidenceLow,
   }));
 
-  const lineStyleActual = { filter: 'drop-shadow(0 0 8px rgba(52, 211, 153, 0.45))' };
-  const lineStylePred = { filter: 'drop-shadow(0 0 8px rgba(167, 139, 250, 0.5))' };
-
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-4 sm:p-6 shadow-[0_12px_48px_-24px_rgba(0,0,0,0.6)] transition-all duration-500 hover:border-violet-500/25 hover:shadow-[0_16px_56px_-20px_rgba(167,139,246,0.15)]">
+    <div className="rounded-2xl border border-white/[0.06] bg-[#0a0a0a] p-4 sm:p-6 transition-all duration-500 hover:border-white/10">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
         <div>
-          <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-violet-400/90">Prediction vs actual</p>
-          <p className="text-sm text-zinc-500 mt-1">Brighter lines = decision focus · band = confidence · dashed = trade box</p>
+          <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-zinc-500">Prediction vs actual</p>
+          <p className="text-sm text-zinc-600 mt-1">Monochrome scale · band = confidence · dashed = trade box</p>
         </div>
         <div className="flex flex-wrap gap-4 text-xs">
-          <span className="flex items-center gap-2 text-zinc-200">
-            <span className="h-1 w-7 bg-emerald-400 rounded-full shadow-[0_0_10px_rgba(52,211,153,0.6)]" />
+          <span className="flex items-center gap-2 text-zinc-400">
+            <span className="h-1 w-7 bg-zinc-200 rounded-full" />
             Actual
           </span>
-          <span className="flex items-center gap-2 text-zinc-200">
-            <span className="h-1 w-7 bg-violet-300 rounded-full shadow-[0_0_10px_rgba(167,139,250,0.55)]" />
+          <span className="flex items-center gap-2 text-zinc-400">
+            <span className="h-1 w-7 bg-zinc-500 rounded-full" />
             Predicted
           </span>
-          <span className="flex items-center gap-2 text-zinc-400">
-            <span className="h-2 w-2 rounded-sm bg-cyan-500/45 border border-cyan-400/55" />
+          <span className="flex items-center gap-2 text-zinc-500">
+            <span className="h-2 w-2 rounded-sm bg-zinc-600 border border-zinc-500/50" />
             Confidence
           </span>
           {tradeLevels && (
-            <span className="flex items-center gap-2 text-zinc-400">
-              <span className="h-0 w-6 border-t-2 border-dashed border-fuchsia-400/80" />
+            <span className="flex items-center gap-2 text-zinc-500">
+              <span className="h-0 w-6 border-t-2 border-dashed border-zinc-500" />
               Setup
             </span>
           )}
@@ -88,18 +84,18 @@ export const PredictionChart: React.FC<PredictionChartProps> = ({ data, tradeLev
       <div className="h-[280px] sm:h-[320px] w-full transition-opacity duration-500">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={chartData} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
             <XAxis
               dataKey="time"
               tick={{ fill: '#71717a', fontSize: 11 }}
               tickLine={false}
-              axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
+              axisLine={{ stroke: 'rgba(255,255,255,0.06)' }}
             />
             <YAxis
               domain={['dataMin - 0.6', 'dataMax + 0.6']}
               tick={{ fill: '#71717a', fontSize: 11 }}
               tickLine={false}
-              axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
+              axisLine={{ stroke: 'rgba(255,255,255,0.06)' }}
               width={48}
             />
             <Tooltip content={<CustomTooltip />} />
@@ -107,24 +103,24 @@ export const PredictionChart: React.FC<PredictionChartProps> = ({ data, tradeLev
               <>
                 <ReferenceLine
                   y={tradeLevels.entry}
-                  stroke="rgba(232, 121, 249, 0.95)"
+                  stroke="rgba(212, 212, 216, 0.85)"
                   strokeDasharray="6 4"
-                  strokeWidth={2}
-                  label={{ value: 'Entry', fill: '#e879f9', fontSize: 10, position: 'insideTopRight' }}
+                  strokeWidth={1.5}
+                  label={{ value: 'Entry', fill: '#a1a1aa', fontSize: 10, position: 'insideTopRight' }}
                 />
                 <ReferenceLine
                   y={tradeLevels.target}
-                  stroke="rgba(52, 211, 153, 0.9)"
+                  stroke="rgba(244, 244, 245, 0.9)"
                   strokeDasharray="6 4"
-                  strokeWidth={2}
-                  label={{ value: 'Target', fill: '#34d399', fontSize: 10, position: 'insideTopRight' }}
+                  strokeWidth={1.5}
+                  label={{ value: 'Target', fill: '#e4e4e7', fontSize: 10, position: 'insideTopRight' }}
                 />
                 <ReferenceLine
                   y={tradeLevels.stop}
-                  stroke="rgba(251, 113, 133, 0.95)"
+                  stroke="rgba(113, 113, 122, 0.95)"
                   strokeDasharray="6 4"
-                  strokeWidth={2}
-                  label={{ value: 'Stop', fill: '#fb7185', fontSize: 10, position: 'insideBottomRight' }}
+                  strokeWidth={1.5}
+                  label={{ value: 'Stop', fill: '#71717a', fontSize: 10, position: 'insideBottomRight' }}
                 />
               </>
             )}
@@ -142,33 +138,31 @@ export const PredictionChart: React.FC<PredictionChartProps> = ({ data, tradeLev
               dataKey="confidenceSpan"
               stackId="band"
               stroke="none"
-              fill="rgba(6, 182, 212, 0.22)"
+              fill="rgba(161, 161, 170, 0.12)"
               isAnimationActive
               animationDuration={500}
             />
             <Line
               type="monotone"
               dataKey="actual"
-              stroke="#4ade80"
-              strokeWidth={3}
+              stroke="#e4e4e7"
+              strokeWidth={2.5}
               dot={false}
-              activeDot={{ r: 6, fill: '#4ade80', stroke: '#fff', strokeWidth: 1 }}
+              activeDot={{ r: 6, fill: '#e4e4e7', stroke: '#fff', strokeWidth: 1 }}
               isAnimationActive
               animationDuration={700}
               animationEasing="ease-out"
-              style={lineStyleActual}
             />
             <Line
               type="monotone"
               dataKey="predicted"
-              stroke="#c4b5fd"
-              strokeWidth={3}
+              stroke="#71717a"
+              strokeWidth={2.5}
               dot={false}
-              activeDot={{ r: 6, fill: '#c4b5fd', stroke: '#fff', strokeWidth: 1 }}
+              activeDot={{ r: 6, fill: '#71717a', stroke: '#fff', strokeWidth: 1 }}
               isAnimationActive
               animationDuration={700}
               animationEasing="ease-out"
-              style={lineStylePred}
             />
           </ComposedChart>
         </ResponsiveContainer>

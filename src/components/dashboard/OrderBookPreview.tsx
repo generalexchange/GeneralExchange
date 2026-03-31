@@ -93,10 +93,10 @@ export const OrderBookPreview: React.FC = () => {
   };
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-4 sm:p-5 min-h-[480px] flex flex-col shadow-lg shadow-black/25 transition-all hover:border-emerald-500/20">
+    <div className="rounded-2xl border border-white/[0.06] bg-[#0a0a0a] backdrop-blur-xl p-4 sm:p-5 min-h-[480px] flex flex-col shadow-lg shadow-black/30 transition-all hover:border-white/10">
       <div className="flex items-start justify-between gap-2 mb-3">
         <div>
-          <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-sky-400/90 mb-1 flex items-center gap-2">
+          <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-zinc-400 mb-1 flex items-center gap-2">
             <BookOpen className="w-3.5 h-3.5" aria-hidden />
             Order book · chain
           </p>
@@ -123,11 +123,11 @@ export const OrderBookPreview: React.FC = () => {
             onFocus={() => setSearchOpen(true)}
             placeholder="Search symbol or company…"
             autoComplete="off"
-            className="w-full rounded-lg border border-white/10 bg-black/30 py-2 pl-8 pr-3 text-xs text-white placeholder:text-zinc-500 outline-none focus:ring-2 focus:ring-sky-500/30"
+            className="w-full rounded-lg border border-white/[0.08] bg-black/35 py-2 pl-8 pr-3 text-xs text-white placeholder:text-zinc-500 outline-none focus:ring-2 focus:ring-white/20"
           />
         </div>
         {searchOpen && searchQuery.trim().length > 0 && (
-          <div className="absolute left-0 right-0 top-full mt-1 max-h-48 overflow-y-auto rounded-lg border border-white/10 bg-[#0d0f14] shadow-xl">
+          <div className="absolute left-0 right-0 top-full mt-1 max-h-48 overflow-y-auto rounded-lg border border-white/[0.08] bg-[#0a0a0a] shadow-xl">
             {matches.length === 0 ? (
               <p className="px-3 py-2 text-xs text-zinc-500">No matches in catalog.</p>
             ) : (
@@ -164,7 +164,7 @@ export const OrderBookPreview: React.FC = () => {
         </div>
         <button
           type="button"
-          className="mt-2 text-[11px] text-sky-400/90 hover:text-sky-300"
+          className="mt-2 text-[11px] text-zinc-400 hover:text-zinc-200"
           onClick={() => {
             setSearchQuery(selected.symbol);
             setSearchOpen(true);
@@ -178,7 +178,7 @@ export const OrderBookPreview: React.FC = () => {
         <button
           type="button"
           className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-[11px] font-semibold rounded-md transition-colors ${
-            tab === 'book' ? 'bg-sky-500/20 text-sky-200' : 'text-zinc-500 hover:text-zinc-300'
+            tab === 'book' ? 'bg-white/[0.1] text-white' : 'text-zinc-500 hover:text-zinc-300'
           }`}
           onClick={() => setTab('book')}
         >
@@ -187,7 +187,7 @@ export const OrderBookPreview: React.FC = () => {
         <button
           type="button"
           className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-[11px] font-semibold rounded-md transition-colors ${
-            tab === 'options' ? 'bg-violet-500/20 text-violet-200' : 'text-zinc-500 hover:text-zinc-300'
+            tab === 'options' ? 'bg-white/[0.08] text-zinc-100' : 'text-zinc-500 hover:text-zinc-300'
           }`}
           onClick={() => setTab('options')}
         >
@@ -199,16 +199,16 @@ export const OrderBookPreview: React.FC = () => {
       {tab === 'book' && (
         <div className="grid grid-cols-2 gap-3 flex-1 text-[11px] sm:text-xs min-h-0">
           <div>
-            <p className="text-emerald-400/90 font-semibold mb-2 uppercase tracking-wider">Bids</p>
+            <p className="text-zinc-400 font-semibold mb-2 uppercase tracking-wider">Bids</p>
             <ul className="space-y-1.5">
               {bids.map((b, i) => (
                 <li
                   key={`b-${i}`}
-                  className="relative overflow-hidden rounded-md border border-white/5 px-2 py-1.5 font-mono tabular-nums transition-colors hover:border-emerald-500/30"
+                  className="relative overflow-hidden rounded-md border border-white/5 px-2 py-1.5 font-mono tabular-nums transition-colors hover:border-white/15"
                   title={`Size ${b.size}`}
                 >
                   <span
-                    className="absolute inset-y-0 left-0 bg-emerald-500/15 pointer-events-none"
+                    className="absolute inset-y-0 left-0 bg-white/[0.08] pointer-events-none"
                     style={{ width: `${(b.size / maxSize) * 100}%` }}
                   />
                   <span className="relative flex justify-between gap-2 text-zinc-200">
@@ -220,16 +220,16 @@ export const OrderBookPreview: React.FC = () => {
             </ul>
           </div>
           <div>
-            <p className="text-rose-400/90 font-semibold mb-2 uppercase tracking-wider">Asks</p>
+            <p className="text-zinc-500 font-semibold mb-2 uppercase tracking-wider">Asks</p>
             <ul className="space-y-1.5">
               {asks.map((a, i) => (
                 <li
                   key={`a-${i}`}
-                  className="relative overflow-hidden rounded-md border border-white/5 px-2 py-1.5 font-mono tabular-nums transition-colors hover:border-rose-500/30"
+                  className="relative overflow-hidden rounded-md border border-white/5 px-2 py-1.5 font-mono tabular-nums transition-colors hover:border-white/12"
                   title={`Size ${a.size}`}
                 >
                   <span
-                    className="absolute inset-y-0 right-0 bg-rose-500/15 pointer-events-none"
+                    className="absolute inset-y-0 right-0 bg-zinc-700/40 pointer-events-none"
                     style={{ width: `${(a.size / maxSize) * 100}%` }}
                   />
                   <span className="relative flex justify-between gap-2 text-zinc-200">
@@ -253,7 +253,7 @@ export const OrderBookPreview: React.FC = () => {
               id="orderbook-expiration"
               value={expirationId}
               onChange={(e) => setExpirationId(e.target.value)}
-              className="w-full appearance-none rounded-lg border border-white/10 bg-black/35 py-2 pl-3 pr-9 text-xs text-white outline-none focus:ring-2 focus:ring-violet-500/30"
+              className="w-full appearance-none rounded-lg border border-white/[0.08] bg-black/35 py-2 pl-3 pr-9 text-xs text-white outline-none focus:ring-2 focus:ring-white/20"
             >
               {OPTION_EXPIRATIONS.map((e) => (
                 <option key={e.id} value={e.id}>
@@ -268,7 +268,7 @@ export const OrderBookPreview: React.FC = () => {
           </p>
           <div className="overflow-x-auto overflow-y-auto flex-1 max-h-[320px] rounded-lg border border-white/10">
             <table className="w-full min-w-[520px] text-[10px] sm:text-[11px] border-collapse">
-              <thead className="sticky top-0 z-10 bg-[#0b0d12] border-b border-white/10">
+              <thead className="sticky top-0 z-10 bg-[#0a0a0a] border-b border-white/[0.08]">
                 <tr className="text-zinc-500 text-left">
                   <th className="p-2 font-medium" title="Call bid — pending feed">
                     C bid
@@ -292,7 +292,7 @@ export const OrderBookPreview: React.FC = () => {
                     <tr
                       key={row.strike}
                       className={`border-b border-white/[0.06] ${
-                        atm ? 'bg-amber-500/10' : 'hover:bg-white/[0.04]'
+                        atm ? 'bg-white/[0.06]' : 'hover:bg-white/[0.04]'
                       }`}
                     >
                       <td className="p-1.5 font-mono">{PRICE_PENDING}</td>
@@ -301,7 +301,7 @@ export const OrderBookPreview: React.FC = () => {
                       <td className="p-1.5 text-zinc-400 tabular-nums">{row.callOpenInterest.toLocaleString()}</td>
                       <td
                         className={`p-1.5 text-center font-mono font-semibold tabular-nums ${
-                          atm ? 'text-amber-200' : 'text-white'
+                          atm ? 'text-zinc-100' : 'text-white'
                         }`}
                         title={`Δ call ${row.callDelta} · Δ put ${row.putDelta}`}
                       >

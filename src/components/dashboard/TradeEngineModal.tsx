@@ -113,12 +113,12 @@ export const TradeEngineModal: React.FC<TradeEngineModalProps> = ({ open, onClos
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="relative flex max-h-[min(92vh,860px)] w-full max-w-2xl flex-col rounded-t-2xl border border-white/10 bg-[#0a0c10] shadow-2xl shadow-black/50 sm:rounded-2xl"
+        className="relative flex max-h-[min(92vh,860px)] w-full max-w-2xl flex-col rounded-t-2xl border border-white/[0.08] bg-[#0a0a0a] shadow-2xl shadow-black/50 sm:rounded-2xl"
       >
         <div className="flex items-start justify-between gap-3 border-b border-white/10 px-5 py-4 sm:px-6">
           <div className="flex items-start gap-3 min-w-0">
-            <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-cyan-500/30 bg-cyan-500/10">
-              <Layers className="h-5 w-5 text-cyan-400" aria-hidden />
+            <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/[0.12] bg-white/[0.05]">
+              <Layers className="h-5 w-5 text-zinc-300" aria-hidden />
             </div>
             <div className="min-w-0">
               <h2 id={titleId} className="text-lg font-semibold text-white tracking-tight">
@@ -156,7 +156,7 @@ export const TradeEngineModal: React.FC<TradeEngineModalProps> = ({ open, onClos
                   max={240}
                   value={horizonMin}
                   onChange={(e) => setHorizonMin(Number(e.target.value))}
-                  className="mt-2 w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-cyan-500/40"
+                  className="mt-2 w-full rounded-lg border border-white/[0.08] bg-black/40 px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-white/25"
                 />
               </label>
               <label className="block rounded-xl border border-white/10 bg-white/[0.03] p-4">
@@ -167,7 +167,7 @@ export const TradeEngineModal: React.FC<TradeEngineModalProps> = ({ open, onClos
                   max={50}
                   value={maxParticipation}
                   onChange={(e) => setMaxParticipation(Number(e.target.value))}
-                  className="mt-2 w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-cyan-500/40"
+                  className="mt-2 w-full rounded-lg border border-white/[0.08] bg-black/40 px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-white/25"
                 />
               </label>
             </div>
@@ -186,7 +186,7 @@ export const TradeEngineModal: React.FC<TradeEngineModalProps> = ({ open, onClos
                   key={m.id}
                   className="flex gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-4 transition-colors hover:border-white/15"
                 >
-                  <span className="font-mono text-[10px] text-cyan-400/80 tabular-nums pt-0.5 w-6">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="font-mono text-[10px] text-zinc-500 tabular-nums pt-0.5 w-6">{String(i + 1).padStart(2, '0')}</span>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium text-white">{m.label}</p>
                     <p className="mt-0.5 text-xs text-zinc-500 leading-relaxed">{m.description}</p>
@@ -197,7 +197,7 @@ export const TradeEngineModal: React.FC<TradeEngineModalProps> = ({ open, onClos
                     aria-checked={m.enabled}
                     onClick={() => toggleModule(m.id)}
                     className={`relative h-7 w-12 shrink-0 rounded-full transition-colors ${
-                      m.enabled ? 'bg-emerald-500/40' : 'bg-zinc-700'
+                      m.enabled ? 'bg-zinc-500' : 'bg-zinc-800'
                     }`}
                   >
                     <span
@@ -227,7 +227,7 @@ export const TradeEngineModal: React.FC<TradeEngineModalProps> = ({ open, onClos
                       type="checkbox"
                       checked={d.enabled}
                       onChange={() => toggleDataset(d.id)}
-                      className="mt-1 rounded border-white/20 bg-black/40 text-cyan-500 focus:ring-cyan-500/40"
+                      className="mt-1 rounded border-white/20 bg-black/40 text-zinc-200 accent-white focus:ring-white/30"
                     />
                     <span className="min-w-0">
                       <span className="block text-sm font-medium text-white">{d.label}</span>
@@ -256,7 +256,7 @@ export const TradeEngineModal: React.FC<TradeEngineModalProps> = ({ open, onClos
           <button
             type="button"
             onClick={handleSave}
-            className="rounded-xl bg-gradient-to-r from-cyan-600 to-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-cyan-900/20 hover:brightness-110"
+            className="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-black shadow-lg shadow-black/30 hover:bg-zinc-200"
           >
             Save draft
           </button>

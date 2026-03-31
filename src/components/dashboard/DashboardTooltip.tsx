@@ -17,7 +17,7 @@ export const DashboardTooltip: React.FC<DashboardTooltipProps> = ({ label, descr
       <span>{label}</span>
       <button
         type="button"
-        className="shrink-0 rounded p-0.5 text-zinc-500 hover:text-zinc-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
+        className="shrink-0 rounded p-0.5 text-zinc-500 hover:text-zinc-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
         aria-describedby={open ? id : undefined}
         aria-label={`Help: ${label}`}
         onMouseEnter={() => setOpen(true)}
@@ -31,7 +31,7 @@ export const DashboardTooltip: React.FC<DashboardTooltipProps> = ({ label, descr
         <span
           id={id}
           role="tooltip"
-          className="pointer-events-none absolute left-0 top-full z-50 mt-1 max-w-[240px] rounded-lg border border-white/15 bg-[#12141a]/98 px-2.5 py-2 text-[11px] leading-snug text-zinc-300 shadow-xl"
+          className="pointer-events-none absolute left-0 top-full z-50 mt-1 max-w-[240px] rounded-lg border border-white/[0.08] bg-[#0a0a0a]/98 px-2.5 py-2 text-[11px] leading-snug text-zinc-300 shadow-xl"
         >
           {description}
         </span>

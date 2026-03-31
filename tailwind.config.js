@@ -12,24 +12,14 @@ export default {
           from: { opacity: '0', transform: 'translateY(6px)' },
           to: { opacity: '1', transform: 'translateY(0)' },
         },
-        signalGlow: {
-          '0%, 100%': { boxShadow: '0 0 20px -4px rgba(52, 211, 153, 0.35)' },
-          '50%': { boxShadow: '0 0 28px -2px rgba(52, 211, 153, 0.55)' },
-        },
-        signalGlowRose: {
-          '0%, 100%': { boxShadow: '0 0 20px -4px rgba(251, 113, 133, 0.35)' },
-          '50%': { boxShadow: '0 0 28px -2px rgba(251, 113, 133, 0.55)' },
-        },
-        signalGlowAmber: {
-          '0%, 100%': { boxShadow: '0 0 18px -4px rgba(251, 191, 36, 0.3)' },
-          '50%': { boxShadow: '0 0 26px -2px rgba(251, 191, 36, 0.45)' },
+        signalGlowLuxury: {
+          '0%, 100%': { boxShadow: '0 0 24px -8px rgba(255,255,255,0.06)' },
+          '50%': { boxShadow: '0 0 32px -6px rgba(255,255,255,0.1)' },
         },
       },
       animation: {
         'dash-fade-in': 'dashFadeIn 0.4s ease-out both',
-        'signal-glow-emerald': 'signalGlow 2.5s ease-in-out infinite',
-        'signal-glow-rose': 'signalGlowRose 2.5s ease-in-out infinite',
-        'signal-glow-amber': 'signalGlowAmber 2.8s ease-in-out infinite',
+        'signal-glow-luxury': 'signalGlowLuxury 2.8s ease-in-out infinite',
       },
       colors: {
         primary: {

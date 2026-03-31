@@ -9,8 +9,8 @@ interface ModelSelectorProps {
 
 export const ModelSelector: React.FC<ModelSelectorProps> = ({ models, selectedId, onSelect }) => {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl shadow-[0_8px_40px_-20px_rgba(0,0,0,0.5)] p-5 sm:p-6 transition-all duration-300 hover:border-emerald-500/15">
-      <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-emerald-400/90 mb-4">Model selection</p>
+    <div className="rounded-2xl border border-white/[0.06] bg-[#0a0a0a] p-5 sm:p-6 transition-all duration-300 hover:border-white/10">
+      <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-zinc-500 mb-4">Model selection</p>
       <div className="space-y-3">
         {models.map((m) => {
           const selected = m.id === selectedId;
@@ -21,20 +21,20 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({ models, selectedId
               onClick={() => onSelect(m.id)}
               className={`w-full text-left rounded-xl border px-4 py-3 transition-all duration-500 ease-out hover:scale-[1.01] active:scale-[0.99] ${
                 selected
-                  ? 'border-violet-400/70 bg-violet-500/[0.14] shadow-[0_0_32px_-6px_rgba(139,92,246,0.55)] ring-2 ring-violet-500/40 ring-offset-2 ring-offset-[#050608]'
-                  : 'border-white/10 bg-black/20 hover:border-white/20 hover:bg-white/[0.03]'
+                  ? 'border-white/25 bg-white/[0.06] ring-1 ring-white/20 ring-offset-2 ring-offset-[#080808]'
+                  : 'border-white/[0.06] bg-black/30 hover:border-white/10 hover:bg-white/[0.03]'
               }`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-white leading-snug">{m.name}</p>
-                  <p className="text-xs text-zinc-400 mt-1 leading-relaxed">{m.shortDescription}</p>
+                  <p className="text-xs text-zinc-500 mt-1 leading-relaxed">{m.shortDescription}</p>
                 </div>
                 <span
                   className={`shrink-0 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md ${
                     m.status === 'active'
-                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                      : 'bg-zinc-500/20 text-zinc-400 border border-zinc-500/35'
+                      ? 'bg-white/10 text-zinc-200 border border-white/15'
+                      : 'bg-zinc-900 text-zinc-500 border border-zinc-700/50'
                   }`}
                 >
                   {m.status === 'active' ? 'Active' : 'Inactive'}
@@ -42,10 +42,12 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({ models, selectedId
               </div>
               <div className="mt-3 flex items-center gap-2">
                 <span
-                  className={`h-2 w-2 rounded-full ${selected ? 'bg-violet-400' : 'bg-zinc-600'}`}
+                  className={`h-2 w-2 rounded-full ${selected ? 'bg-zinc-300' : 'bg-zinc-700'}`}
                   aria-hidden
                 />
-                <span className="text-[11px] text-zinc-500">{selected ? 'Selected for charts & metrics' : 'Tap to load mock view'}</span>
+                <span className="text-[11px] text-zinc-600">
+                  {selected ? 'Selected for charts & metrics' : 'Tap to load mock view'}
+                </span>
               </div>
             </button>
           );

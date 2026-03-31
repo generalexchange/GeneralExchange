@@ -28,7 +28,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
     sparkline ?? Array.from({ length: 12 }, (_, i) => ({ v: 40 + Math.sin(i * 0.6) * 15 + i }));
 
   return (
-    <div className="rounded-xl border border-white/10 bg-gradient-to-br from-white/[0.07] to-transparent backdrop-blur-md p-4 sm:p-5 shadow-lg shadow-black/20 transition-all duration-300 hover:border-white/20 hover:shadow-[0_8px_32px_-12px_rgba(167,139,246,0.15)]">
+    <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] backdrop-blur-md p-4 sm:p-5 shadow-lg shadow-black/30 transition-all duration-300 hover:border-white/12">
       <p className="text-[11px] uppercase tracking-wider text-zinc-500 font-medium leading-snug mb-1">
         <span title={metricTooltip} className="cursor-help border-b border-dotted border-zinc-600/60">
           {name}
@@ -38,7 +38,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
         <p className="text-2xl sm:text-3xl font-semibold text-white tabular-nums">{value}</p>
         <div
           className={`flex items-center gap-1 text-xs font-semibold ${
-            isPositiveVisual ? 'text-emerald-400' : 'text-rose-400'
+            isPositiveVisual ? 'text-zinc-300' : 'text-zinc-500'
           }`}
           title={trend === 'up' ? 'Trend up vs prior window' : 'Trend down vs prior window'}
         >
@@ -51,7 +51,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
             <Line
               type="monotone"
               dataKey="v"
-              stroke={isPositiveVisual ? '#34d399' : '#f472b6'}
+              stroke={isPositiveVisual ? '#e4e4e7' : '#71717a'}
               strokeWidth={2}
               dot={false}
             />

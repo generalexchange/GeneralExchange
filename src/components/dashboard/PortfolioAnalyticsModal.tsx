@@ -46,12 +46,12 @@ export const PortfolioAnalyticsModal: React.FC<PortfolioAnalyticsModalProps> = (
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="relative flex max-h-[min(92vh,880px)] w-full max-w-3xl flex-col rounded-t-2xl border border-white/10 bg-[#090b0f] shadow-2xl sm:rounded-2xl"
+        className="relative flex max-h-[min(92vh,880px)] w-full max-w-3xl flex-col rounded-t-2xl border border-white/[0.08] bg-[#0a0a0a] shadow-2xl sm:rounded-2xl"
       >
         <div className="flex items-start justify-between gap-3 border-b border-white/10 px-5 py-4 sm:px-6">
           <div className="flex items-start gap-3 min-w-0">
-            <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-violet-500/30 bg-violet-500/10">
-              <BarChart3 className="h-5 w-5 text-violet-300" aria-hidden />
+            <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/[0.12] bg-white/[0.05]">
+              <BarChart3 className="h-5 w-5 text-zinc-300" aria-hidden />
             </div>
             <div className="min-w-0">
               <h2 id={titleId} className="text-lg font-semibold text-white tracking-tight">
@@ -90,7 +90,7 @@ export const PortfolioAnalyticsModal: React.FC<PortfolioAnalyticsModalProps> = (
 
           <section className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
             <div className="mb-3 flex items-center gap-2">
-              <Activity className="h-4 w-4 text-emerald-400" />
+              <Activity className="h-4 w-4 text-zinc-400" />
               <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-400">Turnover & flow</h3>
             </div>
             <div className="grid gap-3 sm:grid-cols-3 text-sm">
@@ -100,7 +100,7 @@ export const PortfolioAnalyticsModal: React.FC<PortfolioAnalyticsModalProps> = (
               </div>
               <div>
                 <p className="text-zinc-500 text-xs">Net bought (session)</p>
-                <p className="font-mono text-emerald-400 mt-1">+$42.1k</p>
+                <p className="font-mono text-zinc-200 mt-1">+$42.1k</p>
               </div>
               <div>
                 <p className="text-zinc-500 text-xs">Cost drag (est.)</p>
@@ -111,7 +111,7 @@ export const PortfolioAnalyticsModal: React.FC<PortfolioAnalyticsModalProps> = (
 
           <section className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
             <div className="mb-3 flex items-center gap-2">
-              <Layers className="h-4 w-4 text-cyan-400" />
+              <Layers className="h-4 w-4 text-zinc-400" />
               <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-400">Exposure (mock)</h3>
             </div>
             <table className="w-full text-left text-sm">
@@ -142,12 +142,12 @@ export const PortfolioAnalyticsModal: React.FC<PortfolioAnalyticsModalProps> = (
             </table>
           </section>
 
-          <section className="rounded-xl border border-violet-500/20 bg-violet-500/[0.06] p-4">
+          <section className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-4">
             <div className="flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-violet-300" />
+              <TrendingUp className="h-4 w-4 text-zinc-400" />
               <p className="text-sm text-zinc-200">
                 Best day <span className="font-mono text-white">+2.34%</span> · Worst{' '}
-                <span className="font-mono text-rose-300">−1.12%</span> (mock trailing 90D)
+                <span className="font-mono text-zinc-500">−1.12%</span> (mock trailing 90D)
               </p>
             </div>
           </section>
