@@ -4,7 +4,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { LayoutGrid, Search } from 'lucide-react';
 import { ProfileMenu } from '../components/ProfileMenu';
 import { StockSearchResults } from '../components/StockSearchResults';
@@ -126,6 +126,7 @@ export const Dashboard: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [tradeEngineModalOpen, setTradeEngineModalOpen] = useState(false);
   const [portfolioAnalyticsOpen, setPortfolioAnalyticsOpen] = useState(false);
+  const [actionFx, setActionFx] = useState<{ id: number; label: string } | null>(null);
   const predictionData = getPredictionSeriesForModel(selectedModel);
   const outlook = getPredictionOutlook(selectedModel, predictionData);
   const tradeSetup = buildTradeSetupFromSeries(predictionData, outlook);
@@ -150,15 +151,54 @@ export const Dashboard: React.FC = () => {
     return () => window.clearTimeout(t);
   }, [selectedModel]);
 
+  useEffect(() => {
+    if (!actionFx) return;
+    const t = window.setTimeout(() => setActionFx(null), 1100);
+    return () => window.clearTimeout(t);
+  }, [actionFx]);
+
+  const triggerActionFx = (label: string) => {
+    setActionFx({ id: Date.now(), label });
+  };
+
+  const handleModelSelect = (modelId: ModelId) => {
+    setSelectedModel(modelId);
+    triggerActionFx('Model updated');
+  };
+
+  const handleOpenAnalytics = () => {
+    setPortfolioAnalyticsOpen(true);
+    triggerActionFx('Analytics opened');
+  };
+
+  const handleOpenTradeEngine = () => {
+    setTradeEngineModalOpen(true);
+    triggerActionFx('Trade engine opened');
+  };
+
   return (
     <div className="min-h-screen bg-[#080808] text-zinc-100">
       <TradeEngineModal open={tradeEngineModalOpen} onClose={() => setTradeEngineModalOpen(false)} />
       <PortfolioAnalyticsModal
         open={portfolioAnalyticsOpen}
         onClose={() => setPortfolioAnalyticsOpen(false)}
-        onOpenTradeEngine={() => setTradeEngineModalOpen(true)}
+        onOpenTradeEngine={handleOpenTradeEngine}
       />
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_90%_70%_at_50%_-30%,rgba(255,255,255,0.04),transparent_55%),radial-gradient(ellipse_55%_45%_at_100%_0%,rgba(255,255,255,0.03),transparent_45%)]" />
+      <AnimatePresence>
+        {actionFx && (
+          <motion.div
+            key={actionFx.id}
+            className="pointer-events-none fixed right-4 top-20 z-[120] rounded-xl border border-white/15 bg-[#0b0b0b]/95 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-200 shadow-xl shadow-black/40 sm:right-6"
+            initial={{ opacity: 0, y: -10, scale: 0.96, filter: 'blur(4px)' }}
+            animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, y: -10, scale: 0.98, filter: 'blur(3px)' }}
+            transition={{ duration: 0.28, ease: easeLuxury }}
+          >
+            {actionFx.label}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <motion.header
         className="relative z-30 border-b border-white/[0.06] bg-[#0c0c0c]/90 backdrop-blur-xl"
@@ -225,7 +265,7 @@ export const Dashboard: React.FC = () => {
               {loading ? (
                 <ChartSkeleton className="min-h-[420px] sm:min-h-[480px]" />
               ) : (
-                <MarketChart data={MARKET_SERIES} onOpenAnalytics={() => setPortfolioAnalyticsOpen(true)} />
+                <MarketChart data={MARKET_SERIES} onOpenAnalytics={handleOpenAnalytics} />
               )}
             </div>
             <div className="lg:col-span-1">
@@ -243,7 +283,7 @@ export const Dashboard: React.FC = () => {
           />
           <div id="layer-prediction" className="grid grid-cols-1 xl:grid-cols-12 gap-5 xl:gap-6">
             <div className="xl:col-span-4 min-w-0">
-              <ModelSelector models={MODELS} selectedId={selectedModel} onSelect={setSelectedModel} />
+              <ModelSelector models={MODELS} selectedId={selectedModel} onSelect={handleModelSelect} />
             </div>
             <div className="xl:col-span-8 min-w-0">
               {loading ? (
