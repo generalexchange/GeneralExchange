@@ -4,6 +4,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { LayoutGrid, Search } from 'lucide-react';
 import { ProfileMenu } from '../components/ProfileMenu';
 import { StockSearchResults } from '../components/StockSearchResults';
@@ -44,6 +45,37 @@ import {
   getDirectionalAccuracyPct,
   type ModelId,
 } from '../components/dashboard/mockMlDashboardData';
+
+const easeLuxury = [0.22, 1, 0.36, 1] as const;
+
+const headerMotion = {
+  initial: { opacity: 0, y: -14 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5, ease: easeLuxury },
+};
+
+const mainStagger = {
+  initial: 'hidden' as const,
+  animate: 'show' as const,
+  variants: {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.08 },
+    },
+  },
+};
+
+const sectionItem = {
+  variants: {
+    hidden: { opacity: 0, y: 26 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.52, ease: easeLuxury },
+    },
+  },
+};
 
 function LayerHeader({
   step,
@@ -128,7 +160,10 @@ export const Dashboard: React.FC = () => {
       />
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_90%_70%_at_50%_-30%,rgba(255,255,255,0.04),transparent_55%),radial-gradient(ellipse_55%_45%_at_100%_0%,rgba(255,255,255,0.03),transparent_45%)]" />
 
-      <header className="relative z-30 border-b border-white/[0.06] bg-[#0c0c0c]/90 backdrop-blur-xl">
+      <motion.header
+        className="relative z-30 border-b border-white/[0.06] bg-[#0c0c0c]/90 backdrop-blur-xl"
+        {...headerMotion}
+      >
         <div className="max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-10 py-3 sm:py-0 sm:min-h-16 sm:flex sm:items-center">
           <div className="grid w-full grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-3 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center sm:gap-x-4 lg:h-16 lg:items-center">
             <div className="flex items-center gap-2 sm:gap-3 min-w-0 col-start-1 row-start-1">
@@ -167,13 +202,18 @@ export const Dashboard: React.FC = () => {
             </div>
           </div>
         </div>
-      </header>
+      </motion.header>
 
-      <main className="relative z-10 max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-8 pb-16">
-        <IntelligenceStatusBar key={selectedModel} items={intelligenceFeed} />
+      <motion.main
+        className="relative z-10 max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-8 pb-16"
+        {...mainStagger}
+      >
+        <motion.div {...sectionItem}>
+          <IntelligenceStatusBar key={selectedModel} items={intelligenceFeed} />
+        </motion.div>
 
         {/* 01 Market Engine */}
-        <section className="mb-10 sm:mb-12" aria-labelledby="layer-market">
+        <motion.section className="mb-10 sm:mb-12" aria-labelledby="layer-market" {...sectionItem}>
           <LayerHeader
             step="01"
             title="Market Engine"
@@ -192,10 +232,10 @@ export const Dashboard: React.FC = () => {
               {loading ? <OrderBookSkeleton /> : <OrderBookPreview />}
             </div>
           </div>
-        </section>
+        </motion.section>
 
         {/* 02 Prediction */}
-        <section className="mb-10 sm:mb-12" aria-labelledby="layer-prediction">
+        <motion.section className="mb-10 sm:mb-12" aria-labelledby="layer-prediction" {...sectionItem}>
           <LayerHeader
             step="02"
             title="Prediction layer"
@@ -216,7 +256,7 @@ export const Dashboard: React.FC = () => {
               ) : (
                 <div
                   key={selectedModel}
-                  className="grid grid-cols-1 lg:grid-cols-5 gap-4 xl:gap-5 animate-dash-fade-in"
+                  className="grid grid-cols-1 lg:grid-cols-5 gap-4 xl:gap-5"
                 >
                   <div className="lg:col-span-3 min-w-0">
                     <PredictionChart data={predictionData} tradeLevels={tradeLevels} />
@@ -232,10 +272,10 @@ export const Dashboard: React.FC = () => {
               )}
             </div>
           </div>
-        </section>
+        </motion.section>
 
         {/* 03 Accuracy */}
-        <section className="mb-10 sm:mb-12" aria-labelledby="layer-accuracy">
+        <motion.section className="mb-10 sm:mb-12" aria-labelledby="layer-accuracy" {...sectionItem}>
           <LayerHeader
             step="03"
             title="Accuracy layer"
@@ -251,7 +291,7 @@ export const Dashboard: React.FC = () => {
               ) : (
                 <div
                   key={selectedModel}
-                  className="rounded-2xl border border-white/[0.06] bg-[#0a0a0a] backdrop-blur-xl p-4 sm:p-6 animate-dash-fade-in"
+                  className="rounded-2xl border border-white/[0.06] bg-[#0a0a0a] backdrop-blur-xl p-4 sm:p-6"
                 >
                   <MetricsPanel metrics={METRICS_MOCK} modelEdge={modelEdge} confusionRows={CONFUSION_MATRIX} />
                 </div>
@@ -261,10 +301,10 @@ export const Dashboard: React.FC = () => {
               {loading ? <PanelSkeleton tall /> : <AccuracyTrendChart rollingAccuracy={ROLLING_ACCURACY} errorOverTime={ERROR_OVER_TIME} />}
             </div>
           </div>
-        </section>
+        </motion.section>
 
         {/* 04 Execution */}
-        <section aria-labelledby="layer-exec">
+        <motion.section aria-labelledby="layer-exec" {...sectionItem}>
           <LayerHeader
             step="04"
             title="Execution layer"
@@ -281,7 +321,7 @@ export const Dashboard: React.FC = () => {
             ) : (
               <div
                 key={selectedModel}
-                className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5 animate-dash-fade-in items-stretch"
+                className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5 items-stretch"
               >
                 <div className="lg:col-span-2 min-w-0">
                   <SignalPanel
@@ -298,8 +338,8 @@ export const Dashboard: React.FC = () => {
               </div>
             )}
           </div>
-        </section>
-      </main>
+        </motion.section>
+      </motion.main>
     </div>
   );
 };

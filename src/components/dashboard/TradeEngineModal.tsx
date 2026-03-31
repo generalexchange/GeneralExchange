@@ -1,4 +1,5 @@
 import React, { useEffect, useId, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { X, Cpu, Database, Layers, SlidersHorizontal } from 'lucide-react';
 
 export interface TradeEngineModalProps {
@@ -87,8 +88,6 @@ export const TradeEngineModal: React.FC<TradeEngineModalProps> = ({ open, onClos
     };
   }, [open]);
 
-  if (!open) return null;
-
   const toggleModule = (id: ModuleId) => {
     setModules((prev) => prev.map((m) => (m.id === id ? { ...m, enabled: !m.enabled } : m)));
   };
@@ -102,19 +101,32 @@ export const TradeEngineModal: React.FC<TradeEngineModalProps> = ({ open, onClos
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-end justify-center p-0 sm:items-center sm:p-4" role="presentation">
-      <button
-        type="button"
-        className="absolute inset-0 bg-black/75 backdrop-blur-sm"
-        aria-label="Close dialog"
-        onClick={onClose}
-      />
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-        className="relative flex max-h-[min(92vh,860px)] w-full max-w-2xl flex-col rounded-t-2xl border border-white/[0.08] bg-[#0a0a0a] shadow-2xl shadow-black/50 sm:rounded-2xl"
-      >
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          key="trade-engine-shell"
+          className="fixed inset-0 z-[100] flex items-end justify-center p-0 sm:items-center sm:p-4"
+          role="presentation"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.22 }}
+        >
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/75 backdrop-blur-sm"
+            aria-label="Close dialog"
+            onClick={onClose}
+          />
+          <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={titleId}
+            className="relative flex max-h-[min(92vh,860px)] w-full max-w-2xl flex-col rounded-t-2xl border border-white/[0.08] bg-[#0a0a0a] shadow-2xl shadow-black/50 sm:rounded-2xl"
+            initial={{ opacity: 0, y: 48, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ type: 'spring', damping: 30, stiffness: 340, mass: 0.85 }}
+          >
         <div className="flex items-start justify-between gap-3 border-b border-white/10 px-5 py-4 sm:px-6">
           <div className="flex items-start gap-3 min-w-0">
             <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/[0.12] bg-white/[0.05]">
@@ -261,7 +273,9 @@ export const TradeEngineModal: React.FC<TradeEngineModalProps> = ({ open, onClos
             Save draft
           </button>
         </div>
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
