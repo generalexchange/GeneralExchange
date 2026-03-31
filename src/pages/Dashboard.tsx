@@ -4,8 +4,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, LayoutGrid } from 'lucide-react';
+import { ChevronRight, LayoutGrid, Search } from 'lucide-react';
 import { ProfileMenu } from '../components/ProfileMenu';
+import { StockSearchResults } from '../components/StockSearchResults';
 import { ModelSelector } from '../components/dashboard/ModelSelector';
 import { PredictionChart } from '../components/dashboard/PredictionChart';
 import { MetricsPanel } from '../components/dashboard/MetricsPanel';
@@ -59,6 +60,7 @@ function LayerHeader({
 export const Dashboard: React.FC = () => {
   const [selectedModel, setSelectedModel] = useState<ModelId>('xgboost');
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
   const activeName = MODELS.find((m) => m.id === selectedModel)?.name ?? 'Model';
   const predictionData = getPredictionSeriesForModel(selectedModel);
 
@@ -73,23 +75,54 @@ export const Dashboard: React.FC = () => {
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_90%_70%_at_50%_-25%,rgba(34,197,94,0.06),transparent_55%),radial-gradient(ellipse_60%_40%_at_100%_10%,rgba(139,92,246,0.07),transparent_45%)]" />
 
       <header className="relative z-30 border-b border-white/10 bg-[#080a0d]/85 backdrop-blur-xl">
-        <div className="max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-10 h-14 sm:h-16 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3 min-w-0">
-            <Link to="/" className="flex items-center gap-2 shrink-0 group">
-              <LayoutGrid className="w-5 h-5 text-emerald-400/90 transition-transform group-hover:scale-105" aria-hidden />
-              <span className="text-sm sm:text-base font-semibold text-white tracking-tight truncate">General Exchange</span>
-            </Link>
-            <span className="hidden md:inline text-xs text-zinc-500 border-l border-white/10 pl-3 truncate">
-              Command center · {activeName}
-            </span>
+        <div className="max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-10 py-3 sm:py-0 sm:min-h-16 sm:flex sm:items-center">
+          <div className="grid w-full grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-3 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center sm:gap-x-4 lg:h-16 lg:items-center">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0 col-start-1 row-start-1">
+              <Link to="/" className="flex items-center gap-2 shrink-0 group min-w-0">
+                <LayoutGrid className="w-5 h-5 shrink-0 text-emerald-400/90 transition-transform group-hover:scale-105" aria-hidden />
+                <span className="text-sm sm:text-base font-semibold text-white tracking-tight truncate">
+                  General Exchange
+                </span>
+              </Link>
+              <span className="hidden md:inline text-xs text-zinc-500 border-l border-white/10 pl-3 truncate">
+                Command center · {activeName}
+              </span>
+            </div>
+
+            <div className="relative z-40 min-w-0 col-span-2 col-start-1 row-start-2 sm:col-span-1 sm:col-start-2 sm:row-start-1 w-full">
+              <label className="sr-only" htmlFor="dashboard-stock-search">
+                Search stocks
+              </label>
+              <div className="relative">
+                <Search
+                  className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500"
+                  aria-hidden
+                />
+                <input
+                  id="dashboard-stock-search"
+                  type="search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search symbol or company…"
+                  autoComplete="off"
+                  className="w-full rounded-xl border border-white/10 bg-white/[0.05] py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-zinc-500 outline-none ring-emerald-500/30 transition-shadow focus:ring-2 touch-manipulation"
+                />
+                <StockSearchResults query={searchQuery} />
+              </div>
+            </div>
+
+            <div className="col-start-2 row-start-1 justify-self-end self-center sm:col-start-3 sm:row-start-1">
+              <ProfileMenu />
+            </div>
           </div>
-          <ProfileMenu />
         </div>
       </header>
 
       <main className="relative z-10 max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-8 pb-16">
         <div className="mb-8">
-          <h1 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight">Trading intelligence</h1>
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white tracking-tight">
+            Trading intelligence
+          </h1>
           <p className="mt-2 text-sm text-zinc-400 max-w-3xl leading-relaxed">
             Decision flow: surface market state, compare model path to reality, validate accuracy, then act on the signal.
             All data is mocked for UI development.

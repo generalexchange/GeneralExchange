@@ -58,21 +58,29 @@ export const Features: React.FC = () => {
       {/* Navigation */}
       <nav className="bg-[#0b0c0f]/95 border-b border-white/[0.05] sticky top-0 z-50 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <Link to="/" className="flex items-center gap-2.5 group">
-              <span className="w-1.5 h-6 rounded-full bg-[#c6a575] group-hover:bg-[#d4b896] transition-colors" />
-              <span className="text-lg sm:text-xl font-display font-normal text-neutral-100 tracking-tight">General Exchange</span>
+          <div className="flex flex-col gap-3 py-3 sm:py-0 sm:min-h-16 sm:flex-row sm:items-center sm:justify-between">
+            <Link to="/" className="flex items-center gap-2.5 group shrink-0 min-w-0">
+              <span className="w-1.5 h-6 rounded-full bg-[#c6a575] group-hover:bg-[#d4b896] transition-colors shrink-0" />
+              <span className="text-base sm:text-lg md:text-xl font-display font-normal text-neutral-100 tracking-tight truncate">
+                General Exchange
+              </span>
             </Link>
-            <div className="flex items-center gap-4 sm:gap-5">
-              <Link to="/" className="text-sm text-neutral-400 hover:text-neutral-100 transition-colors">
+            <div className="flex flex-wrap items-center justify-start sm:justify-end gap-x-4 gap-y-2 sm:gap-5">
+              <Link
+                to="/"
+                className="text-sm text-neutral-400 hover:text-neutral-100 transition-colors py-1 touch-manipulation"
+              >
                 Home
               </Link>
-              <Link to="/pricing" className="text-sm text-neutral-400 hover:text-neutral-100 transition-colors">
+              <Link
+                to="/pricing"
+                className="text-sm text-neutral-400 hover:text-neutral-100 transition-colors py-1 touch-manipulation"
+              >
                 Pricing
               </Link>
               <Link
                 to="/request-access"
-                className="inline-flex items-center gap-1 px-5 py-2.5 bg-neutral-100 text-[#0c0d10] text-sm font-semibold rounded-full hover:bg-white transition-all shadow-md shadow-black/15"
+                className="inline-flex items-center gap-1 px-4 py-2 sm:px-5 sm:py-2.5 bg-neutral-100 text-[#0c0d10] text-sm font-semibold rounded-full hover:bg-white transition-all shadow-md shadow-black/15 touch-manipulation"
               >
                 Get Started
                 <ArrowRight className="w-4 h-4" />

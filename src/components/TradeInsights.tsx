@@ -456,7 +456,7 @@ export const TradeInsights: React.FC = () => {
                               <div className="text-xs text-gray-400">Premium</div>
                             </div>
                           </div>
-                          <div className="grid grid-cols-4 gap-4 text-sm">
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 text-sm">
                             <div>
                               <span className="text-gray-400">Volume:</span>
                               <span className="text-white ml-1">{contract.volume.toLocaleString()}</span>
