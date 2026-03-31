@@ -4,7 +4,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, LayoutGrid, Search } from 'lucide-react';
+import { LayoutGrid, Search } from 'lucide-react';
 import { ProfileMenu } from '../components/ProfileMenu';
 import { StockSearchResults } from '../components/StockSearchResults';
 import { ModelSelector } from '../components/dashboard/ModelSelector';
@@ -163,28 +163,6 @@ export const Dashboard: React.FC = () => {
       </header>
 
       <main className="relative z-10 max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-8 pb-16">
-        <div className="mb-8">
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white tracking-tight">
-            Trading intelligence
-          </h1>
-          <p className="mt-2 text-sm text-zinc-400 max-w-3xl leading-relaxed">
-            Decision engine: prediction → confidence → trade setup. Narrative and levels are mocked; wire the book when
-            ready.
-          </p>
-          <nav
-            className="mt-5 flex flex-wrap items-center gap-1 sm:gap-2 text-[11px] sm:text-xs font-medium text-zinc-500"
-            aria-label="Dashboard flow"
-          >
-            <span className="text-emerald-400/90">Data</span>
-            <ChevronRight className="w-3 h-3 text-zinc-600" />
-            <span className="text-violet-300/90">Prediction</span>
-            <ChevronRight className="w-3 h-3 text-zinc-600" />
-            <span className="text-cyan-300/90">Accuracy</span>
-            <ChevronRight className="w-3 h-3 text-zinc-600" />
-            <span className="text-fuchsia-300/90">Action</span>
-          </nav>
-        </div>
-
         <IntelligenceStatusBar key={selectedModel} items={intelligenceFeed} />
 
         {/* 01 Market Engine */}
