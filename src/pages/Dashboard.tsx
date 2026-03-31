@@ -1,171 +1,84 @@
 /**
- * Modern minimal dashboard with wallet and investing balance
+ * Financial analytics dashboard UI — mock data & charts only (no ML/API backend).
  */
 
-import React, { useState, useEffect } from 'react';
-import { Search, TrendingUp, Eye, DollarSign } from 'lucide-react';
-import { NewsTicker } from '../components/NewsTicker';
-import { StockSearchResults } from '../components/StockSearchResults';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { LayoutGrid } from 'lucide-react';
 import { ProfileMenu } from '../components/ProfileMenu';
-import { OptionsModal } from '../components/OptionsModal';
-import { OptionsScanner } from '../components/Scanner';
-import { TradeInsights } from '../components/TradeInsights';
+import { ModelSelector } from '../components/dashboard/ModelSelector';
+import { PricePredictionChart } from '../components/dashboard/PricePredictionChart';
+import { MetricsPanel } from '../components/dashboard/MetricsPanel';
+import { StrategyPanel } from '../components/dashboard/StrategyPanel';
+import { PerformanceCharts } from '../components/dashboard/PerformanceCharts';
+import {
+  MODELS,
+  PRICE_SERIES,
+  METRICS_MOCK,
+  CONFUSION_MATRIX,
+  STRATEGY_SIGNAL,
+  ROLLING_ACCURACY,
+  ERROR_OVER_TIME,
+  type ModelId,
+} from '../components/dashboard/mockMlDashboardData';
 
 export const Dashboard: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
-  const [selectedContract, setSelectedContract] = useState<any>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isScannerOpen, setIsScannerOpen] = useState(false);
-
-  // Handle scroll to show/hide header
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      if (currentScrollY < 10) {
-        setIsHeaderVisible(true);
-      } else if (currentScrollY > lastScrollY) {
-        // Scrolling down - hide header
-        setIsHeaderVisible(false);
-      } else {
-        // Scrolling up - show header
-        setIsHeaderVisible(true);
-      }
-      
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
-
-  // Mock wallet data - ready for Interactive Brokers integration
-
-  // Mock breaking news for ticker
-  const breakingNews = [
-    { id: '1', text: 'Markets surge as tech stocks rally 3.5% in morning trading', category: 'MARKETS' },
-    { id: '2', text: 'Federal Reserve signals potential rate cut in upcoming meeting', category: 'ECONOMY' },
-    { id: '3', text: 'Bitcoin reaches new high above $65,000 amid institutional interest', category: 'CRYPTO' },
-    { id: '4', text: 'Major tech company announces $10B share buyback program', category: 'BUSINESS' },
-    { id: '5', text: 'Oil prices drop 2% on increased production forecasts', category: 'COMMODITIES' },
-    { id: '6', text: 'Unemployment rate falls to 3.8% in latest jobs report', category: 'ECONOMY' },
-  ];
-
-
-
-  // Handle scanner close (no result needed since it's a standalone scanner)
-  const handleScannerClose = () => {
-    setIsScannerOpen(false);
-  };
+  const [selectedModel, setSelectedModel] = useState<ModelId>('xgboost');
+  const activeName = MODELS.find((m) => m.id === selectedModel)?.name ?? 'Model';
 
   return (
-    <div className="min-h-screen bg-[#0b0c0f]">
-      {/* Minimal Header with Auto-Hide */}
-      <nav className={`bg-[#1a1a1a] border-b border-[#2a2a2a] fixed top-0 left-0 right-0 z-50 backdrop-blur-sm bg-[#1a1a1a]/95 transition-transform duration-300 ${
-        isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
-      }`}>
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-12">
-          <div className="flex justify-between items-center h-14 sm:h-16">
-            <span className="text-lg sm:text-2xl font-serif font-bold text-white">General Exchange</span>
-            <div className="flex items-center gap-4">
-              {/* Investing Balance */}
-              <div className="flex items-center gap-2 px-3 py-2 bg-[#0f0f0f] rounded-lg border border-[#2a2a2a]">
-                <DollarSign className="h-4 w-4 text-green-500" />
-                <div className="text-lg font-bold text-white">$127,583</div>
-              </div>
-              <ProfileMenu />
-            </div>
+    <div className="min-h-screen bg-[#07080c] text-zinc-100">
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_120%_80%_at_50%_-20%,rgba(34,211,238,0.08),transparent_50%),radial-gradient(ellipse_80%_50%_at_100%_0%,rgba(167,139,250,0.06),transparent_45%)]" />
+
+      <header className="relative z-20 border-b border-white/10 bg-[#0b0c0f]/80 backdrop-blur-xl">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 h-14 sm:h-16 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3 min-w-0">
+            <Link to="/" className="flex items-center gap-2 shrink-0 group">
+              <LayoutGrid className="w-5 h-5 text-cyan-400/90" aria-hidden />
+              <span className="text-sm sm:text-base font-semibold text-white tracking-tight truncate">
+                General Exchange
+              </span>
+            </Link>
+            <span className="hidden sm:inline text-xs text-zinc-500 border-l border-white/10 pl-3 truncate">
+              Analytics · {activeName}
+            </span>
           </div>
+          <ProfileMenu />
         </div>
-      </nav>
+      </header>
 
-      {/* Spacer for fixed header */}
-      <div className="h-14 sm:h-16"></div>
+      <main className="relative z-10 max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-8 lg:py-10">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight">Prediction & accuracy</h1>
+          <p className="mt-1 text-sm text-zinc-400 max-w-2xl leading-relaxed">
+            Front-end preview only: compare mock actual vs predicted prices, inspect accuracy metrics, and review strategy
+            signals. Connect real series and model outputs when your pipeline is ready.
+          </p>
+        </div>
 
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-12 pb-8">
-        {/* Search Bar */}
-        <div className="py-4 sm:py-6">
-          <div className="flex items-center justify-between gap-4">
-            <div className="relative flex-1 max-w-full sm:max-w-2xl">
-              <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                <Search className="h-4 sm:h-5 w-4 sm:w-5 text-gray-500" />
-              </div>
-              <input
-                type="text"
-                placeholder="Search stocks (e.g., IBM, AAPL, TSLA)..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="block w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-2 sm:py-3 border border-[#2a2a2a] rounded-lg bg-[#0f0f0f] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all text-sm sm:text-base"
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+          <aside className="lg:col-span-4 xl:col-span-3 lg:sticky lg:top-20 lg:self-start space-y-4">
+            <ModelSelector models={MODELS} selectedId={selectedModel} onSelect={setSelectedModel} />
+          </aside>
+
+          <div className="lg:col-span-8 xl:col-span-9 space-y-6">
+            <PricePredictionChart data={PRICE_SERIES} />
+
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-4 sm:p-6">
+              <MetricsPanel metrics={METRICS_MOCK} confusionRows={CONFUSION_MATRIX} />
+            </div>
+
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+              <StrategyPanel
+                current={STRATEGY_SIGNAL.current}
+                confidencePct={STRATEGY_SIGNAL.confidencePct}
+                recent={STRATEGY_SIGNAL.recent}
               />
-              {searchQuery && <StockSearchResults query={searchQuery} />}
+              <PerformanceCharts rollingAccuracy={ROLLING_ACCURACY} errorOverTime={ERROR_OVER_TIME} />
             </div>
-            
-            {/* Options Scanner Button - Far Right */}
-            <button
-              onClick={() => setIsScannerOpen(true)}
-              className="px-4 sm:px-6 py-2 sm:py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors flex items-center justify-center gap-2 min-w-[44px] sm:min-w-[140px] shadow-lg"
-              title="Options Scanner - Find contracts by price, Greeks, and volume"
-            >
-              <Eye className="h-4 sm:h-5 w-4 sm:w-5" />
-              <span className="hidden sm:inline text-sm font-medium">Options Scanner</span>
-            </button>
           </div>
         </div>
-
-        {/* Interactive Brokers Connection Prompt */}
-        <div className="mb-8 sm:mb-12">
-          <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl sm:rounded-2xl overflow-hidden">
-            <div className="p-6 sm:p-8 md:p-12">
-              <div className="text-center max-w-2xl mx-auto">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-blue-600/10 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                  <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-blue-500" />
-                </div>
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2 sm:mb-3">
-                  Connect Your Interactive Brokers Account
-                </h2>
-                <p className="text-sm sm:text-base text-gray-400 mb-4 sm:mb-6">
-                  Link your Interactive Brokers account to view real-time portfolio data and place trades directly from this dashboard.
-                </p>
-                <button className="px-6 sm:px-8 py-2.5 sm:py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base">
-                  Connect to Interactive Brokers
-                </button>
-                <p className="text-xs text-gray-500 mt-3 sm:mt-4">
-                  Secure OAuth authentication • Your credentials are never stored
-                </p>
-              </div>
-            </div>
-            
-            {/* News Ticker attached to bottom of IB card */}
-            <NewsTicker news={breakingNews} />
-          </div>
-        </div>
-
-        {/* Trade Insights Section - Real-Time Market Signals */}
-        <div className="mb-8 sm:mb-12">
-          <TradeInsights />
-        </div>
-
-      </div>
-
-      {/* Options Modal */}
-      <OptionsModal
-        contract={selectedContract}
-        isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setSelectedContract(null);
-        }}
-      />
-
-      {/* Options Scanner Modal */}
-      {isScannerOpen && (
-        <OptionsScanner
-          onClose={handleScannerClose}
-        />
-      )}
+      </main>
     </div>
   );
 };
-
