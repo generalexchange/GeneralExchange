@@ -353,43 +353,24 @@ export const CompanyDetails: React.FC = () => {
         </div>
 
         <div className="space-y-6">
-          <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-white">Current Price</h3>
-              <span className="text-sm font-mono text-gray-300">${companyData.price.toFixed(2)}</span>
-            </div>
-            <div className="h-[220px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={priceSeries}>
-                  <XAxis dataKey="t" tick={{ fill: '#71717a', fontSize: 11 }} tickLine={false} axisLine={false} />
-                  <YAxis tick={{ fill: '#71717a', fontSize: 11 }} tickLine={false} axisLine={false} width={44} domain={['dataMin - 1', 'dataMax + 1']} />
-                  <Tooltip
-                    contentStyle={{ background: '#0b0b0b', border: '1px solid #27272a', borderRadius: '8px' }}
-                    labelStyle={{ color: '#a1a1aa' }}
-                  />
-                  <Line dataKey="p" type="monotone" stroke="#e4e4e7" strokeWidth={2.2} dot={false} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
             <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-6">
-              <h3 className="text-xl font-bold text-white mb-4">Recent News</h3>
-              <div className="space-y-4">
-                {recentNews.map((article) => (
-                  <div key={article.id} className="border-b border-[#2a2a2a] pb-4 last:border-b-0 last:pb-0">
-                    <div className="flex items-start justify-between mb-2 gap-3">
-                      <h4 className="text-base font-semibold text-white">{article.title}</h4>
-                      <span className="text-xs text-gray-500 bg-gray-800 px-2 py-1 rounded whitespace-nowrap">{article.category}</span>
-                    </div>
-                    <p className="text-gray-300 text-sm mb-2">{article.summary}</p>
-                    <div className="flex items-center space-x-4 text-xs text-gray-500">
-                      <span>{article.source}</span>
-                      <span>{article.date}</span>
-                    </div>
-                  </div>
-                ))}
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-white">Current Price</h3>
+                <span className="text-sm font-mono text-gray-300">${companyData.price.toFixed(2)}</span>
+              </div>
+              <div className="h-[220px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={priceSeries}>
+                    <XAxis dataKey="t" tick={{ fill: '#71717a', fontSize: 11 }} tickLine={false} axisLine={false} />
+                    <YAxis tick={{ fill: '#71717a', fontSize: 11 }} tickLine={false} axisLine={false} width={44} domain={['dataMin - 1', 'dataMax + 1']} />
+                    <Tooltip
+                      contentStyle={{ background: '#0b0b0b', border: '1px solid #27272a', borderRadius: '8px' }}
+                      labelStyle={{ color: '#a1a1aa' }}
+                    />
+                    <Line dataKey="p" type="monotone" stroke="#e4e4e7" strokeWidth={2.2} dot={false} />
+                  </LineChart>
+                </ResponsiveContainer>
               </div>
             </div>
 
@@ -426,6 +407,25 @@ export const CompanyDetails: React.FC = () => {
                   </tbody>
                 </table>
               </div>
+            </div>
+          </div>
+
+          <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-6">
+            <h3 className="text-xl font-bold text-white mb-4">Recent News</h3>
+            <div className="space-y-4">
+              {recentNews.map((article) => (
+                <div key={article.id} className="border-b border-[#2a2a2a] pb-4 last:border-b-0 last:pb-0">
+                  <div className="flex items-start justify-between mb-2 gap-3">
+                    <h4 className="text-base font-semibold text-white">{article.title}</h4>
+                    <span className="text-xs text-gray-500 bg-gray-800 px-2 py-1 rounded whitespace-nowrap">{article.category}</span>
+                  </div>
+                  <p className="text-gray-300 text-sm mb-2">{article.summary}</p>
+                  <div className="flex items-center space-x-4 text-xs text-gray-500">
+                    <span>{article.source}</span>
+                    <span>{article.date}</span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
