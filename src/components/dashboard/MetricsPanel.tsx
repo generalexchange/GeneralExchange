@@ -1,18 +1,23 @@
 import React from 'react';
 import { MetricCard } from './MetricCard';
+import { ModelEdgeCard } from './ModelEdgeCard';
 import { ConfusionMatrixGrid } from './ConfusionMatrixGrid';
-import type { DashboardMetrics } from './mockMlDashboardData';
+import type { DashboardMetrics, ModelEdge } from './mockMlDashboardData';
 import { METRIC_TOOLTIPS } from './mockMlDashboardData';
 
 interface MetricsPanelProps {
   metrics: DashboardMetrics;
+  modelEdge: ModelEdge;
   confusionRows: { predicted: string; actuals: Record<string, number> }[];
 }
 
-export const MetricsPanel: React.FC<MetricsPanelProps> = ({ metrics, confusionRows }) => {
+export const MetricsPanel: React.FC<MetricsPanelProps> = ({ metrics, modelEdge, confusionRows }) => {
   return (
     <div className="space-y-5">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+        <div className="sm:col-span-2 xl:col-span-1 transition-all duration-500">
+          <ModelEdgeCard edge={modelEdge} />
+        </div>
         <MetricCard
           name="MAE"
           value={metrics.mae.value}

@@ -14,10 +14,14 @@ import { SignalPanel } from '../components/dashboard/SignalPanel';
 import { AccuracyTrendChart } from '../components/dashboard/AccuracyTrendChart';
 import { MarketChart } from '../components/dashboard/MarketChart';
 import { OrderBookPreview } from '../components/dashboard/OrderBookPreview';
+import { PredictionOutlookPanel } from '../components/dashboard/PredictionOutlookPanel';
+import { IntelligenceStatusBar } from '../components/dashboard/IntelligenceStatusBar';
+import { OptionsContextPanel } from '../components/dashboard/OptionsContextPanel';
 import {
   ChartSkeleton,
   MetricCardsSkeleton,
   OrderBookSkeleton,
+  OutlookPanelSkeleton,
   PanelSkeleton,
 } from '../components/dashboard/DashboardSkeletons';
 import {
@@ -28,8 +32,14 @@ import {
   ROLLING_ACCURACY,
   ERROR_OVER_TIME,
   MARKET_SERIES,
-  ORDER_BOOK_MOCK,
+  MODEL_EDGE_BY_MODEL,
+  OPTIONS_CONTEXT_BY_MODEL,
   getPredictionSeriesForModel,
+  getPredictionOutlook,
+  buildTradeSetupFromSeries,
+  getSignalExplanationLines,
+  getIntelligenceFeed,
+  getDirectionalAccuracyPct,
   type ModelId,
 } from '../components/dashboard/mockMlDashboardData';
 
@@ -63,6 +73,22 @@ export const Dashboard: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const activeName = MODELS.find((m) => m.id === selectedModel)?.name ?? 'Model';
   const predictionData = getPredictionSeriesForModel(selectedModel);
+  const outlook = getPredictionOutlook(selectedModel, predictionData);
+  const tradeSetup = buildTradeSetupFromSeries(predictionData, outlook);
+  const modelEdge = MODEL_EDGE_BY_MODEL[selectedModel];
+  const optionsContext = OPTIONS_CONTEXT_BY_MODEL[selectedModel];
+  const intelligenceFeed = getIntelligenceFeed(selectedModel, modelEdge);
+  const lastBar = predictionData[predictionData.length - 1];
+  const tradeLevels = {
+    entry: tradeSetup.entryPrice,
+    target: tradeSetup.targetPrice,
+    stop: tradeSetup.stopLoss,
+  };
+  const explanationLines = getSignalExplanationLines({
+    tradeSetup,
+    directionalAccuracyPct: getDirectionalAccuracyPct(),
+    signal: STRATEGY_SIGNAL.current,
+  });
 
   useEffect(() => {
     setLoading(true);
@@ -124,8 +150,8 @@ export const Dashboard: React.FC = () => {
             Trading intelligence
           </h1>
           <p className="mt-2 text-sm text-zinc-400 max-w-3xl leading-relaxed">
-            Decision flow: surface market state, compare model path to reality, validate accuracy, then act on the signal.
-            All data is mocked for UI development.
+            Decision engine: prediction → confidence → trade setup. Narrative and levels are mocked; wire the book when
+            ready.
           </p>
           <nav
             className="mt-5 flex flex-wrap items-center gap-1 sm:gap-2 text-[11px] sm:text-xs font-medium text-zinc-500"
@@ -141,19 +167,25 @@ export const Dashboard: React.FC = () => {
           </nav>
         </div>
 
+        <IntelligenceStatusBar key={selectedModel} items={intelligenceFeed} />
+
         {/* 01 Market */}
         <section className="mb-10 sm:mb-12" aria-labelledby="layer-market">
           <LayerHeader
             step="01"
             title="Market layer"
-            subtitle="Live tape mock — price, volume, and depth preview"
+            subtitle="Paper portfolio intraday · buying power · tape and depth (mock)"
           />
           <div id="layer-market" className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5">
             <div className="lg:col-span-2">
-              {loading ? <ChartSkeleton className=" h-[300px] sm:h-[340px]" /> : <MarketChart data={MARKET_SERIES} />}
+              {loading ? (
+                <ChartSkeleton className="min-h-[420px] sm:min-h-[480px]" />
+              ) : (
+                <MarketChart data={MARKET_SERIES} />
+              )}
             </div>
             <div className="lg:col-span-1">
-              {loading ? <OrderBookSkeleton /> : <OrderBookPreview bids={ORDER_BOOK_MOCK.bids} asks={ORDER_BOOK_MOCK.asks} />}
+              {loading ? <OrderBookSkeleton /> : <OrderBookPreview />}
             </div>
           </div>
         </section>
@@ -163,14 +195,37 @@ export const Dashboard: React.FC = () => {
           <LayerHeader
             step="02"
             title="Prediction layer"
-            subtitle="Select a model profile · actual vs predicted with confidence band"
+            subtitle="Model path, confidence, and a readout for expected move → target → horizon"
           />
           <div id="layer-prediction" className="grid grid-cols-1 xl:grid-cols-12 gap-5 xl:gap-6">
-            <div className="xl:col-span-4">
+            <div className="xl:col-span-4 min-w-0">
               <ModelSelector models={MODELS} selectedId={selectedModel} onSelect={setSelectedModel} />
             </div>
             <div className="xl:col-span-8 min-w-0">
-              {loading ? <ChartSkeleton className=" h-[320px]" /> : <PredictionChart data={predictionData} />}
+              {loading ? (
+                <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 xl:gap-5">
+                  <ChartSkeleton className="h-[280px] sm:h-[320px] lg:col-span-3" />
+                  <div className="lg:col-span-2 min-w-0">
+                    <OutlookPanelSkeleton />
+                  </div>
+                </div>
+              ) : (
+                <div
+                  key={selectedModel}
+                  className="grid grid-cols-1 lg:grid-cols-5 gap-4 xl:gap-5 animate-dash-fade-in"
+                >
+                  <div className="lg:col-span-3 min-w-0">
+                    <PredictionChart data={predictionData} tradeLevels={tradeLevels} />
+                  </div>
+                  <div className="lg:col-span-2 min-w-0">
+                    <PredictionOutlookPanel
+                      outlook={outlook}
+                      actual={lastBar.actual}
+                      predicted={lastBar.predicted}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </section>
@@ -190,8 +245,11 @@ export const Dashboard: React.FC = () => {
                   <PanelSkeleton tall />
                 </>
               ) : (
-                <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-4 sm:p-6">
-                  <MetricsPanel metrics={METRICS_MOCK} confusionRows={CONFUSION_MATRIX} />
+                <div
+                  key={selectedModel}
+                  className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-4 sm:p-6 animate-dash-fade-in"
+                >
+                  <MetricsPanel metrics={METRICS_MOCK} modelEdge={modelEdge} confusionRows={CONFUSION_MATRIX} />
                 </div>
               )}
             </div>
@@ -206,9 +264,36 @@ export const Dashboard: React.FC = () => {
           <LayerHeader
             step="04"
             title="Execution layer"
-            subtitle="Signal, confidence, timeline, and mock order stub"
+            subtitle="Dominant signal, trade ladder, narrative, and options context"
           />
-          <div id="layer-exec">{loading ? <PanelSkeleton tall /> : <SignalPanel {...STRATEGY_SIGNAL} />}</div>
+          <div id="layer-exec">
+            {loading ? (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5">
+                <div className="lg:col-span-2">
+                  <PanelSkeleton tall />
+                </div>
+                <PanelSkeleton tall />
+              </div>
+            ) : (
+              <div
+                key={selectedModel}
+                className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5 animate-dash-fade-in items-stretch"
+              >
+                <div className="lg:col-span-2 min-w-0">
+                  <SignalPanel
+                    current={STRATEGY_SIGNAL.current}
+                    confidencePct={STRATEGY_SIGNAL.confidencePct}
+                    recent={STRATEGY_SIGNAL.recent}
+                    tradeSetup={tradeSetup}
+                    explanationLines={explanationLines}
+                  />
+                </div>
+                <div className="lg:col-span-1 min-w-0">
+                  <OptionsContextPanel context={optionsContext} />
+                </div>
+              </div>
+            )}
+          </div>
         </section>
       </main>
     </div>

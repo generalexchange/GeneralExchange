@@ -19,9 +19,9 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({ models, selectedId
               key={m.id}
               type="button"
               onClick={() => onSelect(m.id)}
-              className={`w-full text-left rounded-xl border px-4 py-3 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] ${
+              className={`w-full text-left rounded-xl border px-4 py-3 transition-all duration-500 ease-out hover:scale-[1.01] active:scale-[0.99] ${
                 selected
-                  ? 'border-violet-400/50 bg-violet-500/10 shadow-[0_0_24px_-8px_rgba(139,92,246,0.4)]'
+                  ? 'border-violet-400/70 bg-violet-500/[0.14] shadow-[0_0_32px_-6px_rgba(139,92,246,0.55)] ring-2 ring-violet-500/40 ring-offset-2 ring-offset-[#050608]'
                   : 'border-white/10 bg-black/20 hover:border-white/20 hover:bg-white/[0.03]'
               }`}
             >

@@ -69,7 +69,172 @@ export const METRIC_TOOLTIPS = {
   mse: 'Mean squared error: penalizes large misses more heavily; useful for variance of forecast error.',
   rmse: 'Root mean squared error: same units as price; common scale for comparing model revisions.',
   directionalAccuracy: 'Share of intervals where predicted direction (up/down/hold) matched realized direction.',
+  modelEdge:
+    'Model Edge (0–100): composite of directional accuracy, recent accuracy trend, and mock volatility regime. Higher suggests stronger statistical edge before fees and slippage.',
+  expectedMove:
+    'Expected move (%): implied next-step return from the latest predicted vs current reference price; sign indicates bullish vs bearish tilt in the mock path.',
+  targetPrice:
+    'Predicted target price: model’s horizon price objective for the active mock session (not a live quote).',
+  timeToTarget:
+    'Time to target: mock minutes until the forecast horizon used for this dashboard preview.',
+  confidenceStrength:
+    'Confidence strength: normalized width of the confidence envelope and agreement with recent path error (mock).',
 } as const;
+
+export type ModelEdgeBand = 'strong' | 'neutral' | 'weak';
+
+export interface ModelEdge {
+  score: number;
+  trend: 'up' | 'down' | 'flat';
+  band: ModelEdgeBand;
+}
+
+export const MODEL_EDGE_BY_MODEL: Record<ModelId, ModelEdge> = {
+  xgboost: { score: 78, trend: 'up', band: 'strong' },
+  lstm: { score: 56, trend: 'flat', band: 'neutral' },
+  rl: { score: 38, trend: 'down', band: 'weak' },
+};
+
+export interface PredictionOutlook {
+  expectedMovePct: number;
+  targetPrice: number;
+  timeToTargetMinutes: number;
+  confidenceStrength: number;
+}
+
+export interface TradeSetup {
+  entryPrice: number;
+  targetPrice: number;
+  stopLoss: number;
+  riskRewardRatio: string;
+  currentPrice: number;
+}
+
+export interface OptionsContext {
+  impliedVolatility: number;
+  delta: number;
+  gamma: number;
+  strikePrice: number;
+  expiration: string;
+}
+
+export const OPTIONS_CONTEXT_BY_MODEL: Record<ModelId, OptionsContext> = {
+  xgboost: {
+    impliedVolatility: 0.28,
+    delta: 0.42,
+    gamma: 0.018,
+    strikePrice: 186,
+    expiration: 'Apr 18 · 37 DTE',
+  },
+  lstm: {
+    impliedVolatility: 0.34,
+    delta: 0.51,
+    gamma: 0.022,
+    strikePrice: 187.5,
+    expiration: 'Apr 18 · 37 DTE',
+  },
+  rl: {
+    impliedVolatility: 0.31,
+    delta: 0.35,
+    gamma: 0.015,
+    strikePrice: 185,
+    expiration: 'May 16 · 65 DTE',
+  },
+};
+
+export type IntelligenceTone = 'emerald' | 'violet' | 'amber' | 'rose' | 'cyan';
+
+export interface IntelligenceItem {
+  text: string;
+  tone: IntelligenceTone;
+}
+
+/** Last-window prediction outlook derived from series + model (mock). */
+export function getPredictionOutlook(modelId: ModelId, data: PredictionPoint[]): PredictionOutlook {
+  const last = data[data.length - 1];
+  const prev = data[data.length - 3] ?? data[0];
+  const moveFromPath = ((last.predicted - prev.actual) / prev.actual) * 100;
+  const widen = modelId === 'lstm' ? 0.08 : modelId === 'rl' ? -0.05 : 0;
+  const expectedMovePct = Math.round((moveFromPath + widen) * 100) / 100;
+  const horizonMin = modelId === 'xgboost' ? 45 : modelId === 'lstm' ? 75 : 120;
+  const bandWidth = last.confidenceHigh - last.confidenceLow;
+  const confidenceStrength = Math.max(
+    28,
+    Math.min(98, Math.round(82 - bandWidth * 42 + (modelId === 'xgboost' ? 6 : 0))),
+  );
+  return {
+    expectedMovePct,
+    targetPrice: Math.round((last.predicted + expectedMovePct * 0.012) * 100) / 100,
+    timeToTargetMinutes: horizonMin,
+    confidenceStrength,
+  };
+}
+
+export function buildTradeSetupFromSeries(data: PredictionPoint[], outlook: PredictionOutlook): TradeSetup {
+  const last = data[data.length - 1];
+  const currentPrice = last.actual;
+  const risk = Math.max(0.35, Math.abs(last.actual - last.predicted) * 0.85 + 0.25);
+  const entryPrice = Math.round(currentPrice * 100) / 100;
+  const targetPrice = Math.round(outlook.targetPrice * 100) / 100;
+  const stopLoss = Math.round((entryPrice - risk) * 100) / 100;
+  const reward = Math.abs(targetPrice - entryPrice);
+  const rr = reward / Math.max(0.01, entryPrice - stopLoss);
+  return {
+    currentPrice,
+    entryPrice,
+    targetPrice,
+    stopLoss,
+    riskRewardRatio: `1 : ${rr.toFixed(2)}`,
+  };
+}
+
+export function getSignalExplanationLines(params: {
+  tradeSetup: TradeSetup;
+  directionalAccuracyPct: number;
+  signal: 'BUY' | 'SELL' | 'HOLD';
+}): [string, string] {
+  const { tradeSetup, directionalAccuracyPct, signal } = params;
+  const pctAbs = Math.abs(
+    ((tradeSetup.targetPrice - tradeSetup.currentPrice) / tradeSetup.currentPrice) * 100,
+  ).toFixed(1);
+  const ref = tradeSetup.currentPrice.toFixed(2);
+  const dir =
+    signal === 'BUY'
+      ? `BUY because predicted price is ${pctAbs}% ${
+          tradeSetup.targetPrice >= tradeSetup.currentPrice ? 'above' : 'below'
+        } current price (${ref}).`
+      : signal === 'SELL'
+        ? `SELL because predicted price is ${pctAbs}% ${
+            tradeSetup.targetPrice <= tradeSetup.currentPrice ? 'below' : 'above'
+          } current price (${ref}).`
+        : `HOLD: mock policy sees limited edge vs current (${ref}); size down until conviction rises.`;
+  const conf = `Confidence supported by ${directionalAccuracyPct.toFixed(1)}% directional accuracy (mock window).`;
+  return [dir, conf];
+}
+
+export function getIntelligenceFeed(modelId: ModelId, edge: ModelEdge): IntelligenceItem[] {
+  const items: IntelligenceItem[] = [];
+  if (edge.band === 'strong') {
+    items.push({ text: 'Model outperforming baseline', tone: 'emerald' });
+  } else if (edge.band === 'weak') {
+    items.push({ text: 'Edge below desk threshold — size cautiously', tone: 'rose' });
+  } else {
+    items.push({ text: 'Model near neutral vs historical baseline', tone: 'cyan' });
+  }
+  if (edge.trend === 'up') {
+    items.push({ text: 'Confidence increasing vs prior session', tone: 'violet' });
+  } else if (edge.trend === 'down') {
+    items.push({ text: 'Confidence rolling over — watch calibration', tone: 'amber' });
+  } else {
+    items.push({ text: 'Confidence stable — monitor for volatility shifts', tone: 'violet' });
+  }
+  if (modelId === 'lstm') {
+    items.push({ text: 'Volatility expanding in mock path', tone: 'amber' });
+  } else {
+    items.push({ text: 'Volatility regime: controlled (mock)', tone: 'cyan' });
+  }
+  return items.slice(0, 3);
+}
 
 export const PRICE_SERIES: PredictionPoint[] = [
   { time: '09:30', actual: 182.4, predicted: 182.1, confidenceLow: 181.2, confidenceHigh: 183.1 },
@@ -92,6 +257,55 @@ export const MARKET_SERIES = PRICE_SERIES.map((p, i) => ({
   price: p.actual,
   volume: 1_420_000 + i * 52_000 + (i % 3) * 18_000,
 }));
+
+/** Mock opening equity for paper portfolio chart (scales with MARKET_SERIES path). */
+export const PAPER_SESSION_OPEN_EQUITY: number = 127_842.51;
+
+export interface PaperAccountSnapshot {
+  accountLabel: string;
+  sessionOpenEquity: number;
+  equityNow: number;
+  buyingPower: number;
+  dayChange: number;
+  dayChangePercent: number;
+}
+
+/** Paper account header stats: equity moves 1:1 with mock benchmark path (single-asset proxy). */
+export function getPaperAccountSnapshot(market: { price: number }[]): PaperAccountSnapshot {
+  const p0 = market[0]?.price ?? 1;
+  const pN = market[market.length - 1]?.price ?? p0;
+  const sessionOpenEquity = PAPER_SESSION_OPEN_EQUITY;
+  const equityNow = Math.round(sessionOpenEquity * (pN / p0) * 100) / 100;
+  const dayChange = Math.round((equityNow - sessionOpenEquity) * 100) / 100;
+  const dayChangePercent =
+    sessionOpenEquity !== 0 ? Math.round((dayChange / sessionOpenEquity) * 10000) / 100 : 0;
+  return {
+    accountLabel: 'Paper portfolio',
+    sessionOpenEquity,
+    equityNow,
+    buyingPower: Math.round(sessionOpenEquity * 0.352 * 100) / 100,
+    dayChange,
+    dayChangePercent,
+  };
+}
+
+export type MarketPointWithEquity = {
+  time: string;
+  price: number;
+  volume: number;
+  equity: number;
+};
+
+export function enrichMarketWithPaperEquity(
+  market: { time: string; price: number; volume: number }[],
+  sessionOpenEquity: number,
+): MarketPointWithEquity[] {
+  const p0 = market[0]?.price ?? 1;
+  return market.map((row) => ({
+    ...row,
+    equity: Math.round(sessionOpenEquity * (row.price / p0) * 100) / 100,
+  }));
+}
 
 export const METRICS_MOCK = {
   mae: { value: '0.42', trend: 'down' as const },
@@ -120,6 +334,11 @@ export const STRATEGY_SIGNAL = {
     { id: '4', time: '11:31:40', signal: 'BUY' as const, confidence: 81 },
   ],
 };
+
+/** Directional accuracy numeric for copy in execution layer (matches METRICS_MOCK string). */
+export function getDirectionalAccuracyPct(): number {
+  return 62.4;
+}
 
 export const ROLLING_ACCURACY = [
   { t: 'Mon', acc: 58 },
