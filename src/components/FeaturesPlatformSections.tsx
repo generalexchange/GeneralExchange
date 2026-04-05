@@ -34,12 +34,12 @@ export const FeaturesPlatformSections: React.FC = () => {
       <div id="feature-backtesting" className={scrollClass}>
         <section className="relative min-h-screen flex flex-col justify-center overflow-hidden border-t border-[#1a1a1a]">
           <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.04)_1px,transparent_1px)] bg-[size:48px_48px]" />
-          <div className="absolute top-1/4 -right-32 w-96 h-96 bg-blue-600/20 rounded-full blur-[128px]" />
+          <div className="absolute top-1/4 -right-32 w-96 h-96 bg-institutional-green/15 rounded-full blur-[128px]" />
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
-            <p className="text-blue-400 text-sm font-semibold tracking-widest uppercase mb-4">Backtesting</p>
-            <h2 className="text-3xl sm:text-5xl lg:text-7xl font-bold text-white max-w-4xl leading-tight break-words mb-8">
+            <p className="text-tan text-sm font-semibold tracking-widest uppercase mb-4">Backtesting</p>
+            <h2 className="font-display text-3xl sm:text-5xl lg:text-7xl font-medium text-white max-w-4xl leading-tight break-words mb-8">
               Replay the market with{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-tan to-institutional-green/90">
                 institutional-grade fidelity
               </span>
             </h2>
@@ -50,7 +50,7 @@ export const FeaturesPlatformSections: React.FC = () => {
           </div>
         </section>
         <section className="relative min-h-screen flex items-center border-t border-[#1a1a1a] bg-[#080808]">
-          <div className="absolute inset-0 bg-gradient-to-b from-blue-950/30 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-b from-institutional-green/10 to-transparent pointer-events-none" />
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 grid lg:grid-cols-2 gap-16 items-center w-full">
             <div>
               <h3 className="text-3xl sm:text-4xl font-bold text-white mb-6">Walk-forward &amp; embargo windows</h3>
@@ -60,24 +60,24 @@ export const FeaturesPlatformSections: React.FC = () => {
               </p>
               <ul className="space-y-4 text-gray-300">
                 <li className="flex items-start gap-3">
-                  <LineChart className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
+                  <LineChart className="w-5 h-5 text-tan shrink-0 mt-0.5" />
                   <span>Equity, drawdown, and tail-risk curves with rolling window statistics</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Database className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
+                  <Database className="w-5 h-5 text-tan shrink-0 mt-0.5" />
                   <span>Tick, bar, and surface snapshots aligned to your execution assumptions</span>
                 </li>
               </ul>
             </div>
-            <div className="rounded-2xl border border-blue-500/20 bg-[#0f0f0f] p-8 font-mono text-sm text-gray-400 shadow-2xl shadow-blue-900/20">
+            <div className="rounded-2xl border border-institutional-green/25 bg-[#0f0f0f] p-8 font-mono text-sm text-gray-400 shadow-2xl shadow-institutional-green/10">
               <div className="text-gray-500 mb-4">// simulation manifest</div>
-              <pre className="text-blue-300/90 whitespace-pre-wrap leading-relaxed">
+              <pre className="text-tan/90 whitespace-pre-wrap leading-relaxed">
                 {`regime: volatility_cluster_v2\nslippage: adaptive_bps\nborrow: HTB_curve\nruns: 10_000 paths\nOOS Sharpe: 1.84`}
               </pre>
             </div>
           </div>
         </section>
-        <section className="relative min-h-screen flex items-center border-t border-[#1a1a1a]">
+        <section id="feature-monte-carlo" className={`relative min-h-screen flex items-center border-t border-[#1a1a1a] ${scrollClass}`}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 w-full">
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {[
@@ -85,8 +85,8 @@ export const FeaturesPlatformSections: React.FC = () => {
                 { icon: Cpu, t: 'Greeks pathing', d: 'Intraday surface shifts replayed so delta-hedge P&amp;L isn’t smoothed away.' },
                 { icon: LineChart, t: 'Attribution', d: 'Decompose P&amp;L into vol, carry, skew, and execution—know what actually worked.' },
               ].map(({ icon: Icon, t, d }) => (
-                <div key={t} className="p-8 rounded-xl border border-white/10 bg-white/[0.02] hover:border-blue-500/30 transition-colors">
-                  <Icon className="w-8 h-8 text-blue-400 mb-4" />
+                <div key={t} className="p-8 rounded-xl border border-white/10 bg-white/[0.02] hover:border-institutional-green/35 transition-colors">
+                  <Icon className="w-8 h-8 text-tan mb-4" />
                   <h4 className="text-lg font-semibold text-white mb-2">{t}</h4>
                   <p className="text-gray-500 text-sm leading-relaxed">{d}</p>
                 </div>
@@ -293,7 +293,7 @@ export const FeaturesPlatformSections: React.FC = () => {
             <p className="text-pink-400 text-sm font-semibold tracking-widest uppercase mb-4">Automation</p>
             <h2 className="text-3xl sm:text-5xl lg:text-7xl font-bold text-white max-w-4xl leading-tight break-words mb-8">
               Run the desk on{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-blue-400">rails you trust</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-tan to-institutional-green/90">rails you trust</span>
             </h2>
             <p className="text-xl text-gray-400 max-w-2xl leading-relaxed">
               Cron rolls, signal-driven webhooks, and circuit breakers that halt flows when variance or connectivity drifts. Automation
@@ -311,8 +311,8 @@ export const FeaturesPlatformSections: React.FC = () => {
                   Visual flows for open, adjust, roll, and flatten—each step gated by risk checks and dual approval where required.
                 </p>
               </div>
-              <div className="md:col-span-1 p-8 rounded-2xl border border-blue-500/20 bg-[#0f0f0f]">
-                <Webhook className="w-10 h-10 text-blue-400 mb-4" />
+              <div className="md:col-span-1 p-8 rounded-2xl border border-institutional-green/25 bg-[#0f0f0f]">
+                <Webhook className="w-10 h-10 text-tan mb-4" />
                 <h3 className="text-xl font-bold text-white mb-3">Webhooks &amp; events</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">
                   Push fills, breaches, and research signals to Slack, PagerDuty, or your data lake—signed payloads, idempotent handlers.

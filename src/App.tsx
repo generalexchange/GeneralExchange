@@ -70,7 +70,7 @@ const App: React.FC = () => {
     <HelmetProvider>
       <ThemeProvider>
         <Router>
-          <div className="bg-gray-50 dark:bg-[#0b0c0f]">
+          <div className="bg-stone-100 dark:bg-charcoal min-h-screen">
             <AnimatedRoutes />
             <Analytics />
           </div>

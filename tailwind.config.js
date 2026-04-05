@@ -13,15 +13,31 @@ export default {
           to: { opacity: '1', transform: 'translateY(0)' },
         },
         signalGlowLuxury: {
-          '0%, 100%': { boxShadow: '0 0 24px -8px rgba(255,255,255,0.06)' },
-          '50%': { boxShadow: '0 0 32px -6px rgba(255,255,255,0.1)' },
+          '0%, 100%': { boxShadow: '0 0 24px -8px rgba(210,180,140,0.08)' },
+          '50%': { boxShadow: '0 0 32px -6px rgba(46,90,58,0.15)' },
+        },
+        slideUpFade: {
+          from: { opacity: '0', transform: 'translateY(12px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
         },
       },
       animation: {
-        'dash-fade-in': 'dashFadeIn 0.4s ease-out both',
+        'dash-fade-in': 'dashFadeIn 0.45s ease-out both',
         'signal-glow-luxury': 'signalGlowLuxury 2.8s ease-in-out infinite',
+        'slide-up-fade': 'slideUpFade 0.5s ease-out both',
       },
       colors: {
+        charcoal: '#0C0C0C',
+        'dark-gray': '#1A1A1A',
+        tan: {
+          DEFAULT: '#D2B48C',
+          muted: '#c4a57e',
+          dim: 'rgba(210, 180, 140, 0.35)',
+        },
+        institutional: {
+          green: '#2E5A3A',
+          'green-muted': '#245030',
+        },
         primary: {
           50: '#f0fdf4',
           100: '#dcfce7',
@@ -36,12 +52,14 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['"DM Sans"', 'system-ui', 'Segoe UI', 'Roboto', 'sans-serif'],
-        serif: ['Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif'],
-        display: ['"Instrument Serif"', 'Georgia', 'Cambria', 'serif'],
+        sans: ['Inter', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        serif: ['Cormorant Garamond', 'Georgia', 'Cambria', 'Times New Roman', 'serif'],
+        display: ['Cormorant Garamond', 'Georgia', 'Cambria', 'Times New Roman', 'serif'],
+      },
+      maxWidth: {
+        content: '1400px',
       },
     },
   },
   plugins: [],
 }
-

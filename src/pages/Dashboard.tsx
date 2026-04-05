@@ -5,7 +5,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { LayoutGrid, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { ProfileMenu } from '../components/ProfileMenu';
 import { StockSearchResults } from '../components/StockSearchResults';
 import { ModelSelector } from '../components/dashboard/ModelSelector';
@@ -45,6 +45,8 @@ import {
   getDirectionalAccuracyPct,
   type ModelId,
 } from '../components/dashboard/mockMlDashboardData';
+import { DashboardSidebar } from '../components/DashboardSidebar';
+import { DashboardWidget } from '../components/DashboardWidget';
 
 const easeLuxury = [0.22, 1, 0.36, 1] as const;
 
@@ -102,7 +104,7 @@ function LayerHeader({
             type="button"
             onClick={stepButtonProps.onClick}
             aria-label={stepButtonProps['aria-label']}
-            className={`${stepClassName} cursor-pointer transition-all hover:border-white/20 hover:bg-white/[0.06] hover:shadow-none focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[#080808]`}
+            className={`${stepClassName} cursor-pointer transition-all hover:border-white/20 hover:bg-white/[0.06] hover:shadow-none focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal`}
           >
             {step}
           </button>
@@ -177,7 +179,7 @@ export const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#080808] text-zinc-100">
+    <div className="min-h-screen bg-charcoal text-zinc-100">
       <TradeEngineModal open={tradeEngineModalOpen} onClose={() => setTradeEngineModalOpen(false)} />
       <PortfolioAnalyticsModal
         open={portfolioAnalyticsOpen}
@@ -201,15 +203,15 @@ export const Dashboard: React.FC = () => {
       </AnimatePresence>
 
       <motion.header
-        className="relative z-30 border-b border-white/[0.06] bg-[#0c0c0c]/90 backdrop-blur-xl"
+        className="relative z-30 border-b border-tan/20 bg-charcoal/95 backdrop-blur-xl"
         {...headerMotion}
       >
         <div className="max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-10 py-3 sm:py-0 sm:min-h-16 sm:flex sm:items-center">
           <div className="grid w-full grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-3 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center sm:gap-x-4 lg:h-16 lg:items-center">
             <div className="flex items-center gap-2 sm:gap-3 min-w-0 col-start-1 row-start-1">
               <Link to="/" className="flex items-center gap-2 shrink-0 group min-w-0">
-                <LayoutGrid className="w-5 h-5 shrink-0 text-zinc-400 transition-transform group-hover:scale-105" aria-hidden />
-                <span className="text-sm sm:text-base font-semibold text-white tracking-tight truncate">
+                <span className="w-px h-6 bg-gradient-to-b from-tan to-institutional-green shrink-0" aria-hidden />
+                <span className="font-display text-base sm:text-lg text-neutral-100 tracking-tight truncate">
                   General Exchange
                 </span>
               </Link>
@@ -231,7 +233,7 @@ export const Dashboard: React.FC = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search symbol or company…"
                   autoComplete="off"
-                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-zinc-600 outline-none ring-white/10 transition-shadow focus:ring-2 touch-manipulation"
+                  className="w-full rounded-sm border border-white/[0.08] bg-white/[0.03] py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-zinc-600 outline-none ring-institutional-green/20 transition-shadow focus:ring-2 touch-manipulation"
                 />
                 <StockSearchResults query={searchQuery} />
               </div>
@@ -244,13 +246,32 @@ export const Dashboard: React.FC = () => {
         </div>
       </motion.header>
 
-      <motion.main
-        className="relative z-10 max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-8 pb-16"
-        {...mainStagger}
-      >
-        <motion.div {...sectionItem}>
-          <IntelligenceStatusBar key={selectedModel} items={intelligenceFeed} />
-        </motion.div>
+      <div className="relative z-10 flex max-w-[1680px] mx-auto">
+        <DashboardSidebar />
+        <motion.main
+          className="relative z-10 flex-1 min-w-0 px-4 sm:px-6 lg:px-8 xl:px-10 py-6 sm:py-8 pb-16"
+          {...mainStagger}
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-10">
+            <DashboardWidget
+              index={0}
+              title="Active compute"
+              value="62%"
+              subtitle="LUB-MI325X pool · rolling 24h"
+            />
+            <DashboardWidget index={1} title="Token balance" value="14,280" subtitle="LUB units available" />
+            <DashboardWidget
+              index={2}
+              title="Recent simulations"
+              value="38"
+              subtitle="Monte Carlo jobs completed (7d)"
+            />
+            <DashboardWidget index={3} title="Strategy performance" value="+4.2%" subtitle="Paper book · gross of fees" />
+          </div>
+
+          <motion.div {...sectionItem}>
+            <IntelligenceStatusBar key={selectedModel} items={intelligenceFeed} />
+          </motion.div>
 
         {/* 01 Market Engine */}
         <motion.section className="mb-10 sm:mb-12" aria-labelledby="layer-market" {...sectionItem}>
@@ -379,7 +400,8 @@ export const Dashboard: React.FC = () => {
             )}
           </div>
         </motion.section>
-      </motion.main>
+        </motion.main>
+      </div>
     </div>
   );
 };

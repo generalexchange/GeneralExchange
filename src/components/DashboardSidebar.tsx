@@ -1,50 +1,52 @@
 /**
- * Dashboard sidebar navigation component
+ * Logged-in dashboard sidebar — institutional dark theme
  */
 
 import React from 'react';
-import { LayoutDashboard, TrendingUp, Eye, User } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
+import {
+  LayoutDashboard,
+  Cpu,
+  LineChart,
+  Shield,
+  Workflow,
+  User,
+} from 'lucide-react';
 
-interface SidebarItem {
-  id: string;
-  label: string;
-  icon: React.ReactNode;
-}
-
-interface DashboardSidebarProps {
-  activeSection: string;
-  onSectionChange: (section: string) => void;
-}
-
-const sidebarItems: SidebarItem[] = [
-  { id: 'portfolio', label: 'Portfolio', icon: <LayoutDashboard size={20} /> },
-  { id: 'markets', label: 'Markets', icon: <TrendingUp size={20} /> },
-  { id: 'watchlist', label: 'Watchlist', icon: <Eye size={20} /> },
-  { id: 'account', label: 'Account', icon: <User size={20} /> }
+const items: { to: string; label: string; icon: React.ReactNode }[] = [
+  { to: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={18} strokeWidth={1.5} /> },
+  { to: '/pricing', label: 'Compute Tokens', icon: <Cpu size={18} strokeWidth={1.5} /> },
+  { to: '/features#feature-backtesting', label: 'Backtesting', icon: <LineChart size={18} strokeWidth={1.5} /> },
+  { to: '/features#feature-risk-management', label: 'Risk Models', icon: <Shield size={18} strokeWidth={1.5} /> },
+  { to: '/features#feature-strategy', label: 'Strategy Builder', icon: <Workflow size={18} strokeWidth={1.5} /> },
+  { to: '/login', label: 'Account', icon: <User size={18} strokeWidth={1.5} /> },
 ];
 
-export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ activeSection, onSectionChange }) => {
+export const DashboardSidebar: React.FC = () => {
   return (
-    <aside className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 hidden lg:block">
-      <div className="p-6">
-        <nav className="space-y-2">
-          {sidebarItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => onSectionChange(item.id)}
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-                activeSection === item.id
-                  ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-              }`}
+    <aside className="hidden lg:flex w-56 xl:w-60 shrink-0 flex-col border-r border-white/[0.08] bg-charcoal min-h-[calc(100vh-4rem)] sticky top-16 self-start">
+      <div className="p-4 xl:p-5">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-500 mb-4 px-2">Platform</p>
+        <nav className="space-y-1" aria-label="Dashboard">
+          {items.map(({ to, label, icon }) => (
+            <NavLink
+              key={to + label}
+              to={to}
+              end={to === '/dashboard'}
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm transition-colors ${
+                  isActive
+                    ? 'bg-institutional-green/20 text-tan border border-institutional-green/35'
+                    : 'text-neutral-400 hover:text-neutral-100 hover:bg-white/[0.04] border border-transparent'
+                }`
+              }
             >
-              {item.icon}
-              <span className="font-medium">{item.label}</span>
-            </button>
+              <span className="text-tan/80">{icon}</span>
+              <span className="font-medium">{label}</span>
+            </NavLink>
           ))}
         </nav>
       </div>
     </aside>
   );
 };
-

@@ -5,10 +5,10 @@
 
 import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { 
-  TrendingUp, 
-  Shield, 
-  Brain, 
+import {
+  TrendingUp,
+  Shield,
+  Brain,
   ArrowRight,
   Activity,
   BarChart3,
@@ -21,18 +21,50 @@ import {
   AlertTriangle,
   Users,
   BookOpen,
-  Play
+  Play,
+  Dice5,
+  Workflow,
 } from 'lucide-react';
 import { SEO } from '../components/SEO';
 import { FeaturesPlatformSections } from '../components/FeaturesPlatformSections';
+import { Navbar } from '../components/Navbar';
+import { ToolCard } from '../components/ToolCard';
 
 const platformJumpLinks = [
   { href: '#feature-backtesting', label: 'Backtesting' },
+  { href: '#feature-monte-carlo', label: 'Monte Carlo' },
   { href: '#feature-strategy', label: 'Strategy' },
   { href: '#feature-risk-management', label: 'Risk' },
   { href: '#feature-execution', label: 'Execution' },
   { href: '#feature-automation', label: 'Automation' },
   { href: '#feature-performance', label: 'Performance' },
+] as const;
+
+const TRADING_TOOLS = [
+  {
+    title: 'Backtesting Engine',
+    description: 'Walk-forward validation, embargo windows, and execution-aware replay on tokenized AMD pools.',
+    icon: BarChart3,
+    to: '/features#feature-backtesting',
+  },
+  {
+    title: 'Monte Carlo Simulator',
+    description: 'Path-dependent scenarios, convergence metrics, and tail-risk visualisation at institutional scale.',
+    icon: Dice5,
+    to: '/features#feature-monte-carlo',
+  },
+  {
+    title: 'Risk Modeling Suite',
+    description: 'VaR-style grids, stress libraries, and reproducible seeds for second-line review.',
+    icon: Shield,
+    to: '/features#feature-risk-management',
+  },
+  {
+    title: 'Strategy Builder',
+    description: 'Compose signals, sizing rules, and release gates—then attach compute and lineage automatically.',
+    icon: Workflow,
+    to: '/features#feature-strategy',
+  },
 ] as const;
 
 export const Features: React.FC = () => {
@@ -47,94 +79,69 @@ export const Features: React.FC = () => {
   }, [location.pathname, location.hash]);
 
   return (
-    <div className="min-h-screen bg-[#0b0c0f]">
-      <SEO 
-        title="Features — General Exchange"
-        description="Backtesting, strategy design, risk management, execution, automation, and performance analytics—plus quantitative engines for options professionals."
-        keywords="algorithmic trading features, backtesting, options platform, risk management, execution, trading automation, performance analytics, quantitative finance, General Exchange"
+    <div className="min-h-screen bg-charcoal">
+      <SEO
+        title="Trading Tools — General Exchange"
+        description="Backtesting, Monte Carlo simulation, risk modelling, and strategy builder—powered by tokenized AMD compute via Lubbock.cloud."
+        keywords="backtesting, Monte Carlo, risk modelling, strategy builder, tokenized compute, General Exchange"
         canonical="https://generalexchange.com/features"
       />
-      
-      {/* Navigation */}
-      <nav className="bg-[#0b0c0f]/95 border-b border-white/[0.05] sticky top-0 z-50 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col gap-3 py-3 sm:py-0 sm:min-h-16 sm:flex-row sm:items-center sm:justify-between">
-            <Link to="/" className="flex items-center gap-2.5 group shrink-0 min-w-0">
-              <span className="w-1.5 h-6 rounded-full bg-[#c6a575] group-hover:bg-[#d4b896] transition-colors shrink-0" />
-              <span className="text-base sm:text-lg md:text-xl font-display font-normal text-neutral-100 tracking-tight truncate">
-                General Exchange
-              </span>
-            </Link>
-            <div className="flex flex-wrap items-center justify-start sm:justify-end gap-x-4 gap-y-2 sm:gap-5">
+
+      <Navbar showSearch={false} />
+
+      <section className="relative overflow-hidden border-b border-white/[0.06] py-20 sm:py-28 pt-[calc(3.5rem+3rem)] sm:pt-[calc(3.75rem+4rem)]">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_-10%,rgba(46,90,58,0.12),transparent_50%)]" />
+        <div className="relative max-w-content mx-auto px-4 sm:px-6 lg:px-10">
+          <div className="text-center max-w-4xl mx-auto">
+            <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-tan mb-4">Trading tools</p>
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-[3.25rem] font-medium text-neutral-50 leading-tight mb-6">
+              Institutional workflows on{' '}
+              <span className="text-tan">tokenized AMD compute</span>
+            </h1>
+            <p className="text-lg sm:text-xl text-neutral-400 leading-relaxed mb-10 font-light">
+              Train and test algorithms, run Monte Carlo and risk grids, and ship strategies—with the same restraint expected
+              in English private wealth and exchange-grade infrastructure.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                to="/"
-                className="text-sm text-neutral-400 hover:text-neutral-100 transition-colors py-1 touch-manipulation"
+                to="/login"
+                className="inline-flex items-center justify-center px-8 py-4 bg-tan text-charcoal font-semibold rounded-sm transition-all duration-200 shadow-lg shadow-tan/20 hover:bg-tan-muted group"
               >
-                Home
+                Launch Platform
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
               </Link>
               <Link
                 to="/pricing"
-                className="text-sm text-neutral-400 hover:text-neutral-100 transition-colors py-1 touch-manipulation"
+                className="inline-flex items-center justify-center px-8 py-4 bg-white/[0.04] hover:bg-white/[0.07] text-neutral-100 font-semibold rounded-sm border border-white/10 transition-all duration-200"
               >
-                Pricing
-              </Link>
-              <Link
-                to="/request-access"
-                className="inline-flex items-center gap-1 px-4 py-2 sm:px-5 sm:py-2.5 bg-neutral-100 text-[#0c0d10] text-sm font-semibold rounded-full hover:bg-white transition-all shadow-md shadow-black/15 touch-manipulation"
-              >
-                Get Started
-                <ArrowRight className="w-4 h-4" />
+                Compute tokens
               </Link>
             </div>
-          </div>
-        </div>
-      </nav>
-
-        {/* Hero Section */}
-      <section className="relative overflow-hidden bg-[#0b0c0f] py-16 sm:py-24">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.03)_1px,transparent_1px)] bg-[size:64px_64px]"></div>
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
-              Algorithmic Options Trading.
-              <span className="text-blue-400"> Evolved.</span>
-              </h1>
-            
-            <p className="text-lg sm:text-xl text-gray-400 leading-relaxed mb-8">
-              General Exchange blends quantitative finance, stochastic modeling, and AI-driven inference 
-              to build smarter trade engines for options professionals.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                to="/request-access"
-                className="inline-flex items-center justify-center px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-lg shadow-blue-600/30 hover:shadow-blue-600/50 group"
-              >
-                Get Started
-                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <button className="inline-flex items-center justify-center px-8 py-4 bg-white/5 hover:bg-white/10 text-white font-semibold rounded-lg border border-white/10 transition-all duration-200">
-                <Play className="mr-2 w-5 h-5" />
-                View Whitepaper
-              </button>
-            </div>
-
-            <p className="text-sm text-gray-500 mt-10 mb-3 uppercase tracking-wider font-semibold">Platform capabilities</p>
+            <p className="text-sm text-neutral-500 mt-12 mb-3 uppercase tracking-wider font-semibold">Deep dives</p>
             <nav className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm" aria-label="Platform sections">
               {platformJumpLinks.map(({ href, label }) => (
-                <a
-                  key={href}
-                  href={href}
-                  className="text-blue-400/90 hover:text-blue-300 transition-colors"
-                >
+                <a key={href} href={href} className="text-tan/90 hover:text-tan transition-colors">
                   {label}
                 </a>
               ))}
             </nav>
-            </div>
           </div>
-        </section>
+        </div>
+      </section>
+
+      <section className="border-b border-white/[0.06] bg-dark-gray/40 py-16 sm:py-20">
+        <div className="max-w-content mx-auto px-4 sm:px-6 lg:px-10">
+          <h2 className="font-display text-2xl sm:text-3xl text-neutral-50 mb-3 text-center sm:text-left">Core tools</h2>
+          <p className="text-neutral-400 text-sm max-w-2xl mb-10 text-center sm:text-left">
+            Tan accents and institutional green hover states—each card links to the detailed chapter below.
+          </p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6">
+            {TRADING_TOOLS.map((tool, i) => (
+              <ToolCard key={tool.title} {...tool} index={i} />
+            ))}
+          </div>
+        </div>
+      </section>
 
       <FeaturesPlatformSections />
 
@@ -155,11 +162,11 @@ export const Features: React.FC = () => {
                 volatility surface interpolation, dynamic hedging via payoff symmetry, and time-series anomaly detection for volatility regime shifts.
               </p>
               <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2 text-blue-400">
+                <div className="flex items-center space-x-2 text-tan">
                   <CheckCircle className="w-5 h-5" />
                   <span className="font-semibold">Real-time Analysis</span>
                 </div>
-                <div className="flex items-center space-x-2 text-blue-400">
+                <div className="flex items-center space-x-2 text-tan">
                   <CheckCircle className="w-5 h-5" />
                   <span className="font-semibold">AI-Powered Insights</span>
                 </div>
@@ -170,8 +177,8 @@ export const Features: React.FC = () => {
               <h3 className="text-xl font-semibold text-white mb-4">Core Analytics</h3>
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                    <TrendingUp className="w-4 h-4 text-blue-400" />
+                  <div className="w-8 h-8 bg-institutional-green/15 rounded-lg flex items-center justify-center">
+                    <TrendingUp className="w-4 h-4 text-tan" />
                   </div>
                   <div>
                     <div className="text-white font-medium">Delta-Based Momentum Engine</div>
@@ -179,8 +186,8 @@ export const Features: React.FC = () => {
                   </div>
                       </div>
                 <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
-                    <Shield className="w-4 h-4 text-green-400" />
+                  <div className="w-8 h-8 bg-institutional-green/15 rounded-lg flex items-center justify-center">
+                    <Shield className="w-4 h-4 text-institutional-green" />
                     </div>
                   <div>
                     <div className="text-white font-medium">Black-Scholes Risk Formatting</div>
@@ -188,8 +195,8 @@ export const Features: React.FC = () => {
                       </div>
                     </div>
                 <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                    <Brain className="w-4 h-4 text-purple-400" />
+                  <div className="w-8 h-8 bg-tan/10 rounded-lg flex items-center justify-center">
+                    <Brain className="w-4 h-4 text-tan" />
                   </div>
                   <div>
                     <div className="text-white font-medium">Machine Learning Clustering</div>
@@ -217,9 +224,9 @@ export const Features: React.FC = () => {
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Delta Momentum Engine */}
-            <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-6 hover:border-blue-500/30 transition-colors">
-              <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4">
-                <TrendingUp className="w-6 h-6 text-blue-400" />
+            <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-6 hover:border-institutional-green/35 transition-colors">
+              <div className="w-12 h-12 bg-institutional-green/15 rounded-lg flex items-center justify-center mb-4">
+                <TrendingUp className="w-6 h-6 text-tan" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-3">Delta-Based Momentum Engine</h3>
               <p className="text-gray-400 mb-4">
@@ -234,9 +241,9 @@ export const Features: React.FC = () => {
             </div>
 
             {/* Black-Scholes Engine */}
-            <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-6 hover:border-green-500/30 transition-colors">
-              <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-4">
-                <Shield className="w-6 h-6 text-green-400" />
+            <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-6 hover:border-institutional-green/35 transition-colors">
+              <div className="w-12 h-12 bg-institutional-green/15 rounded-lg flex items-center justify-center mb-4">
+                <Shield className="w-6 h-6 text-institutional-green" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-3">Black-Scholes Risk Formatting</h3>
               <p className="text-gray-400 mb-4">
@@ -251,9 +258,9 @@ export const Features: React.FC = () => {
             </div>
 
             {/* Bollinger Band Tracker */}
-            <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-6 hover:border-yellow-500/30 transition-colors">
-              <div className="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center mb-4">
-                <BarChart3 className="w-6 h-6 text-yellow-400" />
+            <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-6 hover:border-tan/40 transition-colors">
+              <div className="w-12 h-12 bg-tan/10 rounded-lg flex items-center justify-center mb-4">
+                <BarChart3 className="w-6 h-6 text-tan" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-3">Bollinger Band Volatility Tracker</h3>
               <p className="text-gray-400 mb-4">
@@ -268,9 +275,9 @@ export const Features: React.FC = () => {
             </div>
 
             {/* Markov Chain Forecasting */}
-            <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-6 hover:border-purple-500/30 transition-colors">
-              <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4">
-                <Brain className="w-6 h-6 text-purple-400" />
+            <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-6 hover:border-institutional-green/30 transition-colors">
+              <div className="w-12 h-12 bg-tan/10 rounded-lg flex items-center justify-center mb-4">
+                <Brain className="w-6 h-6 text-tan" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-3">Markov Chain Forecasting</h3>
               <p className="text-gray-400 mb-4">
@@ -285,9 +292,9 @@ export const Features: React.FC = () => {
             </div>
 
             {/* Monte Carlo Simulation */}
-            <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-6 hover:border-orange-500/30 transition-colors">
-              <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center mb-4">
-                <Cpu className="w-6 h-6 text-orange-400" />
+            <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-6 hover:border-tan/35 transition-colors">
+              <div className="w-12 h-12 bg-institutional-green/10 rounded-lg flex items-center justify-center mb-4">
+                <Cpu className="w-6 h-6 text-institutional-green" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-3">Monte Carlo Simulation</h3>
               <p className="text-gray-400 mb-4">
@@ -302,9 +309,9 @@ export const Features: React.FC = () => {
             </div>
 
             {/* Machine Learning */}
-            <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-6 hover:border-pink-500/30 transition-colors">
-              <div className="w-12 h-12 bg-pink-500/20 rounded-lg flex items-center justify-center mb-4">
-                <Database className="w-6 h-6 text-pink-400" />
+            <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-6 hover:border-institutional-green/35 transition-colors">
+              <div className="w-12 h-12 bg-tan/10 rounded-lg flex items-center justify-center mb-4">
+                <Database className="w-6 h-6 text-tan" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-3">Unsupervised Machine Learning</h3>
               <p className="text-gray-400 mb-4">
@@ -329,8 +336,8 @@ export const Features: React.FC = () => {
               <h3 className="text-2xl font-semibold text-white mb-6">Data Processing Pipeline</h3>
               <div className="space-y-4">
                 <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-blue-500/20 rounded-full flex items-center justify-center mt-1">
-                    <Database className="w-3 h-3 text-blue-400" />
+                  <div className="w-6 h-6 bg-institutional-green/15 rounded-full flex items-center justify-center mt-1">
+                    <Database className="w-3 h-3 text-tan" />
                   </div>
                   <div>
                     <div className="text-white font-medium">Historical Data Collection</div>
@@ -338,8 +345,8 @@ export const Features: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-green-500/20 rounded-full flex items-center justify-center mt-1">
-                    <Brain className="w-3 h-3 text-green-400" />
+                  <div className="w-6 h-6 bg-institutional-green/15 rounded-full flex items-center justify-center mt-1">
+                    <Brain className="w-3 h-3 text-institutional-green" />
                   </div>
                   <div>
                     <div className="text-white font-medium">Adaptive Model Calibration</div>
@@ -347,8 +354,8 @@ export const Features: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-purple-500/20 rounded-full flex items-center justify-center mt-1">
-                    <Zap className="w-3 h-3 text-purple-400" />
+                  <div className="w-6 h-6 bg-tan/10 rounded-full flex items-center justify-center mt-1">
+                    <Zap className="w-3 h-3 text-tan" />
                     </div>
                   <div>
                     <div className="text-white font-medium">Real-time Signal Generation</div>
@@ -373,15 +380,15 @@ export const Features: React.FC = () => {
               </p>
               <div className="flex items-center space-x-6">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-400">99.9%</div>
+                  <div className="text-2xl font-bold text-tan">99.9%</div>
                   <div className="text-sm text-gray-400">Uptime</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-green-400">&lt;50ms</div>
+                  <div className="text-2xl font-bold text-institutional-green">&lt;50ms</div>
                   <div className="text-sm text-gray-400">Latency</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-400">24/7</div>
+                  <div className="text-2xl font-bold text-tan">24/7</div>
                   <div className="text-sm text-gray-400">Monitoring</div>
                 </div>
               </div>
@@ -405,8 +412,8 @@ export const Features: React.FC = () => {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-6">
-              <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4">
-                <Target className="w-6 h-6 text-blue-400" />
+              <div className="w-12 h-12 bg-institutional-green/15 rounded-lg flex items-center justify-center mb-4">
+                <Target className="w-6 h-6 text-tan" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-3">Payoff Cones</h3>
               <p className="text-gray-400">
@@ -416,8 +423,8 @@ export const Features: React.FC = () => {
             </div>
             
             <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-6">
-              <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-4">
-                <BarChart3 className="w-6 h-6 text-green-400" />
+              <div className="w-12 h-12 bg-institutional-green/15 rounded-lg flex items-center justify-center mb-4">
+                <BarChart3 className="w-6 h-6 text-institutional-green" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-3">Volatility Heatmaps</h3>
               <p className="text-gray-400">
@@ -427,8 +434,8 @@ export const Features: React.FC = () => {
             </div>
             
             <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-6">
-              <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4">
-                <Eye className="w-6 h-6 text-purple-400" />
+              <div className="w-12 h-12 bg-tan/10 rounded-lg flex items-center justify-center mb-4">
+                <Eye className="w-6 h-6 text-tan" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-3">Monte Carlo Projections</h3>
               <p className="text-gray-400">
@@ -455,8 +462,8 @@ export const Features: React.FC = () => {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 bg-blue-500/20 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Users className="w-8 h-8 text-blue-400" />
+              <div className="w-16 h-16 bg-institutional-green/15 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <Users className="w-8 h-8 text-tan" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-3">Quantitative Hedge Funds</h3>
               <p className="text-gray-400">
@@ -465,8 +472,8 @@ export const Features: React.FC = () => {
             </div>
             
             <div className="text-center">
-              <div className="w-16 h-16 bg-green-500/20 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <TrendingUp className="w-8 h-8 text-green-400" />
+              <div className="w-16 h-16 bg-institutional-green/15 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <TrendingUp className="w-8 h-8 text-institutional-green" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-3">Retail Options Traders</h3>
               <p className="text-gray-400">
@@ -475,8 +482,8 @@ export const Features: React.FC = () => {
             </div>
             
             <div className="text-center">
-              <div className="w-16 h-16 bg-purple-500/20 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <BookOpen className="w-8 h-8 text-purple-400" />
+              <div className="w-16 h-16 bg-tan/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <BookOpen className="w-8 h-8 text-tan" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-3">Academic Research</h3>
               <p className="text-gray-400">
@@ -485,8 +492,8 @@ export const Features: React.FC = () => {
             </div>
             
             <div className="text-center">
-              <div className="w-16 h-16 bg-orange-500/20 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-8 h-8 text-orange-400" />
+              <div className="w-16 h-16 bg-institutional-green/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <Shield className="w-8 h-8 text-institutional-green" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-3">Risk Management</h3>
               <p className="text-gray-400">
@@ -501,8 +508,8 @@ export const Features: React.FC = () => {
       <section className="py-16 sm:py-24 bg-[#0b0c0f]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-8">
-            <div className="w-16 h-16 bg-yellow-500/20 rounded-xl flex items-center justify-center mx-auto mb-6">
-              <AlertTriangle className="w-8 h-8 text-yellow-400" />
+            <div className="w-16 h-16 bg-tan/10 rounded-xl flex items-center justify-center mx-auto mb-6">
+              <AlertTriangle className="w-8 h-8 text-tan" />
             </div>
             <h2 className="text-2xl font-semibold text-white mb-4">
               Compliance & Safety
@@ -543,7 +550,7 @@ export const Features: React.FC = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/request-access"
-              className="inline-flex items-center justify-center px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-lg shadow-blue-600/30 hover:shadow-blue-600/50 group"
+              className="inline-flex items-center justify-center px-8 py-4 bg-institutional-green hover:bg-institutional-green-muted text-white font-semibold rounded-sm transition-all duration-200 shadow-lg shadow-institutional-green/25 hover:shadow-institutional-green/35 group"
             >
               Join Waitlist
               <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -561,7 +568,7 @@ export const Features: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="flex items-center justify-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-tan to-institutional-green rounded-sm flex items-center justify-center">
                 <Activity className="w-5 h-5 text-white" />
               </div>
               <span className="text-lg font-serif font-bold text-white">General Exchange</span>
