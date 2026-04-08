@@ -47,6 +47,11 @@ import {
 } from '../components/dashboard/mockMlDashboardData';
 import { DashboardSidebar } from '../components/DashboardSidebar';
 import { DashboardWidget } from '../components/DashboardWidget';
+import { InstitutionalDashboardPanels } from '../components/dashboard/InstitutionalDashboardPanels';
+import {
+  INSTITUTIONAL_DASHBOARD_TABS,
+  type InstitutionalDashboardTabId,
+} from '../data/dashboardInstitutionalTabs';
 
 const easeLuxury = [0.22, 1, 0.36, 1] as const;
 
@@ -123,6 +128,7 @@ function LayerHeader({
 }
 
 export const Dashboard: React.FC = () => {
+  const [institutionalTab, setInstitutionalTab] = useState<InstitutionalDashboardTabId>('overview');
   const [selectedModel, setSelectedModel] = useState<ModelId>('xgboost');
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -252,7 +258,7 @@ export const Dashboard: React.FC = () => {
           className="relative z-10 flex-1 min-w-0 px-4 sm:px-6 lg:px-8 xl:px-10 py-6 sm:py-8 pb-16"
           {...mainStagger}
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
             <DashboardWidget
               index={0}
               title="Active compute"
@@ -269,12 +275,42 @@ export const Dashboard: React.FC = () => {
             <DashboardWidget index={3} title="Strategy performance" value="+4.2%" subtitle="Paper book · gross of fees" />
           </div>
 
-          <motion.div {...sectionItem}>
-            <IntelligenceStatusBar key={selectedModel} items={intelligenceFeed} />
-          </motion.div>
+          <div
+            className="flex gap-2 overflow-x-auto pb-3 mb-6 sm:mb-8 scrollbar-hide border-b border-white/[0.06] -mx-1 px-1"
+            role="tablist"
+            aria-label="Institutional tools"
+          >
+            {INSTITUTIONAL_DASHBOARD_TABS.map(({ id, label }) => {
+              const active = institutionalTab === id;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setInstitutionalTab(id)}
+                  className={`shrink-0 px-3.5 sm:px-4 py-2 rounded-sm text-[11px] sm:text-xs font-semibold tracking-wide transition-colors border ${
+                    active
+                      ? 'bg-institutional-green/20 border-institutional-green/45 text-tan'
+                      : 'border-transparent text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04]'
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
 
-        {/* 01 Market Engine */}
-        <motion.section className="mb-10 sm:mb-12" aria-labelledby="layer-market" {...sectionItem}>
+          <InstitutionalDashboardPanels tab={institutionalTab} />
+
+          {institutionalTab === 'overview' && (
+            <>
+              <motion.div {...sectionItem}>
+                <IntelligenceStatusBar key={selectedModel} items={intelligenceFeed} />
+              </motion.div>
+
+              {/* 01 Market Engine */}
+              <motion.section className="mb-10 sm:mb-12" aria-labelledby="layer-market" {...sectionItem}>
           <LayerHeader
             step="01"
             title="Market Engine"
@@ -400,6 +436,8 @@ export const Dashboard: React.FC = () => {
             )}
           </div>
         </motion.section>
+            </>
+          )}
         </motion.main>
       </div>
     </div>

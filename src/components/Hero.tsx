@@ -38,31 +38,46 @@ export const Hero: React.FC = () => {
           <motion.div className="space-y-8 lg:space-y-10" {...fade}>
             <div className="inline-flex items-center gap-2 rounded-sm border border-tan/25 bg-white/[0.03] px-4 py-2 backdrop-blur-sm">
               <span className="text-[11px] sm:text-xs font-semibold tracking-[0.14em] uppercase text-tan">
-                Lubbock.cloud · Tokenized AMD compute
+                General.Exchange · Lubbock.Cloud · AMD
               </span>
             </div>
 
             <h1 className="font-display text-[2.25rem] sm:text-5xl lg:text-[3.25rem] xl:text-[3.5rem] leading-[1.06] font-medium text-neutral-50 tracking-[-0.02em]">
-              Institutional-Grade Compute for Modern Trading
+              Institutional Risk &amp; Execution on Tokenized Compute
             </h1>
 
-            <p className="text-base sm:text-lg text-neutral-400 max-w-xl leading-relaxed font-light">
-              Train, test, and deploy trading algorithms using tokenized AMD compute. General Exchange gives traders
-              institutional-grade compute power, backed by tokenized AMD chips.
+            <p className="text-base sm:text-lg text-neutral-400 max-w-2xl leading-relaxed font-light">
+              GPU-accelerated risk engines, backtesting, and governance, integrated with Lubbock.Cloud and AMD-optimized
+              workloads.
             </p>
+
+            <ul className="flex flex-wrap gap-2 pt-1" aria-label="Capability highlights">
+              {[
+                'Advanced Risk & Scenario Engines',
+                'Compute-Driven Backtesting & RL Lab',
+                'Deterministic Risk-First Execution Loop',
+              ].map((label) => (
+                <li
+                  key={label}
+                  className="text-[11px] sm:text-xs font-medium tracking-wide text-neutral-300 border border-white/[0.1] bg-white/[0.04] px-3 py-1.5 rounded-sm"
+                >
+                  {label}
+                </li>
+              ))}
+            </ul>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2">
               <Link
-                to="/login"
+                to="/features"
                 className="inline-flex items-center justify-center px-8 py-3.5 bg-tan text-charcoal text-sm font-semibold tracking-wide rounded-sm hover:bg-tan-muted transition-all duration-300 shadow-[0_12px_40px_-12px_rgba(210,180,140,0.35)]"
               >
-                Launch Platform
+                Explore the Platform
               </Link>
               <Link
-                to="/pricing"
+                to="/features#feature-risk-management"
                 className="inline-flex items-center justify-center px-8 py-3.5 border border-institutional-green/45 text-sm font-semibold text-neutral-100 rounded-sm bg-institutional-green/10 hover:bg-institutional-green/20 hover:border-institutional-green transition-all duration-300"
               >
-                Explore Compute Tokens
+                View Risk Stack
               </Link>
             </div>
           </motion.div>
