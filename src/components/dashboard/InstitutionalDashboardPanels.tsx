@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import type { InstitutionalDashboardTabId } from '../../data/dashboardInstitutionalTabs';
 
 function PanelCard({
@@ -109,7 +109,7 @@ export function InstitutionalDashboardPanels({ tab }: { tab: InstitutionalDashbo
         </h2>
         <p className="text-sm text-zinc-500 mb-5">Bridge Observer integration surface.</p>
         <div className={grid}>
-          <PanelCard title="News Sentiment Feed" footer={<Link to="/bridge-observer" className="text-[11px] font-semibold uppercase tracking-[0.14em] text-tan hover:text-tan-muted">Open feed</Link>}>
+          <PanelCard title="News Sentiment Feed" footer={<Link href="/bridge-observer" className="text-[11px] font-semibold uppercase tracking-[0.14em] text-tan hover:text-tan-muted">Open feed</Link>}>
             <p>Time series snapshot: cross-asset sentiment z-scores. Refresh cadence: 1m.</p>
           </PanelCard>
           <PanelCard title="Event-Driven Alerts">
@@ -187,7 +187,7 @@ export function InstitutionalDashboardPanels({ tab }: { tab: InstitutionalDashbo
         </h2>
         <p className="text-sm text-zinc-500 mb-5">Compute wallet, yield, queue, and institutional add-ons.</p>
         <div className={grid}>
-          <PanelCard title="Compute Credit Wallet" footer={<Link to="/pricing" className="text-[11px] font-semibold uppercase tracking-[0.14em] text-tan hover:text-tan-muted">Manage credits</Link>}>
+          <PanelCard title="Compute Credit Wallet" footer={<Link href="/pricing" className="text-[11px] font-semibold uppercase tracking-[0.14em] text-tan hover:text-tan-muted">Manage credits</Link>}>
             <p>Balance: 14,280 LUB units · burn rate 7d: 2,100 · reservation: 800.</p>
           </PanelCard>
           <PanelCard title="Compute Yield Accounts">

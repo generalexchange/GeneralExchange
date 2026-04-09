@@ -2,10 +2,13 @@
  * Homepage hero — tall institutional band with dual CTAs
  */
 
+'use client';
+
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { TrendingUp, Brain, Activity } from 'lucide-react';
+import { HeroSystemTopologyIllustration } from './homepage/HomepageMechanicsIllustrations';
 
 const LIVE_QUOTES: { symbol: string; pct: number }[] = [
   { symbol: 'AAPL', pct: 1.57 },
@@ -33,7 +36,7 @@ export const Hero: React.FC = () => {
       />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:72px_72px] opacity-40" />
 
-      <div className="relative max-w-content mx-auto px-4 sm:px-6 lg:px-10 py-20 sm:py-28 lg:py-32 flex-1 flex items-center">
+      <div className="relative max-w-content mx-auto px-4 sm:px-6 lg:px-10 py-20 sm:py-28 lg:py-32 flex-1 flex flex-col justify-center w-full">
         <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-14 lg:gap-20 items-center w-full">
           <motion.div className="space-y-8 lg:space-y-10" {...fade}>
             <div className="inline-flex items-center gap-2 rounded-sm border border-tan/25 bg-white/[0.03] px-4 py-2 backdrop-blur-sm">
@@ -68,13 +71,13 @@ export const Hero: React.FC = () => {
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2">
               <Link
-                to="/features"
+                href="/features"
                 className="inline-flex items-center justify-center px-8 py-3.5 bg-tan text-charcoal text-sm font-semibold tracking-wide rounded-sm hover:bg-tan-muted transition-all duration-300 shadow-[0_12px_40px_-12px_rgba(210,180,140,0.35)]"
               >
                 Explore the Platform
               </Link>
               <Link
-                to="/features#feature-risk-management"
+                href="/features#feature-risk-management"
                 className="inline-flex items-center justify-center px-8 py-3.5 border border-institutional-green/45 text-sm font-semibold text-neutral-100 rounded-sm bg-institutional-green/10 hover:bg-institutional-green/20 hover:border-institutional-green transition-all duration-300"
               >
                 View Risk Stack
@@ -145,6 +148,17 @@ export const Hero: React.FC = () => {
               <p className="text-[10px] text-neutral-600 mt-1">Trailing 90d · paper</p>
             </div>
           </motion.div>
+        </div>
+
+        <div className="w-full mt-14 lg:mt-20 pt-10 border-t border-white/[0.07]">
+          <p className="text-[10px] font-semibold tracking-[0.2em] text-tan/90 uppercase mb-1">End-to-end platform topology</p>
+          <p className="text-xs text-neutral-500 mb-5 max-w-2xl font-light leading-relaxed">
+            How tape, risk, compute, routing, and evidence connect—one direction of travel so auditors and desks share the
+            same mental model.
+          </p>
+          <div className="rounded-sm border border-white/[0.1] bg-dark-gray/55 px-3 py-4 sm:px-5 sm:py-5 backdrop-blur-sm">
+            <HeroSystemTopologyIllustration />
+          </div>
         </div>
       </div>
     </section>

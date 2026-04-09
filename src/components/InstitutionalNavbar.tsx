@@ -2,8 +2,11 @@
  * Institutional navigation — serif logotype, tan / green accent border
  */
 
+'use client';
+
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Search } from 'lucide-react';
 
 export interface InstitutionalNavbarProps {
@@ -17,11 +20,11 @@ export const InstitutionalNavbar: React.FC<InstitutionalNavbarProps> = ({
   onSearchChange,
   showSearch = false,
 }) => {
-  const location = useLocation();
+  const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => pathname === path;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,7 +55,7 @@ export const InstitutionalNavbar: React.FC<InstitutionalNavbarProps> = ({
     >
       <div className="max-w-content mx-auto px-4 sm:px-6 lg:px-10">
         <div className="flex justify-between items-center gap-4 h-14 sm:h-[3.75rem]">
-          <Link to="/" className="flex items-center gap-2.5 shrink-0 group">
+          <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
             <span
               className="w-px h-7 bg-gradient-to-b from-tan to-institutional-green group-hover:opacity-90 transition-opacity"
               aria-hidden
@@ -81,19 +84,19 @@ export const InstitutionalNavbar: React.FC<InstitutionalNavbarProps> = ({
 
           <div className="flex items-center gap-2 sm:gap-5 lg:gap-8 min-w-0">
             <div className="flex items-center gap-3 sm:gap-5 lg:gap-7 overflow-x-auto sm:overflow-visible scrollbar-hide max-w-[58vw] sm:max-w-none pr-1">
-              <Link to="/features" className={navLink}>
+              <Link href="/features" className={navLink}>
                 Trading tools
               </Link>
-              <Link to="/pricing" className={navLink}>
+              <Link href="/pricing" className={navLink}>
                 Compute tokens
               </Link>
-              <Link to="/bridge-observer" className={navLink}>
+              <Link href="/bridge-observer" className={navLink}>
                 Bridge Observer
               </Link>
             </div>
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               <Link
-                to="/login"
+                href="/login"
                 className={`inline-flex items-center justify-center px-4 sm:px-5 py-2 rounded-sm text-[13px] font-semibold tracking-wide transition-all duration-300 border ${
                   isActive('/login')
                     ? 'bg-tan border-tan text-charcoal'

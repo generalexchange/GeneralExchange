@@ -70,7 +70,7 @@ export const FeaturesPlatformSections: React.FC = () => {
               </ul>
             </div>
             <div className="rounded-2xl border border-institutional-green/25 bg-[#0f0f0f] p-8 font-mono text-sm text-gray-400 shadow-2xl shadow-institutional-green/10">
-              <div className="text-gray-500 mb-4">// simulation manifest</div>
+              <div className="text-gray-500 mb-4">{'// simulation manifest'}</div>
               <pre className="text-tan/90 whitespace-pre-wrap leading-relaxed">
                 {`regime: volatility_cluster_v2\nslippage: adaptive_bps\nborrow: HTB_curve\nruns: 10_000 paths\nOOS Sharpe: 1.84`}
               </pre>
@@ -375,7 +375,7 @@ export const FeaturesPlatformSections: React.FC = () => {
               </ul>
             </div>
             <div className="rounded-2xl border border-cyan-500/20 bg-[#0f0f0f] p-8 font-mono text-sm text-gray-400 shadow-2xl shadow-cyan-900/10">
-              <div className="text-gray-500 mb-4">// performance summary · YTD</div>
+              <div className="text-gray-500 mb-4">{'// performance summary · YTD'}</div>
               <pre className="text-cyan-300/90 whitespace-pre-wrap leading-relaxed">
                 {`net P&L:     +14.2%\nbenchmark:   +6.1%\nmax DD:      -4.8%\nIR vs bench: 1.31`}
               </pre>

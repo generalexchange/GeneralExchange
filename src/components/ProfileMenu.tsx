@@ -2,14 +2,16 @@
  * Profile dropdown menu for login/logout
  */
 
+'use client';
+
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { User, LogOut, Settings, LayoutDashboard } from 'lucide-react';
 
 export const ProfileMenu: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
+  const router = useRouter();
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -26,7 +28,7 @@ export const ProfileMenu: React.FC = () => {
   const handleLogout = () => {
     console.log('User logged out');
     setIsOpen(false);
-    navigate('/');
+    router.push('/');
   };
 
   return (
@@ -50,7 +52,7 @@ export const ProfileMenu: React.FC = () => {
             <button
               onClick={() => {
                 setIsOpen(false);
-                navigate('/dashboard');
+                router.push('/dashboard');
               }}
               className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-gray-300 hover:bg-[#2a2a2a] hover:text-white transition-colors"
             >

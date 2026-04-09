@@ -51,8 +51,9 @@ export const createTradeInsightsStream = (
   };
 };
 
-// Export for use in components
-export default {
+const tradeInsights = {
   getTradeInsights,
-  createTradeInsightsStream
+  createTradeInsightsStream,
 };
+
+export default tradeInsights;

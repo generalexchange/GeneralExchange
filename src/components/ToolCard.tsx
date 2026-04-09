@@ -2,8 +2,10 @@
  * Trading / platform tool card — tan accent, green hover
  */
 
+'use client';
+
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
 
@@ -41,7 +43,7 @@ export const ToolCard: React.FC<ToolCardProps> = ({ title, description, icon: Ic
       transition={{ duration: 0.45, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
     >
       {to ? (
-        <Link to={to} className={className}>
+        <Link href={to} className={className}>
           {inner}
         </Link>
       ) : (

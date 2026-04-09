@@ -137,6 +137,7 @@ export const OrderBookPreview: React.FC = () => {
                     <button
                       type="button"
                       role="option"
+                      aria-selected={selected.symbol === s.symbol}
                       className="w-full px-3 py-2 text-left text-xs hover:bg-white/10 border-b border-white/5 last:border-0"
                       onMouseDown={(e) => e.preventDefault()}
                       onClick={() => pickStock(s)}

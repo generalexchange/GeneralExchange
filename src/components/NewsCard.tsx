@@ -3,6 +3,7 @@
  */
 
 import React from 'react';
+import Image from 'next/image';
 import { NewsArticle } from '../types';
 import { ArrowUpRight } from 'lucide-react';
 
@@ -54,11 +55,12 @@ export const NewsCard: React.FC<NewsCardProps> = ({ article, variant = 'default'
   return (
     <article className="rounded-sm shadow-sm hover:shadow-[0_24px_48px_-20px_rgba(46,90,58,0.2)] transition-all duration-300 overflow-hidden group cursor-pointer border border-white/[0.08] bg-dark-gray hover:border-institutional-green/40">
       <div className="relative h-44 overflow-hidden">
-        <img
+        <Image
           src={article.imageUrl}
           alt=""
-          className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500 opacity-90 group-hover:opacity-100"
-          loading="lazy"
+          fill
+          className="object-cover group-hover:scale-[1.02] transition-transform duration-500 opacity-90 group-hover:opacity-100"
+          sizes="(max-width: 768px) 100vw, 400px"
         />
         <div className="absolute top-3 left-3">
           <span className="px-2.5 py-1 bg-charcoal/85 border border-tan/30 text-tan text-[10px] font-semibold uppercase tracking-wider rounded-sm">

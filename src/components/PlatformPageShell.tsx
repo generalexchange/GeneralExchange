@@ -2,8 +2,10 @@
  * Shared shell for marketing pages — soft modern chrome
  */
 
+'use client';
+
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
 interface PlatformPageShellProps {
@@ -16,19 +18,19 @@ export const PlatformPageShell: React.FC<PlatformPageShellProps> = ({ children }
       <nav className="bg-[#0b0c0f]/92 border-b border-white/[0.05] sticky top-0 z-50 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14 sm:h-16">
-            <Link to="/" className="flex items-center gap-2.5 group">
+            <Link href="/" className="flex items-center gap-2.5 group">
               <span className="w-1.5 h-6 rounded-full bg-[#c6a575] group-hover:bg-[#d4b896] transition-colors" />
               <span className="text-base sm:text-lg font-display font-normal text-neutral-100 tracking-tight">General Exchange</span>
             </Link>
             <div className="flex items-center gap-3 sm:gap-4">
               <Link
-                to="/"
+                href="/"
                 className="text-sm text-neutral-400 hover:text-neutral-100 transition-colors hidden sm:inline"
               >
                 Home
               </Link>
               <Link
-                to="/request-access"
+                href="/request-access"
                 className="inline-flex items-center gap-1 px-5 py-2.5 bg-neutral-100 text-[#0c0d10] text-sm font-semibold rounded-full hover:bg-white transition-all duration-300 shadow-md shadow-black/15"
               >
                 Get started

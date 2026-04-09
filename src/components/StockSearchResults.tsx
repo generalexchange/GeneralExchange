@@ -2,8 +2,10 @@
  * Stock search results component - mock UI until server is connected
  */
 
+'use client';
+
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { TrendingUp, TrendingDown, Activity } from 'lucide-react';
 import { countCatalogKeys, getCatalogStockByQuery, searchCatalogStocks } from '../data/mockStocksCatalog';
 
@@ -12,7 +14,7 @@ interface StockSearchResultsProps {
 }
 
 export const StockSearchResults: React.FC<StockSearchResultsProps> = ({ query }) => {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const normalizedQuery = query.trim().toUpperCase();
   const stock = getCatalogStockByQuery(normalizedQuery);
@@ -29,7 +31,7 @@ export const StockSearchResults: React.FC<StockSearchResultsProps> = ({ query })
               <div
                 key={matchStock.symbol}
                 className="p-3 hover:bg-[#2a2a2a] cursor-pointer border-b border-[#2a2a2a] last:border-b-0"
-                onClick={() => navigate(`/company/${matchStock.symbol}`)}
+                onClick={() => router.push(`/company/${matchStock.symbol}`)}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
@@ -68,7 +70,9 @@ export const StockSearchResults: React.FC<StockSearchResultsProps> = ({ query })
   if (!stock && query.length > 0) {
     return (
       <div className="absolute top-full left-0 right-0 mt-2 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg shadow-xl p-4 z-50">
-        <p className="text-gray-400 text-sm text-center">No results found for "{query}"</p>
+        <p className="text-gray-400 text-sm text-center">
+          No results found for &quot;{query}&quot;
+        </p>
         <p className="text-gray-500 text-xs text-center mt-1">Server connection pending...</p>
       </div>
     );
@@ -124,7 +128,7 @@ export const StockSearchResults: React.FC<StockSearchResultsProps> = ({ query })
         </div>
 
         <button
-          onClick={() => navigate(`/company/${stock.symbol}`)}
+          onClick={() => router.push(`/company/${stock.symbol}`)}
           className="w-full mt-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors text-sm"
         >
           View Full Details

@@ -349,7 +349,9 @@ export const GreeksHeatmapModal: React.FC<GreeksHeatmapModalProps> = ({
                       </>
                     ) : activeGreek === 'gamma' ? (
                       <>
-                        <div><span className="text-blue-400">γ</span> = N'(d1) / (S × σ × √T)</div>
+                        <div>
+                          <span className="text-blue-400">γ</span> = N&apos;(d1) / (S × σ × √T)
+                        </div>
                         <div><span className="text-blue-400">S</span> = Current price (${currentPrice.toFixed(2)})</div>
                         <div><span className="text-blue-400">σ</span> = Implied volatility</div>
                         <div><span className="text-blue-400">T</span> = Time to expiration</div>

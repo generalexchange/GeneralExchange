@@ -13,6 +13,8 @@ export interface PillarSection {
   id: string;
   title: string;
   subtitle?: string;
+  /** Short caption under the mechanics diagram for this pillar */
+  mechanicsCaption?: string;
   cards: PillarCard[];
   theme: PillarTheme;
 }
@@ -25,6 +27,8 @@ export const HOMEPAGE_PILLARS: PillarSection[] = [
     id: 'advanced-risk-scenario',
     title: 'Advanced Risk & Scenario Engines',
     subtitle: 'GPU-accelerated stress paths, factors, and tail metrics—deterministic where desks require proof.',
+    mechanicsCaption:
+      'Correlated paths, tail heatmaps, and VaR/ES ladders share one seed chain so risk and audit see the same scenario geometry.',
     theme: 'dark',
     cards: [
       {
@@ -53,6 +57,8 @@ export const HOMEPAGE_PILLARS: PillarSection[] = [
     id: 'backtesting-research',
     title: 'Compute-Driven Backtesting & Model Research (Lubbock.Cloud Integrated)',
     subtitle: 'Tokenized AMD pools for sweeps, evolution, and RL—with spend controls and reproducible manifests.',
+    mechanicsCaption:
+      'Parameter grids burn compute tokens deliberately; manifests bind code, data slices, and kernels so results replay bit-for-bit.',
     theme: 'light',
     cards: [
       {
@@ -86,6 +92,8 @@ export const HOMEPAGE_PILLARS: PillarSection[] = [
     id: 'bridge-observer',
     title: 'Bridge Observer: From News to Signals to Execution',
     subtitle: 'Narrative and events folded into time series, alerts, and route-ready signals.',
+    mechanicsCaption:
+      'Headlines become dense vectors, then regime-aware signals that meet the same pre-trade gates as any internal alpha.',
     theme: 'dark',
     cards: [
       {
@@ -114,6 +122,8 @@ export const HOMEPAGE_PILLARS: PillarSection[] = [
     id: 'institutional-workflow',
     title: 'Institutional Workflow & Evidence',
     subtitle: 'Pre-trade gates, immutable ledgers, and policy-bound releases.',
+    mechanicsCaption:
+      'Each hop hashes intent, child orders, and fills—building an evidence pack second line and regulators can traverse.',
     theme: 'light',
     cards: [
       {
@@ -142,6 +152,8 @@ export const HOMEPAGE_PILLARS: PillarSection[] = [
     id: 'tokenized-compute',
     title: 'Tokenized Compute, Natively Integrated',
     subtitle: 'Wallet, yield, and queue priority tied to Lubbock.Cloud issuance.',
+    mechanicsCaption:
+      'Wallet balances, scheduler fairness, and yield leases share one ledger so spend, priority, and cost stay visible to finance.',
     theme: 'dark',
     cards: [
       {
@@ -166,6 +178,8 @@ export const HOMEPAGE_PILLARS: PillarSection[] = [
     id: 'execution-routing',
     title: 'Execution & Routing Intelligence',
     subtitle: 'SOR, slippage forensics, and live exposure in one loop.',
+    mechanicsCaption:
+      'The router minimizes a cost surface: fees, impact, and latency—not just top-of-book snapshots.',
     theme: 'light',
     cards: [
       {
@@ -191,6 +205,8 @@ export const HOMEPAGE_PILLARS: PillarSection[] = [
     id: 'quant-research',
     title: 'Quant Research Environment',
     subtitle: 'Notebooks, data plane, and sandboxes bound to compute tokens.',
+    mechanicsCaption:
+      'Kernels, lakes, and marketplace artifacts inherit entitlements—no shadow downloads outside policy.',
     theme: 'dark',
     cards: [
       {
@@ -218,6 +234,8 @@ export const HOMEPAGE_PILLARS: PillarSection[] = [
     id: 'governance-compliance',
     title: 'Governance, Compliance & Controls',
     subtitle: 'Attestations, exports, and policy-locked runtime.',
+    mechanicsCaption:
+      'Controls are not PDFs—they are runtime gates that refuse to boot models or routes when limits drift.',
     theme: 'light',
     cards: [
       {
@@ -243,6 +261,8 @@ export const HOMEPAGE_PILLARS: PillarSection[] = [
     id: 'premium-addons',
     title: 'Premium Institutional Add-Ons',
     subtitle: 'Subscriptions, embeddable engines, and automated diagnostics.',
+    mechanicsCaption:
+      'Embed the same engines clients see on-platform; metering and audit trails travel with the integration.',
     theme: 'dark',
     cards: [
       {

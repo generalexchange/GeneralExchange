@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { MapPin } from 'lucide-react';
 
 export const InstitutionalFooter: React.FC = () => {
@@ -28,12 +28,12 @@ export const InstitutionalFooter: React.FC = () => {
             <h4 className="text-[11px] font-semibold text-neutral-500 uppercase tracking-[0.2em] mb-4">Platform</h4>
             <ul className="space-y-2.5">
               <li>
-                <Link to="/features" className="text-sm text-neutral-400 hover:text-tan transition-colors">
+                <Link href="/features" className="text-sm text-neutral-400 hover:text-tan transition-colors">
                   Trading tools
                 </Link>
               </li>
               <li>
-                <Link to="/pricing" className="text-sm text-neutral-400 hover:text-tan transition-colors">
+                <Link href="/pricing" className="text-sm text-neutral-400 hover:text-tan transition-colors">
                   Compute tokens
                 </Link>
               </li>
@@ -43,12 +43,12 @@ export const InstitutionalFooter: React.FC = () => {
             <h4 className="text-[11px] font-semibold text-neutral-500 uppercase tracking-[0.2em] mb-4">Intelligence</h4>
             <ul className="space-y-2.5">
               <li>
-                <Link to="/bridge-observer" className="text-sm text-neutral-400 hover:text-tan transition-colors">
+                <Link href="/bridge-observer" className="text-sm text-neutral-400 hover:text-tan transition-colors">
                   Bridge Observer
                 </Link>
               </li>
               <li>
-                <Link to="/documents" className="text-sm text-neutral-400 hover:text-tan transition-colors">
+                <Link href="/documents" className="text-sm text-neutral-400 hover:text-tan transition-colors">
                   Documents
                 </Link>
               </li>
@@ -58,12 +58,12 @@ export const InstitutionalFooter: React.FC = () => {
             <h4 className="text-[11px] font-semibold text-neutral-500 uppercase tracking-[0.2em] mb-4">Resources</h4>
             <ul className="space-y-2.5">
               <li>
-                <Link to="/university" className="text-sm text-neutral-400 hover:text-tan transition-colors">
+                <Link href="/university" className="text-sm text-neutral-400 hover:text-tan transition-colors">
                   University
                 </Link>
               </li>
               <li>
-                <Link to="/help-center" className="text-sm text-neutral-400 hover:text-tan transition-colors">
+                <Link href="/help-center" className="text-sm text-neutral-400 hover:text-tan transition-colors">
                   Help Center
                 </Link>
               </li>
@@ -73,12 +73,12 @@ export const InstitutionalFooter: React.FC = () => {
             <h4 className="text-[11px] font-semibold text-neutral-500 uppercase tracking-[0.2em] mb-4">Account</h4>
             <ul className="space-y-2.5">
               <li>
-                <Link to="/login" className="text-sm text-neutral-400 hover:text-tan transition-colors">
+                <Link href="/login" className="text-sm text-neutral-400 hover:text-tan transition-colors">
                   Sign in
                 </Link>
               </li>
               <li>
-                <Link to="/dashboard" className="text-sm text-neutral-400 hover:text-tan transition-colors">
+                <Link href="/dashboard" className="text-sm text-neutral-400 hover:text-tan transition-colors">
                   Dashboard
                 </Link>
               </li>
