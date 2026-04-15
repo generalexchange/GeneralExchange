@@ -75,28 +75,14 @@ export function InstitutionalDashboardPanels({ tab }: { tab: InstitutionalDashbo
 
   if (tab === 'backtest') {
     return (
-      <section className="mb-10 sm:mb-12" aria-labelledby="dash-tab-backtest">
+      <section className="mb-6 sm:mb-8" aria-labelledby="dash-tab-backtest">
         <h2 id="dash-tab-backtest" className="text-lg font-semibold text-white mb-1">
           Backtesting &amp; RL
         </h2>
-        <p className="text-sm text-zinc-500 mb-5">Grids, optimizers, and RL tied to Lubbock.Cloud credits.</p>
-        <div className={grid}>
-          <PanelCard title="Parallel Backtesting Grid" footer={<PlaceholderAction label="New sweep" />}>
-            <p>Parameter grid, max concurrent jobs, credit ceiling. Queue position and ETA.</p>
-          </PanelCard>
-          <PanelCard title="Genetic Algorithm Optimizer" footer={<PlaceholderAction label="Edit fitness" />}>
-            <p>Population size, crossover rate, constraints on turnover and leverage.</p>
-          </PanelCard>
-          <PanelCard title="Reinforcement Learning Lab" footer={<PlaceholderAction label="Launch trainer" />}>
-            <p>Environment: synthetic / historical OB. Algorithms: PPO, DQN, SAC. Reward DSL hook.</p>
-          </PanelCard>
-          <PanelCard title="Latency-Aware Backtests" footer={<PlaceholderAction label="Venue model" />}>
-            <p>Toggle latency surfaces, router delays, partial fills.</p>
-          </PanelCard>
-          <PanelCard title="Cross-Asset Correlation Explorer" footer={<PlaceholderAction label="Open matrix" />}>
-            <p>PCA, hierarchical clusters, anomaly flags on correlation breaks.</p>
-          </PanelCard>
-        </div>
+        <p className="text-sm text-zinc-500">
+          Replay mock predictions against realized paths, review error and calibration, then inspect how execution policy
+          would have read out—front-end only until compute jobs are wired.
+        </p>
       </section>
     );
   }
