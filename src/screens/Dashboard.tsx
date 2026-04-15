@@ -30,9 +30,8 @@ import {
   type ModelId,
 } from '../components/dashboard/mockMlDashboardData';
 import { DashboardSidebar } from '../components/DashboardSidebar';
-import { MlExecutionStack } from '../components/dashboard/MlExecutionStack';
 import { RiskDashboardTab } from '../components/dashboard/RiskDashboardTab';
-import { StrategiesDashboardTab } from '../components/dashboard/StrategiesDashboardTab';
+import { StrategiesResearchWorkspace } from '../components/dashboard/StrategiesResearchWorkspace';
 import { useDashboardView } from '@/hooks/useDashboardView';
 
 const easeLuxury = [0.22, 1, 0.36, 1] as const;
@@ -199,39 +198,21 @@ export const Dashboard: React.FC = () => {
         >
           {view === 'risk' && <RiskDashboardTab />}
 
-          {view === 'strategies' && <StrategiesDashboardTab />}
-
-          {view === 'backtesting' && (
-            <>
-              <section className="mb-8 border-b border-white/[0.06] pb-6" aria-labelledby="backtest-workspace-title">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-institutional-green/90 mb-2">
-                  Research workspace
-                </p>
-                <h1 id="backtest-workspace-title" className="text-xl sm:text-2xl font-semibold text-white tracking-tight">
-                  BackTesting
-                </h1>
-                <p className="text-sm text-zinc-500 mt-2 max-w-3xl leading-relaxed">
-                  Mock prediction paths, calibration, and policy readouts for the active symbol book. Swap in QuantConnect
-                  result payloads when the research API is connected.
-                </p>
-              </section>
-              <motion.div {...sectionItem}>
-                <IntelligenceStatusBar key={selectedModel} {...intelligenceRibbon} />
-              </motion.div>
-              <MlExecutionStack
-                loading={loading}
-                selectedModel={selectedModel}
-                onModelSelect={handleModelSelect}
-                predictionData={predictionData}
-                outlook={outlook}
-                lastBar={lastBar}
-                tradeLevels={tradeLevels}
-                modelEdge={modelEdge}
-                optionsContext={optionsContext}
-                explanationLines={explanationLines}
-                tradeSetup={tradeSetup}
-              />
-            </>
+          {view === 'strategies' && (
+            <StrategiesResearchWorkspace
+              intelligenceRibbon={intelligenceRibbon}
+              loading={loading}
+              selectedModel={selectedModel}
+              onModelSelect={handleModelSelect}
+              predictionData={predictionData}
+              outlook={outlook}
+              lastBar={lastBar}
+              tradeLevels={tradeLevels}
+              modelEdge={modelEdge}
+              optionsContext={optionsContext}
+              explanationLines={explanationLines}
+              tradeSetup={tradeSetup}
+            />
           )}
 
           {view === 'overview' && (

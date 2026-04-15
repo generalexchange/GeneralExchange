@@ -169,7 +169,7 @@ function IntelligenceModal({
                         <p className="text-[11px] text-zinc-600 mt-0.5">Directional hit rate · rolling book</p>
                       </div>
                       <Link
-                        href="/dashboard?tab=backtesting"
+                        href="/dashboard?tab=strategies"
                         onClick={onClose}
                         className="text-[11px] font-semibold uppercase tracking-wide text-institutional-green hover:text-tan border border-institutional-green/40 rounded-sm px-3 py-2 transition-colors"
                       >
