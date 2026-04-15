@@ -17,8 +17,7 @@ export interface ChatMessage {
 const STARTER: ChatMessage = {
   id: 'starter',
   role: 'assistant',
-  content:
-    "I'm analyzing the active dataset. Ask me to adjust parameters, compare models, or explain any signal.",
+  content: 'Ask about parameters, models, or signals for this dataset.',
   createdAt: new Date(),
 };
 
@@ -132,11 +131,11 @@ export function StrategyAssistantChat({ stacked }: { stacked?: boolean }) {
                 className={`group max-w-[92%] rounded-lg border px-2.5 py-1.5 text-xs leading-relaxed sm:rounded-xl sm:px-3 sm:py-2 sm:text-sm ${
                   msg.role === 'user'
                     ? 'border-institutional-green/30 bg-institutional-green/10 text-zinc-100'
-                    : 'border-white/[0.08] bg-white/[0.04] text-zinc-300'
+                    : 'border-white/[0.05] bg-white/[0.025] text-zinc-500'
                 }`}
               >
                 {msg.code ? (
-                  <pre className="whitespace-pre-wrap rounded border border-white/[0.08] bg-black/40 p-2.5 text-xs font-mono text-zinc-300 overflow-x-auto">
+                  <pre className="whitespace-pre-wrap rounded border border-white/[0.06] bg-black/40 p-2.5 font-mono text-xs text-zinc-500 overflow-x-auto">
                     {msg.content}
                   </pre>
                 ) : (
