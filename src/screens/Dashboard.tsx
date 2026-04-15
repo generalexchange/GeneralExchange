@@ -153,11 +153,11 @@ export const Dashboard: React.FC = () => {
         <div className="max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-10 py-3 sm:py-0 sm:min-h-16 sm:flex sm:items-center">
           <div className="grid w-full grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-3 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center sm:gap-x-4 lg:h-16 lg:items-center">
             <div className="flex items-center gap-2 sm:gap-3 min-w-0 col-start-1 row-start-1">
-              <Link href="/" className="flex items-center gap-2 shrink-0 group min-w-0">
-                <span className="w-px h-6 bg-gradient-to-b from-tan to-institutional-green shrink-0" aria-hidden />
-                <span className="font-display text-base sm:text-lg text-neutral-100 tracking-tight truncate">
-                  General Exchange
-                </span>
+              <Link
+                href="/"
+                className="min-w-0 shrink-0 truncate font-display text-base sm:text-lg text-neutral-100 tracking-tight"
+              >
+                General Exchange
               </Link>
             </div>
 

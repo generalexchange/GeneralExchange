@@ -1,5 +1,5 @@
 /**
- * Institutional navigation — serif logotype, tan / green accent border
+ * Institutional navigation — serif logotype
  */
 
 'use client';
@@ -55,11 +55,7 @@ export const InstitutionalNavbar: React.FC<InstitutionalNavbarProps> = ({
     >
       <div className="max-w-content mx-auto px-4 sm:px-6 lg:px-10">
         <div className="flex justify-between items-center gap-4 h-14 sm:h-[3.75rem]">
-          <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
-            <span
-              className="w-px h-7 bg-gradient-to-b from-tan to-institutional-green group-hover:opacity-90 transition-opacity"
-              aria-hidden
-            />
+          <Link href="/" className="shrink-0">
             <span className="font-display text-[1.125rem] sm:text-xl font-medium text-neutral-100 tracking-tight">
               General Exchange
             </span>

@@ -12,8 +12,7 @@ export const InstitutionalFooter: React.FC = () => {
       <div className="max-w-content mx-auto px-4 sm:px-6 lg:px-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8 md:gap-8 mb-14">
           <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="w-px h-6 bg-gradient-to-b from-tan to-institutional-green" aria-hidden />
+            <div className="mb-4">
               <h3 className="font-display text-lg text-neutral-100 tracking-tight">General Exchange</h3>
             </div>
             <p className="text-neutral-500 text-sm leading-relaxed mb-4">

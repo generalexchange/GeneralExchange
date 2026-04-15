@@ -18,9 +18,8 @@ export const PlatformPageShell: React.FC<PlatformPageShellProps> = ({ children }
       <nav className="bg-[#0b0c0f]/92 border-b border-white/[0.05] sticky top-0 z-50 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14 sm:h-16">
-            <Link href="/" className="flex items-center gap-2.5 group">
-              <span className="w-1.5 h-6 rounded-full bg-[#c6a575] group-hover:bg-[#d4b896] transition-colors" />
-              <span className="text-base sm:text-lg font-display font-normal text-neutral-100 tracking-tight">General Exchange</span>
+            <Link href="/" className="text-base sm:text-lg font-display font-normal text-neutral-100 tracking-tight">
+              General Exchange
             </Link>
             <div className="flex items-center gap-3 sm:gap-4">
               <Link

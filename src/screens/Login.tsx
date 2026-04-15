@@ -58,7 +58,7 @@ export const Login: React.FC = () => {
       {/* Logo Header */}
       <div className="py-6 px-4">
         <Link href="/" className="inline-block">
-          <span className="text-2xl font-serif font-bold text-white hover:text-blue-400 transition-colors">
+          <span className="text-2xl font-serif font-bold text-white transition-colors hover:text-blue-400">
             General Exchange
           </span>
         </Link>

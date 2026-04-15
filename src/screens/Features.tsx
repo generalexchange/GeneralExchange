@@ -13,7 +13,6 @@ import {
   Shield,
   Brain,
   ArrowRight,
-  Activity,
   BarChart3,
   Zap,
   Target,
@@ -568,10 +567,7 @@ export const Features: React.FC = () => {
       <footer className="bg-[#0b0c0f] border-t border-[#1a1a1a] py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <div className="flex items-center justify-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-tan to-institutional-green rounded-sm flex items-center justify-center">
-                <Activity className="w-5 h-5 text-white" />
-              </div>
+            <div className="mb-4 flex items-center justify-center">
               <span className="text-lg font-serif font-bold text-white">General Exchange</span>
             </div>
             <p className="text-gray-400 text-sm">
