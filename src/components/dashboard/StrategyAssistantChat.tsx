@@ -10,7 +10,6 @@ export interface ChatMessage {
   id: string;
   role: ChatRole;
   content: string;
-  /** When set, render content as monospace code block */
   code?: boolean;
   createdAt: Date;
 }
@@ -33,29 +32,21 @@ function formatTime(d: Date): string {
   return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-export function StrategyAssistantChat({
-  onClose,
-  embedded,
-  inset,
-}: {
-  onClose?: () => void;
-  /** Slide-over chrome (drawer) */
-  embedded?: boolean;
-  /** Parent already has border — no outer frame */
-  inset?: boolean;
-}) {
+export function StrategyAssistantChat({ stacked }: { stacked?: boolean }) {
   const listRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
   const [messages, setMessages] = useState<ChatMessage[]>([STARTER]);
   const [input, setInput] = useState('');
   const [pending, setPending] = useState(false);
+  const [threadScroll, setThreadScroll] = useState(false);
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, pending, threadScroll]);
 
   const clear = useCallback(() => {
     setMessages([{ ...STARTER, id: `starter-${Date.now()}`, createdAt: new Date() }]);
+    setThreadScroll(false);
   }, []);
 
   const send = useCallback(() => {
@@ -69,6 +60,7 @@ export function StrategyAssistantChat({
     };
     setMessages((m) => [...m, userMsg]);
     setInput('');
+    setThreadScroll(true);
     setPending(true);
     window.setTimeout(() => {
       const reply: ChatMessage = {
@@ -90,14 +82,20 @@ export function StrategyAssistantChat({
     }
   };
 
-  const shell = inset
-    ? 'flex h-full min-h-0 flex-col bg-[#0a0a0a]'
-    : embedded
-      ? 'flex h-full min-h-0 flex-col border-l border-white/[0.08] bg-[#0a0a0a]'
-      : 'flex h-full min-h-0 flex-col rounded-xl border border-white/[0.08] bg-[#0a0a0a]';
+  const rootClass = stacked
+    ? threadScroll
+      ? 'flex min-h-0 w-full flex-col h-[min(70vh,720px)] sm:h-[min(72vh,780px)]'
+      : 'flex w-full flex-col'
+    : 'flex h-full min-h-0 flex-col rounded-xl border border-white/[0.08] bg-[#0a0a0a]';
+
+  const listClass = stacked
+    ? threadScroll
+      ? 'min-h-0 flex-1 space-y-3 overflow-y-auto overflow-x-hidden overscroll-contain px-3 py-3 sm:px-4'
+      : 'max-h-44 space-y-3 overflow-y-auto overflow-x-hidden px-3 py-3 sm:px-4'
+    : 'min-h-0 flex-1 space-y-3 overflow-y-auto px-3 py-3 sm:px-4';
 
   return (
-    <div className={shell} aria-labelledby={titleId}>
+    <div className={rootClass} aria-labelledby={titleId}>
       <div className="flex shrink-0 items-center justify-between gap-2 border-b border-white/[0.08] px-3 py-2.5 sm:px-4">
         <div className="min-w-0">
           <h2 id={titleId} className="text-sm font-semibold text-white tracking-tight truncate">
@@ -111,33 +109,17 @@ export function StrategyAssistantChat({
             Mock
           </p>
         </div>
-        <div className="flex items-center gap-1 shrink-0">
-          {onClose ? (
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-lg px-2 py-1.5 text-[11px] font-medium text-zinc-500 hover:bg-white/[0.06] hover:text-zinc-300 lg:hidden"
-            >
-              Close
-            </button>
-          ) : null}
-          <button
-            type="button"
-            onClick={clear}
-            className="rounded-lg p-2 text-zinc-500 hover:bg-white/[0.06] hover:text-zinc-300 transition-colors"
-            aria-label="Clear conversation"
-          >
-            <Trash2 className="h-4 w-4" strokeWidth={1.5} />
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={clear}
+          className="rounded-lg p-2 text-zinc-500 hover:bg-white/[0.06] hover:text-zinc-300 transition-colors"
+          aria-label="Clear conversation"
+        >
+          <Trash2 className="h-4 w-4" strokeWidth={1.5} />
+        </button>
       </div>
 
-      <div
-        ref={listRef}
-        className="min-h-0 flex-1 space-y-3 overflow-y-auto px-3 py-3 sm:px-4"
-        role="log"
-        aria-live="polite"
-      >
+      <div ref={listRef} className={listClass} role="log" aria-live="polite">
         <AnimatePresence initial={false}>
           {messages.map((msg) => (
             <motion.div
@@ -176,7 +158,7 @@ export function StrategyAssistantChat({
       </div>
 
       <div className="shrink-0 border-t border-white/[0.08] px-3 py-2.5 sm:px-4 space-y-2">
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap items-center gap-1.5">
           <span className="text-[10px] text-zinc-600 uppercase tracking-wider">Suggested</span>
           {SUGGESTED.map((s) => (
             <button
