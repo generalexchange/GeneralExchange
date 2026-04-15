@@ -107,7 +107,15 @@ export const MarketChart: React.FC<MarketChartProps> = ({ data: baseData, onOpen
       <div className="pointer-events-none absolute inset-0 rounded-3xl bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(255,255,255,0.04),transparent_50%)]" />
 
       <div className="relative p-4 sm:p-6 lg:p-7">
-        <div className="flex flex-col gap-4 lg:gap-5">
+        <button
+          type="button"
+          onClick={onOpenAnalytics}
+          className="absolute right-4 top-4 z-20 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-zinc-400 transition-all hover:border-white/20 hover:bg-white/[0.1] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 sm:right-6 sm:top-6 sm:h-10 sm:w-10"
+          aria-label="Open portfolio analytics"
+        >
+          <Settings className="h-[18px] w-[18px] sm:h-5 sm:w-5" strokeWidth={1.75} />
+        </button>
+        <div className="flex flex-col gap-4 lg:gap-5 pr-11 sm:pr-14">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <span className="inline-flex h-1.5 w-1.5 rounded-full bg-zinc-400" />
@@ -140,29 +148,19 @@ export const MarketChart: React.FC<MarketChartProps> = ({ data: baseData, onOpen
             </div>
           </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-              <div className="flex flex-wrap items-center gap-4 text-[11px] text-zinc-500">
-                <span className="flex items-center gap-2">
-                  <span className="h-px w-8 bg-zinc-300" />
-                  Equity
-                </span>
-                <span className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-sm bg-zinc-600" />
-                  Volume
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={onOpenAnalytics}
-                className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-zinc-400 transition-all hover:border-white/20 hover:bg-white/[0.08] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
-                aria-label="Open portfolio analytics"
-              >
-                <Settings className="h-5 w-5" strokeWidth={1.75} />
-              </button>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-wrap items-center gap-4 text-[11px] text-zinc-500">
+              <span className="flex items-center gap-2">
+                <span className="h-px w-8 bg-zinc-300" />
+                Equity
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-sm bg-zinc-600" />
+                Volume
+              </span>
             </div>
             <p className="max-w-md text-[11px] leading-snug text-zinc-600 sm:text-right">
-              Interval tabs below update the mock path. Analytics: gear.
+              Interval tabs rescale the mock tape.
             </p>
           </div>
         </div>

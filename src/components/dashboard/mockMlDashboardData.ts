@@ -166,10 +166,42 @@ export interface IntelligenceRibbonProps {
   confTrend: 'up' | 'down' | 'flat';
   confTrendLabel: string;
   hitRateSpark: number[];
+  /** Share of recent bars where actual price step direction matched strategy (predicted) step — from latest mock tape. */
+  liveStrategyAlignmentPct: number;
   rvPct: number;
   ivPct: number;
   volRegime: VolRegime;
   volRatioLabel: string;
+  /** −1 = realized stress vs implied, +1 = calm vs implied; derived from RV vs IV on mock tape. */
+  volBalanceIndicator: number;
+}
+
+/**
+ * Rolling agreement between latest mock prints and strategy path: fraction of recent
+ * intervals where actual return sign matched predicted return sign (0–100).
+ */
+export function getLiveStrategyAlignmentPct(data: PredictionPoint[], window = 12): number {
+  const n = data.length;
+  if (n < 2) return 0;
+  const from = Math.max(0, n - 1 - window);
+  let hits = 0;
+  let total = 0;
+  for (let i = from; i < n - 1; i++) {
+    const da = data[i + 1].actual - data[i].actual;
+    const dp = data[i + 1].predicted - data[i].predicted;
+    if (Math.abs(da) < 1e-9 && Math.abs(dp) < 1e-9) continue;
+    total++;
+    if (Math.sign(da) === Math.sign(dp)) hits++;
+  }
+  if (total === 0) return 0;
+  return Math.round((hits / total) * 1000) / 10;
+}
+
+/** −1 … +1: positive when implied dominates realized (calmer tape vs options), negative when realized runs hot. */
+export function getVolatilityBalanceIndicator(rvPct: number, ivPct: number): number {
+  const denom = Math.max(ivPct, 1);
+  const raw = (ivPct - rvPct) / denom;
+  return Math.max(-1, Math.min(1, Math.round(raw * 100) / 100));
 }
 
 /** Trailing realized vol % from recent mock price bars (scaled for display). */
@@ -399,9 +431,11 @@ export function buildIntelligenceRibbon(
   else if (edge.trend === 'down') confTrendLabel = 'Confidence rolling over — watch calibration';
 
   const hitRateSpark = ROLLING_ACCURACY.map((r) => r.acc);
+  const liveStrategyAlignmentPct = getLiveStrategyAlignmentPct(data);
 
   const rvPct = getRealizedVolatilityPct(data);
   const ivPct = Math.round(options.impliedVolatility * 1000) / 10;
+  const volBalanceIndicator = getVolatilityBalanceIndicator(rvPct, ivPct);
   const ratio = ivPct > 0 ? rvPct / ivPct : 1;
   let volRegime: VolRegime = 'controlled';
   if (ratio >= 1.28) volRegime = 'stress';
@@ -426,10 +460,12 @@ export function buildIntelligenceRibbon(
     confTrend: edge.trend,
     confTrendLabel,
     hitRateSpark,
+    liveStrategyAlignmentPct,
     rvPct,
     ivPct,
     volRegime,
     volRatioLabel,
+    volBalanceIndicator,
   };
 }
 

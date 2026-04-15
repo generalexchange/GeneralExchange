@@ -24,6 +24,27 @@ function volRegimeStyles(regime: VolRegime): { badge: string; label: string } {
   return { badge: 'text-rose-200/90 border-rose-500/35 bg-rose-500/12', label: 'Stress' };
 }
 
+function volBalanceHue(v: number): string {
+  const t = (Math.max(-1, Math.min(1, v)) + 1) / 2;
+  const hue = Math.round(8 + 132 * t);
+  return `hsl(${hue} 70% 52%)`;
+}
+
+function VolBalanceMeter({ v, narrow }: { v: number; narrow?: boolean }) {
+  const pct = ((Math.max(-1, Math.min(1, v)) + 1) / 2) * 100;
+  return (
+    <div
+      className={`relative h-1 shrink-0 rounded-full overflow-hidden bg-gradient-to-r from-rose-600 via-zinc-600 to-emerald-500 ${narrow ? 'w-12' : 'w-full max-w-[200px]'}`}
+      aria-hidden
+    >
+      <span
+        className="absolute top-1/2 z-[1] h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-zinc-950 bg-white shadow"
+        style={{ left: `${pct}%` }}
+      />
+    </div>
+  );
+}
+
 function hitRateSparkPath(values: number[], w = 140, h = 40, pad = 4): string {
   if (values.length === 0) return '';
   const min = Math.min(...values) - 1;
@@ -160,6 +181,14 @@ function IntelligenceModal({
               )}
               {panel === 'hitrate' && (
                 <div className="space-y-5">
+                  <div className="rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2.5">
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500">Live tape vs strategy</p>
+                    <p className="mt-1 text-lg font-semibold tabular-nums text-tan">{ribbon.liveStrategyAlignmentPct.toFixed(1)}%</p>
+                    <p className="mt-1 text-[11px] text-zinc-500 leading-relaxed">
+                      Share of the most recent mock intervals where the actual price step and the model path moved in
+                      the same direction. Updates with the active price series.
+                    </p>
+                  </div>
                   <p className="text-sm font-medium text-zinc-200">{ribbon.confTrendLabel}</p>
                   <div className="space-y-4">
                     <div>
@@ -195,6 +224,23 @@ function IntelligenceModal({
               )}
               {panel === 'vol' && (
                 <div className="space-y-4">
+                  <div className="rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2.5 space-y-2">
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500">Vol balance (−1 … +1)</p>
+                    <div className="flex items-center gap-3">
+                      <VolBalanceMeter v={ribbon.volBalanceIndicator} />
+                      <span
+                        className="text-lg font-semibold tabular-nums"
+                        style={{ color: volBalanceHue(ribbon.volBalanceIndicator) }}
+                      >
+                        {ribbon.volBalanceIndicator >= 0 ? '+' : ''}
+                        {ribbon.volBalanceIndicator.toFixed(2)}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-zinc-500 leading-relaxed">
+                      Negative when realized volatility runs ahead of implied (stress), positive when the tape is calm
+                      versus what options are pricing.
+                    </p>
+                  </div>
                   <div className="flex items-center justify-between gap-2">
                     <span className={`text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded border ${volStyles.badge}`}>
                       {volStyles.label}
@@ -235,7 +281,6 @@ function IntelligenceModal({
 
 export const IntelligenceStatusBar: React.FC<IntelligenceRibbonProps> = (ribbon) => {
   const [panel, setPanel] = useState<ModalPanel>(null);
-  const volStyles = volRegimeStyles(ribbon.volRegime);
 
   return (
     <>
@@ -259,31 +304,32 @@ export const IntelligenceStatusBar: React.FC<IntelligenceRibbonProps> = (ribbon)
         <button
           type="button"
           onClick={() => setPanel('hitrate')}
-          className="min-w-0 flex-1 basis-[calc(50%-0.25rem)] sm:basis-0 sm:flex-1 rounded-lg border border-white/[0.08] bg-white/[0.02] px-2.5 py-2 text-left hover:border-white/15 hover:bg-white/[0.04] transition-colors"
+          className="min-w-0 flex-1 basis-[calc(50%-0.25rem)] sm:basis-0 sm:flex-1 rounded-md border border-white/[0.08] bg-white/[0.02] px-2 py-1.5 text-left hover:border-white/15 hover:bg-white/[0.04] transition-colors"
           aria-haspopup="dialog"
         >
-          <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-zinc-600">Hit</p>
-          <p className="mt-0.5 tabular-nums text-xs sm:text-sm font-medium text-zinc-200">
-            {ribbon.winRatePct.toFixed(1)}% <span className="text-zinc-600 font-normal">·</span>{' '}
-            {ribbon.priorWinRatePct.toFixed(1)}%
+          <p className="text-[8px] font-semibold uppercase tracking-[0.16em] text-zinc-600">Hit</p>
+          <p className="mt-0.5 flex items-baseline gap-0.5 tabular-nums leading-none">
+            <span className="text-[13px] font-semibold text-zinc-100">{ribbon.liveStrategyAlignmentPct.toFixed(1)}</span>
+            <span className="text-[9px] font-medium text-zinc-500">%</span>
           </p>
-          <p className="mt-0.5 text-[10px] text-zinc-500 line-clamp-1">{ribbon.confTrendLabel}</p>
         </button>
         <button
           type="button"
           onClick={() => setPanel('vol')}
-          className="min-w-0 flex-[1_1_100%] sm:flex-1 rounded-lg border border-white/[0.08] bg-white/[0.02] px-2.5 py-2 text-left hover:border-white/15 hover:bg-white/[0.04] transition-colors"
+          className="min-w-0 flex-[1_1_100%] sm:flex-1 rounded-md border border-white/[0.08] bg-white/[0.02] px-2 py-1.5 text-left hover:border-white/15 hover:bg-white/[0.04] transition-colors"
           aria-haspopup="dialog"
         >
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-zinc-600">Vol</p>
-            <span className={`text-[9px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded border shrink-0 ${volStyles.badge}`}>
-              {volStyles.label}
+          <p className="text-[8px] font-semibold uppercase tracking-[0.16em] text-zinc-600">Vol</p>
+          <div className="mt-1 flex items-center gap-2">
+            <VolBalanceMeter v={ribbon.volBalanceIndicator} narrow />
+            <span
+              className="text-[11px] font-semibold tabular-nums leading-none"
+              style={{ color: volBalanceHue(ribbon.volBalanceIndicator) }}
+            >
+              {ribbon.volBalanceIndicator >= 0 ? '+' : ''}
+              {ribbon.volBalanceIndicator.toFixed(2)}
             </span>
           </div>
-          <p className="mt-0.5 tabular-nums text-xs sm:text-sm font-medium text-zinc-200">
-            RV {ribbon.rvPct.toFixed(1)}% <span className="text-zinc-600 font-normal">·</span> IV {ribbon.ivPct.toFixed(1)}%
-          </p>
         </button>
       </motion.div>
 
