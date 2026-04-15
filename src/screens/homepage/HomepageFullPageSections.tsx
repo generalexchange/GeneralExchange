@@ -8,6 +8,31 @@ import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Crosshair, Shield, Zap } from 'lucide-react';
+import { Hero } from '@/components/Hero';
+import {
+  HomepagePositioningStrip,
+  PillarSectionEmbed,
+  getPillarById,
+  HomepageExecutionLoopRestored,
+  HomepageBridgeObserverRestored,
+  HomepageTrustCtaRestored,
+  HomepageRemainingPillars,
+} from './HomepageLegacyRestored';
+
+function SectionActions({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="mt-10 flex flex-col gap-3 border-t border-white/[0.08] pt-8 sm:flex-row sm:flex-wrap sm:items-center">
+      {children}
+    </div>
+  );
+}
+
+const btnPrimary =
+  'inline-flex items-center justify-center rounded-sm bg-tan px-6 py-3 text-sm font-semibold text-charcoal transition-colors hover:bg-tan-muted';
+const btnGhost =
+  'inline-flex items-center justify-center rounded-sm border border-white/[0.14] bg-white/[0.03] px-6 py-3 text-sm font-semibold text-neutral-200 transition-colors hover:bg-white/[0.07]';
+const btnGreen =
+  'inline-flex items-center justify-center rounded-sm bg-institutional-green px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-institutional-green-muted';
 
 const easeLux = [0.22, 1, 0.36, 1] as const;
 
@@ -129,9 +154,10 @@ export function HomepageFullPageSections() {
   return (
     <div className="bg-charcoal text-neutral-100">
       {/* 01 — TradeEngine */}
-      <section
-        className="relative flex min-h-screen flex-col justify-center overflow-hidden border-b border-white/[0.06] md:min-h-[100dvh]"
+      <div
+        role="region"
         aria-labelledby="hp-tradeengine-title"
+        className="relative flex min-h-screen flex-col overflow-hidden border-b border-white/[0.06] md:min-h-[100dvh]"
       >
         <div className="pointer-events-none absolute inset-0">
           <motion.div
@@ -153,7 +179,7 @@ export function HomepageFullPageSections() {
         </div>
 
         <div className="relative z-10 mx-auto flex w-full max-w-content flex-col gap-12 px-4 py-16 sm:px-6 sm:py-20 lg:px-10 lg:py-24">
-          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14 xl:gap-20">
+          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14 xl:gap-20 lg:items-center">
             <div className="min-w-0">
               <SectionNum n="01" label="TradeEngine" />
               <motion.h1
@@ -186,29 +212,32 @@ export function HomepageFullPageSections() {
                   </div>
                 ))}
               </div>
-
-              <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-                <Link
-                  href="/dashboard"
-                  className="inline-flex items-center justify-center rounded-sm bg-tan px-8 py-3.5 text-sm font-semibold text-charcoal transition-colors hover:bg-tan-muted"
-                >
-                  Open TradeEngine
-                </Link>
-                <Link
-                  href="/dashboard"
-                  className="inline-flex items-center justify-center rounded-sm border border-white/[0.14] bg-white/[0.03] px-8 py-3.5 text-sm font-semibold text-neutral-200 transition-colors hover:bg-white/[0.07]"
-                >
-                  View Active Positions
-                </Link>
-              </div>
             </div>
 
             <div className="flex justify-center lg:justify-end">
               <TradeTicketMock />
             </div>
           </div>
+
+          <SectionActions>
+            <Link href="/dashboard" className={btnPrimary}>
+              Open TradeEngine
+            </Link>
+            <Link href="/dashboard" className={btnGhost}>
+              View Active Positions
+            </Link>
+            <Link href="/features" className={btnGhost}>
+              Explore the platform
+            </Link>
+            <Link href="/features#feature-risk-management" className={btnGhost}>
+              View risk stack
+            </Link>
+          </SectionActions>
         </div>
-      </section>
+
+        <Hero />
+        <HomepagePositioningStrip />
+      </div>
 
       {/* 02 — Risk */}
       <section
@@ -259,6 +288,23 @@ export function HomepageFullPageSections() {
               <PayoffCurveSvg />
             </div>
           </div>
+
+          {(() => {
+            const pillar = getPillarById('advanced-risk-scenario');
+            return pillar ? <PillarSectionEmbed pillar={pillar} index={0} /> : null;
+          })()}
+
+          <SectionActions>
+            <Link href="/dashboard?tab=risk" className={btnPrimary}>
+              Open risk workspace
+            </Link>
+            <Link href="/features#feature-risk-management" className={btnGhost}>
+              Risk in trading tools
+            </Link>
+            <Link href="/pricing" className={btnGhost}>
+              Compute tokens
+            </Link>
+          </SectionActions>
         </motion.div>
       </section>
 
@@ -295,13 +341,12 @@ export function HomepageFullPageSections() {
                       </p>
                       <p className="mt-0.5 text-[11px] text-zinc-500">Last run {r.ran}</p>
                     </div>
-                    <button
-                      type="button"
-                      className="shrink-0 self-start rounded-sm border border-white/[0.1] bg-transparent px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-zinc-400 sm:self-center"
-                      tabIndex={-1}
+                    <Link
+                      href="/dashboard"
+                      className="shrink-0 self-start rounded-sm border border-white/[0.1] bg-transparent px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-zinc-400 transition-colors hover:border-institutional-green/40 hover:bg-institutional-green/10 hover:text-tan sm:self-center"
                     >
                       Load into TradeEngine
-                    </button>
+                    </Link>
                   </div>
                 </li>
               ))}
@@ -312,6 +357,25 @@ export function HomepageFullPageSections() {
               </span>
             </div>
           </div>
+
+          <div className="mt-10">
+            {(() => {
+              const p = getPillarById('quant-research');
+              return p ? <PillarSectionEmbed pillar={p} index={2} /> : null;
+            })()}
+          </div>
+
+          <SectionActions>
+            <Link href="/dashboard?tab=strategies" className={btnPrimary}>
+              Open research workspace
+            </Link>
+            <Link href="/features" className={btnGhost}>
+              Trading tools
+            </Link>
+            <Link href="/pricing" className={btnGhost}>
+              Compute tokens
+            </Link>
+          </SectionActions>
         </motion.div>
       </section>
 
@@ -391,6 +455,21 @@ export function HomepageFullPageSections() {
               </tbody>
             </table>
           </div>
+
+          <HomepageExecutionLoopRestored />
+          <HomepageRemainingPillars />
+
+          <SectionActions>
+            <Link href="/dashboard" className={btnPrimary}>
+              Open dashboard
+            </Link>
+            <Link href="#deterministic-execution-loop" className={btnGhost}>
+              Signature workflow
+            </Link>
+            <Link href="/login" className={btnGhost}>
+              Sign in
+            </Link>
+          </SectionActions>
         </motion.div>
       </section>
 
@@ -434,14 +513,16 @@ export function HomepageFullPageSections() {
             ))}
           </div>
 
-          <div className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-12">
-            <Link
-              href="/dashboard?tab=strategies"
-              className="inline-flex w-fit items-center justify-center rounded-sm bg-institutional-green px-8 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-institutional-green-muted"
-            >
-              Open Backspace
-            </Link>
+          {(() => {
+            const p = getPillarById('backtesting-research');
+            return p ? (
+              <div className="mt-10">
+                <PillarSectionEmbed pillar={p} index={1} />
+              </div>
+            ) : null;
+          })()}
 
+          <div className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-12">
             <div className="w-full max-w-xl flex-1 rounded-2xl border border-white/[0.1] bg-charcoal/80 p-4 shadow-[0_20px_60px_-24px_rgba(0,0,0,0.55)] sm:p-5">
               <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-500">Backspace · preview</p>
               <div className="mt-3 rounded-lg border border-dashed border-white/[0.12] bg-white/[0.02] px-4 py-8 text-center">
@@ -468,6 +549,26 @@ export function HomepageFullPageSections() {
                 </svg>
               </div>
             </div>
+          </div>
+
+          <SectionActions>
+            <Link href="/dashboard?tab=strategies" className={btnGreen}>
+              Open Backspace
+            </Link>
+            <Link href="/bridge-observer" className={btnGhost}>
+              Bridge Observer
+            </Link>
+            <Link href="/features" className={btnGhost}>
+              Trading tools
+            </Link>
+            <Link href="/request-access" className={btnGhost}>
+              Request access
+            </Link>
+          </SectionActions>
+
+          <div className="mt-12 space-y-8">
+            <HomepageBridgeObserverRestored />
+            <HomepageTrustCtaRestored />
           </div>
         </motion.div>
       </section>
