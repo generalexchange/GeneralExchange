@@ -49,13 +49,13 @@ export const DashboardSidebar: React.FC = () => {
                   </span>
                   <span className="font-medium">BackTesting</span>
                 </Link>
+                <Link href="/dashboard?tab=risk" className={navLinkClass(view === 'risk')}>
+                  <span className="text-tan/80">
+                    <Shield size={18} strokeWidth={1.5} />
+                  </span>
+                  <span className="font-medium">Risk</span>
+                </Link>
               </div>
-              <Link href="/dashboard?tab=risk" className={navLinkClass(view === 'risk')}>
-                <span className="text-tan/80">
-                  <Shield size={18} strokeWidth={1.5} />
-                </span>
-                <span className="font-medium">Risk</span>
-              </Link>
             </>
           ) : (
             <Link href="/dashboard" className={navLinkClass(false)}>

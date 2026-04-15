@@ -144,9 +144,51 @@ export const OPTIONS_CONTEXT_BY_MODEL: Record<ModelId, OptionsContext> = {
 
 export type IntelligenceTone = 'emerald' | 'violet' | 'amber' | 'rose' | 'cyan';
 
-export interface IntelligenceItem {
-  text: string;
-  tone: IntelligenceTone;
+export type VolRegime = 'controlled' | 'elevated' | 'stress';
+
+/** Directional hit rate (mock) by active model — swap with API field. */
+export const MOCK_WIN_RATE_BY_MODEL: Record<ModelId, number> = {
+  xgboost: 62.4,
+  lstm: 57.1,
+  rl: 49.2,
+};
+
+export interface IntelligenceRibbonProps {
+  modelId: ModelId;
+  modelName: string;
+  modelSlug: string;
+  modelDescription: string;
+  edgeTitle: string;
+  edgeSubtitle: string;
+  edgeBand: ModelEdgeBand;
+  winRatePct: number;
+  priorWinRatePct: number;
+  confTrend: 'up' | 'down' | 'flat';
+  confTrendLabel: string;
+  hitRateSpark: number[];
+  rvPct: number;
+  ivPct: number;
+  volRegime: VolRegime;
+  volRatioLabel: string;
+}
+
+/** Trailing realized vol % from recent mock price bars (scaled for display). */
+export function getRealizedVolatilityPct(data: PredictionPoint[], window = 14): number {
+  const n = data.length;
+  if (n < 3) return 14;
+  const from = Math.max(1, n - window);
+  const rets: number[] = [];
+  for (let i = from; i < n; i++) {
+    const prev = data[i - 1].actual;
+    if (prev === 0) continue;
+    rets.push((data[i].actual - prev) / prev);
+  }
+  if (rets.length < 2) return 14;
+  const mean = rets.reduce((a, b) => a + b, 0) / rets.length;
+  const v = rets.reduce((a, b) => a + (b - mean) ** 2, 0) / (rets.length - 1);
+  const sigma = Math.sqrt(Math.max(0, v));
+  const scaled = sigma * 100 * 9;
+  return Math.min(68, Math.max(9, Math.round(scaled * 10) / 10));
 }
 
 /** Last-window prediction outlook derived from series + model (mock). */
@@ -212,29 +254,6 @@ export function getSignalExplanationLines(params: {
   return [dir, conf];
 }
 
-export function getIntelligenceFeed(modelId: ModelId, edge: ModelEdge): IntelligenceItem[] {
-  const items: IntelligenceItem[] = [];
-  if (edge.band === 'strong') {
-    items.push({ text: 'Model outperforming baseline', tone: 'emerald' });
-  } else if (edge.band === 'weak') {
-    items.push({ text: 'Edge below desk threshold — size cautiously', tone: 'rose' });
-  } else {
-    items.push({ text: 'Model near neutral vs historical baseline', tone: 'cyan' });
-  }
-  if (edge.trend === 'up') {
-    items.push({ text: 'Confidence increasing vs prior session', tone: 'violet' });
-  } else if (edge.trend === 'down') {
-    items.push({ text: 'Confidence rolling over — watch calibration', tone: 'amber' });
-  } else {
-    items.push({ text: 'Confidence stable — monitor for volatility shifts', tone: 'violet' });
-  }
-  if (modelId === 'lstm') {
-    items.push({ text: 'Volatility expanding in mock path', tone: 'amber' });
-  } else {
-    items.push({ text: 'Volatility regime: controlled (mock)', tone: 'cyan' });
-  }
-  return items.slice(0, 3);
-}
 
 export const PRICE_SERIES: PredictionPoint[] = [
   { time: '09:30', actual: 182.4, predicted: 182.1, confidenceLow: 181.2, confidenceHigh: 183.1 },
@@ -336,8 +355,8 @@ export const STRATEGY_SIGNAL = {
 };
 
 /** Directional accuracy numeric for copy in execution layer (matches METRICS_MOCK string). */
-export function getDirectionalAccuracyPct(): number {
-  return 62.4;
+export function getDirectionalAccuracyPct(modelId: ModelId = 'xgboost'): number {
+  return MOCK_WIN_RATE_BY_MODEL[modelId];
 }
 
 export const ROLLING_ACCURACY = [
@@ -349,6 +368,70 @@ export const ROLLING_ACCURACY = [
   { t: 'Sat', acc: 61 },
   { t: 'Sun', acc: 63 },
 ];
+
+export function buildIntelligenceRibbon(
+  modelId: ModelId,
+  edge: ModelEdge,
+  data: PredictionPoint[],
+  options: OptionsContext,
+): IntelligenceRibbonProps {
+  const meta = MODELS.find((m) => m.id === modelId) ?? MODELS[0];
+  const modelSlug = meta.name.split('/')[0]?.trim() ?? meta.name;
+  let edgeTitle = 'Model near neutral vs historical baseline';
+  if (edge.band === 'strong') edgeTitle = 'Model outperforming baseline';
+  else if (edge.band === 'weak') edgeTitle = 'Edge below desk threshold — size cautiously';
+
+  const edgeSubtitle =
+    edge.band === 'strong'
+      ? 'Tap to inspect active model and hit rate'
+      : edge.band === 'weak'
+        ? 'Review sizing and calibration before scaling'
+        : 'Compare against prior mock windows';
+
+  const winRatePct = MOCK_WIN_RATE_BY_MODEL[modelId];
+  let priorWinRatePct = winRatePct;
+  if (edge.trend === 'up') priorWinRatePct = Math.max(40, Math.round((winRatePct - 2.4) * 10) / 10);
+  else if (edge.trend === 'down') priorWinRatePct = Math.min(72, Math.round((winRatePct + 1.6) * 10) / 10);
+  else priorWinRatePct = Math.round((winRatePct - 0.5) * 10) / 10;
+
+  let confTrendLabel = 'Confidence stable — monitor for volatility shifts';
+  if (edge.trend === 'up') confTrendLabel = 'Confidence increasing vs prior session';
+  else if (edge.trend === 'down') confTrendLabel = 'Confidence rolling over — watch calibration';
+
+  const hitRateSpark = ROLLING_ACCURACY.map((r) => r.acc);
+
+  const rvPct = getRealizedVolatilityPct(data);
+  const ivPct = Math.round(options.impliedVolatility * 1000) / 10;
+  const ratio = ivPct > 0 ? rvPct / ivPct : 1;
+  let volRegime: VolRegime = 'controlled';
+  if (ratio >= 1.28) volRegime = 'stress';
+  else if (ratio >= 1.08) volRegime = 'elevated';
+  const volRatioLabel =
+    volRegime === 'controlled'
+      ? `RV / IV ${ratio.toFixed(2)} · realized below implied`
+      : volRegime === 'elevated'
+        ? `RV / IV ${ratio.toFixed(2)} · realized pressing implied`
+        : `RV / IV ${ratio.toFixed(2)} · realized well above implied`;
+
+  return {
+    modelId,
+    modelName: meta.name,
+    modelSlug,
+    modelDescription: meta.shortDescription,
+    edgeTitle,
+    edgeSubtitle,
+    edgeBand: edge.band,
+    winRatePct,
+    priorWinRatePct,
+    confTrend: edge.trend,
+    confTrendLabel,
+    hitRateSpark,
+    rvPct,
+    ivPct,
+    volRegime,
+    volRatioLabel,
+  };
+}
 
 export const ERROR_OVER_TIME = [
   { t: 'W1', err: 0.72 },

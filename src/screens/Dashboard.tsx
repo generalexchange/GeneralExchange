@@ -24,13 +24,12 @@ import {
   getPredictionOutlook,
   buildTradeSetupFromSeries,
   getSignalExplanationLines,
-  getIntelligenceFeed,
+  buildIntelligenceRibbon,
   getDirectionalAccuracyPct,
   STRATEGY_SIGNAL,
   type ModelId,
 } from '../components/dashboard/mockMlDashboardData';
 import { DashboardSidebar } from '../components/DashboardSidebar';
-import { LayerHeader } from '../components/dashboard/LayerHeader';
 import { MlExecutionStack } from '../components/dashboard/MlExecutionStack';
 import { RiskDashboardTab } from '../components/dashboard/RiskDashboardTab';
 import { StrategiesDashboardTab } from '../components/dashboard/StrategiesDashboardTab';
@@ -80,7 +79,7 @@ export const Dashboard: React.FC = () => {
   const tradeSetup = buildTradeSetupFromSeries(predictionData, outlook);
   const modelEdge = MODEL_EDGE_BY_MODEL[selectedModel];
   const optionsContext = OPTIONS_CONTEXT_BY_MODEL[selectedModel];
-  const intelligenceFeed = getIntelligenceFeed(selectedModel, modelEdge);
+  const intelligenceRibbon = buildIntelligenceRibbon(selectedModel, modelEdge, predictionData, optionsContext);
   const lastBar = predictionData[predictionData.length - 1];
   const tradeLevels = {
     entry: tradeSetup.entryPrice,
@@ -89,7 +88,7 @@ export const Dashboard: React.FC = () => {
   };
   const explanationLines = getSignalExplanationLines({
     tradeSetup,
-    directionalAccuracyPct: getDirectionalAccuracyPct(),
+    directionalAccuracyPct: getDirectionalAccuracyPct(selectedModel),
     signal: STRATEGY_SIGNAL.current,
   });
 
@@ -217,7 +216,7 @@ export const Dashboard: React.FC = () => {
                 </p>
               </section>
               <motion.div {...sectionItem}>
-                <IntelligenceStatusBar key={selectedModel} items={intelligenceFeed} />
+                <IntelligenceStatusBar key={selectedModel} {...intelligenceRibbon} />
               </motion.div>
               <MlExecutionStack
                 loading={loading}
@@ -238,16 +237,13 @@ export const Dashboard: React.FC = () => {
           {view === 'overview' && (
             <>
               <motion.div {...sectionItem}>
-                <IntelligenceStatusBar key={selectedModel} items={intelligenceFeed} />
+                <IntelligenceStatusBar key={selectedModel} {...intelligenceRibbon} />
               </motion.div>
 
-              <motion.section className="mb-10 sm:mb-12" aria-labelledby="layer-market" {...sectionItem}>
-                <LayerHeader
-                  step="01"
-                  title="Market Engine"
-                  headingId="layer-market"
-                  subtitle="Paper portfolio intraday · buying power · tape and depth (mock)"
-                />
+              <motion.section className="mb-10 sm:mb-12" aria-labelledby="market-session-title" {...sectionItem}>
+                <h2 id="market-session-title" className="sr-only">
+                  Paper session · tape and depth
+                </h2>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5">
                   <div className="lg:col-span-2">
                     {loading ? (
