@@ -10,32 +10,13 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Search } from 'lucide-react';
 import { ProfileMenu } from '../components/ProfileMenu';
 import { StockSearchResults } from '../components/StockSearchResults';
-import { ModelSelector } from '../components/dashboard/ModelSelector';
-import { PredictionChart } from '../components/dashboard/PredictionChart';
-import { MetricsPanel } from '../components/dashboard/MetricsPanel';
-import { SignalPanel } from '../components/dashboard/SignalPanel';
-import { AccuracyTrendChart } from '../components/dashboard/AccuracyTrendChart';
 import { MarketChart } from '../components/dashboard/MarketChart';
 import { OrderBookPreview } from '../components/dashboard/OrderBookPreview';
-import { PredictionOutlookPanel } from '../components/dashboard/PredictionOutlookPanel';
 import { IntelligenceStatusBar } from '../components/dashboard/IntelligenceStatusBar';
-import { OptionsContextPanel } from '../components/dashboard/OptionsContextPanel';
 import { TradeEngineModal } from '../components/dashboard/TradeEngineModal';
 import { PortfolioAnalyticsModal } from '../components/dashboard/PortfolioAnalyticsModal';
+import { ChartSkeleton, OrderBookSkeleton } from '../components/dashboard/DashboardSkeletons';
 import {
-  ChartSkeleton,
-  MetricCardsSkeleton,
-  OrderBookSkeleton,
-  OutlookPanelSkeleton,
-  PanelSkeleton,
-} from '../components/dashboard/DashboardSkeletons';
-import {
-  MODELS,
-  METRICS_MOCK,
-  CONFUSION_MATRIX,
-  STRATEGY_SIGNAL,
-  ROLLING_ACCURACY,
-  ERROR_OVER_TIME,
   MARKET_SERIES,
   MODEL_EDGE_BY_MODEL,
   OPTIONS_CONTEXT_BY_MODEL,
@@ -45,9 +26,15 @@ import {
   getSignalExplanationLines,
   getIntelligenceFeed,
   getDirectionalAccuracyPct,
+  STRATEGY_SIGNAL,
   type ModelId,
 } from '../components/dashboard/mockMlDashboardData';
 import { DashboardSidebar } from '../components/DashboardSidebar';
+import { LayerHeader } from '../components/dashboard/LayerHeader';
+import { MlExecutionStack } from '../components/dashboard/MlExecutionStack';
+import { RiskDashboardTab } from '../components/dashboard/RiskDashboardTab';
+import { StrategiesDashboardTab } from '../components/dashboard/StrategiesDashboardTab';
+import { useDashboardView } from '@/hooks/useDashboardView';
 
 const easeLuxury = [0.22, 1, 0.36, 1] as const;
 
@@ -80,50 +67,8 @@ const sectionItem = {
   },
 };
 
-function LayerHeader({
-  step,
-  title,
-  subtitle,
-  headingId,
-  stepButtonProps,
-}: {
-  step: string;
-  title: string;
-  subtitle: string;
-  headingId?: string;
-  /** When set, the step badge is a button (e.g. open trade engine config). */
-  stepButtonProps?: { onClick: () => void; 'aria-label': string };
-}) {
-  const stepClassName =
-    'font-mono text-xs text-zinc-400 tabular-nums border border-white/10 rounded-lg px-2 py-1 bg-white/[0.03]';
-
-  return (
-    <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-4">
-      <div className="flex items-center gap-3">
-        {stepButtonProps ? (
-          <button
-            type="button"
-            onClick={stepButtonProps.onClick}
-            aria-label={stepButtonProps['aria-label']}
-            className={`${stepClassName} cursor-pointer transition-all hover:border-white/20 hover:bg-white/[0.06] hover:shadow-none focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal`}
-          >
-            {step}
-          </button>
-        ) : (
-          <span className={stepClassName}>{step}</span>
-        )}
-        <div>
-          <h2 id={headingId} className="text-lg sm:text-xl font-semibold text-white tracking-tight">
-            {title}
-          </h2>
-          <p className="text-sm text-zinc-500 mt-0.5">{subtitle}</p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export const Dashboard: React.FC = () => {
+  const view = useDashboardView();
   const [selectedModel, setSelectedModel] = useState<ModelId>('xgboost');
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -253,135 +198,71 @@ export const Dashboard: React.FC = () => {
           className="relative z-10 flex-1 min-w-0 px-4 sm:px-6 lg:px-8 xl:px-10 py-6 sm:py-8 pb-16"
           {...mainStagger}
         >
-          <motion.div {...sectionItem}>
-            <IntelligenceStatusBar key={selectedModel} items={intelligenceFeed} />
-          </motion.div>
+          {view === 'risk' && <RiskDashboardTab />}
 
-          {/* 01 Market Engine */}
-          <motion.section className="mb-10 sm:mb-12" aria-labelledby="layer-market" {...sectionItem}>
-            <LayerHeader
-              step="01"
-              title="Market Engine"
-              headingId="layer-market"
-              subtitle="Paper portfolio intraday · buying power · tape and depth (mock)"
-            />
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5">
-              <div className="lg:col-span-2">
-                {loading ? (
-                  <ChartSkeleton className="min-h-[420px] sm:min-h-[480px]" />
-                ) : (
-                  <MarketChart data={MARKET_SERIES} onOpenAnalytics={handleOpenAnalytics} />
-                )}
-              </div>
-              <div className="lg:col-span-1">
-                {loading ? <OrderBookSkeleton /> : <OrderBookPreview />}
-              </div>
-            </div>
-          </motion.section>
+          {view === 'strategies' && <StrategiesDashboardTab />}
 
-          {/* 02 Prediction */}
-          <motion.section className="mb-10 sm:mb-12" aria-labelledby="layer-prediction" {...sectionItem}>
-            <LayerHeader
-              step="02"
-              title="Prediction layer"
-              subtitle="Model path, confidence, and a readout for expected move → target → horizon"
-            />
-            <div id="layer-prediction" className="grid grid-cols-1 xl:grid-cols-12 gap-5 xl:gap-6">
-              <div className="xl:col-span-4 min-w-0">
-                <ModelSelector models={MODELS} selectedId={selectedModel} onSelect={handleModelSelect} />
-              </div>
-              <div className="xl:col-span-8 min-w-0">
-                {loading ? (
-                  <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 xl:gap-5">
-                    <ChartSkeleton className="h-[280px] sm:h-[320px] lg:col-span-3" />
-                    <div className="lg:col-span-2 min-w-0">
-                      <OutlookPanelSkeleton />
-                    </div>
-                  </div>
-                ) : (
-                  <div key={selectedModel} className="grid grid-cols-1 lg:grid-cols-5 gap-4 xl:gap-5">
-                    <div className="lg:col-span-3 min-w-0">
-                      <PredictionChart data={predictionData} tradeLevels={tradeLevels} />
-                    </div>
-                    <div className="lg:col-span-2 min-w-0">
-                      <PredictionOutlookPanel
-                        outlook={outlook}
-                        actual={lastBar.actual}
-                        predicted={lastBar.predicted}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </motion.section>
+          {view === 'backtesting' && (
+            <>
+              <section className="mb-8 border-b border-white/[0.06] pb-6" aria-labelledby="backtest-workspace-title">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-institutional-green/90 mb-2">
+                  Research workspace
+                </p>
+                <h1 id="backtest-workspace-title" className="text-xl sm:text-2xl font-semibold text-white tracking-tight">
+                  BackTesting
+                </h1>
+                <p className="text-sm text-zinc-500 mt-2 max-w-3xl leading-relaxed">
+                  Mock prediction paths, calibration, and policy readouts for the active symbol book. Swap in QuantConnect
+                  result payloads when the research API is connected.
+                </p>
+              </section>
+              <motion.div {...sectionItem}>
+                <IntelligenceStatusBar key={selectedModel} items={intelligenceFeed} />
+              </motion.div>
+              <MlExecutionStack
+                loading={loading}
+                selectedModel={selectedModel}
+                onModelSelect={handleModelSelect}
+                predictionData={predictionData}
+                outlook={outlook}
+                lastBar={lastBar}
+                tradeLevels={tradeLevels}
+                modelEdge={modelEdge}
+                optionsContext={optionsContext}
+                explanationLines={explanationLines}
+                tradeSetup={tradeSetup}
+              />
+            </>
+          )}
 
-          {/* 03 Accuracy */}
-          <motion.section className="mb-10 sm:mb-12" aria-labelledby="layer-accuracy" {...sectionItem}>
-            <LayerHeader
-              step="03"
-              title="Accuracy layer"
-              subtitle="Level errors, directional hit rate, and calibration grid"
-            />
-            <div id="layer-accuracy" className="grid grid-cols-1 xl:grid-cols-12 gap-5 xl:gap-6 items-start">
-              <div className="xl:col-span-7 space-y-5">
-                {loading ? (
-                  <>
-                    <MetricCardsSkeleton />
-                    <PanelSkeleton tall />
-                  </>
-                ) : (
-                  <div
-                    key={selectedModel}
-                    className="rounded-2xl border border-white/[0.06] bg-[#0a0a0a] backdrop-blur-xl p-4 sm:p-6"
-                  >
-                    <MetricsPanel metrics={METRICS_MOCK} modelEdge={modelEdge} confusionRows={CONFUSION_MATRIX} />
-                  </div>
-                )}
-              </div>
-              <div className="xl:col-span-5">
-                {loading ? (
-                  <PanelSkeleton tall />
-                ) : (
-                  <AccuracyTrendChart rollingAccuracy={ROLLING_ACCURACY} errorOverTime={ERROR_OVER_TIME} />
-                )}
-              </div>
-            </div>
-          </motion.section>
+          {view === 'overview' && (
+            <>
+              <motion.div {...sectionItem}>
+                <IntelligenceStatusBar key={selectedModel} items={intelligenceFeed} />
+              </motion.div>
 
-          {/* 04 Execution */}
-          <motion.section className="mb-10 sm:mb-12" aria-labelledby="layer-exec" {...sectionItem}>
-            <LayerHeader
-              step="04"
-              title="Execution layer"
-              subtitle="Dominant signal, trade ladder, narrative, and options context"
-            />
-            <div id="layer-exec">
-              {loading ? (
+              <motion.section className="mb-10 sm:mb-12" aria-labelledby="layer-market" {...sectionItem}>
+                <LayerHeader
+                  step="01"
+                  title="Market Engine"
+                  headingId="layer-market"
+                  subtitle="Paper portfolio intraday · buying power · tape and depth (mock)"
+                />
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5">
                   <div className="lg:col-span-2">
-                    <PanelSkeleton tall />
+                    {loading ? (
+                      <ChartSkeleton className="min-h-[420px] sm:min-h-[480px]" />
+                    ) : (
+                      <MarketChart data={MARKET_SERIES} onOpenAnalytics={handleOpenAnalytics} />
+                    )}
                   </div>
-                  <PanelSkeleton tall />
-                </div>
-              ) : (
-                <div key={selectedModel} className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5 items-stretch">
-                  <div className="lg:col-span-2 min-w-0">
-                    <SignalPanel
-                      current={STRATEGY_SIGNAL.current}
-                      confidencePct={STRATEGY_SIGNAL.confidencePct}
-                      recent={STRATEGY_SIGNAL.recent}
-                      tradeSetup={tradeSetup}
-                      explanationLines={explanationLines}
-                    />
-                  </div>
-                  <div className="lg:col-span-1 min-w-0">
-                    <OptionsContextPanel context={optionsContext} />
+                  <div className="lg:col-span-1">
+                    {loading ? <OrderBookSkeleton /> : <OrderBookPreview />}
                   </div>
                 </div>
-              )}
-            </div>
-          </motion.section>
+              </motion.section>
+            </>
+          )}
         </motion.main>
       </div>
     </div>
