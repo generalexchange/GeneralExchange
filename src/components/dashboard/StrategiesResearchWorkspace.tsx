@@ -118,77 +118,85 @@ export function StrategiesResearchWorkspace({
   };
 
   return (
-    <div className="flex flex-col gap-5">
-      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] overflow-hidden">
-        <div className="flex items-center justify-between gap-3 border-b border-white/[0.06] px-4 py-3 sm:px-5">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">Dataset library</p>
+    <div className="flex flex-col gap-3 sm:gap-4">
+      {/* Side-by-side on large screens so library + assistant fit without long vertical scroll */}
+      <div className="grid min-h-0 grid-cols-1 gap-3 sm:gap-4 lg:grid-cols-2 lg:items-stretch lg:gap-4 lg:h-[min(58dvh,620px)] lg:min-h-[300px]">
+        <div className="flex min-h-0 flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] lg:h-full">
+          <div className="flex shrink-0 items-center justify-between gap-2 border-b border-white/[0.06] px-3 py-2 sm:px-4">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500 sm:text-xs sm:tracking-[0.18em]">
+              Dataset library
+            </p>
+            <button
+              type="button"
+              onClick={newDataset}
+              className="shrink-0 rounded-sm border border-institutional-green/45 bg-institutional-green/20 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-tan hover:bg-institutional-green/30 transition-colors sm:px-2.5 sm:py-1.5 sm:text-[11px]"
+            >
+              <span className="inline-flex items-center gap-1">
+                <Plus className="h-3 w-3 sm:h-3.5 sm:w-3.5" strokeWidth={2} aria-hidden />
+                New Dataset
+              </span>
+            </button>
+          </div>
+
+          <input ref={fileInputRef} type="file" accept=".csv,.json,.parquet" className="hidden" onChange={onFileChange} />
+
           <button
             type="button"
-            onClick={newDataset}
-            className="shrink-0 rounded-sm border border-institutional-green/45 bg-institutional-green/20 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-tan hover:bg-institutional-green/30 transition-colors"
+            onClick={onDropZoneClick}
+            onDragOver={onDragOver}
+            onDrop={onDrop}
+            className="w-full shrink-0 border-b border-dashed border-white/[0.12] bg-white/[0.02] px-3 py-4 text-center transition-colors hover:bg-white/[0.04] focus:outline-none focus-visible:ring-2 focus-visible:ring-institutional-green/30 focus-visible:ring-inset sm:px-4 sm:py-5"
           >
-            <span className="inline-flex items-center gap-1.5">
-              <Plus className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
-              New Dataset
-            </span>
+            <Upload className="mx-auto mb-1.5 h-5 w-5 text-zinc-500 sm:mb-2 sm:h-6 sm:w-6" strokeWidth={1.25} aria-hidden />
+            <p className="text-xs font-medium text-zinc-200 sm:text-sm">Drop a dataset or click to browse</p>
+            <p className="mt-0.5 text-[10px] leading-snug text-zinc-500 sm:text-xs sm:mt-1">
+              .csv, .json, .parquet — or QuantConnect payload
+            </p>
           </button>
+
+          <ul
+            className="min-h-0 max-h-[min(36vh,220px)] flex-1 divide-y divide-white/[0.06] overflow-y-auto overscroll-contain lg:max-h-none"
+            role="list"
+          >
+            {library.map((row) => {
+              const selected = row.id === activeDatasetId;
+              return (
+                <li key={row.id}>
+                  <div
+                    className={`flex items-center gap-2 px-3 py-2 transition-colors sm:gap-3 sm:px-4 ${
+                      selected ? 'bg-white/[0.05]' : 'hover:bg-white/[0.03]'
+                    }`}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setActiveDatasetId(row.id)}
+                      className="flex min-w-0 flex-1 items-center gap-2 text-left sm:gap-2.5"
+                    >
+                      <FileIcon kind={row.kind} />
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-xs font-medium text-zinc-200 sm:text-sm">{row.name}</p>
+                        <p className="mt-0.5 text-[10px] tabular-nums text-zinc-500 sm:text-[11px]">
+                          {row.loadedAt} · {formatRows(row.rows)} rows
+                        </p>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => runDataset(row.id)}
+                      className="shrink-0 rounded-sm border border-white/[0.1] bg-white/[0.04] px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-zinc-300 hover:border-institutional-green/40 hover:bg-institutional-green/15 hover:text-tan transition-colors sm:px-2.5 sm:py-1.5 sm:text-[11px]"
+                    >
+                      Run
+                    </button>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
         </div>
 
-        <input ref={fileInputRef} type="file" accept=".csv,.json,.parquet" className="hidden" onChange={onFileChange} />
-
-        <button
-          type="button"
-          onClick={onDropZoneClick}
-          onDragOver={onDragOver}
-          onDrop={onDrop}
-          className="w-full border-b border-dashed border-white/[0.12] bg-white/[0.02] px-4 py-8 sm:px-6 sm:py-10 text-center transition-colors hover:bg-white/[0.04] focus:outline-none focus-visible:ring-2 focus-visible:ring-institutional-green/30 focus-visible:ring-inset"
-        >
-          <Upload className="mx-auto h-8 w-8 text-zinc-500 mb-3" strokeWidth={1.25} aria-hidden />
-          <p className="text-sm font-medium text-zinc-200">Drop a dataset or click to browse</p>
-          <p className="text-xs text-zinc-500 mt-1.5">
-            Supports .csv, .json, .parquet — or connect QuantConnect payload
-          </p>
-        </button>
-
-        <ul className="divide-y divide-white/[0.06]" role="list">
-          {library.map((row) => {
-            const selected = row.id === activeDatasetId;
-            return (
-              <li key={row.id}>
-                <div
-                  className={`flex items-center gap-3 px-4 py-3 sm:px-5 transition-colors ${
-                    selected ? 'bg-white/[0.05]' : 'hover:bg-white/[0.03]'
-                  }`}
-                >
-                  <button
-                    type="button"
-                    onClick={() => setActiveDatasetId(row.id)}
-                    className="flex min-w-0 flex-1 items-center gap-3 text-left"
-                  >
-                    <FileIcon kind={row.kind} />
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-zinc-200 truncate">{row.name}</p>
-                      <p className="text-[11px] text-zinc-500 mt-0.5 tabular-nums">
-                        Loaded {row.loadedAt} · {formatRows(row.rows)} rows
-                      </p>
-                    </div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => runDataset(row.id)}
-                    className="shrink-0 rounded-sm border border-white/[0.1] bg-white/[0.04] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-zinc-300 hover:border-institutional-green/40 hover:bg-institutional-green/15 hover:text-tan transition-colors"
-                  >
-                    Run
-                  </button>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-
-      <div className="rounded-2xl border border-white/[0.08] bg-[#0a0a0a]/90 overflow-hidden flex flex-col min-h-0">
-        <StrategyAssistantChat stacked />
+        <div className="flex min-h-0 flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0a0a0a]/90 lg:h-full">
+          <StrategyAssistantChat stacked />
+        </div>
       </div>
 
       <AnimatePresence initial={false}>

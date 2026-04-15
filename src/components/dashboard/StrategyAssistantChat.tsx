@@ -84,24 +84,24 @@ export function StrategyAssistantChat({ stacked }: { stacked?: boolean }) {
 
   const rootClass = stacked
     ? threadScroll
-      ? 'flex min-h-0 w-full flex-col h-[min(70vh,720px)] sm:h-[min(72vh,780px)]'
-      : 'flex w-full flex-col'
+      ? 'flex min-h-0 w-full flex-1 flex-col max-lg:h-[min(62vh,600px)] lg:h-full'
+      : 'flex min-h-0 w-full flex-1 flex-col lg:h-full'
     : 'flex h-full min-h-0 flex-col rounded-xl border border-white/[0.08] bg-[#0a0a0a]';
 
   const listClass = stacked
     ? threadScroll
-      ? 'min-h-0 flex-1 space-y-3 overflow-y-auto overflow-x-hidden overscroll-contain px-3 py-3 sm:px-4'
-      : 'max-h-44 space-y-3 overflow-y-auto overflow-x-hidden px-3 py-3 sm:px-4'
+      ? 'min-h-0 flex-1 space-y-2 overflow-y-auto overflow-x-hidden overscroll-contain px-3 py-2 sm:px-4'
+      : 'max-h-36 space-y-2 overflow-y-auto overflow-x-hidden px-3 py-2 sm:px-4 lg:max-h-none lg:min-h-0 lg:flex-1'
     : 'min-h-0 flex-1 space-y-3 overflow-y-auto px-3 py-3 sm:px-4';
 
   return (
     <div className={rootClass} aria-labelledby={titleId}>
-      <div className="flex shrink-0 items-center justify-between gap-2 border-b border-white/[0.08] px-3 py-2.5 sm:px-4">
+      <div className="flex shrink-0 items-center justify-between gap-2 border-b border-white/[0.08] px-3 py-2 sm:px-4">
         <div className="min-w-0">
-          <h2 id={titleId} className="text-sm font-semibold text-white tracking-tight truncate">
+          <h2 id={titleId} className="truncate text-xs font-semibold tracking-tight text-white sm:text-sm">
             Strategy Assistant
           </h2>
-          <p className="text-[10px] text-zinc-500 mt-0.5">
+          <p className="mt-0.5 text-[10px] text-zinc-500">
             <span className="inline-flex items-center rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 font-mono text-zinc-400">
               GPT-4o
             </span>
@@ -129,7 +129,7 @@ export function StrategyAssistantChat({ stacked }: { stacked?: boolean }) {
               className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div
-                className={`group max-w-[92%] rounded-xl border px-3 py-2 text-sm leading-relaxed ${
+                className={`group max-w-[92%] rounded-lg border px-2.5 py-1.5 text-xs leading-relaxed sm:rounded-xl sm:px-3 sm:py-2 sm:text-sm ${
                   msg.role === 'user'
                     ? 'border-institutional-green/30 bg-institutional-green/10 text-zinc-100'
                     : 'border-white/[0.08] bg-white/[0.04] text-zinc-300'
@@ -157,15 +157,15 @@ export function StrategyAssistantChat({ stacked }: { stacked?: boolean }) {
         ) : null}
       </div>
 
-      <div className="shrink-0 border-t border-white/[0.08] px-3 py-2.5 sm:px-4 space-y-2">
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className="text-[10px] text-zinc-600 uppercase tracking-wider">Suggested</span>
+      <div className="shrink-0 space-y-1.5 border-t border-white/[0.08] px-3 py-2 sm:px-4">
+        <div className="-mx-0.5 flex flex-nowrap items-center gap-1 overflow-x-auto px-0.5 pb-0.5 scrollbar-hide sm:flex-wrap sm:overflow-visible sm:pb-0">
+          <span className="shrink-0 text-[10px] uppercase tracking-wider text-zinc-600">Suggested</span>
           {SUGGESTED.map((s) => (
             <button
               key={s}
               type="button"
               onClick={() => setInput(s)}
-              className="rounded-full border border-white/[0.08] bg-white/[0.03] px-2 py-0.5 text-[10px] text-zinc-400 hover:border-white/15 hover:bg-white/[0.06] hover:text-zinc-300 transition-colors"
+              className="shrink-0 rounded-full border border-white/[0.08] bg-white/[0.03] px-2 py-0.5 text-[10px] text-zinc-400 hover:border-white/15 hover:bg-white/[0.06] hover:text-zinc-300 transition-colors"
             >
               {s}
             </button>
@@ -191,13 +191,13 @@ export function StrategyAssistantChat({ stacked }: { stacked?: boolean }) {
             }}
             onKeyDown={onKeyDown}
             placeholder="Message…"
-            className="min-h-[40px] max-h-24 flex-1 resize-none rounded-lg border border-white/[0.1] bg-white/[0.03] px-3 py-2 text-sm text-white placeholder:text-zinc-600 outline-none ring-institutional-green/20 focus:ring-1"
+            className="min-h-[36px] max-h-20 flex-1 resize-none rounded-lg border border-white/[0.1] bg-white/[0.03] px-2.5 py-1.5 text-xs text-white placeholder:text-zinc-600 outline-none ring-institutional-green/20 focus:ring-1 sm:min-h-[40px] sm:max-h-24 sm:px-3 sm:py-2 sm:text-sm"
           />
           <button
             type="button"
             onClick={send}
             disabled={pending || !input.trim()}
-            className="mb-1.5 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-institutional-green/40 bg-institutional-green/15 text-tan hover:bg-institutional-green/25 disabled:opacity-40 disabled:pointer-events-none transition-colors"
+            className="mb-1 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-institutional-green/40 bg-institutional-green/15 text-tan hover:bg-institutional-green/25 disabled:pointer-events-none disabled:opacity-40 transition-colors sm:mb-1.5 sm:h-10 sm:w-10"
             aria-label="Send"
           >
             <Send className="h-4 w-4" strokeWidth={1.75} />
