@@ -175,17 +175,11 @@ export function HomepageFullPageSections() {
             return pillar ? <PillarSectionEmbed pillar={pillar} index={0} /> : null;
           })()}
 
-          <SectionActions>
-            <Link href="/dashboard?tab=risk" className={btnPrimary}>
-              Open risk workspace
+          <div className="mt-10">
+            <Link href="/risk-management" className={btnPrimary}>
+              Risk Management
             </Link>
-            <Link href="/features#feature-risk-management" className={btnGhost}>
-              Risk in trading tools
-            </Link>
-            <Link href="/pricing" className={btnGhost}>
-              Compute tokens
-            </Link>
-          </SectionActions>
+          </div>
         </motion.div>
       </section>
 
