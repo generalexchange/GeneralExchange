@@ -34,34 +34,19 @@ export const Hero: React.FC = () => {
       />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:72px_72px] opacity-40" />
 
-      <div className="relative mx-auto flex w-full max-w-content flex-1 flex-col justify-center px-4 py-12 sm:px-6 sm:py-16 lg:px-10 lg:py-20">
-        <div className="grid w-full items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
-          <motion.div className="space-y-6 lg:space-y-8" {...fade}>
+      <div className="relative mx-auto flex w-full max-w-content flex-1 flex-col justify-center px-4 pt-16 pb-12 sm:px-6 sm:pt-20 sm:pb-16 lg:px-10 lg:pt-24 lg:pb-20">
+        <div className="grid w-full items-center justify-items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 lg:justify-items-stretch">
+          <motion.div className="w-full max-w-2xl space-y-6 text-center lg:max-w-none lg:space-y-8 lg:text-left" {...fade}>
             <h1 className="font-display text-[2.25rem] sm:text-5xl lg:text-[3.25rem] xl:text-[3.5rem] leading-[1.06] font-medium tracking-[-0.02em] text-neutral-50">
               Institutional Risk &amp; Execution on Tokenized Compute
             </h1>
 
-            <p className="text-base sm:text-lg text-neutral-400 max-w-2xl leading-relaxed font-light">
+            <p className="mx-auto text-base sm:text-lg text-neutral-400 max-w-2xl leading-relaxed font-light lg:mx-0">
               GPU-accelerated risk engines, backtesting, and governance, integrated with Lubbock.Cloud and AMD-optimized
               workloads.
             </p>
 
-            <ul className="flex flex-wrap gap-2 pt-1" aria-label="Capability highlights">
-              {[
-                'Advanced Risk & Scenario Engines',
-                'Compute-Driven Backtesting & RL Lab',
-                'Deterministic Risk-First Execution Loop',
-              ].map((label) => (
-                <li
-                  key={label}
-                  className="text-[11px] sm:text-xs font-medium tracking-wide text-neutral-300 border border-white/[0.1] bg-white/[0.04] px-3 py-1.5 rounded-sm"
-                >
-                  {label}
-                </li>
-              ))}
-            </ul>
-
-            <div className="pt-2">
+            <div className="flex justify-center pt-2 lg:justify-start">
               <Link
                 href="/trade-engine"
                 className="inline-flex items-center justify-center px-8 py-3.5 bg-tan text-charcoal text-sm font-semibold tracking-wide rounded-sm hover:bg-tan-muted transition-all duration-300 shadow-[0_12px_40px_-12px_rgba(210,180,140,0.35)]"
@@ -72,7 +57,7 @@ export const Hero: React.FC = () => {
           </motion.div>
 
           <motion.div
-            className="relative"
+            className="relative w-full max-w-md lg:max-w-none justify-self-center lg:justify-self-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.08, ease: fadeEase }}

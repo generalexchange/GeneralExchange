@@ -140,50 +140,82 @@ export function HeroSystemTopologyIllustration() {
   );
 }
 
-/** Positioning strip — minimal linear integration (dark surfaces) */
-export function PositioningIntegrationDiagram() {
+/** Positioning strip — single horizontal integration row (light band) */
+export function PositioningIntegrationDiagram({ theme = 'light' }: { theme?: 'light' | 'dark' } = {}) {
+  const isLight = theme === 'light';
+  const stroke = isLight ? 'rgba(46, 90, 58, 0.22)' : 'rgba(255,255,255,0.12)';
+  const fill = isLight ? 'rgba(255,255,255,0.72)' : 'rgba(255,255,255,0.03)';
+  const titleFill = isLight ? '#1A1A1A' : 'rgba(255,255,255,0.9)';
+  const subFill = isLight ? '#4a4a48' : 'rgba(255,255,255,0.4)';
+  const arrowStroke = isLight ? '#2E5A3A' : 'rgba(46,90,58,0.75)';
+  const markerId = isLight ? 'arrPosIntLight' : 'arrPosIntDark';
+
+  const nodes = [
+    { cx: 132, title: 'Lubbock.Cloud', sub: 'Tokenized GPU' },
+    { cx: 400, title: 'AMD compute', sub: 'ROCm · deterministic' },
+    { cx: 668, title: 'Risk controls', sub: 'Gate · audit' },
+  ] as const;
+  const bw = 118;
+  const bh = 44;
+  const y = 8;
+  const midY = y + bh / 2;
+
   return (
-    <svg viewBox="0 0 720 88" className="h-auto w-full" role="img" aria-labelledby="pos-int-title">
+    <svg viewBox="0 0 800 60" className="h-auto w-full min-h-[52px]" role="img" aria-labelledby="pos-int-title">
       <title id="pos-int-title">
-        Lubbock.Cloud capacity, AMD compute path, and risk controls on a single integration plane
+        Lubbock.Cloud, AMD compute, and risk controls connected in one horizontal integration flow
       </title>
       <defs>
-        <marker id="arrPosInt" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
-          <path d="M0,0 L5,2.5 L0,5 Z" fill="rgba(210,180,140,0.5)" />
+        <marker id={markerId} markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
+          <path d="M0,0 L5,2.5 L0,5 Z" fill={arrowStroke} />
         </marker>
       </defs>
-      <line x1="32" y1="44" x2="688" y2="44" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
-      {(
-        [
-          { x: 120, title: 'Lubbock.Cloud', sub: 'Tokenized GPU' },
-          { x: 360, title: 'AMD compute', sub: 'ROCm · deterministic' },
-          { x: 600, title: 'Risk controls', sub: 'Gate · audit' },
-        ] as const
-      ).map(({ x, title, sub }) => (
+      {nodes.map(({ cx, title, sub }) => (
         <g key={title}>
           <rect
-            x={x - 100}
-            y="12"
-            width="200"
-            height="64"
+            x={cx - bw / 2}
+            y={y}
+            width={bw}
+            height={bh}
             rx="2"
-            fill="rgba(255,255,255,0.02)"
-            stroke="rgba(255,255,255,0.1)"
+            fill={fill}
+            stroke={stroke}
             strokeWidth="1"
           />
-          <text x={x} y="36" textAnchor="middle" fill="rgba(255,255,255,0.88)" fontSize="11" fontWeight="500" fontFamily="system-ui, sans-serif">
+          <text
+            x={cx}
+            y={y + 20}
+            textAnchor="middle"
+            fill={titleFill}
+            fontSize="10"
+            fontWeight="600"
+            fontFamily="system-ui, sans-serif"
+          >
             {title}
           </text>
-          <text x={x} y="56" textAnchor="middle" fill="rgba(255,255,255,0.38)" fontSize="9" fontFamily="ui-monospace, monospace">
+          <text x={cx} y={y + 36} textAnchor="middle" fill={subFill} fontSize="8.5" fontFamily="ui-monospace, monospace">
             {sub}
           </text>
         </g>
       ))}
-      <path d="M220,44 H260" stroke="rgba(46,90,58,0.65)" strokeWidth="1" markerEnd="url(#arrPosInt)" />
-      <path d="M460,44 H500" stroke="rgba(46,90,58,0.65)" strokeWidth="1" markerEnd="url(#arrPosInt)" />
-      <text x="360" y="80" textAnchor="middle" fill="rgba(255,255,255,0.35)" fontSize="9" fontFamily="system-ui, sans-serif">
-        Single plane · shared limits · audit-ready lineage
-      </text>
+      <line
+        x1={nodes[0].cx + bw / 2}
+        y1={midY}
+        x2={nodes[1].cx - bw / 2}
+        y2={midY}
+        stroke={arrowStroke}
+        strokeWidth="1.1"
+        markerEnd={`url(#${markerId})`}
+      />
+      <line
+        x1={nodes[1].cx + bw / 2}
+        y1={midY}
+        x2={nodes[2].cx - bw / 2}
+        y2={midY}
+        stroke={arrowStroke}
+        strokeWidth="1.1"
+        markerEnd={`url(#${markerId})`}
+      />
     </svg>
   );
 }
