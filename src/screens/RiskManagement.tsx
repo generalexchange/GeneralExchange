@@ -8,6 +8,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
+import { PillarSectionEmbed, getPillarById } from '@/screens/homepage/HomepageLegacyRestored';
 
 export const RiskManagement: React.FC = () => {
   return (
@@ -37,6 +38,11 @@ export const RiskManagement: React.FC = () => {
             </Link>
           </div>
         </header>
+
+        {(() => {
+          const pillar = getPillarById('advanced-risk-scenario');
+          return pillar ? <PillarSectionEmbed pillar={pillar} index={0} /> : null;
+        })()}
 
         <section className="border-b border-white/[0.06] px-4 py-12 sm:px-6 sm:py-16 lg:px-10" aria-labelledby="risk-trading-tools-heading">
           <div className="mx-auto max-w-content">

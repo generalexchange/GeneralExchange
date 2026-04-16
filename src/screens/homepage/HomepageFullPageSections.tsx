@@ -170,11 +170,6 @@ export function HomepageFullPageSections() {
             </div>
           </div>
 
-          {(() => {
-            const pillar = getPillarById('advanced-risk-scenario');
-            return pillar ? <PillarSectionEmbed pillar={pillar} index={0} /> : null;
-          })()}
-
           <div className="mt-10">
             <Link href="/risk-management" className={btnPrimary}>
               Risk Management
