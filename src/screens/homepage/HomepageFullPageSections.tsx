@@ -7,7 +7,6 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Crosshair, Shield, Zap } from 'lucide-react';
 import { Hero } from '@/components/Hero';
 import {
   HomepagePositioningStrip,
@@ -56,34 +55,31 @@ function SectionNum({ n, label }: { n: string; label: string }) {
 function TradeTicketMock() {
   return (
     <div
-      className="relative w-full max-w-md rounded-xl border border-white/[0.1] bg-charcoal/90 p-4 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.65)] backdrop-blur-md sm:p-5 lg:max-w-sm"
+      className="relative w-full max-w-sm border border-white/[0.08] bg-[#0e0e0e]/95 p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset] backdrop-blur-sm sm:max-w-md sm:p-6 lg:max-w-sm"
       aria-hidden
     >
-      <div className="mb-3 flex items-center justify-between border-b border-white/[0.08] pb-2">
-        <span className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500">Order ticket</span>
-        <span className="rounded border border-institutional-green/35 bg-institutional-green/15 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-tan">
-          Simulated
-        </span>
+      <div className="mb-4 flex items-baseline justify-between border-b border-white/[0.06] pb-3">
+        <span className="font-display text-[11px] font-medium uppercase tracking-[0.2em] text-zinc-500">Order instruction</span>
+        <span className="font-mono text-[10px] tabular-nums text-zinc-600">REF · 88421</span>
       </div>
-      <div className="space-y-2.5 text-xs">
+      <div className="space-y-0 divide-y divide-white/[0.06]">
         {(
           [
             ['Entry', '$482.40'],
             ['Target', '$491.25'],
             ['Stop', '$476.10'],
-            ['R / R', '1 : 1.8'],
+            ['Risk / reward', '1 : 1.8'],
           ] as const
         ).map(([k, v]) => (
-          <div key={k} className="flex items-center justify-between gap-3 border-b border-white/[0.05] pb-2 last:border-0 last:pb-0">
-            <span className="text-zinc-500">{k}</span>
-            <span className="font-mono tabular-nums text-zinc-200">{v}</span>
+          <div key={k} className="flex items-center justify-between gap-6 py-2.5 first:pt-0">
+            <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-zinc-600">{k}</span>
+            <span className="font-mono text-xs tabular-nums tracking-tight text-zinc-300">{v}</span>
           </div>
         ))}
       </div>
-      <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
-        <div className="h-full w-[62%] rounded-full bg-institutional-green/70" />
-      </div>
-      <p className="mt-2 text-[10px] text-zinc-600">Risk check · desk limits · route preview</p>
+      <p className="mt-4 border-t border-white/[0.06] pt-3 text-[10px] font-light leading-relaxed text-zinc-600">
+        Pre-trade risk and routing review. Indicative values for illustration only.
+      </p>
     </div>
   );
 }
@@ -160,79 +156,46 @@ export function HomepageFullPageSections() {
         className="relative flex min-h-screen flex-col overflow-hidden border-b border-white/[0.06] md:min-h-[100dvh]"
       >
         <div className="pointer-events-none absolute inset-0">
-          <motion.div
-            className="absolute -top-[20%] right-[-15%] h-[min(85vw,640px)] w-[min(85vw,640px)] rounded-full bg-institutional-green/25 blur-[100px]"
-            animate={{ opacity: [0.22, 0.38, 0.22] }}
-            transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-            aria-hidden
-          />
-          <motion.div
-            className="absolute bottom-[-25%] left-[-20%] h-[min(70vw,520px)] w-[min(70vw,520px)] rounded-full bg-tan/15 blur-[90px]"
-            animate={{ opacity: [0.12, 0.22, 0.12] }}
-            transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+          <div
+            className="absolute inset-0 bg-[radial-gradient(ellipse_80%_55%_at_50%_-20%,rgba(46,90,58,0.08),transparent_55%)]"
             aria-hidden
           />
           <div
-            className="absolute inset-0 opacity-[0.06] bg-[linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:56px_56px]"
+            className="absolute inset-0 opacity-[0.035] bg-[linear-gradient(rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.06)_1px,transparent_1px)] bg-[size:72px_72px]"
             aria-hidden
           />
         </div>
 
-        <div className="relative z-10 mx-auto flex w-full max-w-content flex-col gap-12 px-4 py-16 sm:px-6 sm:py-20 lg:px-10 lg:py-24">
-          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14 xl:gap-20 lg:items-center">
-            <div className="min-w-0">
+        <div className="relative z-10 mx-auto flex w-full max-w-content flex-col px-4 py-20 sm:px-6 sm:py-24 lg:px-10 lg:py-28">
+          <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-[1fr_auto] lg:gap-16 xl:gap-24">
+            <div className="min-w-0 max-w-2xl lg:max-w-none lg:pr-8">
+              <div className="mb-5 h-px w-12 bg-tan/50" aria-hidden />
               <SectionNum n="01" label="TradeEngine" />
               <motion.h1
                 id="hp-tradeengine-title"
-                initial={{ opacity: 0, y: 32 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.85, ease: easeLux }}
-                className="font-display text-[clamp(2.75rem,8vw,5.5rem)] font-semibold leading-[0.95] tracking-tight text-neutral-50"
+                transition={{ duration: 0.75, ease: easeLux }}
+                className="mt-4 font-display text-[clamp(2.25rem,5.5vw,3.75rem)] font-medium leading-[1.08] tracking-tight text-neutral-100"
               >
                 TradeEngine
               </motion.h1>
-              <p className="mt-5 max-w-2xl text-base font-light leading-relaxed text-zinc-400 sm:text-lg">
-                Enter a strategy. Execute with precision. Route through Risk before you commit.
+              <p className="mt-6 max-w-xl border-l border-white/[0.08] pl-5 text-sm font-light leading-relaxed text-zinc-500 sm:text-[15px] sm:leading-[1.65]">
+                Institutional order workflow: strategy intent, controlled execution, and risk-aware release—aligned to desk
+                policy before capital is committed.
               </p>
-
-              <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
-                {(
-                  [
-                    { icon: Crosshair, t: 'Strategy Entry' },
-                    { icon: Zap, t: 'Quick Execution' },
-                    { icon: Shield, t: 'Risk Routing' },
-                  ] as const
-                ).map(({ icon: Icon, t }) => (
-                  <div
-                    key={t}
-                    className="flex items-center gap-3 rounded-lg border border-white/[0.08] bg-white/[0.03] px-4 py-3"
-                  >
-                    <Icon className="h-4 w-4 shrink-0 text-tan" strokeWidth={1.5} aria-hidden />
-                    <span className="text-xs font-medium uppercase tracking-wide text-zinc-300">{t}</span>
-                  </div>
-                ))}
-              </div>
+              <Link
+                href="/dashboard"
+                className="mt-12 inline-flex w-full max-w-xs items-center justify-center border border-white/[0.18] bg-white/[0.04] px-10 py-3.5 text-center text-[11px] font-semibold uppercase tracking-[0.22em] text-neutral-100 transition-colors hover:border-tan/45 hover:bg-white/[0.07] sm:w-auto"
+              >
+                Open TradeEngine
+              </Link>
             </div>
 
-            <div className="flex justify-center lg:justify-end">
+            <div className="flex justify-center border-t border-white/[0.06] pt-10 lg:border-l lg:border-t-0 lg:pl-12 lg:pt-0">
               <TradeTicketMock />
             </div>
           </div>
-
-          <SectionActions>
-            <Link href="/dashboard" className={btnPrimary}>
-              Open TradeEngine
-            </Link>
-            <Link href="/dashboard" className={btnGhost}>
-              View Active Positions
-            </Link>
-            <Link href="/features" className={btnGhost}>
-              Explore the platform
-            </Link>
-            <Link href="/features#feature-risk-management" className={btnGhost}>
-              View risk stack
-            </Link>
-          </SectionActions>
         </div>
 
         <Hero />
