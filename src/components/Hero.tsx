@@ -23,7 +23,7 @@ const fade = {
 
 export const Hero: React.FC = () => {
   return (
-    <section className="relative flex min-h-[min(85vh,800px)] flex-col overflow-hidden border-b border-white/[0.05]">
+    <section className="relative flex min-h-[min(85vh,800px)] flex-col overflow-hidden border-b border-white/[0.05] pb-24 sm:pb-32 lg:pb-44">
       <div
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_85%_70%_at_50%_-15%,rgba(46,90,58,0.12),transparent_58%)]"
         aria-hidden

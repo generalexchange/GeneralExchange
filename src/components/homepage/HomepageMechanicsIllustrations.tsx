@@ -140,45 +140,49 @@ export function HeroSystemTopologyIllustration() {
   );
 }
 
-/** Positioning strip — triad integration */
+/** Positioning strip — minimal linear integration (dark surfaces) */
 export function PositioningIntegrationDiagram() {
   return (
-    <svg viewBox="0 0 640 120" className="w-full h-auto max-h-[140px]" role="img" aria-labelledby="pos-int-title">
-      <title id="pos-int-title">Lubbock Cloud compute, AMD optimization, and deterministic risk loop as three connected pillars</title>
+    <svg viewBox="0 0 720 88" className="h-auto w-full" role="img" aria-labelledby="pos-int-title">
+      <title id="pos-int-title">
+        Lubbock.Cloud capacity, AMD compute path, and risk controls on a single integration plane
+      </title>
       <defs>
-        <marker id="arrPos" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
-          <path d="M0,0 L7,3.5 L0,7 Z" fill="#2E5A3A" />
+        <marker id="arrPosInt" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
+          <path d="M0,0 L5,2.5 L0,5 Z" fill="rgba(210,180,140,0.5)" />
         </marker>
       </defs>
-      <path d="M80,60 Q200,20 320,60 T560,60" stroke="#6b7c6e" strokeWidth="1" fill="none" opacity="0.5" />
-      <circle cx="120" cy="58" r="36" stroke="rgba(46,90,58,0.45)" strokeWidth="1.2" fill="#F5F2EB" />
-      <text x="120" y="54" textAnchor="middle" fill="#2E5A3A" fontSize="10" fontWeight="600" fontFamily="ui-sans-serif">
-        Lubbock.Cloud
-      </text>
-      <text x="120" y="68" textAnchor="middle" fill="#4a4a48" fontSize="8" fontFamily="ui-monospace">
-        tokenized GPU
-      </text>
-      <circle cx="320" cy="58" r="40" stroke="rgba(46,90,58,0.5)" strokeWidth="1.4" fill="#ECE8E0" />
-      <text x="320" y="52" textAnchor="middle" fill="#1A1A1A" fontSize="10" fontWeight="600" fontFamily="ui-sans-serif">
-        AMD MI pools
-      </text>
-      <text x="320" y="66" textAnchor="middle" fill="#4a4a48" fontSize="8" fontFamily="ui-monospace">
-        ROCm · deterministic
-      </text>
-      <text x="320" y="78" textAnchor="middle" fill="#2E5A3A" fontSize="7" fontFamily="ui-monospace">
-        HBM bandwidth
-      </text>
-      <circle cx="520" cy="58" r="36" stroke="rgba(210,180,140,0.55)" strokeWidth="1.2" fill="#F5F2EB" />
-      <text x="520" y="54" textAnchor="middle" fill="#1A1A1A" fontSize="10" fontWeight="600" fontFamily="ui-sans-serif">
-        Risk-first loop
-      </text>
-      <text x="520" y="68" textAnchor="middle" fill="#4a4a48" fontSize="8" fontFamily="ui-monospace">
-        gate · halt · audit
-      </text>
-      <path d="M156,58 H284" stroke="#2E5A3A" strokeWidth="1" markerEnd="url(#arrPos)" />
-      <path d="M360,58 H484" stroke="#2E5A3A" strokeWidth="1" markerEnd="url(#arrPos)" />
-      <text x="320" y="108" textAnchor="middle" fill="#4a4a48" fontSize="9" fontFamily="ui-sans-serif">
-        One plane: research jobs consume tokens; execution respects the same risk envelopes.
+      <line x1="32" y1="44" x2="688" y2="44" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
+      {(
+        [
+          { x: 120, title: 'Lubbock.Cloud', sub: 'Tokenized GPU' },
+          { x: 360, title: 'AMD compute', sub: 'ROCm · deterministic' },
+          { x: 600, title: 'Risk controls', sub: 'Gate · audit' },
+        ] as const
+      ).map(({ x, title, sub }) => (
+        <g key={title}>
+          <rect
+            x={x - 100}
+            y="12"
+            width="200"
+            height="64"
+            rx="2"
+            fill="rgba(255,255,255,0.02)"
+            stroke="rgba(255,255,255,0.1)"
+            strokeWidth="1"
+          />
+          <text x={x} y="36" textAnchor="middle" fill="rgba(255,255,255,0.88)" fontSize="11" fontWeight="500" fontFamily="system-ui, sans-serif">
+            {title}
+          </text>
+          <text x={x} y="56" textAnchor="middle" fill="rgba(255,255,255,0.38)" fontSize="9" fontFamily="ui-monospace, monospace">
+            {sub}
+          </text>
+        </g>
+      ))}
+      <path d="M220,44 H260" stroke="rgba(46,90,58,0.65)" strokeWidth="1" markerEnd="url(#arrPosInt)" />
+      <path d="M460,44 H500" stroke="rgba(46,90,58,0.65)" strokeWidth="1" markerEnd="url(#arrPosInt)" />
+      <text x="360" y="80" textAnchor="middle" fill="rgba(255,255,255,0.35)" fontSize="9" fontFamily="system-ui, sans-serif">
+        Single plane · shared limits · audit-ready lineage
       </text>
     </svg>
   );

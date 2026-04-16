@@ -172,27 +172,23 @@ export function PillarSectionEmbed({ pillar, index }: { pillar: PillarSection; i
 
 export function HomepagePositioningStrip() {
   return (
-    <div
-      className="border-y border-white/[0.06] py-8 sm:py-10"
-      style={{ backgroundColor: BAND.bg00, borderColor: BAND.border, color: BAND.text }}
-    >
+    <div className="border-y border-white/[0.06] bg-charcoal py-14 sm:py-16 lg:py-20">
       <div className="mx-auto max-w-content px-4 sm:px-6 lg:px-10">
-        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-[1fr_minmax(280px,1fr)] lg:gap-12">
-          <div className="text-center sm:text-left">
-            <p className="font-display text-lg font-medium leading-snug tracking-tight sm:text-xl md:text-2xl">
-              {HOMEPAGE_TAGLINE}
-            </p>
-            <p className="mx-auto mt-3 max-w-3xl text-sm font-light leading-relaxed sm:mx-0" style={{ color: BAND.text70 }}>
-              Integrates deeply with Lubbock.Cloud tokenized compute, AMD-optimized GPU workloads for risk and research, and a
-              deterministic, regulator-safe, risk-first execution loop.
-            </p>
-            <p className="mt-4 text-xs font-semibold uppercase tracking-[0.14em]" style={{ color: BAND.text60 }}>
-              Integration plane (read once, audit everywhere)
-            </p>
-          </div>
-          <div className="rounded-sm border p-4 sm:p-5" style={{ borderColor: BAND.border, backgroundColor: BAND.plaque }}>
-            <PositioningIntegrationDiagram />
-          </div>
+        <div className="mx-auto max-w-2xl text-center lg:mx-0 lg:max-w-xl lg:text-left">
+          <p className="font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-600">
+            {HOMEPAGE_TAGLINE.split(' — ')[0]}
+          </p>
+          <p className="mt-3 font-display text-lg font-medium leading-snug tracking-tight text-neutral-100 sm:text-xl">
+            {HOMEPAGE_TAGLINE.includes(' — ') ? HOMEPAGE_TAGLINE.split(' — ').slice(1).join(' — ') : HOMEPAGE_TAGLINE}
+          </p>
+          <p className="mx-auto mt-4 text-sm font-light leading-relaxed text-zinc-500 lg:mx-0">
+            Tokenized GPU capacity on Lubbock.Cloud and AMD-optimized paths feed one deterministic, risk-first loop—from
+            research through execution and audit.
+          </p>
+          <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.16em] text-zinc-600">Integration plane</p>
+        </div>
+        <div className="mx-auto mt-10 max-w-4xl border border-white/[0.08] bg-white/[0.02] px-5 py-6 sm:px-8 sm:py-8">
+          <PositioningIntegrationDiagram />
         </div>
       </div>
     </div>
