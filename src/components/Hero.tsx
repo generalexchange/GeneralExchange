@@ -1,5 +1,5 @@
 /**
- * Homepage hero — tall institutional band with dual CTAs
+ * Homepage hero — tall institutional band with TradeEngine CTA
  */
 
 'use client';
@@ -8,8 +8,6 @@ import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { TrendingUp, Brain, Activity } from 'lucide-react';
-import { HeroSystemTopologyIllustration } from './homepage/HomepageMechanicsIllustrations';
-
 const LIVE_QUOTES: { symbol: string; pct: number }[] = [
   { symbol: 'AAPL', pct: 1.57 },
   { symbol: 'TSLA', pct: -5.35 },
@@ -69,18 +67,12 @@ export const Hero: React.FC = () => {
               ))}
             </ul>
 
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2">
+            <div className="pt-2">
               <Link
-                href="/features"
+                href="/trade-engine"
                 className="inline-flex items-center justify-center px-8 py-3.5 bg-tan text-charcoal text-sm font-semibold tracking-wide rounded-sm hover:bg-tan-muted transition-all duration-300 shadow-[0_12px_40px_-12px_rgba(210,180,140,0.35)]"
               >
-                Explore the Platform
-              </Link>
-              <Link
-                href="/features#feature-risk-management"
-                className="inline-flex items-center justify-center px-8 py-3.5 border border-institutional-green/45 text-sm font-semibold text-neutral-100 rounded-sm bg-institutional-green/10 hover:bg-institutional-green/20 hover:border-institutional-green transition-all duration-300"
-              >
-                View Risk Stack
+                TradeEngine
               </Link>
             </div>
           </motion.div>
@@ -148,17 +140,6 @@ export const Hero: React.FC = () => {
               <p className="text-[10px] text-neutral-600 mt-1">Trailing 90d · paper</p>
             </div>
           </motion.div>
-        </div>
-
-        <div className="w-full mt-14 lg:mt-20 pt-10 border-t border-white/[0.07]">
-          <p className="text-[10px] font-semibold tracking-[0.2em] text-tan/90 uppercase mb-1">End-to-end platform topology</p>
-          <p className="text-xs text-neutral-500 mb-5 max-w-2xl font-light leading-relaxed">
-            How tape, risk, compute, routing, and evidence connect—one direction of travel so auditors and desks share the
-            same mental model.
-          </p>
-          <div className="rounded-sm border border-white/[0.1] bg-dark-gray/55 px-3 py-4 sm:px-5 sm:py-5 backdrop-blur-sm">
-            <HeroSystemTopologyIllustration />
-          </div>
         </div>
       </div>
     </section>

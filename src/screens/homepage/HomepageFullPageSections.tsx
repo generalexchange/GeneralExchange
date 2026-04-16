@@ -1,5 +1,5 @@
 /**
- * Homepage-only full-viewport marketing sections (TradeEngine, Risk, Strategies, History, Backspace).
+ * Homepage-only full-viewport marketing sections (Risk, Strategies, History, Backspace) after Hero + positioning strip.
  */
 
 'use client';
@@ -49,38 +49,6 @@ function SectionNum({ n, label }: { n: string; label: string }) {
       <span className="text-zinc-600"> · </span>
       {label}
     </p>
-  );
-}
-
-function TradeTicketMock() {
-  return (
-    <div
-      className="relative w-full max-w-sm border border-white/[0.08] bg-[#0e0e0e]/95 p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset] backdrop-blur-sm sm:max-w-md sm:p-6 lg:max-w-sm"
-      aria-hidden
-    >
-      <div className="mb-4 flex items-baseline justify-between border-b border-white/[0.06] pb-3">
-        <span className="font-display text-[11px] font-medium uppercase tracking-[0.2em] text-zinc-500">Order instruction</span>
-        <span className="font-mono text-[10px] tabular-nums text-zinc-600">REF · 88421</span>
-      </div>
-      <div className="space-y-0 divide-y divide-white/[0.06]">
-        {(
-          [
-            ['Entry', '$482.40'],
-            ['Target', '$491.25'],
-            ['Stop', '$476.10'],
-            ['Risk / reward', '1 : 1.8'],
-          ] as const
-        ).map(([k, v]) => (
-          <div key={k} className="flex items-center justify-between gap-6 py-2.5 first:pt-0">
-            <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-zinc-600">{k}</span>
-            <span className="font-mono text-xs tabular-nums tracking-tight text-zinc-300">{v}</span>
-          </div>
-        ))}
-      </div>
-      <p className="mt-4 border-t border-white/[0.06] pt-3 text-[10px] font-light leading-relaxed text-zinc-600">
-        Pre-trade risk and routing review. Indicative values for illustration only.
-      </p>
-    </div>
   );
 }
 
@@ -149,66 +117,16 @@ const HISTORY_ROWS = [
 export function HomepageFullPageSections() {
   return (
     <div className="bg-charcoal text-neutral-100">
-      {/* 01 — TradeEngine */}
-      <div
-        role="region"
-        aria-labelledby="hp-tradeengine-title"
-        className="relative flex min-h-screen flex-col overflow-hidden border-b border-white/[0.06] md:min-h-[100dvh]"
-      >
-        <div className="pointer-events-none absolute inset-0">
-          <div
-            className="absolute inset-0 bg-[radial-gradient(ellipse_80%_55%_at_50%_-20%,rgba(46,90,58,0.08),transparent_55%)]"
-            aria-hidden
-          />
-          <div
-            className="absolute inset-0 opacity-[0.035] bg-[linear-gradient(rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.06)_1px,transparent_1px)] bg-[size:72px_72px]"
-            aria-hidden
-          />
-        </div>
+      <Hero />
+      <HomepagePositioningStrip />
 
-        <div className="relative z-10 mx-auto flex w-full max-w-content flex-col px-4 py-20 sm:px-6 sm:py-24 lg:px-10 lg:py-28">
-          <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-[1fr_auto] lg:gap-16 xl:gap-24">
-            <div className="min-w-0 max-w-2xl lg:max-w-none lg:pr-8">
-              <div className="mb-5 h-px w-12 bg-tan/50" aria-hidden />
-              <SectionNum n="01" label="TradeEngine" />
-              <motion.h1
-                id="hp-tradeengine-title"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.75, ease: easeLux }}
-                className="mt-4 font-display text-[clamp(2.25rem,5.5vw,3.75rem)] font-medium leading-[1.08] tracking-tight text-neutral-100"
-              >
-                TradeEngine
-              </motion.h1>
-              <p className="mt-6 max-w-xl border-l border-white/[0.08] pl-5 text-sm font-light leading-relaxed text-zinc-500 sm:text-[15px] sm:leading-[1.65]">
-                Institutional order workflow: strategy intent, controlled execution, and risk-aware release—aligned to desk
-                policy before capital is committed.
-              </p>
-              <Link
-                href="/dashboard"
-                className="mt-12 inline-flex w-full max-w-xs items-center justify-center border border-white/[0.18] bg-white/[0.04] px-10 py-3.5 text-center text-[11px] font-semibold uppercase tracking-[0.22em] text-neutral-100 transition-colors hover:border-tan/45 hover:bg-white/[0.07] sm:w-auto"
-              >
-                Open TradeEngine
-              </Link>
-            </div>
-
-            <div className="flex justify-center border-t border-white/[0.06] pt-10 lg:border-l lg:border-t-0 lg:pl-12 lg:pt-0">
-              <TradeTicketMock />
-            </div>
-          </div>
-        </div>
-
-        <Hero />
-        <HomepagePositioningStrip />
-      </div>
-
-      {/* 02 — Risk */}
+      {/* 01 — Risk */}
       <section
         className="flex min-h-screen flex-col justify-center border-b border-white/[0.06] bg-dark-gray/40 md:min-h-[100dvh]"
         aria-labelledby="hp-risk-title"
       >
         <motion.div className="mx-auto w-full max-w-content px-4 py-16 sm:px-6 sm:py-20 lg:px-10 lg:py-24" {...sectionReveal}>
-          <SectionNum n="02" label="Risk" />
+          <SectionNum n="01" label="Risk" />
           <h2
             id="hp-risk-title"
             className="max-w-3xl font-display text-3xl font-medium leading-tight tracking-tight text-neutral-50 sm:text-4xl lg:text-[2.75rem]"
@@ -271,13 +189,13 @@ export function HomepageFullPageSections() {
         </motion.div>
       </section>
 
-      {/* 03 — Strategies */}
+      {/* 02 — Strategies */}
       <section
         className="flex min-h-screen flex-col justify-center border-b border-white/[0.06] md:min-h-[100dvh]"
         aria-labelledby="hp-strategies-title"
       >
         <motion.div className="mx-auto w-full max-w-content px-4 py-16 sm:px-6 sm:py-20 lg:px-10 lg:py-24" {...sectionReveal}>
-          <SectionNum n="03" label="Strategies" />
+          <SectionNum n="02" label="Strategies" />
           <h2
             id="hp-strategies-title"
             className="max-w-3xl font-display text-3xl font-medium leading-tight tracking-tight text-neutral-50 sm:text-4xl lg:text-[2.75rem]"
@@ -342,13 +260,13 @@ export function HomepageFullPageSections() {
         </motion.div>
       </section>
 
-      {/* 04 — History */}
+      {/* 03 — History */}
       <section
         className="flex min-h-screen flex-col justify-center border-b border-white/[0.06] bg-dark-gray/35 md:min-h-[100dvh]"
         aria-labelledby="hp-history-title"
       >
         <motion.div className="mx-auto w-full max-w-content px-4 py-16 sm:px-6 sm:py-20 lg:px-10 lg:py-24" {...sectionReveal}>
-          <SectionNum n="04" label="History" />
+          <SectionNum n="03" label="History" />
           <h2
             id="hp-history-title"
             className="max-w-3xl font-display text-3xl font-medium leading-tight tracking-tight text-neutral-50 sm:text-4xl lg:text-[2.75rem]"
@@ -436,7 +354,7 @@ export function HomepageFullPageSections() {
         </motion.div>
       </section>
 
-      {/* 05 — Backspace */}
+      {/* 04 — Backspace */}
       <section
         className="relative flex min-h-screen flex-col justify-center overflow-hidden border-b border-white/[0.06] md:min-h-[100dvh]"
         aria-labelledby="hp-backspace-title"
@@ -445,11 +363,11 @@ export function HomepageFullPageSections() {
           className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none font-display text-[clamp(8rem,28vw,18rem)] font-semibold leading-none text-white/[0.04]"
           aria-hidden
         >
-          05
+          04
         </span>
 
         <motion.div className="relative z-10 mx-auto w-full max-w-content px-4 py-16 sm:px-6 sm:py-20 lg:px-10 lg:py-24" {...sectionReveal}>
-          <SectionNum n="05" label="Backspace" />
+          <SectionNum n="04" label="Backspace" />
           <h2
             id="hp-backspace-title"
             className="font-display text-[clamp(2.5rem,6vw,4.5rem)] font-semibold leading-none tracking-tight text-neutral-50"
