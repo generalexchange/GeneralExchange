@@ -43,9 +43,6 @@ export const InstitutionalNavbar: React.FC<InstitutionalNavbarProps> = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
 
-  const navLink =
-    'text-xs sm:text-[13px] font-medium tracking-wide text-neutral-400 hover:text-tan transition-colors whitespace-nowrap';
-
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 border-b border-tan/25 bg-charcoal/92 backdrop-blur-xl ${
@@ -78,30 +75,17 @@ export const InstitutionalNavbar: React.FC<InstitutionalNavbarProps> = ({
             </div>
           )}
 
-          <div className="flex items-center gap-2 sm:gap-5 lg:gap-8 min-w-0">
-            <div className="flex items-center gap-3 sm:gap-5 lg:gap-7 overflow-x-auto sm:overflow-visible scrollbar-hide max-w-[58vw] sm:max-w-none pr-1">
-              <Link href="/features" className={navLink}>
-                Trading tools
-              </Link>
-              <Link href="/pricing" className={navLink}>
-                Compute tokens
-              </Link>
-              <Link href="/bridge-observer" className={navLink}>
-                Bridge Observer
-              </Link>
-            </div>
-            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-              <Link
-                href="/login"
-                className={`inline-flex items-center justify-center px-4 sm:px-5 py-2 rounded-sm text-[13px] font-semibold tracking-wide transition-all duration-300 border ${
-                  isActive('/login')
-                    ? 'bg-tan border-tan text-charcoal'
-                    : 'border-white/[0.12] text-neutral-200 bg-white/[0.03] hover:bg-institutional-green/20 hover:border-institutional-green/45'
-                }`}
-              >
-                Sign in
-              </Link>
-            </div>
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+            <Link
+              href="/login"
+              className={`inline-flex items-center justify-center rounded-sm border px-4 py-2 text-[13px] font-semibold tracking-wide transition-all duration-300 sm:px-5 ${
+                isActive('/login')
+                  ? 'border-tan bg-tan text-charcoal'
+                  : 'border-white/[0.12] bg-white/[0.03] text-neutral-200 hover:border-institutional-green/45 hover:bg-institutional-green/20'
+              }`}
+            >
+              Sign in
+            </Link>
           </div>
         </div>
       </div>

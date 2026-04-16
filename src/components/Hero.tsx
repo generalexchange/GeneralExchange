@@ -23,7 +23,7 @@ const fade = {
 
 export const Hero: React.FC = () => {
   return (
-    <section className="relative overflow-hidden border-b border-white/[0.05] min-h-[min(92vh,880px)] flex flex-col">
+    <section className="relative flex min-h-[min(85vh,800px)] flex-col overflow-hidden border-b border-white/[0.05]">
       <div
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_85%_70%_at_50%_-15%,rgba(46,90,58,0.12),transparent_58%)]"
         aria-hidden
@@ -34,16 +34,10 @@ export const Hero: React.FC = () => {
       />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:72px_72px] opacity-40" />
 
-      <div className="relative max-w-content mx-auto px-4 sm:px-6 lg:px-10 py-20 sm:py-28 lg:py-32 flex-1 flex flex-col justify-center w-full">
-        <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-14 lg:gap-20 items-center w-full">
-          <motion.div className="space-y-8 lg:space-y-10" {...fade}>
-            <div className="inline-flex items-center gap-2 rounded-sm border border-tan/25 bg-white/[0.03] px-4 py-2 backdrop-blur-sm">
-              <span className="text-[11px] sm:text-xs font-semibold tracking-[0.14em] uppercase text-tan">
-                General.Exchange · Lubbock.Cloud · AMD
-              </span>
-            </div>
-
-            <h1 className="font-display text-[2.25rem] sm:text-5xl lg:text-[3.25rem] xl:text-[3.5rem] leading-[1.06] font-medium text-neutral-50 tracking-[-0.02em]">
+      <div className="relative mx-auto flex w-full max-w-content flex-1 flex-col justify-center px-4 py-12 sm:px-6 sm:py-16 lg:px-10 lg:py-20">
+        <div className="grid w-full items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+          <motion.div className="space-y-6 lg:space-y-8" {...fade}>
+            <h1 className="font-display text-[2.25rem] sm:text-5xl lg:text-[3.25rem] xl:text-[3.5rem] leading-[1.06] font-medium tracking-[-0.02em] text-neutral-50">
               Institutional Risk &amp; Execution on Tokenized Compute
             </h1>
 

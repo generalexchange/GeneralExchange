@@ -50,7 +50,7 @@ export const TradeEngine: React.FC = () => {
     <div className="min-h-screen bg-charcoal font-sans text-neutral-100 antialiased selection:bg-tan/20">
       <Navbar showSearch={false} />
 
-      <div className="pt-14 sm:pt-[3.75rem]">
+      <div className="pt-12 sm:pt-14">
         <section
           className="relative overflow-hidden border-b border-white/[0.06] md:min-h-[min(100dvh,900px)]"
           aria-labelledby="trade-engine-title"
@@ -66,7 +66,7 @@ export const TradeEngine: React.FC = () => {
             />
           </div>
 
-          <div className="relative z-10 mx-auto flex w-full max-w-content flex-col px-4 py-20 sm:px-6 sm:py-24 lg:px-10 lg:py-28">
+          <div className="relative z-10 mx-auto flex w-full max-w-content flex-col px-4 py-12 sm:px-6 sm:py-16 lg:px-10 lg:py-20">
             <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-[1fr_auto] lg:gap-16 xl:gap-24">
               <div className="min-w-0 max-w-2xl lg:max-w-none lg:pr-8">
                 <div className="mb-5 h-px w-12 bg-tan/50" aria-hidden />

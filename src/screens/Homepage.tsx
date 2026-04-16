@@ -14,7 +14,7 @@ export const Homepage: React.FC = () => {
     <div className="min-h-screen bg-charcoal font-sans text-neutral-100 antialiased selection:bg-tan/20">
       <Navbar showSearch={false} />
 
-      <div className="pt-14 sm:pt-[3.75rem]">
+      <div className="pt-12 sm:pt-14">
         <HomepageFullPageSections />
       </div>
 
