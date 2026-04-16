@@ -23,7 +23,7 @@ const fade = {
 
 export const Hero: React.FC = () => {
   return (
-    <section className="relative flex min-h-[min(85vh,800px)] flex-col overflow-hidden border-b border-white/[0.05] pb-24 sm:pb-32 lg:pb-44">
+    <section className="relative flex min-h-[calc(100dvh-3rem)] flex-col overflow-hidden border-b border-white/[0.05] pb-24 sm:min-h-[calc(100dvh-3.5rem)] sm:pb-32 lg:pb-44">
       <div
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_85%_70%_at_50%_-15%,rgba(46,90,58,0.12),transparent_58%)]"
         aria-hidden
@@ -49,7 +49,7 @@ export const Hero: React.FC = () => {
             <div className="flex justify-center pt-2 lg:justify-start">
               <Link
                 href="/trade-engine"
-                className="inline-flex items-center justify-center px-8 py-3.5 bg-tan text-charcoal text-sm font-semibold tracking-wide rounded-sm hover:bg-tan-muted transition-all duration-300 shadow-[0_12px_40px_-12px_rgba(210,180,140,0.35)]"
+                className="inline-flex items-center justify-center px-8 py-3.5 bg-tan text-charcoal text-sm font-semibold tracking-wide rounded-lg hover:bg-tan-muted transition-all duration-300 shadow-[0_12px_40px_-12px_rgba(210,180,140,0.35)]"
               >
                 TradeEngine
               </Link>
@@ -62,10 +62,10 @@ export const Hero: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.08, ease: fadeEase }}
           >
-            <div className="relative rounded-sm border border-white/[0.08] bg-dark-gray/80 backdrop-blur-xl shadow-[0_32px_64px_-28px_rgba(0,0,0,0.65)] overflow-hidden">
+            <div className="relative rounded-lg border border-white/[0.08] bg-dark-gray/80 backdrop-blur-xl shadow-[0_32px_64px_-28px_rgba(0,0,0,0.65)] overflow-hidden">
               <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
                 <span className="text-[10px] font-semibold tracking-[0.2em] text-neutral-500 uppercase">Live book</span>
-                <span className="text-[10px] text-institutional-green font-mono tabular-nums px-2 py-0.5 rounded-sm bg-institutional-green/15 border border-institutional-green/25">
+                <span className="text-[10px] text-institutional-green font-mono tabular-nums px-2 py-0.5 rounded-lg bg-institutional-green/15 border border-institutional-green/25">
                   ACTIVE
                 </span>
               </div>
@@ -77,7 +77,7 @@ export const Hero: React.FC = () => {
                     return (
                       <div
                         key={symbol}
-                        className="flex items-center justify-between py-3.5 px-4 rounded-sm bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.05] transition-all duration-300"
+                        className="flex items-center justify-between py-3.5 px-4 rounded-lg bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.05] transition-all duration-300"
                       >
                         <div className="flex items-center gap-3">
                           <span
@@ -101,7 +101,7 @@ export const Hero: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="hidden sm:block absolute -right-2 top-[18%] w-[min(100%,200px)] p-4 rounded-sm border border-tan/20 bg-dark-gray/95 backdrop-blur-md shadow-lg shadow-black/30">
+            <div className="hidden sm:block absolute -right-2 top-[18%] w-[min(100%,200px)] p-4 rounded-lg border border-tan/20 bg-dark-gray/95 backdrop-blur-md shadow-lg shadow-black/30">
               <div className="flex items-center gap-2 mb-2">
                 <TrendingUp className="w-3.5 h-3.5 text-tan" strokeWidth={1.5} />
                 <span className="text-[10px] text-neutral-500 uppercase tracking-wider">Simulation leg</span>
@@ -110,7 +110,7 @@ export const Hero: React.FC = () => {
               <p className="text-[10px] text-neutral-600 mt-1">Convergence 99.2%</p>
               <p className="text-sm font-semibold text-tan mt-2 tabular-nums">−VaR 14bp</p>
             </div>
-            <div className="hidden sm:block absolute -left-2 bottom-[22%] w-[min(100%,200px)] p-4 rounded-sm border border-institutional-green/25 bg-dark-gray/95 backdrop-blur-md shadow-lg shadow-black/30">
+            <div className="hidden sm:block absolute -left-2 bottom-[22%] w-[min(100%,200px)] p-4 rounded-lg border border-institutional-green/25 bg-dark-gray/95 backdrop-blur-md shadow-lg shadow-black/30">
               <div className="flex items-center gap-2 mb-2">
                 <Brain className="w-3.5 h-3.5 text-institutional-green/90" strokeWidth={1.5} />
                 <span className="text-[10px] text-neutral-500 uppercase tracking-wider">Model edge</span>

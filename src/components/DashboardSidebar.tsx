@@ -11,7 +11,7 @@ import { LayoutDashboard, Shield, Workflow } from 'lucide-react';
 import { useDashboardView } from '@/hooks/useDashboardView';
 
 function navLinkClass(active: boolean): string {
-  return `flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm transition-colors border ${
+  return `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors border ${
     active
       ? 'bg-institutional-green/20 text-tan border-institutional-green/35'
       : 'text-neutral-400 hover:text-neutral-100 hover:bg-white/[0.04] border-transparent'

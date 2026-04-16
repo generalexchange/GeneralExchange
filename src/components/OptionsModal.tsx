@@ -344,7 +344,7 @@ export const OptionsModal: React.FC<OptionsModalProps> = ({ contract, isOpen, on
                     row.map((value, colIndex) => (
                       <div
                         key={`${rowIndex}-${colIndex}`}
-                        className="aspect-square rounded-sm flex items-center justify-center text-xs font-bold"
+                        className="aspect-square rounded-lg flex items-center justify-center text-xs font-bold"
                         style={{ backgroundColor: getHeatMapColor(value) }}
                       >
                         <span className="text-white drop-shadow-sm">

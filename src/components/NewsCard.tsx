@@ -27,11 +27,11 @@ export const NewsCard: React.FC<NewsCardProps> = ({ article, variant = 'default'
 
   if (variant === 'insights') {
     return (
-      <article className="group rounded-sm border border-white/[0.08] bg-dark-gray/40 hover:border-tan/30 hover:bg-dark-gray/70 transition-all duration-300 overflow-hidden">
+      <article className="group rounded-lg border border-white/[0.08] bg-dark-gray/40 hover:border-tan/30 hover:bg-dark-gray/70 transition-all duration-300 overflow-hidden">
         <div className="h-1.5 bg-gradient-to-r from-institutional-green via-tan to-institutional-green/60 opacity-80" aria-hidden />
         <div className="p-6 sm:p-7">
           <div className="flex flex-wrap items-center gap-3 mb-4">
-            <span className="inline-flex items-center rounded-sm border border-institutional-green/35 bg-institutional-green/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-tan">
+            <span className="inline-flex items-center rounded-lg border border-institutional-green/35 bg-institutional-green/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-tan">
               {article.category}
             </span>
             <span className="text-[11px] text-neutral-500 tabular-nums">{formatDate(article.publishedAt)}</span>
@@ -53,7 +53,7 @@ export const NewsCard: React.FC<NewsCardProps> = ({ article, variant = 'default'
   }
 
   return (
-    <article className="rounded-sm shadow-sm hover:shadow-[0_24px_48px_-20px_rgba(46,90,58,0.2)] transition-all duration-300 overflow-hidden group cursor-pointer border border-white/[0.08] bg-dark-gray hover:border-institutional-green/40">
+    <article className="rounded-lg shadow-sm hover:shadow-[0_24px_48px_-20px_rgba(46,90,58,0.2)] transition-all duration-300 overflow-hidden group cursor-pointer border border-white/[0.08] bg-dark-gray hover:border-institutional-green/40">
       <div className="relative h-44 overflow-hidden">
         <Image
           src={article.imageUrl}
@@ -63,7 +63,7 @@ export const NewsCard: React.FC<NewsCardProps> = ({ article, variant = 'default'
           sizes="(max-width: 768px) 100vw, 400px"
         />
         <div className="absolute top-3 left-3">
-          <span className="px-2.5 py-1 bg-charcoal/85 border border-tan/30 text-tan text-[10px] font-semibold uppercase tracking-wider rounded-sm">
+          <span className="px-2.5 py-1 bg-charcoal/85 border border-tan/30 text-tan text-[10px] font-semibold uppercase tracking-wider rounded-lg">
             {article.category}
           </span>
         </div>

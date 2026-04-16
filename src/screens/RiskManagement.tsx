@@ -32,7 +32,7 @@ export const RiskManagement: React.FC = () => {
             </p>
             <Link
               href="/dashboard?tab=risk"
-              className="mt-8 inline-flex items-center justify-center rounded-sm border border-white/[0.18] bg-white/[0.04] px-8 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-neutral-100 transition-colors hover:border-tan/45 hover:bg-white/[0.07]"
+              className="mt-8 inline-flex items-center justify-center rounded-lg border border-white/[0.18] bg-white/[0.04] px-8 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-neutral-100 transition-colors hover:border-tan/45 hover:bg-white/[0.07]"
             >
               Open live risk workspace
             </Link>
@@ -66,7 +66,7 @@ export const RiskManagement: React.FC = () => {
             </ul>
             <Link
               href="/features#feature-risk-management"
-              className="mt-8 inline-flex items-center justify-center rounded-sm bg-tan px-6 py-3 text-sm font-semibold text-charcoal transition-colors hover:bg-tan-muted"
+              className="mt-8 inline-flex items-center justify-center rounded-lg bg-tan px-6 py-3 text-sm font-semibold text-charcoal transition-colors hover:bg-tan-muted"
             >
               View risk in trading tools
             </Link>
@@ -89,7 +89,7 @@ export const RiskManagement: React.FC = () => {
             </p>
             <Link
               href="/pricing"
-              className="mt-8 inline-flex items-center justify-center rounded-sm border border-institutional-green/45 bg-institutional-green/10 px-6 py-3 text-sm font-semibold text-neutral-100 transition-colors hover:border-institutional-green hover:bg-institutional-green/20"
+              className="mt-8 inline-flex items-center justify-center rounded-lg border border-institutional-green/45 bg-institutional-green/10 px-6 py-3 text-sm font-semibold text-neutral-100 transition-colors hover:border-institutional-green hover:bg-institutional-green/20"
             >
               Compute tokens &amp; plans
             </Link>

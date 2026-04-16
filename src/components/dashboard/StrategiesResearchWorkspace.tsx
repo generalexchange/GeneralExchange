@@ -129,7 +129,7 @@ export function StrategiesResearchWorkspace({
             <button
               type="button"
               onClick={newDataset}
-              className="shrink-0 rounded-sm border border-institutional-green/45 bg-institutional-green/20 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-tan hover:bg-institutional-green/30 transition-colors sm:px-2.5 sm:py-1.5 sm:text-[11px]"
+              className="shrink-0 rounded-lg border border-institutional-green/45 bg-institutional-green/20 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-tan hover:bg-institutional-green/30 transition-colors sm:px-2.5 sm:py-1.5 sm:text-[11px]"
             >
               <span className="inline-flex items-center gap-1">
                 <Plus className="h-3 w-3 sm:h-3.5 sm:w-3.5" strokeWidth={2} aria-hidden />
@@ -183,7 +183,7 @@ export function StrategiesResearchWorkspace({
                     <button
                       type="button"
                       onClick={() => runDataset(row.id)}
-                      className="shrink-0 rounded-sm border border-white/[0.1] bg-white/[0.04] px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-zinc-300 hover:border-institutional-green/40 hover:bg-institutional-green/15 hover:text-tan transition-colors sm:px-2.5 sm:py-1.5 sm:text-[11px]"
+                      className="shrink-0 rounded-lg border border-white/[0.1] bg-white/[0.04] px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-zinc-300 hover:border-institutional-green/40 hover:bg-institutional-green/15 hover:text-tan transition-colors sm:px-2.5 sm:py-1.5 sm:text-[11px]"
                     >
                       Run
                     </button>

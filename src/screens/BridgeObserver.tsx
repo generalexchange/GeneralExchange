@@ -14,7 +14,7 @@ export const BridgeObserver: React.FC = () => {
         <section className="border-b border-white/[0.06] bg-charcoal">
           <div className="max-w-content mx-auto px-4 sm:px-6 lg:px-10 py-16 sm:py-20 lg:py-24">
             <div className="max-w-3xl space-y-6">
-              <div className="inline-flex items-center gap-2 rounded-sm border border-tan/25 bg-white/[0.03] px-4 py-2">
+              <div className="inline-flex items-center gap-2 rounded-lg border border-tan/25 bg-white/[0.03] px-4 py-2">
                 <Newspaper className="w-4 h-4 text-tan" strokeWidth={1.5} aria-hidden />
                 <span className="font-display text-[11px] font-medium tracking-[0.14em] uppercase text-neutral-400">
                   Bridge Observer
@@ -48,7 +48,7 @@ export const BridgeObserver: React.FC = () => {
               </div>
 
               <aside className="lg:sticky lg:top-24 h-fit space-y-6" aria-label="Trending signals">
-                <div className="rounded-sm border border-tan/20 bg-charcoal/80 p-6">
+                <div className="rounded-lg border border-tan/20 bg-charcoal/80 p-6">
                   <h3 className="font-display text-lg text-neutral-100 mb-1">Trending signals</h3>
                   <p className="text-xs text-neutral-500 uppercase tracking-wider mb-6">Live desk telemetry · mock</p>
                   <ul className="space-y-4">
@@ -76,7 +76,7 @@ export const BridgeObserver: React.FC = () => {
                     ))}
                   </ul>
                 </div>
-                <div className="rounded-sm border border-white/[0.08] bg-charcoal/60 p-6">
+                <div className="rounded-lg border border-white/[0.08] bg-charcoal/60 p-6">
                   <p className="text-sm text-neutral-400 leading-relaxed mb-4">
                     Bridge Observer is the market intelligence surface for General Exchange. Wire your external feed when
                     ready; this page ships with curated copy and layout.
@@ -86,14 +86,14 @@ export const BridgeObserver: React.FC = () => {
                       href="https://bridgeobserver.com"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-sm bg-tan text-charcoal text-sm font-semibold hover:bg-tan-muted transition-colors"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-tan text-charcoal text-sm font-semibold hover:bg-tan-muted transition-colors"
                     >
                       Open bridgeobserver.com
                       <ExternalLink className="w-4 h-4" strokeWidth={1.5} />
                     </a>
                     <Link
                       href="/request-access"
-                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-sm border border-white/[0.12] text-neutral-200 text-sm font-semibold hover:bg-white/[0.05] transition-colors"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg border border-white/[0.12] text-neutral-200 text-sm font-semibold hover:bg-white/[0.05] transition-colors"
                     >
                       Request platform access
                       <ChevronRight className="w-4 h-4" strokeWidth={1.5} />

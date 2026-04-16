@@ -97,13 +97,13 @@ export const Pricing: React.FC = () => {
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="/login"
-                className="inline-flex items-center justify-center px-7 py-3.5 bg-tan text-charcoal text-sm font-semibold rounded-sm hover:bg-tan-muted transition-colors"
+                className="inline-flex items-center justify-center px-7 py-3.5 bg-tan text-charcoal text-sm font-semibold rounded-lg hover:bg-tan-muted transition-colors"
               >
                 Launch Platform
               </Link>
               <Link
                 href="/features"
-                className="inline-flex items-center justify-center px-7 py-3.5 border border-institutional-green/45 text-sm font-semibold rounded-sm text-neutral-200 hover:bg-institutional-green/15 transition-colors"
+                className="inline-flex items-center justify-center px-7 py-3.5 border border-institutional-green/45 text-sm font-semibold rounded-lg text-neutral-200 hover:bg-institutional-green/15 transition-colors"
               >
                 Trading tools
               </Link>
@@ -131,7 +131,7 @@ export const Pricing: React.FC = () => {
               Institutional table layout—alternating rows for scanability. Figures are representative; final SKUs follow
               Lubbock.cloud issuance.
             </p>
-            <div className="overflow-x-auto rounded-sm border border-white/[0.08]">
+            <div className="overflow-x-auto rounded-lg border border-white/[0.08]">
               <table className="w-full text-left text-sm min-w-[640px]">
                 <thead>
                   <tr className="bg-charcoal border-b border-white/[0.08]">
@@ -174,11 +174,11 @@ export const Pricing: React.FC = () => {
               <p className="text-neutral-400 max-w-2xl mx-auto">
                 Platform entitlements on top of tokenized compute. All plans include a 14-day trial where noted.
               </p>
-              <div className="inline-flex flex-wrap items-center justify-center gap-2 sm:gap-4 p-2 mt-8 bg-dark-gray rounded-sm border border-white/10">
+              <div className="inline-flex flex-wrap items-center justify-center gap-2 sm:gap-4 p-2 mt-8 bg-dark-gray rounded-lg border border-white/10">
                 <button
                   type="button"
                   onClick={() => setBillingCycle('monthly')}
-                  className={`px-4 sm:px-6 py-2 rounded-sm text-sm font-semibold transition-colors ${
+                  className={`px-4 sm:px-6 py-2 rounded-lg text-sm font-semibold transition-colors ${
                     billingCycle === 'monthly'
                       ? 'bg-institutional-green text-white'
                       : 'text-neutral-400 hover:text-neutral-100'
@@ -189,14 +189,14 @@ export const Pricing: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setBillingCycle('annual')}
-                  className={`px-4 sm:px-6 py-2 rounded-sm text-sm font-semibold transition-colors ${
+                  className={`px-4 sm:px-6 py-2 rounded-lg text-sm font-semibold transition-colors ${
                     billingCycle === 'annual'
                       ? 'bg-institutional-green text-white'
                       : 'text-neutral-400 hover:text-neutral-100'
                   }`}
                 >
                   Annual
-                  <span className="ml-2 px-2 py-0.5 bg-tan/20 text-tan text-xs rounded-sm border border-tan/30">
+                  <span className="ml-2 px-2 py-0.5 bg-tan/20 text-tan text-xs rounded-lg border border-tan/30">
                     Save ~20%
                   </span>
                 </button>
@@ -209,13 +209,13 @@ export const Pricing: React.FC = () => {
                 return (
                   <div
                     key={plan.name}
-                    className={`relative rounded-sm border p-8 ${
+                    className={`relative rounded-lg border p-8 ${
                       plan.popular ? 'border-tan/40 shadow-[0_0_40px_-12px_rgba(210,180,140,0.2)]' : 'border-white/10'
                     } bg-dark-gray/60`}
                   >
                     {plan.popular && (
                       <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                        <span className="px-3 py-1 bg-tan text-charcoal text-xs font-semibold uppercase tracking-wider rounded-sm">
+                        <span className="px-3 py-1 bg-tan text-charcoal text-xs font-semibold uppercase tracking-wider rounded-lg">
                           Recommended
                         </span>
                       </div>
@@ -235,7 +235,7 @@ export const Pricing: React.FC = () => {
                     </div>
                     <Link
                       href="/login"
-                      className={`block w-full py-3 rounded-sm font-semibold text-center transition-colors mb-8 ${
+                      className={`block w-full py-3 rounded-lg font-semibold text-center transition-colors mb-8 ${
                         plan.popular
                           ? 'bg-tan text-charcoal hover:bg-tan-muted'
                           : 'bg-white/5 hover:bg-white/10 text-white border border-white/10'
@@ -262,13 +262,13 @@ export const Pricing: React.FC = () => {
               })}
             </div>
 
-            <div className="mt-16 rounded-sm border border-white/10 bg-dark-gray/80 p-6 sm:p-8">
+            <div className="mt-16 rounded-lg border border-white/10 bg-dark-gray/80 p-6 sm:p-8">
               <h3 className="font-display text-xl text-neutral-50 mb-4">Settlement networks</h3>
-              <div className="mb-4 inline-flex rounded-sm border border-white/10 p-1">
+              <div className="mb-4 inline-flex rounded-lg border border-white/10 p-1">
                 <button
                   type="button"
                   onClick={() => setNetworkSelection('solana')}
-                  className={`px-4 py-2 text-sm rounded-sm transition-colors ${
+                  className={`px-4 py-2 text-sm rounded-lg transition-colors ${
                     networkSelection === 'solana'
                       ? 'bg-institutional-green/25 text-tan border border-institutional-green/40'
                       : 'text-neutral-400 hover:text-white'
@@ -279,7 +279,7 @@ export const Pricing: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setNetworkSelection('polygon')}
-                  className={`px-4 py-2 text-sm rounded-sm transition-colors ${
+                  className={`px-4 py-2 text-sm rounded-lg transition-colors ${
                     networkSelection === 'polygon'
                       ? 'bg-institutional-green/25 text-tan border border-institutional-green/40'
                       : 'text-neutral-400 hover:text-white'
@@ -300,7 +300,7 @@ export const Pricing: React.FC = () => {
             <h2 className="font-display text-2xl text-neutral-50 mb-4">Questions?</h2>
             <Link
               href="/help-center"
-              className="inline-flex items-center justify-center px-8 py-3.5 border border-tan/40 text-tan font-semibold rounded-sm hover:bg-tan/10 transition-colors"
+              className="inline-flex items-center justify-center px-8 py-3.5 border border-tan/40 text-tan font-semibold rounded-lg hover:bg-tan/10 transition-colors"
             >
               Contact support
             </Link>

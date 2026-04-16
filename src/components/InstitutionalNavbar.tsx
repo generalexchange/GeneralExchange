@@ -69,7 +69,7 @@ export const InstitutionalNavbar: React.FC<InstitutionalNavbarProps> = ({
                   placeholder="Search…"
                   value={searchQuery}
                   onChange={(e) => onSearchChange(e.target.value)}
-                  className="block w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-1.5 sm:py-2 border border-white/[0.08] rounded-sm bg-white/[0.04] text-neutral-100 placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-institutional-green/35 focus:border-tan/30 transition-all text-xs sm:text-sm"
+                  className="block w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-1.5 sm:py-2 border border-white/[0.08] rounded-lg bg-white/[0.04] text-neutral-100 placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-institutional-green/35 focus:border-tan/30 transition-all text-xs sm:text-sm"
                 />
               </div>
             </div>
@@ -78,7 +78,7 @@ export const InstitutionalNavbar: React.FC<InstitutionalNavbarProps> = ({
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             <Link
               href="/login"
-              className={`inline-flex items-center justify-center rounded-sm border px-4 py-2 text-[13px] font-semibold tracking-wide transition-all duration-300 sm:px-5 ${
+              className={`inline-flex items-center justify-center rounded-lg border px-4 py-2 text-[13px] font-semibold tracking-wide transition-all duration-300 sm:px-5 ${
                 isActive('/login')
                   ? 'border-tan bg-tan text-charcoal'
                   : 'border-white/[0.12] bg-white/[0.03] text-neutral-200 hover:border-institutional-green/45 hover:bg-institutional-green/20'

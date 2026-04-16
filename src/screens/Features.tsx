@@ -105,14 +105,14 @@ export const Features: React.FC = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/login"
-                className="inline-flex items-center justify-center px-8 py-4 bg-tan text-charcoal font-semibold rounded-sm transition-all duration-200 shadow-lg shadow-tan/20 hover:bg-tan-muted group"
+                className="inline-flex items-center justify-center px-8 py-4 bg-tan text-charcoal font-semibold rounded-lg transition-all duration-200 shadow-lg shadow-tan/20 hover:bg-tan-muted group"
               >
                 Launch Platform
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
               </Link>
               <Link
                 href="/pricing"
-                className="inline-flex items-center justify-center px-8 py-4 bg-white/[0.04] hover:bg-white/[0.07] text-neutral-100 font-semibold rounded-sm border border-white/10 transition-all duration-200"
+                className="inline-flex items-center justify-center px-8 py-4 bg-white/[0.04] hover:bg-white/[0.07] text-neutral-100 font-semibold rounded-lg border border-white/10 transition-all duration-200"
               >
                 Compute tokens
               </Link>
@@ -550,7 +550,7 @@ export const Features: React.FC = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/request-access"
-              className="inline-flex items-center justify-center px-8 py-4 bg-institutional-green hover:bg-institutional-green-muted text-white font-semibold rounded-sm transition-all duration-200 shadow-lg shadow-institutional-green/25 hover:shadow-institutional-green/35 group"
+              className="inline-flex items-center justify-center px-8 py-4 bg-institutional-green hover:bg-institutional-green-muted text-white font-semibold rounded-lg transition-all duration-200 shadow-lg shadow-institutional-green/25 hover:shadow-institutional-green/35 group"
             >
               Join Waitlist
               <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />

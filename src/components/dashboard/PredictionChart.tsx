@@ -70,7 +70,7 @@ export const PredictionChart: React.FC<PredictionChartProps> = ({ data, tradeLev
             Predicted
           </span>
           <span className="flex items-center gap-2 text-zinc-500">
-            <span className="h-2 w-2 rounded-sm bg-zinc-600 border border-zinc-500/50" />
+            <span className="h-2 w-2 rounded-lg bg-zinc-600 border border-zinc-500/50" />
             Confidence
           </span>
           {tradeLevels && (

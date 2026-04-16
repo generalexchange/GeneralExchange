@@ -226,16 +226,16 @@ export function RiskDashboardTab() {
           </div>
           <div className="flex flex-wrap gap-4 mt-4 text-[11px] text-zinc-500">
             <span className="flex items-center gap-2">
-              <span className="h-2 w-4 rounded-sm bg-zinc-300" /> Median
+              <span className="h-2 w-4 rounded-lg bg-zinc-300" /> Median
             </span>
             <span className="flex items-center gap-2">
-              <span className="h-2 w-4 rounded-sm bg-emerald-400/70" /> Best
+              <span className="h-2 w-4 rounded-lg bg-emerald-400/70" /> Best
             </span>
             <span className="flex items-center gap-2">
-              <span className="h-2 w-4 rounded-sm bg-rose-400/70" /> Worst
+              <span className="h-2 w-4 rounded-lg bg-rose-400/70" /> Worst
             </span>
             <span className="flex items-center gap-2">
-              <span className="h-2 w-4 rounded-sm bg-emerald-500/20 border border-emerald-500/30" /> 5–95% band
+              <span className="h-2 w-4 rounded-lg bg-emerald-500/20 border border-emerald-500/30" /> 5–95% band
             </span>
           </div>
         </section>

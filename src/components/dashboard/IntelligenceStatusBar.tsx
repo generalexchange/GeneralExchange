@@ -171,7 +171,7 @@ function IntelligenceModal({
                       <Link
                         href="/dashboard?tab=strategies"
                         onClick={onClose}
-                        className="text-[11px] font-semibold uppercase tracking-wide text-institutional-green hover:text-tan border border-institutional-green/40 rounded-sm px-3 py-2 transition-colors"
+                        className="text-[11px] font-semibold uppercase tracking-wide text-institutional-green hover:text-tan border border-institutional-green/40 rounded-lg px-3 py-2 transition-colors"
                       >
                         Research stack
                       </Link>
@@ -251,9 +251,9 @@ function IntelligenceModal({
                     <div>
                       <p className="text-[10px] text-zinc-600 uppercase tracking-wide mb-1">Realized (trail)</p>
                       <p className="text-xl font-semibold tabular-nums text-white">{ribbon.rvPct.toFixed(1)}%</p>
-                      <div className="mt-2 h-28 w-full rounded-sm bg-zinc-900/80 overflow-hidden flex items-end">
+                      <div className="mt-2 h-28 w-full rounded-lg bg-zinc-900/80 overflow-hidden flex items-end">
                         <div
-                          className="w-full rounded-sm bg-gradient-to-t from-amber-900/50 to-amber-400/70"
+                          className="w-full rounded-lg bg-gradient-to-t from-amber-900/50 to-amber-400/70"
                           style={{ height: `${Math.min(100, (ribbon.rvPct / volMax) * 100)}%` }}
                         />
                       </div>
@@ -261,9 +261,9 @@ function IntelligenceModal({
                     <div>
                       <p className="text-[10px] text-zinc-600 uppercase tracking-wide mb-1">Implied (ATM)</p>
                       <p className="text-xl font-semibold tabular-nums text-zinc-200">{ribbon.ivPct.toFixed(1)}%</p>
-                      <div className="mt-2 h-28 w-full rounded-sm bg-zinc-900/80 overflow-hidden flex items-end">
+                      <div className="mt-2 h-28 w-full rounded-lg bg-zinc-900/80 overflow-hidden flex items-end">
                         <div
-                          className="w-full rounded-sm bg-gradient-to-t from-zinc-700 to-zinc-400/85"
+                          className="w-full rounded-lg bg-gradient-to-t from-zinc-700 to-zinc-400/85"
                           style={{ height: `${Math.min(100, (ribbon.ivPct / volMax) * 100)}%` }}
                         />
                       </div>

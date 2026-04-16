@@ -155,7 +155,7 @@ export const MarketChart: React.FC<MarketChartProps> = ({ data: baseData, onOpen
                 Equity
               </span>
               <span className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-sm bg-zinc-600" />
+                <span className="h-2 w-2 rounded-lg bg-zinc-600" />
                 Volume
               </span>
             </div>

@@ -39,7 +39,7 @@ export function IllustrationFrame({
   const bg = theme === 'light' ? 'rgba(245, 242, 235, 0.65)' : 'rgba(12, 12, 12, 0.55)';
   return (
     <figure
-      className={`rounded-sm border overflow-hidden ${className}`}
+      className={`rounded-lg border overflow-hidden ${className}`}
       style={{ borderColor: border, backgroundColor: bg }}
     >
       <figcaption className="sr-only">{title}</figcaption>

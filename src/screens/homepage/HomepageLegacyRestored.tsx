@@ -55,7 +55,7 @@ function PillarCardTile({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-40px' }}
       transition={{ duration: 0.45, delay: index * 0.04, ease: fadeEase }}
-      className={`flex h-full flex-col rounded-sm border p-5 transition-all duration-300 hover:border-institutional-green/35 sm:p-6 ${
+      className={`flex h-full flex-col rounded-lg border p-5 transition-all duration-300 hover:border-institutional-green/35 sm:p-6 ${
         isLight ? 'shadow-[0_2px_12px_rgba(0,0,0,0.06)]' : 'border-white/[0.08] bg-charcoal/80 hover:bg-charcoal'
       }`}
       style={
@@ -193,7 +193,7 @@ export function HomepagePositioningStrip() {
               Integration plane
             </p>
           </div>
-          <div className="rounded-sm border p-4 sm:p-5" style={{ borderColor: BAND.border, backgroundColor: BAND.plaque }}>
+          <div className="rounded-lg border p-4 sm:p-5" style={{ borderColor: BAND.border, backgroundColor: BAND.plaque }}>
             <PositioningIntegrationDiagram theme="light" />
           </div>
         </div>
@@ -228,7 +228,7 @@ export function HomepageExecutionLoopRestored() {
           </p>
         </header>
         <div
-          className="mb-6 overflow-x-auto rounded-sm border p-4 sm:p-5"
+          className="mb-6 overflow-x-auto rounded-lg border p-4 sm:p-5"
           style={{ borderColor: BAND.border, backgroundColor: BAND.plaque }}
         >
           <ExecutionLoopIllustration />
@@ -237,11 +237,11 @@ export function HomepageExecutionLoopRestored() {
           {EXECUTION_LOOP_STEPS.map((step) => (
             <li
               key={step.step}
-              className="flex flex-col rounded-sm border p-4 sm:p-5"
+              className="flex flex-col rounded-lg border p-4 sm:p-5"
               style={{ borderColor: BAND.border, backgroundColor: BAND.plaque }}
             >
               <span
-                className="mb-2 inline-block w-fit rounded-sm border px-2 py-1 font-mono text-xs tabular-nums tracking-widest"
+                className="mb-2 inline-block w-fit rounded-lg border px-2 py-1 font-mono text-xs tabular-nums tracking-widest"
                 style={{ borderColor: BAND.wire, color: BAND.text60 }}
               >
                 {step.step}
@@ -277,7 +277,7 @@ export function HomepageBridgeObserverRestored() {
         <div className="flex shrink-0 flex-wrap gap-3">
           <Link
             href="/bridge-observer"
-            className="inline-flex items-center justify-center rounded-sm bg-tan px-6 py-3 text-sm font-semibold text-charcoal transition-colors hover:bg-tan-muted"
+            className="inline-flex items-center justify-center rounded-lg bg-tan px-6 py-3 text-sm font-semibold text-charcoal transition-colors hover:bg-tan-muted"
           >
             Open intelligence feed
           </Link>
@@ -285,7 +285,7 @@ export function HomepageBridgeObserverRestored() {
             href={BRIDGE_OBSERVER_ORIGIN}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center rounded-sm border border-white/[0.12] px-6 py-3 text-sm font-semibold text-neutral-200 transition-colors hover:bg-white/[0.05]"
+            className="inline-flex items-center justify-center rounded-lg border border-white/[0.12] px-6 py-3 text-sm font-semibold text-neutral-200 transition-colors hover:bg-white/[0.05]"
           >
             bridgeobserver.com
           </a>
@@ -300,7 +300,7 @@ export function HomepageTrustCtaRestored() {
     <div className="rounded-xl border border-white/[0.08]" style={{ backgroundColor: BAND.bg00, color: BAND.text, borderColor: BAND.border }}>
       <div className="mx-auto max-w-content px-4 py-10 sm:px-6 sm:py-12 lg:px-10">
         <div
-          className="flex flex-col gap-8 rounded-sm border p-6 shadow-[0_8px_40px_-20px_rgba(46,90,58,0.12)] sm:p-8 lg:flex-row lg:items-center lg:justify-between lg:gap-10"
+          className="flex flex-col gap-8 rounded-lg border p-6 shadow-[0_8px_40px_-20px_rgba(46,90,58,0.12)] sm:p-8 lg:flex-row lg:items-center lg:justify-between lg:gap-10"
           style={{ borderColor: BAND.border, backgroundColor: BAND.plaque }}
         >
           <div className="w-full shrink-0 lg:max-w-[320px]">
@@ -322,13 +322,13 @@ export function HomepageTrustCtaRestored() {
           <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
             <Link
               href="/login"
-              className="inline-flex items-center justify-center rounded-sm border border-institutional-green bg-transparent px-7 py-3.5 text-sm font-semibold text-institutional-green transition-colors hover:bg-institutional-green/10"
+              className="inline-flex items-center justify-center rounded-lg border border-institutional-green bg-transparent px-7 py-3.5 text-sm font-semibold text-institutional-green transition-colors hover:bg-institutional-green/10"
             >
               Access platform
             </Link>
             <Link
               href="/request-access"
-              className="inline-flex items-center justify-center rounded-sm bg-institutional-green px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-institutional-green-muted"
+              className="inline-flex items-center justify-center rounded-lg bg-institutional-green px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-institutional-green-muted"
             >
               Speak with us
             </Link>

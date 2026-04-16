@@ -32,7 +32,7 @@ export const ToolCard: React.FC<ToolCardProps> = ({ title, description, icon: Ic
   );
 
   const className =
-    'group block rounded-sm border border-white/[0.08] bg-gradient-to-b from-white/[0.04] to-transparent p-6 sm:p-8 h-full ' +
+    'group block rounded-lg border border-white/[0.08] bg-gradient-to-b from-white/[0.04] to-transparent p-6 sm:p-8 h-full ' +
     'hover:border-institutional-green/50 hover:bg-institutional-green/[0.06] transition-all duration-300';
 
   return (

@@ -27,11 +27,11 @@ function SectionActions({ children }: { children: React.ReactNode }) {
 }
 
 const btnPrimary =
-  'inline-flex items-center justify-center rounded-sm bg-tan px-6 py-3 text-sm font-semibold text-charcoal transition-colors hover:bg-tan-muted';
+  'inline-flex items-center justify-center rounded-lg bg-tan px-6 py-3 text-sm font-semibold text-charcoal transition-colors hover:bg-tan-muted';
 const btnGhost =
-  'inline-flex items-center justify-center rounded-sm border border-white/[0.14] bg-white/[0.03] px-6 py-3 text-sm font-semibold text-neutral-200 transition-colors hover:bg-white/[0.07]';
+  'inline-flex items-center justify-center rounded-lg border border-white/[0.14] bg-white/[0.03] px-6 py-3 text-sm font-semibold text-neutral-200 transition-colors hover:bg-white/[0.07]';
 const btnGreen =
-  'inline-flex items-center justify-center rounded-sm bg-institutional-green px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-institutional-green-muted';
+  'inline-flex items-center justify-center rounded-lg bg-institutional-green px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-institutional-green-muted';
 
 const easeLux = [0.22, 1, 0.36, 1] as const;
 
@@ -213,7 +213,7 @@ export function HomepageFullPageSections() {
                     </div>
                     <Link
                       href="/dashboard"
-                      className="shrink-0 self-start rounded-sm border border-white/[0.1] bg-transparent px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-zinc-400 transition-colors hover:border-institutional-green/40 hover:bg-institutional-green/10 hover:text-tan sm:self-center"
+                      className="shrink-0 self-start rounded-lg border border-white/[0.1] bg-transparent px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-zinc-400 transition-colors hover:border-institutional-green/40 hover:bg-institutional-green/10 hover:text-tan sm:self-center"
                     >
                       Load into TradeEngine
                     </Link>

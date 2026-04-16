@@ -19,7 +19,7 @@ export const TokenCard: React.FC<TokenCardProps> = ({ token, index = 0 }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-40px' }}
       transition={{ duration: 0.45, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] }}
-      className="rounded-sm border border-white/[0.08] bg-dark-gray/90 p-6 sm:p-8 flex flex-col h-full hover:border-tan/35 hover:shadow-[0_20px_50px_-24px_rgba(46,90,58,0.25)] transition-all duration-300"
+      className="rounded-lg border border-white/[0.08] bg-dark-gray/90 p-6 sm:p-8 flex flex-col h-full hover:border-tan/35 hover:shadow-[0_20px_50px_-24px_rgba(46,90,58,0.25)] transition-all duration-300"
     >
       <div className="flex items-start justify-between gap-4 mb-6">
         <div>

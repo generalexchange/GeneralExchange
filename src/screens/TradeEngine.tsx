@@ -112,7 +112,7 @@ export const TradeEngine: React.FC = () => {
               How tape, risk, compute, routing, and evidence connect—one direction of travel so auditors and desks share the
               same mental model.
             </p>
-            <div className="mt-6 rounded-sm border border-white/[0.1] bg-dark-gray/55 px-3 py-4 backdrop-blur-sm sm:px-5 sm:py-5">
+            <div className="mt-6 rounded-lg border border-white/[0.1] bg-dark-gray/55 px-3 py-4 backdrop-blur-sm sm:px-5 sm:py-5">
               <HeroSystemTopologyIllustration />
             </div>
           </div>
