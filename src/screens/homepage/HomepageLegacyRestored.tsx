@@ -18,12 +18,10 @@ import {
   IllustrationFrame,
   PillarMechanicsIllustration,
   PillarCardMechanicAccent,
-  PositioningIntegrationDiagram,
   ExecutionLoopIllustration,
   BridgeObserverCtaIllustration,
 } from '@/components/homepage/HomepageMechanicsIllustrations';
-
-export const BRIDGE_OBSERVER_ORIGIN = 'https://bridgeobserver.com';
+import { PositioningIntegrationThree } from '@/components/homepage/PositioningIntegrationThree';
 
 const BAND = {
   bg00: '#ECE8E0',
@@ -113,7 +111,7 @@ export function PillarSectionEmbed({ pillar, index }: { pillar: PillarSection; i
                 className={`mb-2 text-xs font-semibold uppercase tracking-[0.16em] ${isLight ? '' : 'text-tan'}`}
                 style={isLight ? { color: BAND.text60 } : undefined}
               >
-                Capability pillar
+                {pillar.id === 'tokenized-compute' ? 'Tokenomics' : 'Capability pillar'}
               </p>
               <h2
                 id={`pillar-heading-${pillar.id}`}
@@ -188,12 +186,9 @@ export function HomepagePositioningStrip() {
               Tokenized accelerator capacity on dedicated GPU paths feeds one deterministic, risk-first loop—from research
               through execution and audit.
             </p>
-            <p className="mt-4 text-xs font-semibold uppercase tracking-[0.14em]" style={{ color: BAND.text60 }}>
-              Integration plane
-            </p>
           </div>
           <div className="rounded-lg border p-4 sm:p-5" style={{ borderColor: BAND.border, backgroundColor: BAND.plaque }}>
-            <PositioningIntegrationDiagram theme="light" />
+            <PositioningIntegrationThree theme="light" />
           </div>
         </div>
       </div>
@@ -264,7 +259,7 @@ export function HomepageBridgeObserverRestored() {
     <div className="rounded-xl border" style={{ backgroundColor: BAND.bg00, borderColor: BAND.border }}>
       <div className="mx-auto max-w-content px-4 py-10 sm:px-6 sm:py-12 lg:px-10">
         <div
-          className="grid gap-8 rounded-lg border p-6 shadow-[0_8px_40px_-20px_rgba(46,90,58,0.12)] sm:gap-10 sm:p-8 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)_auto] lg:items-center lg:gap-12"
+          className="grid gap-8 rounded-lg border p-6 shadow-[0_8px_40px_-20px_rgba(46,90,58,0.12)] sm:gap-10 sm:p-8 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)] lg:items-center lg:gap-12"
           style={{ borderColor: BAND.border, backgroundColor: BAND.plaque }}
         >
           <div
@@ -273,37 +268,16 @@ export function HomepageBridgeObserverRestored() {
           >
             <BridgeObserverCtaIllustration />
           </div>
-          <div className="min-w-0">
+          <div className="flex min-w-0 flex-col items-center gap-5 text-center lg:items-start lg:text-left">
             <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.22em]" style={{ color: BAND.text60 }}>
               Tokenization layer
             </p>
-            <h2 className="mt-3 font-display text-2xl font-medium tracking-tight sm:text-3xl" style={{ color: BAND.text }}>
-              Narrative intelligence, entitled like any other workload
-            </h2>
-            <p className="mt-4 max-w-prose text-sm font-light leading-relaxed sm:text-[15px] sm:leading-relaxed" style={{ color: BAND.text70 }}>
-              Score and route headlines, filings, and macro events into the same limits, queues, and audit receipts as trading
-              and compute—so desks fund intelligence with explicit credits instead of shadow feeds.
-            </p>
-            <p className="mt-4 font-mono text-[11px] leading-relaxed tracking-wide" style={{ color: BAND.text60 }}>
-              NLP → entitlement contracts → risk fabric · smart routing
-            </p>
-          </div>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center lg:flex-col lg:items-stretch">
             <Link
-              href="/bridge-observer"
+              href="/tokenomics"
               className="inline-flex items-center justify-center rounded-lg bg-tan px-7 py-3.5 text-sm font-semibold text-charcoal transition-colors hover:bg-tan-muted"
             >
-              Enter Bridge Observer
+              Tokenomics
             </Link>
-            <a
-              href={BRIDGE_OBSERVER_ORIGIN}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-lg border px-7 py-3.5 text-sm font-semibold transition-colors hover:bg-black/[0.04]"
-              style={{ borderColor: BAND.border, color: BAND.text }}
-            >
-              bridgeobserver.com
-            </a>
           </div>
         </div>
       </div>
@@ -385,6 +359,7 @@ export function HomepageRemainingPillars() {
     'backtesting-research',
     'quant-research',
     'bridge-observer',
+    'tokenized-compute',
     'execution-routing',
     'institutional-workflow',
     'governance-compliance',
