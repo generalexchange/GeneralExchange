@@ -61,7 +61,6 @@ export const MOCK_STOCKS_BY_KEY: Record<string, CatalogStock> = {
   CSCO: { symbol: 'CSCO', name: 'Cisco Systems Inc.', price: 48.56, change: 0.67, changePercent: 1.4, volume: '18.9M', marketCap: '$200B' },
   ORCL: { symbol: 'ORCL', name: 'Oracle Corporation', price: 112.34, change: 1.89, changePercent: 1.71, volume: '15.2M', marketCap: '$310B' },
   CRM: { symbol: 'CRM', name: 'Salesforce Inc.', price: 245.67, change: 4.23, changePercent: 1.75, volume: '8.4M', marketCap: '$250B' },
-  AMD: { symbol: 'AMD', name: 'Advanced Micro Devices Inc.', price: 134.56, change: 3.45, changePercent: 2.63, volume: '45.2M', marketCap: '$220B' },
   INTC: { symbol: 'INTC', name: 'Intel Corporation', price: 42.34, change: 0.89, changePercent: 2.15, volume: '28.7M', marketCap: '$180B' },
   IBM: {
     symbol: 'IBM',

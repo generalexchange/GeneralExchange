@@ -186,8 +186,8 @@ export function HomepagePositioningStrip() {
               {HOMEPAGE_TAGLINE.includes(' — ') ? HOMEPAGE_TAGLINE.split(' — ').slice(1).join(' — ') : HOMEPAGE_TAGLINE}
             </p>
             <p className="mx-auto mt-3 max-w-3xl text-sm font-light leading-relaxed sm:mx-0" style={{ color: BAND.text70 }}>
-              Tokenized GPU capacity on Lubbock.Cloud and AMD-optimized paths feed one deterministic, risk-first
-              loop—from research through execution and audit.
+              Tokenized accelerator capacity on dedicated GPU paths feeds one deterministic, risk-first loop—from research
+              through execution and audit.
             </p>
             <p className="mt-4 text-xs font-semibold uppercase tracking-[0.14em]" style={{ color: BAND.text60 }}>
               Integration plane

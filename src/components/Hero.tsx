@@ -41,9 +41,11 @@ export const Hero: React.FC = () => {
               Institutional Risk &amp; Execution on Tokenized Compute
             </h1>
 
-            <p className="mx-auto text-base sm:text-lg text-neutral-400 max-w-2xl leading-relaxed font-light lg:mx-0">
-              GPU-accelerated risk engines, backtesting, and governance, integrated with Lubbock.Cloud and AMD-optimized
-              workloads.
+            <p className="mx-auto text-base sm:text-lg text-neutral-400 max-w-3xl leading-relaxed font-light lg:mx-0">
+              From VaR, tail scenarios, and correlated stress paths to large-scale backtests and reinforcement-learning
+              research grids, GPU-accelerated engines run under explicit governance. Manifest-bound lineage ties models,
+              datasets, and kernels to reproducible results—so risk, research, and audit teams read the same deterministic
+              geometry from signal generation through execution and evidence.
             </p>
 
             <div className="flex justify-center pt-2 lg:justify-start">

@@ -55,8 +55,8 @@ export const HOMEPAGE_PILLARS: PillarSection[] = [
   },
   {
     id: 'backtesting-research',
-    title: 'Compute-Driven Backtesting & Model Research (Lubbock.Cloud Integrated)',
-    subtitle: 'Tokenized AMD pools for sweeps, evolution, and RL—with spend controls and reproducible manifests.',
+    title: 'Compute-Driven Backtesting & Model Research',
+    subtitle: 'Tokenized GPU pools for sweeps, evolution, and RL—with spend controls and reproducible manifests.',
     mechanicsCaption:
       'Parameter grids burn compute tokens deliberately; manifests bind code, data slices, and kernels so results replay bit-for-bit.',
     theme: 'light',
@@ -151,7 +151,7 @@ export const HOMEPAGE_PILLARS: PillarSection[] = [
   {
     id: 'tokenized-compute',
     title: 'Tokenized Compute, Natively Integrated',
-    subtitle: 'Wallet, yield, and queue priority tied to Lubbock.Cloud issuance.',
+    subtitle: 'Wallet, yield, and queue priority tied to platform-issued compute tokens.',
     mechanicsCaption:
       'Wallet balances, scheduler fairness, and yield leases share one ledger so spend, priority, and cost stay visible to finance.',
     theme: 'dark',

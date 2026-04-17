@@ -25,7 +25,7 @@ export const BridgeObserver: React.FC = () => {
               </h1>
               <p className="text-base sm:text-lg text-neutral-400 leading-relaxed font-light">
                 A BlackRock-style reading experience—titles, category tags, excerpts, and clear next steps—so intelligence
-                connects to Lubbock.cloud capacity and General Exchange workflows.
+                connects to federated compute capacity and General Exchange workflows.
               </p>
             </div>
           </div>

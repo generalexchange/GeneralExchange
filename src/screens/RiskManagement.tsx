@@ -27,8 +27,8 @@ export const RiskManagement: React.FC = () => {
               Model the stack before you size risk in production.
             </h1>
             <p className="mt-4 max-w-2xl text-sm font-light leading-relaxed text-zinc-400 sm:text-base">
-              Risk tooling in the trading workflow, backed by tokenized AMD compute on Lubbock.Cloud—so scenarios, limits, and
-              evidence stay aligned from research through release.
+              Risk tooling in the trading workflow, backed by tokenized GPU capacity on the platform—so scenarios, limits,
+              and evidence stay aligned from research through release.
             </p>
             <Link
               href="/dashboard?tab=risk"

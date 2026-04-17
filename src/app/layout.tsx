@@ -24,13 +24,13 @@ export const metadata: Metadata = {
     template: '%s | General Exchange',
   },
   description:
-    'Institutional-grade risk, research, and execution on tokenized compute. Lubbock.Cloud integration and AMD-optimized workloads.',
+    'Institutional-grade risk, research, and execution on tokenized compute—with GPU-accelerated engines, reproducible manifests, and a risk-first execution loop.',
   keywords: [
     'General Exchange',
     'tokenized compute',
-    'Lubbock.Cloud',
     'institutional trading',
     'risk engine',
+    'deterministic backtesting',
   ],
   openGraph: {
     type: 'website',

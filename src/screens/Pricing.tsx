@@ -1,5 +1,5 @@
 /**
- * Compute tokens & workspace plans — General Exchange / Lubbock.cloud
+ * Compute tokens & workspace plans — General Exchange
  */
 
 'use client';
@@ -26,7 +26,7 @@ export const Pricing: React.FC = () => {
         { name: 'Backtesting sandbox (shared pool)', included: true },
         { name: 'Bridge Observer digest', included: true },
         { name: 'Email support', included: true },
-        { name: 'Dedicated MI-class lanes', included: false },
+        { name: 'Dedicated premium GPU lanes', included: false },
         { name: 'Custom risk model templates', included: false },
         { name: 'API orchestration', included: false },
       ],
@@ -58,7 +58,7 @@ export const Pricing: React.FC = () => {
         { name: 'Full API & webhook fabric', included: true },
         { name: 'Evidence & attestation exports', included: true },
         { name: '24/7 operations bridge', included: true },
-        { name: 'Custom Lubbock.cloud integration', included: true },
+        { name: 'Custom enterprise compute integration', included: true },
       ],
       popular: false,
     },
@@ -86,13 +86,13 @@ export const Pricing: React.FC = () => {
         <section className="relative overflow-hidden border-b border-white/[0.06] py-20 sm:py-28">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(46,90,58,0.15),transparent_55%)]" />
           <div className="max-w-content mx-auto px-4 sm:px-6 lg:px-10 relative">
-            <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-tan mb-4">Lubbock.cloud</p>
+            <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-tan mb-4">Compute</p>
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight text-neutral-50 mb-6">
               Compute tokens
             </h1>
             <p className="text-lg sm:text-xl text-neutral-400 max-w-2xl leading-relaxed font-light">
-              AMD-only tokenized GPU capacity for training, inference, Monte Carlo, and risk grids—priced transparently per
-              compute unit.
+              Tokenized GPU capacity for training, inference, Monte Carlo, and risk grids—priced transparently per compute
+              unit.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
@@ -114,7 +114,7 @@ export const Pricing: React.FC = () => {
         {/* Token cards */}
         <section className="py-16 sm:py-20 border-b border-white/[0.06] bg-dark-gray/50">
           <div className="max-w-content mx-auto px-4 sm:px-6 lg:px-10">
-            <h2 className="font-display text-2xl sm:text-3xl text-neutral-50 mb-10">AMD token catalogue</h2>
+            <h2 className="font-display text-2xl sm:text-3xl text-neutral-50 mb-10">GPU token catalogue</h2>
             <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
               {COMPUTE_TOKENS.map((token, i) => (
                 <TokenCard key={token.symbol} token={token} index={i} />
@@ -129,7 +129,7 @@ export const Pricing: React.FC = () => {
             <h2 className="font-display text-2xl sm:text-3xl text-neutral-50 mb-4">Specification matrix</h2>
             <p className="text-neutral-400 text-sm max-w-2xl mb-10 leading-relaxed">
               Institutional table layout—alternating rows for scanability. Figures are representative; final SKUs follow
-              Lubbock.cloud issuance.
+              platform issuance.
             </p>
             <div className="overflow-x-auto rounded-lg border border-white/[0.08]">
               <table className="w-full text-left text-sm min-w-[640px]">

@@ -16,7 +16,7 @@ export const InstitutionalFooter: React.FC = () => {
               <h3 className="font-display text-lg text-neutral-100 tracking-tight">General Exchange</h3>
             </div>
             <p className="text-neutral-500 text-sm leading-relaxed mb-4">
-              Consumer interface for tokenized AMD compute — Lubbock.cloud
+              Consumer interface for tokenized GPU compute on General Exchange
             </p>
             <div className="flex items-center gap-2 text-neutral-600">
               <MapPin className="w-3.5 h-3.5 text-tan/70" strokeWidth={1.5} aria-hidden />

@@ -44,7 +44,7 @@ const platformJumpLinks = [
 const TRADING_TOOLS = [
   {
     title: 'Backtesting Engine',
-    description: 'Walk-forward validation, embargo windows, and execution-aware replay on tokenized AMD pools.',
+    description: 'Walk-forward validation, embargo windows, and execution-aware replay on tokenized GPU pools.',
     icon: BarChart3,
     to: '/features#feature-backtesting',
   },
@@ -96,7 +96,7 @@ export const Features: React.FC = () => {
             <p className="text-[11px] font-semibold tracking-[0.2em] uppercase text-tan mb-4">Trading tools</p>
             <h1 className="font-display text-4xl sm:text-5xl lg:text-[3.25rem] font-medium text-neutral-50 leading-tight mb-6">
               Institutional workflows on{' '}
-              <span className="text-tan">tokenized AMD compute</span>
+              <span className="text-tan">tokenized GPU compute</span>
             </h1>
             <p className="text-lg sm:text-xl text-neutral-400 leading-relaxed mb-10 font-light">
               Train and test algorithms, run Monte Carlo and risk grids, and ship strategies—with the same restraint expected

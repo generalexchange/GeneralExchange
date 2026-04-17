@@ -108,10 +108,10 @@ export function HeroSystemTopologyIllustration() {
       <path d="M334,100 H348" stroke="rgba(210,180,140,0.4)" strokeWidth="1.2" markerEnd="url(#arrHero)" />
       <rect x="350" y="70" width="78" height="60" rx="4" stroke="#D2B48C" strokeWidth="1.2" fill="rgba(210,180,140,0.08)" />
       <text x="389" y="94" textAnchor="middle" fill="#D2B48C" fontSize="9" fontFamily="ui-sans-serif">
-        Lubbock
+        Compute grid
       </text>
       <text x="389" y="108" textAnchor="middle" fill="rgba(255,255,255,0.45)" fontSize="8" fontFamily="ui-monospace">
-        MI GPU grid
+        tokenized GPU
       </text>
       <text x="389" y="122" textAnchor="middle" fill="rgba(255,255,255,0.35)" fontSize="7" fontFamily="ui-monospace">
         token queue
@@ -151,8 +151,8 @@ export function PositioningIntegrationDiagram({ theme = 'light' }: { theme?: 'li
   const markerId = isLight ? 'arrPosIntLight' : 'arrPosIntDark';
 
   const nodes = [
-    { cx: 132, title: 'Lubbock.Cloud', sub: 'Tokenized GPU' },
-    { cx: 400, title: 'AMD compute', sub: 'ROCm · deterministic' },
+    { cx: 132, title: 'Token fabric', sub: 'GPU capacity' },
+    { cx: 400, title: 'Accelerator path', sub: 'Deterministic kernels' },
     { cx: 668, title: 'Risk controls', sub: 'Gate · audit' },
   ] as const;
   const bw = 118;
@@ -163,7 +163,7 @@ export function PositioningIntegrationDiagram({ theme = 'light' }: { theme?: 'li
   return (
     <svg viewBox="0 0 800 60" className="h-auto w-full min-h-[52px]" role="img" aria-labelledby="pos-int-title">
       <title id="pos-int-title">
-        Lubbock.Cloud, AMD compute, and risk controls connected in one horizontal integration flow
+        Token fabric, accelerator path, and risk controls connected in one horizontal integration flow
       </title>
       <defs>
         <marker id={markerId} markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
@@ -399,7 +399,7 @@ function PillarCompute({ t }: { t: Theme }) {
         Wallet
       </text>
       <text x="60" y="74" textAnchor="middle" fill={themeMuted(t)} fontSize="7" fontFamily="ui-monospace">
-        LUB-MI*
+        GE-GPU*
       </text>
       <path d="M96,62 H140" stroke={g} strokeWidth="1.2" />
       <rect x="142" y="40" width="100" height="56" rx="4" stroke={g} fill={t === 'light' ? 'rgba(46,90,58,0.07)' : 'rgba(46,90,58,0.15)'} />
