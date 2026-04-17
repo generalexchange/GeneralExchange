@@ -10,6 +10,11 @@ import { motion } from 'framer-motion';
 import { Navbar } from '@/components/Navbar';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 import { HeroSystemTopologyIllustration } from '@/components/homepage/HomepageMechanicsIllustrations';
+import {
+  HomepageExecutionLoopRestored,
+  PillarSectionEmbed,
+  getPillarById,
+} from '@/screens/homepage/HomepageLegacyRestored';
 
 const easeLux = [0.22, 1, 0.36, 1] as const;
 
@@ -117,6 +122,25 @@ export const TradeEngine: React.FC = () => {
             </div>
           </div>
         </section>
+
+        <section className="border-t border-white/[0.06] bg-charcoal py-12 sm:py-16 lg:py-20" aria-labelledby="execution-loop-heading">
+          <div className="mx-auto max-w-content px-4 sm:px-6 lg:px-10">
+            <HomepageExecutionLoopRestored />
+          </div>
+        </section>
+
+        <div className="space-y-10 border-t border-white/[0.06] py-12 sm:space-y-12 sm:py-16 lg:py-20">
+          {(() => {
+            const routing = getPillarById('execution-routing');
+            const workflow = getPillarById('institutional-workflow');
+            return (
+              <>
+                {routing ? <PillarSectionEmbed pillar={routing} index={0} /> : null}
+                {workflow ? <PillarSectionEmbed pillar={workflow} index={1} /> : null}
+              </>
+            );
+          })()}
+        </div>
       </div>
 
       <InstitutionalFooter />

@@ -341,7 +341,14 @@ export function HomepageTrustCtaRestored() {
 
 /** Institutional pillars placed after the execution loop (History section). */
 export function HomepageRemainingPillars() {
-  const skip = new Set(['advanced-risk-scenario', 'backtesting-research', 'quant-research', 'bridge-observer']);
+  const skip = new Set([
+    'advanced-risk-scenario',
+    'backtesting-research',
+    'quant-research',
+    'bridge-observer',
+    'execution-routing',
+    'institutional-workflow',
+  ]);
   const rest = HOMEPAGE_PILLARS.filter((p) => !skip.has(p.id));
   return (
     <div className="mt-10 space-y-8">
