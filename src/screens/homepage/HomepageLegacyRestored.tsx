@@ -19,8 +19,8 @@ import {
   PillarMechanicsIllustration,
   PillarCardMechanicAccent,
   ExecutionLoopIllustration,
-  BridgeObserverCtaIllustration,
 } from '@/components/homepage/HomepageMechanicsIllustrations';
+import { BridgeObserverWalletThree } from '@/components/homepage/BridgeObserverWalletThree';
 import { PositioningCoinIllustration } from '@/components/homepage/PositioningCoinIllustration';
 
 const BAND = {
@@ -266,7 +266,7 @@ export function HomepageBridgeObserverRestored() {
             className="flex justify-center rounded-lg border p-4 sm:p-5 lg:justify-start"
             style={{ borderColor: BAND.border, backgroundColor: 'rgba(26,26,26,0.92)' }}
           >
-            <BridgeObserverCtaIllustration />
+            <BridgeObserverWalletThree />
           </div>
           <div className="flex min-w-0 flex-col items-center gap-5 text-center lg:items-start lg:text-left">
             <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.22em]" style={{ color: BAND.text60 }}>
@@ -278,9 +278,6 @@ export function HomepageBridgeObserverRestored() {
             <p className="max-w-prose text-sm font-light leading-relaxed sm:text-[15px] sm:leading-relaxed" style={{ color: BAND.text70 }}>
               Score and route headlines, filings, and macro events into the same limits, queues, and audit receipts as trading
               and compute—so desks fund intelligence with explicit credits instead of shadow feeds.
-            </p>
-            <p className="font-mono text-[11px] leading-relaxed tracking-wide" style={{ color: BAND.text60 }}>
-              NLP → entitlement contracts → risk fabric · smart routing
             </p>
             <Link
               href="/tokenomics"

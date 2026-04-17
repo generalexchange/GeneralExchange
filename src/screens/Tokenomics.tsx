@@ -7,7 +7,7 @@
 import React from 'react';
 import { Navbar } from '@/components/Navbar';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
-import { BridgeObserverCtaIllustration } from '@/components/homepage/HomepageMechanicsIllustrations';
+import { BridgeObserverWalletThree } from '@/components/homepage/BridgeObserverWalletThree';
 import { PillarSectionEmbed, getPillarById } from '@/screens/homepage/HomepageLegacyRestored';
 
 const BAND = {
@@ -54,7 +54,7 @@ export const Tokenomics: React.FC = () => {
                 className="flex justify-center rounded-lg border p-4 sm:p-5 lg:justify-start"
                 style={{ borderColor: BAND.border, backgroundColor: 'rgba(26,26,26,0.92)' }}
               >
-                <BridgeObserverCtaIllustration />
+                <BridgeObserverWalletThree />
               </div>
               <div className="min-w-0">
                 <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.22em]" style={{ color: BAND.text60 }}>
@@ -69,9 +69,6 @@ export const Tokenomics: React.FC = () => {
                 >
                   Score and route headlines, filings, and macro events into the same limits, queues, and audit receipts as
                   trading and compute—so desks fund intelligence with explicit credits instead of shadow feeds.
-                </p>
-                <p className="mt-4 font-mono text-[11px] leading-relaxed tracking-wide" style={{ color: BAND.text60 }}>
-                  NLP → entitlement contracts → risk fabric · smart routing
                 </p>
               </div>
             </div>
