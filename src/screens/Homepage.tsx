@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { Navbar } from '../components/Navbar';
-import { InstitutionalFooter } from '../components/InstitutionalFooter';
+import { Footer } from '../components/Footer';
 import { HomepageFullPageSections } from './homepage/HomepageFullPageSections';
 
 export const Homepage: React.FC = () => {
@@ -18,7 +18,7 @@ export const Homepage: React.FC = () => {
         <HomepageFullPageSections />
       </div>
 
-      <InstitutionalFooter />
+      <Footer />
     </div>
   );
 };
