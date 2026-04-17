@@ -7,7 +7,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Lock, Sparkles } from 'lucide-react';
+import { Lock, Layers } from 'lucide-react';
 import {
   HOMEPAGE_TAGLINE,
   HOMEPAGE_PILLARS,
@@ -298,11 +298,12 @@ export function HomepageTrustCtaRestored() {
               Bridge Observer · provenance
             </p>
             <h2 className="mt-2 font-display text-xl font-medium tracking-tight sm:text-2xl" style={{ color: BAND.text }}>
-              Evidence-grade narrative delivery
+              Evidence-grade datasets from sentiment-scored news
             </h2>
             <p className="mt-3 text-sm font-light leading-relaxed" style={{ color: BAND.text70 }}>
-              Signals inherit scopes, roles, and hashes so research, release, and attestation stay separated—mirroring how
-              desks govern models and routes, not PDF attestations.
+              Headlines and filings are scored for sentiment and structure, then materialized as versioned dataset modules—each
+              with its own scope, lineage hash, and promotion path—so research, risk, and compliance can inspect or replay the
+              same artifacts the desk trades on, not a one-off narrative dump.
             </p>
           </div>
           <div className="flex min-w-0 flex-col justify-between gap-8">
@@ -311,22 +312,23 @@ export function HomepageTrustCtaRestored() {
                 <Lock className="mt-0.5 h-4 w-4 shrink-0 text-institutional-green" strokeWidth={1.5} aria-hidden />
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.12em]" style={{ color: BAND.text }}>
-                    Policy-locked handoff
+                    Policy-locked dataset promotion
                   </p>
                   <p className="mt-1.5 text-xs font-light leading-relaxed" style={{ color: BAND.text70 }}>
-                    Headline-derived signals meet the same pre-trade gates and entitlements as internal alpha—no parallel risk
-                    stack.
+                    Every sentiment-derived module passes the same entitlements and pre-trade gates as internal alpha before it
+                    can power models or routes—no shadow stack beside production risk.
                   </p>
                 </div>
               </div>
               <div className="flex gap-3">
-                <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-institutional-green" strokeWidth={1.5} aria-hidden />
+                <Layers className="mt-0.5 h-4 w-4 shrink-0 text-institutional-green" strokeWidth={1.5} aria-hidden />
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.12em]" style={{ color: BAND.text }}>
-                    Audit-ready bundles
+                    Modular dataset audit
                   </p>
                   <p className="mt-1.5 text-xs font-light leading-relaxed" style={{ color: BAND.text70 }}>
-                    Export lineage packs for LPs, compliance, and second-line review without reconstructing the narrative path.
+                    Review, sign off, or export one dataset slice at a time—hashes, inputs, and retention policies travel with
+                    each module so second line and LPs can audit without reverse-engineering the full news graph.
                   </p>
                 </div>
               </div>
