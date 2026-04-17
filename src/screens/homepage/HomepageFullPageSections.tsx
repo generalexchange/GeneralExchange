@@ -352,7 +352,7 @@ export function HomepageFullPageSections() {
             ))}
           </div>
 
-          <div className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-12">
+          <div className="mt-10 flex flex-col gap-6 sm:gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
             <div className="w-full max-w-xl flex-1 rounded-2xl border border-white/[0.1] bg-charcoal/80 p-4 shadow-[0_20px_60px_-24px_rgba(0,0,0,0.55)] sm:p-5">
               <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-500">Backspace · preview</p>
               <div className="mt-3 rounded-lg border border-dashed border-white/[0.12] bg-white/[0.02] px-4 py-8 text-center">
@@ -379,13 +379,15 @@ export function HomepageFullPageSections() {
                 </svg>
               </div>
             </div>
+            <div className="flex shrink-0 items-start justify-start border-t border-white/[0.06] pt-6 lg:items-center lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
+              <Link
+                href="/backspace"
+                className={`${btnGreen} inline-flex min-h-[48px] min-w-[10rem] items-center justify-center px-8 py-3.5`}
+              >
+                Backspace
+              </Link>
+            </div>
           </div>
-
-          <SectionActions>
-            <Link href="/backspace" className={btnGreen}>
-              Backspace
-            </Link>
-          </SectionActions>
 
           <div className="mt-12 space-y-8">
             <HomepageBridgeObserverRestored />

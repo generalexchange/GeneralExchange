@@ -262,33 +262,45 @@ export function HomepageExecutionLoopRestored() {
 
 export function HomepageBridgeObserverRestored() {
   return (
-    <div className="rounded-xl border border-white/[0.08] bg-dark-gray py-10 sm:py-12">
-      <div className="mx-auto flex max-w-content flex-col gap-8 px-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-10">
-        <div className="flex min-w-0 flex-col gap-6 sm:flex-row sm:items-center">
-          <BridgeObserverCtaIllustration />
-          <div>
-            <h2 className="font-display text-xl tracking-tight text-neutral-50 sm:text-2xl">Bridge Observer</h2>
-            <p className="mt-2 max-w-xl text-sm leading-relaxed text-neutral-400">
-              From news sentiment to event alerts and headline-to-trade pipelines—wired into the same risk and execution fabric.
-            </p>
-            <p className="mt-3 font-mono text-xs text-neutral-500">NLP → event bus → shared risk / SOR adapters</p>
+    <div className="relative overflow-hidden rounded-xl border border-white/[0.08] bg-gradient-to-br from-charcoal via-charcoal to-[#0c1012] py-11 sm:py-14">
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.55] bg-[radial-gradient(ellipse_75%_90%_at_100%_-10%,rgba(46,90,58,0.18),transparent_55%)]"
+        aria-hidden
+      />
+      <div className="relative mx-auto max-w-content px-4 sm:px-6 lg:px-10">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)_auto] lg:items-center lg:gap-12">
+          <div className="rounded-lg border border-white/[0.08] bg-black/20 p-4 sm:p-5">
+            <BridgeObserverCtaIllustration />
           </div>
-        </div>
-        <div className="flex shrink-0 flex-wrap gap-3">
-          <Link
-            href="/bridge-observer"
-            className="inline-flex items-center justify-center rounded-lg bg-tan px-6 py-3 text-sm font-semibold text-charcoal transition-colors hover:bg-tan-muted"
-          >
-            Open intelligence feed
-          </Link>
-          <a
-            href={BRIDGE_OBSERVER_ORIGIN}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center rounded-lg border border-white/[0.12] px-6 py-3 text-sm font-semibold text-neutral-200 transition-colors hover:bg-white/[0.05]"
-          >
-            bridgeobserver.com
-          </a>
+          <div className="min-w-0">
+            <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-tan/90">Tokenization layer</p>
+            <h2 className="mt-3 font-display text-2xl font-medium tracking-tight text-neutral-50 sm:text-3xl">
+              Narrative intelligence, entitled like any other workload
+            </h2>
+            <p className="mt-4 max-w-prose text-sm font-light leading-relaxed text-zinc-400 sm:text-[15px] sm:leading-relaxed">
+              Score and route headlines, filings, and macro events into the same limits, queues, and audit receipts as trading
+              and compute—so desks fund intelligence with explicit credits instead of shadow feeds.
+            </p>
+            <p className="mt-4 font-mono text-[11px] leading-relaxed text-zinc-500 tracking-wide">
+              NLP → entitlement contracts → risk fabric · smart routing
+            </p>
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center lg:flex-col lg:items-stretch">
+            <Link
+              href="/bridge-observer"
+              className="inline-flex items-center justify-center rounded-lg bg-tan px-7 py-3.5 text-sm font-semibold text-charcoal transition-colors hover:bg-tan-muted"
+            >
+              Enter Bridge Observer
+            </Link>
+            <a
+              href={BRIDGE_OBSERVER_ORIGIN}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center rounded-lg border border-white/[0.12] bg-white/[0.02] px-7 py-3.5 text-sm font-semibold text-neutral-200 transition-colors hover:border-tan/30 hover:bg-white/[0.05]"
+            >
+              bridgeobserver.com
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -300,38 +312,64 @@ export function HomepageTrustCtaRestored() {
     <div className="rounded-xl border border-white/[0.08]" style={{ backgroundColor: BAND.bg00, color: BAND.text, borderColor: BAND.border }}>
       <div className="mx-auto max-w-content px-4 py-10 sm:px-6 sm:py-12 lg:px-10">
         <div
-          className="flex flex-col gap-8 rounded-lg border p-6 shadow-[0_8px_40px_-20px_rgba(46,90,58,0.12)] sm:p-8 lg:flex-row lg:items-center lg:justify-between lg:gap-10"
+          className="grid gap-8 rounded-lg border p-6 shadow-[0_8px_40px_-20px_rgba(46,90,58,0.12)] sm:p-8 lg:grid-cols-[minmax(0,300px)_1fr] lg:items-start lg:gap-12"
           style={{ borderColor: BAND.border, backgroundColor: BAND.plaque }}
         >
-          <div className="w-full shrink-0 lg:max-w-[320px]">
-            <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.14em]" style={{ color: BAND.text60 }}>
-              Lineage &amp; duties
+          <div className="min-w-0">
+            <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em]" style={{ color: BAND.text60 }}>
+              Bridge Observer · provenance
             </p>
-            <TrustLineageIllustration />
-          </div>
-          <div className="flex flex-wrap items-center gap-x-8 gap-y-3" style={{ color: BAND.text70 }}>
-            <div className="flex items-center gap-2">
-              <Lock className="h-4 w-4 shrink-0 text-institutional-green" strokeWidth={1.5} aria-hidden />
-              <span className="text-xs font-semibold uppercase tracking-[0.15em]">Regulated-environment ready</span>
+            <h2 className="mt-2 font-display text-xl font-medium tracking-tight sm:text-2xl" style={{ color: BAND.text }}>
+              Evidence-grade narrative delivery
+            </h2>
+            <p className="mt-3 text-sm font-light leading-relaxed" style={{ color: BAND.text70 }}>
+              Signals inherit scopes, roles, and hashes so research, release, and attestation stay separated—mirroring how
+              desks govern models and routes, not PDF attestations.
+            </p>
+            <div className="mt-5 rounded-md border p-3 sm:p-4" style={{ borderColor: BAND.border, backgroundColor: BAND.bg00 }}>
+              <TrustLineageIllustration />
             </div>
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 shrink-0 text-institutional-green" strokeWidth={1.5} aria-hidden />
-              <span className="text-xs font-semibold uppercase tracking-[0.15em]">Attestation &amp; lineage by default</span>
-            </div>
           </div>
-          <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
-            <Link
-              href="/login"
-              className="inline-flex items-center justify-center rounded-lg border border-institutional-green bg-transparent px-7 py-3.5 text-sm font-semibold text-institutional-green transition-colors hover:bg-institutional-green/10"
-            >
-              Access platform
-            </Link>
-            <Link
-              href="/request-access"
-              className="inline-flex items-center justify-center rounded-lg bg-institutional-green px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-institutional-green-muted"
-            >
-              Speak with us
-            </Link>
+          <div className="flex min-w-0 flex-col justify-between gap-8">
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div className="flex gap-3">
+                <Lock className="mt-0.5 h-4 w-4 shrink-0 text-institutional-green" strokeWidth={1.5} aria-hidden />
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em]" style={{ color: BAND.text }}>
+                    Policy-locked handoff
+                  </p>
+                  <p className="mt-1.5 text-xs font-light leading-relaxed" style={{ color: BAND.text70 }}>
+                    Headline-derived signals meet the same pre-trade gates and entitlements as internal alpha—no parallel risk
+                    stack.
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-institutional-green" strokeWidth={1.5} aria-hidden />
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em]" style={{ color: BAND.text }}>
+                    Audit-ready bundles
+                  </p>
+                  <p className="mt-1.5 text-xs font-light leading-relaxed" style={{ color: BAND.text70 }}>
+                    Export lineage packs for LPs, compliance, and second-line review without reconstructing the narrative path.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-3 border-t pt-6" style={{ borderColor: BAND.border }}>
+              <Link
+                href="/bridge-observer"
+                className="inline-flex items-center justify-center rounded-lg bg-institutional-green px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-institutional-green-muted"
+              >
+                Open Bridge Observer
+              </Link>
+              <Link
+                href="/request-access"
+                className="inline-flex items-center justify-center rounded-lg border border-institutional-green/50 bg-transparent px-7 py-3.5 text-sm font-semibold text-institutional-green transition-colors hover:bg-institutional-green/10"
+              >
+                Request access
+              </Link>
+            </div>
           </div>
         </div>
       </div>
