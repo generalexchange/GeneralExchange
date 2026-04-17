@@ -565,24 +565,39 @@ export function ExecutionLoopIllustration() {
 
 export function BridgeObserverCtaIllustration() {
   return (
-    <svg viewBox="0 0 280 100" className="w-full max-w-[280px] h-auto shrink-0" role="img">
-      <title>Short pipeline from headlines to risk fabric</title>
-      <rect x="8" y="28" width="48" height="48" rx="3" stroke="rgba(210,180,140,0.4)" fill="rgba(210,180,140,0.06)" />
-      <text x="32" y="54" textAnchor="middle" fill="rgba(255,255,255,0.6)" fontSize="8" fontFamily="ui-sans-serif">
+    <svg viewBox="0 0 280 122" className="w-full max-w-[280px] h-auto shrink-0" role="img">
+      <title>
+        Pipeline from NLP through event bus and risk fabric into the tokenization layer and tokenomics surface
+      </title>
+      <rect x="8" y="10" width="48" height="48" rx="3" stroke="rgba(210,180,140,0.4)" fill="rgba(210,180,140,0.06)" />
+      <text x="32" y="36" textAnchor="middle" fill="rgba(255,255,255,0.6)" fontSize="8" fontFamily="ui-sans-serif">
         NLP
       </text>
-      <path d="M56,52 H76" stroke="#2E5A3A" strokeWidth="1.2" />
-      <rect x="78" y="30" width="88" height="44" rx="3" stroke="#2E5A3A" fill="rgba(46,90,58,0.12)" />
-      <text x="122" y="50" textAnchor="middle" fill="rgba(255,255,255,0.75)" fontSize="8" fontFamily="ui-sans-serif">
+      <path d="M56,34 H76" stroke="#2E5A3A" strokeWidth="1.2" />
+      <rect x="78" y="12" width="88" height="44" rx="3" stroke="#2E5A3A" fill="rgba(46,90,58,0.12)" />
+      <text x="122" y="32" textAnchor="middle" fill="rgba(255,255,255,0.75)" fontSize="8" fontFamily="ui-sans-serif">
         Event bus
       </text>
-      <text x="122" y="64" textAnchor="middle" fill="rgba(255,255,255,0.4)" fontSize="7" fontFamily="ui-monospace">
+      <text x="122" y="46" textAnchor="middle" fill="rgba(255,255,255,0.4)" fontSize="7" fontFamily="ui-monospace">
         alert windows
       </text>
-      <path d="M166,52 H184" stroke="#D2B48C" strokeWidth="1.2" />
-      <rect x="186" y="30" width="86" height="44" rx="3" stroke="rgba(210,180,140,0.35)" fill="rgba(255,255,255,0.03)" />
-      <text x="229" y="56" textAnchor="middle" fill="#D2B48C" fontSize="8" fontFamily="ui-sans-serif">
+      <path d="M166,34 H184" stroke="#D2B48C" strokeWidth="1.2" />
+      <rect x="186" y="12" width="86" height="44" rx="3" stroke="rgba(210,180,140,0.35)" fill="rgba(255,255,255,0.03)" />
+      <text x="229" y="38" textAnchor="middle" fill="#D2B48C" fontSize="8" fontFamily="ui-sans-serif">
         Risk fabric
+      </text>
+      <path d="M229,56 V64 L126,72" stroke="#6b7c6e" strokeWidth="1" fill="none" opacity="0.75" />
+      <rect x="72" y="72" width="108" height="40" rx="3" stroke="#2E5A3A" fill="rgba(46,90,58,0.1)" />
+      <text x="126" y="90" textAnchor="middle" fill="rgba(255,255,255,0.78)" fontSize="7.5" fontFamily="ui-sans-serif">
+        Tokenization layer
+      </text>
+      <text x="126" y="102" textAnchor="middle" fill="rgba(255,255,255,0.38)" fontSize="6.5" fontFamily="ui-monospace">
+        credits · scopes
+      </text>
+      <path d="M180,92 H198" stroke="#D2B48C" strokeWidth="1.2" />
+      <rect x="200" y="72" width="72" height="40" rx="3" stroke="rgba(210,180,140,0.45)" fill="rgba(210,180,140,0.08)" />
+      <text x="236" y="96" textAnchor="middle" fill="#D2B48C" fontSize="8" fontFamily="ui-sans-serif">
+        Tokenomics
       </text>
     </svg>
   );

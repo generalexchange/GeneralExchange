@@ -272,6 +272,16 @@ export function HomepageBridgeObserverRestored() {
             <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.22em]" style={{ color: BAND.text60 }}>
               Tokenization layer
             </p>
+            <h2 className="font-display text-2xl font-medium tracking-tight sm:text-3xl" style={{ color: BAND.text }}>
+              Narrative intelligence, entitled like any other workload
+            </h2>
+            <p className="max-w-prose text-sm font-light leading-relaxed sm:text-[15px] sm:leading-relaxed" style={{ color: BAND.text70 }}>
+              Score and route headlines, filings, and macro events into the same limits, queues, and audit receipts as trading
+              and compute—so desks fund intelligence with explicit credits instead of shadow feeds.
+            </p>
+            <p className="font-mono text-[11px] leading-relaxed tracking-wide" style={{ color: BAND.text60 }}>
+              NLP → entitlement contracts → risk fabric · smart routing
+            </p>
             <Link
               href="/tokenomics"
               className="inline-flex items-center justify-center rounded-lg bg-tan px-7 py-3.5 text-sm font-semibold text-charcoal transition-colors hover:bg-tan-muted"

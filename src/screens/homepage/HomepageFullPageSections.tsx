@@ -132,43 +132,44 @@ export function HomepageFullPageSections() {
             Payoff modeling. Scenario simulation. Exposure visualization. Risk isn&apos;t a checkbox — it&apos;s the engine.
           </p>
 
-          <div className="mt-12 grid grid-cols-1 items-start gap-10 lg:grid-cols-2 lg:gap-16">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-1">
-              {(
-                [
-                  {
-                    title: 'Payoff Modeling',
-                    body: 'Map P&L curves across price paths before entry',
-                  },
-                  {
-                    title: 'Scenario Simulation',
-                    body: 'Stress-test setups against volatility regimes and tail events',
-                  },
-                  {
-                    title: 'Exposure Visualization',
-                    body: 'See delta, theta, and capital at risk in one view',
-                  },
-                ] as const
-              ).map((c) => (
-                <div
-                  key={c.title}
-                  className="rounded-xl border border-white/[0.08] bg-charcoal/60 p-5 sm:p-6"
-                >
-                  <h3 className="font-display text-lg text-neutral-100">{c.title}</h3>
-                  <p className="mt-2 text-sm font-light leading-relaxed text-zinc-500">{c.body}</p>
-                </div>
-              ))}
+          <div className="mt-12 flex flex-col gap-10 lg:flex-row lg:items-stretch lg:gap-12">
+            <div className="min-w-0 flex-1 grid grid-cols-1 items-start gap-10 lg:grid-cols-2 lg:gap-16">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-1">
+                {(
+                  [
+                    {
+                      title: 'Payoff Modeling',
+                      body: 'Map P&L curves across price paths before entry',
+                    },
+                    {
+                      title: 'Scenario Simulation',
+                      body: 'Stress-test setups against volatility regimes and tail events',
+                    },
+                    {
+                      title: 'Exposure Visualization',
+                      body: 'See delta, theta, and capital at risk in one view',
+                    },
+                  ] as const
+                ).map((c) => (
+                  <div
+                    key={c.title}
+                    className="rounded-xl border border-white/[0.08] bg-charcoal/60 p-5 sm:p-6"
+                  >
+                    <h3 className="font-display text-lg text-neutral-100">{c.title}</h3>
+                    <p className="mt-2 text-sm font-light leading-relaxed text-zinc-500">{c.body}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 sm:p-6">
+                <p className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-zinc-600">Payoff preview</p>
+                <PayoffCurveSvg />
+              </div>
             </div>
-            <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 sm:p-6">
-              <p className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-zinc-600">Payoff preview</p>
-              <PayoffCurveSvg />
+            <div className="flex shrink-0 items-end justify-start lg:justify-end lg:pb-1">
+              <Link href="/risk-management" className={`${btnPrimary} w-full sm:w-auto lg:min-w-[11rem]`}>
+                Risk Management
+              </Link>
             </div>
-          </div>
-
-          <div className="mt-10">
-            <Link href="/risk-management" className={btnPrimary}>
-              Risk Management
-            </Link>
           </div>
         </motion.div>
       </section>
