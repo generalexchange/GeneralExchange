@@ -133,10 +133,12 @@ export const TradeEngine: React.FC = () => {
           {(() => {
             const routing = getPillarById('execution-routing');
             const workflow = getPillarById('institutional-workflow');
+            const governance = getPillarById('governance-compliance');
             return (
               <>
                 {routing ? <PillarSectionEmbed pillar={routing} index={0} /> : null}
                 {workflow ? <PillarSectionEmbed pillar={workflow} index={1} /> : null}
+                {governance ? <PillarSectionEmbed pillar={governance} index={2} /> : null}
               </>
             );
           })()}

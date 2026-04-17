@@ -25,8 +25,6 @@ function SectionActions({ children }: { children: React.ReactNode }) {
 
 const btnPrimary =
   'inline-flex items-center justify-center rounded-lg bg-tan px-6 py-3 text-sm font-semibold text-charcoal transition-colors hover:bg-tan-muted';
-const btnGhost =
-  'inline-flex items-center justify-center rounded-lg border border-white/[0.14] bg-white/[0.03] px-6 py-3 text-sm font-semibold text-neutral-200 transition-colors hover:bg-white/[0.07]';
 const btnGreen =
   'inline-flex items-center justify-center rounded-lg bg-institutional-green px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-institutional-green-muted';
 
@@ -311,18 +309,6 @@ export function HomepageFullPageSections() {
           </div>
 
           <HomepageRemainingPillars />
-
-          <SectionActions>
-            <Link href="/dashboard" className={btnPrimary}>
-              Open dashboard
-            </Link>
-            <Link href="/trade-engine#deterministic-execution-loop" className={btnGhost}>
-              Signature workflow
-            </Link>
-            <Link href="/login" className={btnGhost}>
-              Sign in
-            </Link>
-          </SectionActions>
         </motion.div>
       </section>
 

@@ -348,6 +348,8 @@ export function HomepageRemainingPillars() {
     'bridge-observer',
     'execution-routing',
     'institutional-workflow',
+    'governance-compliance',
+    'premium-addons',
   ]);
   const rest = HOMEPAGE_PILLARS.filter((p) => !skip.has(p.id));
   return (
