@@ -10,8 +10,6 @@ import { motion } from 'framer-motion';
 import { Hero } from '@/components/Hero';
 import {
   HomepagePositioningStrip,
-  PillarSectionEmbed,
-  getPillarById,
   HomepageBridgeObserverRestored,
   HomepageTrustCtaRestored,
   HomepageRemainingPillars,
@@ -368,15 +366,6 @@ export function HomepageFullPageSections() {
             ))}
           </div>
 
-          {(() => {
-            const p = getPillarById('backtesting-research');
-            return p ? (
-              <div className="mt-10">
-                <PillarSectionEmbed pillar={p} index={1} />
-              </div>
-            ) : null;
-          })()}
-
           <div className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-12">
             <div className="w-full max-w-xl flex-1 rounded-2xl border border-white/[0.1] bg-charcoal/80 p-4 shadow-[0_20px_60px_-24px_rgba(0,0,0,0.55)] sm:p-5">
               <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-500">Backspace · preview</p>
@@ -407,17 +396,8 @@ export function HomepageFullPageSections() {
           </div>
 
           <SectionActions>
-            <Link href="/dashboard?tab=strategies" className={btnGreen}>
-              Open Backspace
-            </Link>
-            <Link href="/bridge-observer" className={btnGhost}>
-              Bridge Observer
-            </Link>
-            <Link href="/features" className={btnGhost}>
-              Trading tools
-            </Link>
-            <Link href="/request-access" className={btnGhost}>
-              Request access
+            <Link href="/backspace" className={btnGreen}>
+              Backspace
             </Link>
           </SectionActions>
 
