@@ -12,7 +12,6 @@ import {
   HomepagePositioningStrip,
   PillarSectionEmbed,
   getPillarById,
-  HomepageExecutionLoopRestored,
   HomepageBridgeObserverRestored,
   HomepageTrustCtaRestored,
   HomepageRemainingPillars,
@@ -228,22 +227,9 @@ export function HomepageFullPageSections() {
             </div>
           </div>
 
-          <div className="mt-10">
-            {(() => {
-              const p = getPillarById('quant-research');
-              return p ? <PillarSectionEmbed pillar={p} index={2} /> : null;
-            })()}
-          </div>
-
           <SectionActions>
-            <Link href="/dashboard?tab=strategies" className={btnPrimary}>
-              Open research workspace
-            </Link>
-            <Link href="/features" className={btnGhost}>
-              Trading tools
-            </Link>
-            <Link href="/pricing" className={btnGhost}>
-              Compute tokens
+            <Link href="/library" className={btnPrimary}>
+              Library
             </Link>
           </SectionActions>
         </motion.div>
@@ -326,14 +312,13 @@ export function HomepageFullPageSections() {
             </table>
           </div>
 
-          <HomepageExecutionLoopRestored />
           <HomepageRemainingPillars />
 
           <SectionActions>
             <Link href="/dashboard" className={btnPrimary}>
               Open dashboard
             </Link>
-            <Link href="#deterministic-execution-loop" className={btnGhost}>
+            <Link href="/trade-engine#deterministic-execution-loop" className={btnGhost}>
               Signature workflow
             </Link>
             <Link href="/login" className={btnGhost}>
