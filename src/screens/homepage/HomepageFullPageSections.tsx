@@ -242,7 +242,7 @@ export function HomepageFullPageSections() {
             id="hp-history-title"
             className="max-w-3xl font-display text-3xl font-medium leading-tight tracking-tight text-neutral-50 sm:text-4xl lg:text-[2.75rem]"
           >
-            Every trade teaches you something. Stop forgetting it.
+            There Is A Story In Every Trade
           </h2>
           <p className="mt-4 max-w-3xl text-sm font-light leading-relaxed text-zinc-400 sm:text-base">
             P&L tracking. Decision review. Performance broken down by strategy, symbol, and session. This is what makes you

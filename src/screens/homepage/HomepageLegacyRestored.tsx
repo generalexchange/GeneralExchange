@@ -21,7 +21,6 @@ import {
   PositioningIntegrationDiagram,
   ExecutionLoopIllustration,
   BridgeObserverCtaIllustration,
-  TrustLineageIllustration,
 } from '@/components/homepage/HomepageMechanicsIllustrations';
 
 export const BRIDGE_OBSERVER_ORIGIN = 'https://bridgeobserver.com';
@@ -262,26 +261,30 @@ export function HomepageExecutionLoopRestored() {
 
 export function HomepageBridgeObserverRestored() {
   return (
-    <div className="relative overflow-hidden rounded-xl border border-white/[0.08] bg-gradient-to-br from-charcoal via-charcoal to-[#0c1012] py-11 sm:py-14">
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.55] bg-[radial-gradient(ellipse_75%_90%_at_100%_-10%,rgba(46,90,58,0.18),transparent_55%)]"
-        aria-hidden
-      />
-      <div className="relative mx-auto max-w-content px-4 sm:px-6 lg:px-10">
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)_auto] lg:items-center lg:gap-12">
-          <div className="rounded-lg border border-white/[0.08] bg-black/20 p-4 sm:p-5">
+    <div className="rounded-xl border" style={{ backgroundColor: BAND.bg00, borderColor: BAND.border }}>
+      <div className="mx-auto max-w-content px-4 py-10 sm:px-6 sm:py-12 lg:px-10">
+        <div
+          className="grid gap-8 rounded-lg border p-6 shadow-[0_8px_40px_-20px_rgba(46,90,58,0.12)] sm:gap-10 sm:p-8 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)_auto] lg:items-center lg:gap-12"
+          style={{ borderColor: BAND.border, backgroundColor: BAND.plaque }}
+        >
+          <div
+            className="flex justify-center rounded-lg border p-4 sm:p-5 lg:justify-start"
+            style={{ borderColor: BAND.border, backgroundColor: 'rgba(26,26,26,0.92)' }}
+          >
             <BridgeObserverCtaIllustration />
           </div>
           <div className="min-w-0">
-            <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-tan/90">Tokenization layer</p>
-            <h2 className="mt-3 font-display text-2xl font-medium tracking-tight text-neutral-50 sm:text-3xl">
+            <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.22em]" style={{ color: BAND.text60 }}>
+              Tokenization layer
+            </p>
+            <h2 className="mt-3 font-display text-2xl font-medium tracking-tight sm:text-3xl" style={{ color: BAND.text }}>
               Narrative intelligence, entitled like any other workload
             </h2>
-            <p className="mt-4 max-w-prose text-sm font-light leading-relaxed text-zinc-400 sm:text-[15px] sm:leading-relaxed">
+            <p className="mt-4 max-w-prose text-sm font-light leading-relaxed sm:text-[15px] sm:leading-relaxed" style={{ color: BAND.text70 }}>
               Score and route headlines, filings, and macro events into the same limits, queues, and audit receipts as trading
               and compute—so desks fund intelligence with explicit credits instead of shadow feeds.
             </p>
-            <p className="mt-4 font-mono text-[11px] leading-relaxed text-zinc-500 tracking-wide">
+            <p className="mt-4 font-mono text-[11px] leading-relaxed tracking-wide" style={{ color: BAND.text60 }}>
               NLP → entitlement contracts → risk fabric · smart routing
             </p>
           </div>
@@ -296,7 +299,8 @@ export function HomepageBridgeObserverRestored() {
               href={BRIDGE_OBSERVER_ORIGIN}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-lg border border-white/[0.12] bg-white/[0.02] px-7 py-3.5 text-sm font-semibold text-neutral-200 transition-colors hover:border-tan/30 hover:bg-white/[0.05]"
+              className="inline-flex items-center justify-center rounded-lg border px-7 py-3.5 text-sm font-semibold transition-colors hover:bg-black/[0.04]"
+              style={{ borderColor: BAND.border, color: BAND.text }}
             >
               bridgeobserver.com
             </a>
@@ -312,7 +316,7 @@ export function HomepageTrustCtaRestored() {
     <div className="rounded-xl border border-white/[0.08]" style={{ backgroundColor: BAND.bg00, color: BAND.text, borderColor: BAND.border }}>
       <div className="mx-auto max-w-content px-4 py-10 sm:px-6 sm:py-12 lg:px-10">
         <div
-          className="grid gap-8 rounded-lg border p-6 shadow-[0_8px_40px_-20px_rgba(46,90,58,0.12)] sm:p-8 lg:grid-cols-[minmax(0,300px)_1fr] lg:items-start lg:gap-12"
+          className="grid gap-8 rounded-lg border p-6 shadow-[0_8px_40px_-20px_rgba(46,90,58,0.12)] sm:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start lg:gap-12"
           style={{ borderColor: BAND.border, backgroundColor: BAND.plaque }}
         >
           <div className="min-w-0">
@@ -326,9 +330,6 @@ export function HomepageTrustCtaRestored() {
               Signals inherit scopes, roles, and hashes so research, release, and attestation stay separated—mirroring how
               desks govern models and routes, not PDF attestations.
             </p>
-            <div className="mt-5 rounded-md border p-3 sm:p-4" style={{ borderColor: BAND.border, backgroundColor: BAND.bg00 }}>
-              <TrustLineageIllustration />
-            </div>
           </div>
           <div className="flex min-w-0 flex-col justify-between gap-8">
             <div className="grid gap-5 sm:grid-cols-2">
