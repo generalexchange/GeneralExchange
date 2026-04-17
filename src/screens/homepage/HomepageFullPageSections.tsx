@@ -75,25 +75,6 @@ function PayoffCurveSvg() {
   );
 }
 
-function EquityCurveSvg() {
-  return (
-    <svg viewBox="0 0 720 140" className="h-auto w-full text-zinc-500" aria-hidden>
-      <line x1="0" y1="120" x2="720" y2="120" stroke="currentColor" strokeOpacity="0.2" strokeWidth="1" />
-      <path
-        d="M 0 100 L 80 95 L 160 102 L 240 78 L 320 88 L 400 62 L 480 70 L 560 48 L 640 55 L 720 38"
-        fill="none"
-        stroke="rgb(46,90,58)"
-        strokeWidth="1.75"
-        strokeOpacity="0.85"
-      />
-      <path
-        d="M 0 100 L 80 95 L 160 102 L 240 78 L 320 88 L 400 62 L 480 70 L 560 48 L 640 55 L 720 38 L 720 120 L 0 120 Z"
-        fill="rgba(46,90,58,0.12)"
-      />
-    </svg>
-  );
-}
-
 const STRATEGY_ROWS = [
   { name: 'Mean Reversion', sym: 'SPY', tf: '15min', ran: '2026-04-12' },
   { name: 'Momentum Breakout', sym: 'QQQ', tf: '1hr', ran: '2026-04-11' },
@@ -250,27 +231,7 @@ export function HomepageFullPageSections() {
             better.
           </p>
 
-          <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-5">
-            {(
-              [
-                ['Win Rate', '62.4%'],
-                ['Avg R/R', '1 : 1.8'],
-                ['Best Strategy', 'Momentum Breakout'],
-              ] as const
-            ).map(([k, v]) => (
-              <div key={k} className="rounded-xl border border-white/[0.08] bg-charcoal/70 px-5 py-6 text-center sm:text-left">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-zinc-600">{k}</p>
-                <p className="mt-2 font-display text-2xl font-medium text-tan sm:text-3xl">{v}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-10 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-5 sm:px-6 sm:py-6">
-            <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-zinc-600">Equity curve</p>
-            <EquityCurveSvg />
-          </div>
-
-          <div className="mt-8 overflow-x-auto rounded-xl border border-white/[0.08]">
+          <div className="mt-10 overflow-x-auto rounded-xl border border-white/[0.08]">
             <table className="w-full min-w-[640px] text-left text-xs sm:text-sm">
               <thead>
                 <tr className="border-b border-white/[0.08] bg-white/[0.03] text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
