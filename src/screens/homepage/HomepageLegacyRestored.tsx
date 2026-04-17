@@ -21,7 +21,7 @@ import {
   ExecutionLoopIllustration,
   BridgeObserverCtaIllustration,
 } from '@/components/homepage/HomepageMechanicsIllustrations';
-import { PositioningIntegrationThree } from '@/components/homepage/PositioningIntegrationThree';
+import { PositioningCoinIllustration } from '@/components/homepage/PositioningCoinIllustration';
 
 const BAND = {
   bg00: '#ECE8E0',
@@ -188,7 +188,7 @@ export function HomepagePositioningStrip() {
             </p>
           </div>
           <div className="rounded-lg border p-4 sm:p-5" style={{ borderColor: BAND.border, backgroundColor: BAND.plaque }}>
-            <PositioningIntegrationThree theme="light" />
+            <PositioningCoinIllustration theme="light" />
           </div>
         </div>
       </div>
