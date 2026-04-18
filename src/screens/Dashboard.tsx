@@ -12,7 +12,6 @@ import { ProfileMenu } from '../components/ProfileMenu';
 import { StockSearchResults } from '../components/StockSearchResults';
 import { MarketChart } from '../components/dashboard/MarketChart';
 import { OrderBookPreview } from '../components/dashboard/OrderBookPreview';
-import { IntelligenceStatusBar } from '../components/dashboard/IntelligenceStatusBar';
 import { TradeEngineModal } from '../components/dashboard/TradeEngineModal';
 import { PortfolioAnalyticsModal } from '../components/dashboard/PortfolioAnalyticsModal';
 import { ChartSkeleton, OrderBookSkeleton } from '../components/dashboard/DashboardSkeletons';
@@ -217,10 +216,6 @@ export const Dashboard: React.FC = () => {
 
           {view === 'overview' && (
             <>
-              <motion.div {...sectionItem}>
-                <IntelligenceStatusBar key={selectedModel} {...intelligenceRibbon} />
-              </motion.div>
-
               <motion.section className="mb-10 sm:mb-12" aria-labelledby="market-session-title" {...sectionItem}>
                 <h2 id="market-session-title" className="sr-only">
                   Paper session · tape and depth
@@ -230,7 +225,11 @@ export const Dashboard: React.FC = () => {
                     {loading ? (
                       <ChartSkeleton className="min-h-[420px] sm:min-h-[480px]" />
                     ) : (
-                      <MarketChart data={MARKET_SERIES} onOpenAnalytics={handleOpenAnalytics} />
+                      <MarketChart
+                        data={MARKET_SERIES}
+                        onOpenAnalytics={handleOpenAnalytics}
+                        intelligenceRibbon={intelligenceRibbon}
+                      />
                     )}
                   </div>
                   <div className="lg:col-span-1">

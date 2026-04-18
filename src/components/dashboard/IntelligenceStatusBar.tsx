@@ -279,6 +279,41 @@ function IntelligenceModal({
   );
 }
 
+/** Read-only copy of Edge / Hit / Vol tiles (e.g. chart hover snapshot). */
+export function SessionIntelRibbonSummary({ ribbon }: { ribbon: IntelligenceRibbonProps }) {
+  return (
+    <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-2.5">
+      <div
+        className={`min-w-0 flex-1 basis-[calc(50%-0.25rem)] sm:basis-0 sm:flex-1 rounded-lg border bg-white/[0.02] px-2.5 py-2 text-left ${bandAccent(ribbon.edgeBand)}`}
+      >
+        <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-zinc-600">Edge</p>
+        <p className="mt-0.5 text-[11px] sm:text-xs font-medium text-zinc-200 leading-tight line-clamp-2">{ribbon.edgeTitle}</p>
+        <p className="mt-0.5 text-[10px] text-zinc-500 truncate">{ribbon.modelSlug}</p>
+      </div>
+      <div className="min-w-0 flex-1 basis-[calc(50%-0.25rem)] sm:basis-0 sm:flex-1 rounded-md border border-white/[0.08] bg-white/[0.02] px-2 py-1.5 text-left">
+        <p className="text-[8px] font-semibold uppercase tracking-[0.16em] text-zinc-600">Hit</p>
+        <p className="mt-0.5 flex items-baseline gap-0.5 tabular-nums leading-none">
+          <span className="text-[13px] font-semibold text-zinc-100">{ribbon.liveStrategyAlignmentPct.toFixed(1)}</span>
+          <span className="text-[9px] font-medium text-zinc-500">%</span>
+        </p>
+      </div>
+      <div className="min-w-0 flex-[1_1_100%] sm:flex-1 rounded-md border border-white/[0.08] bg-white/[0.02] px-2 py-1.5 text-left">
+        <p className="text-[8px] font-semibold uppercase tracking-[0.16em] text-zinc-600">Vol</p>
+        <div className="mt-1 flex items-center gap-2">
+          <VolBalanceMeter v={ribbon.volBalanceIndicator} narrow />
+          <span
+            className="text-[11px] font-semibold tabular-nums leading-none"
+            style={{ color: volBalanceHue(ribbon.volBalanceIndicator) }}
+          >
+            {ribbon.volBalanceIndicator >= 0 ? '+' : ''}
+            {ribbon.volBalanceIndicator.toFixed(2)}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export const IntelligenceStatusBar: React.FC<IntelligenceRibbonProps> = (ribbon) => {
   const [panel, setPanel] = useState<ModalPanel>(null);
 

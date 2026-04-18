@@ -1,5 +1,6 @@
 import React, { useId, useMemo, useState } from 'react';
-import { Settings } from 'lucide-react';
+import { Save, Settings } from 'lucide-react';
+import { SessionIntelRibbonSummary } from './IntelligenceStatusBar';
 import {
   Area as ReArea,
   Bar as ReBar,
@@ -13,6 +14,7 @@ import {
 } from 'recharts';
 import {
   enrichMarketWithPaperEquity,
+  type IntelligenceRibbonProps,
   type MarketPointWithEquity,
 } from './mockMlDashboardData';
 import {
@@ -31,6 +33,8 @@ export interface MarketPoint {
 interface MarketChartProps {
   data: MarketPoint[];
   onOpenAnalytics: () => void;
+  /** When set, a save icon shows Edge / Hit / Vol summary on hover (overview dashboard). */
+  intelligenceRibbon?: IntelligenceRibbonProps;
 }
 
 /** Luxury monochrome: primary line / emphasis vs muted drift */
@@ -69,7 +73,7 @@ const Tip = ({
   );
 };
 
-export const MarketChart: React.FC<MarketChartProps> = ({ data: baseData, onOpenAnalytics }) => {
+export const MarketChart: React.FC<MarketChartProps> = ({ data: baseData, onOpenAnalytics, intelligenceRibbon }) => {
   const gid = useId().replace(/:/g, '');
   const [range, setRange] = useState<PaperChartRange>('live');
 
@@ -103,19 +107,39 @@ export const MarketChart: React.FC<MarketChartProps> = ({ data: baseData, onOpen
   const volId = `vol-${gid}`;
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-white/[0.06] bg-[#0a0a0a] shadow-[0_24px_64px_-32px_rgba(0,0,0,0.9)]">
+    <div className="relative overflow-x-hidden overflow-y-visible rounded-3xl border border-white/[0.06] bg-[#0a0a0a] shadow-[0_24px_64px_-32px_rgba(0,0,0,0.9)]">
       <div className="pointer-events-none absolute inset-0 rounded-3xl bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(255,255,255,0.04),transparent_50%)]" />
 
       <div className="relative p-4 sm:p-6 lg:p-7">
-        <button
-          type="button"
-          onClick={onOpenAnalytics}
-          className="absolute right-4 top-4 z-20 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-zinc-400 transition-all hover:border-white/20 hover:bg-white/[0.1] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 sm:right-6 sm:top-6 sm:h-10 sm:w-10"
-          aria-label="Open portfolio analytics"
-        >
-          <Settings className="h-[18px] w-[18px] sm:h-5 sm:w-5" strokeWidth={1.75} />
-        </button>
-        <div className="flex flex-col gap-4 lg:gap-5 pr-11 sm:pr-14">
+        <div className="absolute right-4 top-4 z-20 flex flex-row-reverse items-center gap-2 sm:right-6 sm:top-6">
+          <button
+            type="button"
+            onClick={onOpenAnalytics}
+            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-zinc-400 transition-all hover:border-white/20 hover:bg-white/[0.1] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 sm:h-10 sm:w-10"
+            aria-label="Open portfolio analytics"
+          >
+            <Settings className="h-[18px] w-[18px] sm:h-5 sm:w-5" strokeWidth={1.75} />
+          </button>
+          {intelligenceRibbon ? (
+            <div className="group relative">
+              <button
+                type="button"
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-zinc-400 transition-all hover:border-white/20 hover:bg-white/[0.1] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 sm:h-10 sm:w-10"
+                aria-label="Session intelligence snapshot — hover for Edge, Hit rate, and Volatility"
+              >
+                <Save className="h-[18px] w-[18px] sm:h-5 sm:w-5" strokeWidth={1.75} aria-hidden />
+              </button>
+              <div
+                className="pointer-events-none invisible absolute right-0 bottom-full z-[60] mb-2 w-[min(calc(100vw-2rem),22rem)] translate-y-1 rounded-xl border border-white/10 bg-[#0b0b0b] p-3 opacity-0 shadow-2xl shadow-black/50 transition duration-150 ease-out group-hover:visible group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100"
+                role="tooltip"
+              >
+                <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-zinc-500">Snapshot</p>
+                <SessionIntelRibbonSummary ribbon={intelligenceRibbon} />
+              </div>
+            </div>
+          ) : null}
+        </div>
+        <div className="flex flex-col gap-4 lg:gap-5 pr-24 sm:pr-28">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <span className="inline-flex h-1.5 w-1.5 rounded-full bg-zinc-400" />
