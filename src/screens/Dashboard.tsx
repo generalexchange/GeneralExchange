@@ -68,6 +68,7 @@ export const Dashboard: React.FC = () => {
   const [tradeEngineModalOpen, setTradeEngineModalOpen] = useState(false);
   const [portfolioAnalyticsOpen, setPortfolioAnalyticsOpen] = useState(false);
   const [actionFx, setActionFx] = useState<{ id: number; label: string } | null>(null);
+  const [intelTapeHover, setIntelTapeHover] = useState(false);
   const predictionData = getPredictionSeriesForModel(OVERVIEW_MODEL);
   const modelEdge = MODEL_EDGE_BY_MODEL[OVERVIEW_MODEL];
   const optionsContext = OPTIONS_CONTEXT_BY_MODEL[OVERVIEW_MODEL];
@@ -183,7 +184,11 @@ export const Dashboard: React.FC = () => {
                 <h2 id="market-session-title" className="sr-only">
                   Paper session · tape and depth
                 </h2>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5">
+                <div
+                  className={`grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5 transition-[filter,opacity] duration-200 ease-out ${
+                    intelTapeHover ? 'blur-[6px] opacity-[0.72]' : ''
+                  }`}
+                >
                   <div className="lg:col-span-2">
                     {loading ? (
                       <ChartSkeleton className="min-h-[420px] sm:min-h-[480px]" />
@@ -192,6 +197,7 @@ export const Dashboard: React.FC = () => {
                         data={MARKET_SERIES}
                         onOpenAnalytics={handleOpenAnalytics}
                         intelligenceRibbon={intelligenceRibbon}
+                        onIntelligenceTapeHoverChange={setIntelTapeHover}
                       />
                     )}
                   </div>

@@ -1,4 +1,5 @@
-import React, { useId, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Settings } from 'lucide-react';
 import { SessionIntelRibbonSummary } from './IntelligenceStatusBar';
 import {
@@ -35,6 +36,8 @@ interface MarketChartProps {
   onOpenAnalytics: () => void;
   /** When set, a cassette control shows Edge / Hit / Vol summary on hover (overview dashboard). */
   intelligenceRibbon?: IntelligenceRibbonProps;
+  /** Fires when cassette snapshot hover opens/closes (dashboard uses this to blur the session grid). */
+  onIntelligenceTapeHoverChange?: (open: boolean) => void;
 }
 
 function CassetteTapeIcon({ className }: { className?: string }) {
@@ -94,7 +97,12 @@ const Tip = ({
   );
 };
 
-export const MarketChart: React.FC<MarketChartProps> = ({ data: baseData, onOpenAnalytics, intelligenceRibbon }) => {
+export const MarketChart: React.FC<MarketChartProps> = ({
+  data: baseData,
+  onOpenAnalytics,
+  intelligenceRibbon,
+  onIntelligenceTapeHoverChange,
+}) => {
   const gid = useId().replace(/:/g, '');
   const [range, setRange] = useState<PaperChartRange>('live');
 
@@ -127,6 +135,63 @@ export const MarketChart: React.FC<MarketChartProps> = ({ data: baseData, onOpen
   const areaId = `eq-${gid}`;
   const volId = `vol-${gid}`;
 
+  const tapeBtnRef = useRef<HTMLButtonElement>(null);
+  const tapeLeaveTimer = useRef<number | null>(null);
+  const [tapeHover, setTapeHover] = useState(false);
+  const [tapeAnchor, setTapeAnchor] = useState<{ top: number; right: number } | null>(null);
+
+  const clearTapeLeaveTimer = useCallback(() => {
+    if (tapeLeaveTimer.current !== null) {
+      window.clearTimeout(tapeLeaveTimer.current);
+      tapeLeaveTimer.current = null;
+    }
+  }, []);
+
+  const updateTapeAnchor = useCallback(() => {
+    const el = tapeBtnRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    setTapeAnchor({ top: r.bottom + 8, right: window.innerWidth - r.right });
+  }, []);
+
+  useEffect(() => {
+    if (!tapeHover) return;
+    updateTapeAnchor();
+    const onResize = () => updateTapeAnchor();
+    window.addEventListener('resize', onResize);
+    window.addEventListener('scroll', onResize, true);
+    return () => {
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('scroll', onResize, true);
+    };
+  }, [tapeHover, updateTapeAnchor]);
+
+  useEffect(() => {
+    onIntelligenceTapeHoverChange?.(tapeHover);
+  }, [tapeHover, onIntelligenceTapeHoverChange]);
+
+  useEffect(() => () => clearTapeLeaveTimer(), [clearTapeLeaveTimer]);
+
+  const tapePopover =
+    tapeHover && intelligenceRibbon && tapeAnchor && typeof document !== 'undefined'
+      ? createPortal(
+          <div
+            className="pointer-events-auto fixed z-[200] w-[min(calc(100vw-2rem),22rem)] rounded-xl border border-white/10 bg-[#0b0b0b] p-3 shadow-2xl shadow-black/50"
+            style={{ top: tapeAnchor.top, right: tapeAnchor.right }}
+            onMouseEnter={() => {
+              clearTapeLeaveTimer();
+              setTapeHover(true);
+            }}
+            onMouseLeave={() => setTapeHover(false)}
+            role="tooltip"
+          >
+            <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-zinc-500">Snapshot</p>
+            <SessionIntelRibbonSummary ribbon={intelligenceRibbon} />
+          </div>,
+          document.body,
+        )
+      : null;
+
   return (
     <div className="relative overflow-x-hidden overflow-y-visible rounded-3xl border border-white/[0.06] bg-[#0a0a0a] shadow-[0_24px_64px_-32px_rgba(0,0,0,0.9)]">
       <div className="pointer-events-none absolute inset-0 rounded-3xl bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(255,255,255,0.04),transparent_50%)]" />
@@ -142,22 +207,31 @@ export const MarketChart: React.FC<MarketChartProps> = ({ data: baseData, onOpen
             <Settings className="h-[18px] w-[18px] sm:h-5 sm:w-5" strokeWidth={1.75} />
           </button>
           {intelligenceRibbon ? (
-            <div className="group relative">
-              <button
-                type="button"
-                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-zinc-400 transition-all hover:border-white/20 hover:bg-white/[0.1] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 sm:h-10 sm:w-10"
-                aria-label="Session intelligence on tape — hover for Edge, Hit rate, and Volatility"
-              >
-                <CassetteTapeIcon className="h-[18px] w-[18px] sm:h-5 sm:w-5" />
-              </button>
-              <div
-                className="pointer-events-none invisible absolute right-0 bottom-full z-[60] mb-2 w-[min(calc(100vw-2rem),22rem)] translate-y-1 rounded-xl border border-white/10 bg-[#0b0b0b] p-3 opacity-0 shadow-2xl shadow-black/50 transition duration-150 ease-out group-hover:visible group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100"
-                role="tooltip"
-              >
-                <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-zinc-500">Snapshot</p>
-                <SessionIntelRibbonSummary ribbon={intelligenceRibbon} />
-              </div>
-            </div>
+            <button
+              ref={tapeBtnRef}
+              type="button"
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-zinc-400 transition-all hover:border-white/20 hover:bg-white/[0.1] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 sm:h-10 sm:w-10"
+              aria-label="Session intelligence on tape — hover for Edge, Hit rate, and Volatility"
+              aria-expanded={tapeHover}
+              onMouseEnter={() => {
+                clearTapeLeaveTimer();
+                setTapeHover(true);
+                queueMicrotask(() => updateTapeAnchor());
+              }}
+              onMouseLeave={() => {
+                tapeLeaveTimer.current = window.setTimeout(() => setTapeHover(false), 140);
+              }}
+              onFocus={() => {
+                clearTapeLeaveTimer();
+                setTapeHover(true);
+                queueMicrotask(() => updateTapeAnchor());
+              }}
+              onBlur={() => {
+                tapeLeaveTimer.current = window.setTimeout(() => setTapeHover(false), 140);
+              }}
+            >
+              <CassetteTapeIcon className="h-[18px] w-[18px] sm:h-5 sm:w-5" />
+            </button>
           ) : null}
         </div>
         <div className="flex flex-col gap-4 lg:gap-5 pr-24 sm:pr-28">
@@ -191,22 +265,6 @@ export const MarketChart: React.FC<MarketChartProps> = ({ data: baseData, onOpen
                 <span className="ml-1.5 tabular-nums text-zinc-500">{formatUsd(sessionOpenEquity)}</span>
               </span>
             </div>
-          </div>
-
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex flex-wrap items-center gap-4 text-[11px] text-zinc-500">
-              <span className="flex items-center gap-2">
-                <span className="h-px w-8 bg-zinc-300" />
-                Equity
-              </span>
-              <span className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-lg bg-zinc-600" />
-                Volume
-              </span>
-            </div>
-            <p className="max-w-md text-[11px] leading-snug text-zinc-600 sm:text-right">
-              Interval tabs rescale the mock tape.
-            </p>
           </div>
         </div>
 
@@ -307,6 +365,7 @@ export const MarketChart: React.FC<MarketChartProps> = ({ data: baseData, onOpen
           </div>
         </div>
       </div>
+      {tapePopover}
     </div>
   );
 };
