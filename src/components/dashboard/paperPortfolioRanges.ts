@@ -24,7 +24,7 @@ export const PAPER_RANGE_TABS: { id: PaperChartRange; label: string }[] = [
 ];
 
 export const PAPER_RANGE_PERIOD_LABEL: Record<PaperChartRange, string> = {
-  live: 'Session · mock tape',
+  live: 'Live',
   '1h': 'Last hour · mock',
   '1d': 'Today · mock',
   '1w': 'Past week · mock',
