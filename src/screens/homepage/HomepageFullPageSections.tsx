@@ -107,10 +107,14 @@ export function HomepageFullPageSections() {
             id="hp-risk-title"
             className="max-w-3xl font-display text-3xl font-medium leading-tight tracking-tight text-neutral-50 sm:text-4xl lg:text-[2.75rem]"
           >
-            Model the downside before you size the position.
+            Real Time Payoff Simulation
           </h2>
           <p className="mt-4 max-w-3xl text-sm font-light leading-relaxed text-zinc-400 sm:text-base">
-            Payoff modeling. Scenario simulation. Exposure visualization. Risk isn&apos;t a checkbox — it&apos;s the engine.
+            Exposure visualization is how you actually see the book: net and gross by name, Greeks and decay through the
+            session, where theta is earned or spent, and how concentration stacks across sectors, expiries, and venues—ladders,
+            heatmaps, and drill-downs in one surface so you are not reconciling three spreadsheets at midnight. The goal is a
+            live, legible picture of risk and capital before you size anything, not a static report that was already stale when
+            it left the queue.
           </p>
 
           <div className="mt-12 flex flex-col gap-10 lg:flex-row lg:items-stretch lg:gap-12">
