@@ -305,31 +305,36 @@ export function HomepageFullPageSections() {
           </h2>
           <p className="mt-4 text-lg font-light text-zinc-400 sm:text-xl">Our proprietary backtesting engine.</p>
 
-          <div className="mt-10 flex flex-col gap-10 lg:mt-14 lg:flex-row lg:items-stretch lg:gap-8 xl:gap-10">
-            <blockquote className="min-w-0 flex-1 border-l-2 border-institutional-green/50 pl-5 text-sm font-light leading-relaxed text-zinc-400 sm:pl-6 sm:text-base lg:max-w-none">
-              <p>
-                Backspace is where strategies are proven before capital is committed. Feed it a dataset, select your model —
-                XGBoost, LSTM, or Reinforcement Learning — and run your setup against real historical paths. Calibration
-                reports. Prediction vs actual overlays. Execution simulation. Backspace isn&apos;t a research toy — it&apos;s the
-                proof layer between your idea and your position.
-              </p>
-            </blockquote>
+          <blockquote className="mt-8 max-w-4xl border-l-2 border-institutional-green/50 pl-5 text-sm font-light leading-relaxed text-zinc-400 sm:pl-6 sm:text-base lg:mt-10">
+            <p>
+              Backspace is where strategies are proven before capital is committed. Feed it a dataset, select your model —
+              XGBoost, LSTM, or Reinforcement Learning — and run your setup against real historical paths. Calibration reports.
+              Prediction vs actual overlays. Execution simulation. Backspace isn&apos;t a research toy — it&apos;s the proof layer
+              between your idea and your position.
+            </p>
+          </blockquote>
 
-            <div
-              className="flex shrink-0 flex-row flex-wrap gap-2 lg:w-44 lg:flex-col lg:flex-nowrap lg:justify-center lg:gap-3"
-              aria-label="Backspace capabilities"
-            >
+          <div className="mt-8 flex flex-col gap-4 sm:mt-10 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+            <div className="flex flex-wrap items-center gap-2" aria-label="Backspace capabilities">
               {['Multi-Model', 'Dataset Import', 'QuantConnect Ready'].map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex justify-center rounded-full border border-white/[0.1] bg-white/[0.04] px-3 py-1.5 text-center text-[11px] font-medium text-zinc-400 lg:w-full lg:py-2"
+                  className="inline-flex justify-center rounded-full border border-white/[0.1] bg-white/[0.04] px-3 py-1.5 text-center text-[11px] font-medium text-zinc-400"
                 >
                   {tag}
                 </span>
               ))}
             </div>
+            <Link
+              href="/backspace"
+              className={`${btnGreen} inline-flex min-h-[48px] min-w-[10rem] shrink-0 items-center justify-center self-start px-8 py-3.5 sm:self-center`}
+            >
+              Backspace
+            </Link>
+          </div>
 
-            <div className="w-full shrink-0 rounded-2xl border border-white/[0.1] bg-charcoal/80 p-4 shadow-[0_20px_60px_-24px_rgba(0,0,0,0.55)] sm:p-5 lg:w-[min(100%,280px)] lg:max-w-[300px]">
+          <div className="mt-10 grid grid-cols-1 items-start gap-8 lg:mt-12 lg:grid-cols-2 lg:gap-10">
+            <div className="w-full rounded-2xl border border-white/[0.1] bg-charcoal/80 p-4 shadow-[0_20px_60px_-24px_rgba(0,0,0,0.55)] sm:p-5">
               <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-500">Backspace · preview</p>
               <div className="mt-3 rounded-lg border border-dashed border-white/[0.12] bg-white/[0.02] px-4 py-8 text-center">
                 <p className="text-xs text-zinc-400">Drop dataset or browse</p>
@@ -355,19 +360,10 @@ export function HomepageFullPageSections() {
                 </svg>
               </div>
             </div>
-          </div>
-
-          <div className="mt-12 flex justify-center lg:mt-14 lg:justify-end">
-            <Link
-              href="/backspace"
-              className={`${btnGreen} inline-flex min-h-[48px] min-w-[10rem] items-center justify-center px-8 py-3.5`}
-            >
-              Backspace
-            </Link>
-          </div>
-
-          <div className="mt-16 space-y-8 sm:mt-20">
             <HomepageBridgeObserverRestored />
+          </div>
+
+          <div className="mt-10 sm:mt-12">
             <HomepageTrustCtaRestored />
           </div>
         </motion.div>
