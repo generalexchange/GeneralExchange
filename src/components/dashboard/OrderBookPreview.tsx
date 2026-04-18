@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BookOpen, Check, X } from 'lucide-react';
 import { getCatalogStockBySymbol, listUniqueStocks, type CatalogStock } from '../../data/mockStocksCatalog';
+import { getPaperAccountSnapshot, MARKET_SERIES } from './mockMlDashboardData';
 
 function BinocularsIcon({ className }: { className?: string }) {
   return (
@@ -90,6 +91,10 @@ function formatUsdSigned(n: number): string {
   const sign = n >= 0 ? '+' : '-';
   const body = Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   return `${sign}$${body}`;
+}
+
+function formatUsdPlain(n: number): string {
+  return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
 }
 
 function buildSignalPicks(symbol: string, spot: number): SignalPickRow[] {
@@ -230,7 +235,6 @@ export const OrderBookPreview: React.FC = () => {
   );
   const [bookModalOpen, setBookModalOpen] = useState(false);
   const [watchlistOpen, setWatchlistOpen] = useState(false);
-  const [pnlTick, setPnlTick] = useState(0);
   const [feedRows, setFeedRows] = useState<FeedRow[]>([]);
   const [watchedBaseIds, setWatchedBaseIds] = useState<Set<string>>(() => new Set());
   const [positions, setPositions] = useState<OptionPositionRow[]>(() => {
@@ -247,11 +251,6 @@ export const OrderBookPreview: React.FC = () => {
     () => buildSignalPicks(selected.symbol, selected.price).slice(0, 5),
     [selected.symbol, selected.price],
   );
-
-  useEffect(() => {
-    const id = window.setInterval(() => setPnlTick((t) => t + 1), 2200);
-    return () => window.clearInterval(id);
-  }, []);
 
   useEffect(() => {
     if (!bookModalOpen && !watchlistOpen) return;
@@ -339,10 +338,7 @@ export const OrderBookPreview: React.FC = () => {
 
   useEffect(() => () => clearResumeTimer(), []);
 
-  const basePnl = 1243 + hashStr(selected.symbol) % 200;
-  const headerPnl = Math.round((basePnl + Math.sin(pnlTick * 0.35) * 55) * 100) / 100;
-  const headerPnlPct = 2.4 + Math.sin(pnlTick * 0.28) * 0.35;
-  const headerPnlUp = headerPnl >= 0;
+  const paperAccount = useMemo(() => getPaperAccountSnapshot(MARKET_SERIES), []);
 
   const optionsPnlUsd = useMemo(
     () => Math.round(positions.reduce((s, p) => s + p.pnlUsd, 0) * 100) / 100,
@@ -357,6 +353,15 @@ export const OrderBookPreview: React.FC = () => {
       ? 0
       : Math.round((optionsPnlUsd / optionsCostBasis) * 10000) / 100;
   const optionsPnlUp = optionsPnlUsd >= 0;
+
+  const watchedListLabels = useMemo(() => {
+    const out: string[] = [];
+    for (const id of watchedBaseIds) {
+      const pick = topPool.find((p) => p.id === id);
+      out.push(pick?.label ?? id.replace(/\|/g, ' · '));
+    }
+    return out;
+  }, [watchedBaseIds, topPool]);
 
   const modalCurve = useMemo(() => buildModalPnLPath(selected.price, 640, 200, 24), [selected.price]);
 
@@ -412,70 +417,7 @@ export const OrderBookPreview: React.FC = () => {
       <button
         type="button"
         onClick={() => setBookModalOpen(true)}
-        className="mb-3 w-full rounded-lg border border-white/[0.08] bg-black/25 px-3 py-2.5 text-left transition-colors hover:border-white/[0.12] hover:bg-white/[0.04]"
-      >
-        <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500">Return · book</p>
-        <p className="mt-1 font-sans text-xs text-zinc-400">
-          Open for active orders, fills, and risk detail. Same view as Options P&amp;L below.
-        </p>
-      </button>
-
-      <div className="mb-3 rounded-lg border border-white/[0.08] bg-black/30 px-3 py-2.5">
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500">Active orders</span>
-          <button
-            type="button"
-            onClick={() => setBookModalOpen(true)}
-            className="shrink-0 font-sans text-[10px] font-semibold uppercase tracking-wide text-zinc-400 transition-colors hover:text-zinc-200"
-          >
-            Manage
-          </button>
-        </div>
-        <ul className="mt-2 space-y-2" aria-label="Open option positions">
-          {positions.slice(0, 4).map((p) => {
-            const up = p.pnlUsd >= 0;
-            return (
-              <li
-                key={p.id}
-                className="flex items-center justify-between gap-2 border-b border-white/[0.05] pb-2 last:border-0 last:pb-0"
-              >
-                <span className="min-w-0 truncate font-mono text-[12px] font-semibold text-zinc-200">{p.contract}</span>
-                <span className="shrink-0 font-mono text-[11px] tabular-nums text-zinc-500">×{p.qty}</span>
-                <span className={`shrink-0 font-mono text-[11px] font-semibold tabular-nums ${up ? 'text-emerald-400' : 'text-rose-400'}`}>
-                  {formatUsdSigned(p.pnlUsd)}
-                </span>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-
-      <button
-        type="button"
-        onClick={() => setWatchlistOpen(true)}
-        className="mb-3 flex items-center gap-1.5 self-start rounded-md px-0.5 py-1 font-sans text-[12px] text-zinc-500 transition-colors hover:text-zinc-300"
-      >
-        <BinocularsIcon className="shrink-0 text-current" />
-        Watchlist
-      </button>
-
-      <div className="mb-3 flex w-full items-center justify-between rounded-lg border border-white/[0.08] bg-black/35 px-3 py-2.5">
-        <span className="font-mono text-base font-bold tabular-nums text-white">
-          {selected.symbol} {selected.price.toFixed(2)}
-        </span>
-        <span className={`font-mono text-base font-bold tabular-nums ${headerPnlUp ? 'text-emerald-400' : 'text-rose-400'}`}>
-          {formatUsdSigned(headerPnl)}{' '}
-          <span className="text-sm font-semibold">
-            ({headerPnlUp ? '+' : ''}
-            {headerPnlPct.toFixed(1)}%)
-          </span>
-        </span>
-      </div>
-
-      <button
-        type="button"
-        onClick={() => setBookModalOpen(true)}
-        className="mb-3 w-full rounded-lg border border-white/[0.08] bg-black/25 py-3 text-center transition-colors hover:bg-white/[0.05]"
+        className="mb-3 w-full rounded-lg border border-white/[0.08] bg-black/30 px-3 py-3 text-center transition-colors hover:border-white/[0.12] hover:bg-white/[0.05]"
       >
         {positions.length === 0 ? (
           <>
@@ -493,6 +435,18 @@ export const OrderBookPreview: React.FC = () => {
             <p className="mt-1 font-sans text-[11px] text-zinc-500">Options P&amp;L</p>
           </>
         )}
+      </button>
+
+      <button
+        type="button"
+        onClick={() => setWatchlistOpen(true)}
+        className="mb-3 flex w-full items-center justify-between gap-3 rounded-lg border border-white/[0.1] bg-black/25 px-3 py-2.5 text-left transition-colors hover:border-tan/25 hover:bg-white/[0.04]"
+      >
+        <span className="flex items-center gap-2">
+          <BinocularsIcon className="shrink-0 text-zinc-400" />
+          <span className="font-sans text-sm font-semibold text-zinc-200">Watchlist</span>
+        </span>
+        <span className="font-sans text-[11px] text-zinc-500">{watchedBaseIds.size} pinned</span>
       </button>
 
       <div
@@ -585,7 +539,7 @@ export const OrderBookPreview: React.FC = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.2, ease: 'easeOut' }}
-                  className="relative w-full max-w-md rounded-xl border border-white/[0.1] bg-[#1a1a1a] p-6 shadow-2xl"
+                  className="relative w-full max-w-lg rounded-xl border border-white/[0.1] bg-[#1a1a1a] p-6 shadow-2xl"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <button
@@ -599,8 +553,42 @@ export const OrderBookPreview: React.FC = () => {
                   <h2 id="watchlist-title" className="pr-12 font-sans text-lg font-semibold text-white">
                     Watchlist
                   </h2>
-                  <p className="mt-3 font-sans text-sm text-zinc-500">
-                    Watchlist sync is not connected yet. You will pin symbols and option legs here.
+
+                  <div className="mt-5 rounded-lg border border-white/[0.08] bg-black/30 p-4">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500">Paper account value</p>
+                    <p className="mt-1 font-mono text-2xl font-bold tabular-nums text-white">{formatUsdPlain(paperAccount.equityNow)}</p>
+                    <p
+                      className={`mt-1 font-mono text-sm font-semibold tabular-nums ${paperAccount.dayChange >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}
+                    >
+                      {formatUsdPlain(paperAccount.dayChange)} session ({paperAccount.dayChangePercent >= 0 ? '+' : ''}
+                      {paperAccount.dayChangePercent.toFixed(2)}%)
+                    </p>
+                    <p className="mt-2 font-sans text-xs text-zinc-500">
+                      Buying power{' '}
+                      <span className="font-mono text-zinc-300">{formatUsdPlain(paperAccount.buyingPower)}</span>
+                    </p>
+                    <p className="mt-1 font-sans text-[11px] text-zinc-600">Mock path from dashboard tape · not a live broker feed</p>
+                  </div>
+
+                  <div className="mt-5">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500">Pinned from signals</p>
+                    {watchedListLabels.length === 0 ? (
+                      <p className="mt-2 font-sans text-sm text-zinc-500">
+                        Nothing pinned yet. Use <span className="font-semibold text-zinc-400">Watch</span> on a signal row below.
+                      </p>
+                    ) : (
+                      <ul className="mt-2 max-h-48 space-y-2 overflow-y-auto rounded-lg border border-white/[0.06] bg-black/25 p-3">
+                        {watchedListLabels.map((label, i) => (
+                          <li key={`${label}-${i}`} className="font-mono text-sm text-zinc-200">
+                            {label}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+
+                  <p className="mt-4 font-sans text-xs text-zinc-600">
+                    External watchlist sync is not connected. Pins are stored in this session only.
                   </p>
                 </motion.div>
               </motion.div>
