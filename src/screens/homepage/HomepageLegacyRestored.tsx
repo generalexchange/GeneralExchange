@@ -15,8 +15,6 @@ import {
   PillarCardMechanicAccent,
   ExecutionLoopIllustration,
 } from '@/components/homepage/HomepageMechanicsIllustrations';
-import { BridgeObserverWalletThree } from '@/components/homepage/BridgeObserverWalletThree';
-
 const BAND = {
   bg00: '#ECE8E0',
   bg10: '#E3DDD2',
@@ -219,38 +217,6 @@ export function HomepageExecutionLoopRestored() {
   );
 }
 
-export function HomepageBridgeObserverRestored() {
-  return (
-    <div className="rounded-xl border" style={{ backgroundColor: BAND.bg00, borderColor: BAND.border }}>
-      <div className="mx-auto max-w-content px-4 py-10 sm:px-6 sm:py-12 lg:px-10">
-        <div
-          className="grid gap-8 rounded-lg border p-6 shadow-[0_8px_40px_-20px_rgba(46,90,58,0.12)] sm:gap-10 sm:p-8 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)] lg:items-center lg:gap-12"
-          style={{ borderColor: BAND.border, backgroundColor: BAND.plaque }}
-        >
-          <div
-            className="flex justify-center rounded-lg border p-4 sm:p-5 lg:justify-start"
-            style={{ borderColor: BAND.border, backgroundColor: 'rgba(26,26,26,0.92)' }}
-          >
-            <BridgeObserverWalletThree />
-          </div>
-          <div className="flex min-w-0 flex-col items-center gap-4 text-center lg:items-start lg:text-left">
-            <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.22em]" style={{ color: BAND.text60 }}>
-              Bridge Observer
-            </p>
-            <h2 className="font-display text-2xl font-medium tracking-tight sm:text-3xl" style={{ color: BAND.text }}>
-              Wallet flows with audit-ready context
-            </h2>
-            <p className="max-w-prose text-sm font-light leading-relaxed sm:text-[15px] sm:leading-relaxed" style={{ color: BAND.text70 }}>
-              Funded paths and observer hooks stay visible in the same surface as execution—so research and risk see the same
-              signals the desk does.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export function HomepageTrustCtaRestored() {
   return (
     <div className="rounded-xl border border-white/[0.08]" style={{ backgroundColor: BAND.bg00, color: BAND.text, borderColor: BAND.border }}>
@@ -292,8 +258,9 @@ export function HomepageTrustCtaRestored() {
                     Modular dataset audit
                   </p>
                   <p className="mt-1.5 text-xs font-light leading-relaxed" style={{ color: BAND.text70 }}>
-                    Sign off or export one slice at a time; hashes and retention ride with each module so audits stay scoped and
-                    simple.
+                    You work on one small chunk at a time—review it, approve it, or download it. Each chunk carries its own ID
+                    tags and storage rules, so auditors and partners can verify what they need without rebuilding the whole news
+                    history by hand.
                   </p>
                 </div>
               </div>
@@ -303,7 +270,7 @@ export function HomepageTrustCtaRestored() {
                 href="/bridge-observer"
                 className="inline-flex items-center justify-center rounded-lg bg-institutional-green px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-institutional-green-muted"
               >
-                Open Bridge Observer
+                Bridge Observer
               </Link>
               <Link
                 href="/request-access"

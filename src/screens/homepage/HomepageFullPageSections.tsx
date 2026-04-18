@@ -8,11 +8,7 @@ import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Hero } from '@/components/Hero';
-import {
-  HomepageBridgeObserverRestored,
-  HomepageTrustCtaRestored,
-  HomepageRemainingPillars,
-} from './HomepageLegacyRestored';
+import { HomepageTrustCtaRestored, HomepageRemainingPillars } from './HomepageLegacyRestored';
 
 function SectionActions({ children }: { children: React.ReactNode }) {
   return (
@@ -380,8 +376,7 @@ export function HomepageFullPageSections() {
             </div>
           </div>
 
-          <div className="mt-12 space-y-8">
-            <HomepageBridgeObserverRestored />
+          <div className="mt-12">
             <HomepageTrustCtaRestored />
           </div>
         </motion.div>
