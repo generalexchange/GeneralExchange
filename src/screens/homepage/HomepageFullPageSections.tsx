@@ -270,6 +270,12 @@ export function HomepageFullPageSections() {
             </table>
           </div>
 
+          <SectionActions>
+            <Link href="/almanac" className={btnPrimary}>
+              Almanac
+            </Link>
+          </SectionActions>
+
           <HomepageRemainingPillars />
         </motion.div>
       </section>
