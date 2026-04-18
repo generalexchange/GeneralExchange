@@ -47,9 +47,13 @@ function SectionNum({ n, label }: { n: string; label: string }) {
   );
 }
 
-function PayoffCurveSvg() {
+function PayoffCurveSvg({ className = '' }: { className?: string }) {
   return (
-    <svg viewBox="0 0 400 220" className="h-auto w-full max-w-lg text-zinc-500" aria-hidden>
+    <svg
+      viewBox="0 0 400 220"
+      className={`h-auto w-full min-h-[200px] max-w-none text-zinc-500 sm:min-h-[240px] lg:min-h-[260px] ${className}`}
+      aria-hidden
+    >
       <defs>
         <linearGradient id="hp-payoff-fill" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="rgba(46,90,58,0.35)" />
@@ -117,22 +121,22 @@ export function HomepageFullPageSections() {
             it left the queue.
           </p>
 
-          <div className="mt-12 flex flex-col gap-10 lg:flex-row lg:items-stretch lg:gap-12">
-            <div className="min-w-0 flex-1 grid grid-cols-1 items-start gap-10 lg:grid-cols-2 lg:gap-16">
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-1">
+          <div className="mt-12 flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-12">
+            <div className="min-w-0 flex-1">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-1 lg:gap-5">
                 {(
                   [
                     {
-                      title: 'Payoff Modeling',
-                      body: 'Map P&L curves across price paths before entry',
+                      title: 'Profit & Loss',
+                      body: 'Mark-to-market and scenario P&L in one surface: see how the book moves with price, volatility, and time before you add size or put on a hedge.',
                     },
                     {
-                      title: 'Scenario Simulation',
-                      body: 'Stress-test setups against volatility regimes and tail events',
+                      title: 'Stress Test',
+                      body: 'Shock the whole portfolio against tail moves, wider vol, and liquidity gaps—same book, faster answers than one-off spreadsheets.',
                     },
                     {
-                      title: 'Exposure Visualization',
-                      body: 'See delta, theta, and capital at risk in one view',
+                      title: 'Greeks',
+                      body: 'Delta, gamma, theta, and vega together so directional risk, convexity bleed, and vol sensitivity stay in one lens—not four different tabs.',
                     },
                   ] as const
                 ).map((c) => (
@@ -145,13 +149,16 @@ export function HomepageFullPageSections() {
                   </div>
                 ))}
               </div>
-              <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 sm:p-6">
-                <p className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-zinc-600">Payoff preview</p>
+            </div>
+            <div className="flex w-full flex-col gap-6 lg:max-w-xl xl:max-w-2xl lg:shrink-0">
+              <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-5 sm:p-7">
+                <p className="mb-4 text-[10px] font-semibold uppercase tracking-wider text-zinc-600">Payoff preview</p>
                 <PayoffCurveSvg />
               </div>
-            </div>
-            <div className="flex shrink-0 items-end justify-start lg:justify-end lg:pb-1">
-              <Link href="/risk-management" className={`${btnPrimary} w-full sm:w-auto lg:min-w-[11rem]`}>
+              <Link
+                href="/risk-management"
+                className={`${btnPrimary} inline-flex w-full min-h-[48px] items-center justify-center sm:max-w-md lg:w-full`}
+              >
                 Risk Management
               </Link>
             </div>
