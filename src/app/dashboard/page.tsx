@@ -4,7 +4,7 @@ import { Dashboard } from '@/screens/Dashboard';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
-  description: 'Institutional dashboard for risk, research, models, and execution on General Exchange.',
+  description: 'Institutional dashboard for paper session, library assets, and BackSpace scratch on General Exchange.',
   alternates: { canonical: '/dashboard' },
   robots: { index: false, follow: false },
 };

@@ -31,10 +31,10 @@ export const RiskManagement: React.FC = () => {
               and evidence stay aligned from research through release.
             </p>
             <Link
-              href="/dashboard?tab=risk"
+              href="/dashboard"
               className="mt-8 inline-flex items-center justify-center rounded-lg border border-white/[0.18] bg-white/[0.04] px-8 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-neutral-100 transition-colors hover:border-tan/45 hover:bg-white/[0.07]"
             >
-              Open live risk workspace
+              Open dashboard
             </Link>
           </div>
         </header>

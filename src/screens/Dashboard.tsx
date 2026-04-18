@@ -20,18 +20,15 @@ import {
   MODEL_EDGE_BY_MODEL,
   OPTIONS_CONTEXT_BY_MODEL,
   getPredictionSeriesForModel,
-  getPredictionOutlook,
-  buildTradeSetupFromSeries,
-  getSignalExplanationLines,
   buildIntelligenceRibbon,
-  getDirectionalAccuracyPct,
-  STRATEGY_SIGNAL,
   type ModelId,
 } from '../components/dashboard/mockMlDashboardData';
 import { DashboardSidebar } from '../components/DashboardSidebar';
-import { RiskDashboardTab } from '../components/dashboard/RiskDashboardTab';
-import { StrategiesResearchWorkspace } from '../components/dashboard/StrategiesResearchWorkspace';
+import { LibraryDashboardTab } from '../components/dashboard/LibraryDashboardTab';
+import { BackspaceDashboardTab } from '../components/dashboard/BackspaceDashboardTab';
 import { useDashboardView } from '@/hooks/useDashboardView';
+
+const OVERVIEW_MODEL: ModelId = 'xgboost';
 
 const easeLuxury = [0.22, 1, 0.36, 1] as const;
 
@@ -66,35 +63,21 @@ const sectionItem = {
 
 export const Dashboard: React.FC = () => {
   const view = useDashboardView();
-  const [selectedModel, setSelectedModel] = useState<ModelId>('xgboost');
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [tradeEngineModalOpen, setTradeEngineModalOpen] = useState(false);
   const [portfolioAnalyticsOpen, setPortfolioAnalyticsOpen] = useState(false);
   const [actionFx, setActionFx] = useState<{ id: number; label: string } | null>(null);
-  const predictionData = getPredictionSeriesForModel(selectedModel);
-  const outlook = getPredictionOutlook(selectedModel, predictionData);
-  const tradeSetup = buildTradeSetupFromSeries(predictionData, outlook);
-  const modelEdge = MODEL_EDGE_BY_MODEL[selectedModel];
-  const optionsContext = OPTIONS_CONTEXT_BY_MODEL[selectedModel];
-  const intelligenceRibbon = buildIntelligenceRibbon(selectedModel, modelEdge, predictionData, optionsContext);
-  const lastBar = predictionData[predictionData.length - 1];
-  const tradeLevels = {
-    entry: tradeSetup.entryPrice,
-    target: tradeSetup.targetPrice,
-    stop: tradeSetup.stopLoss,
-  };
-  const explanationLines = getSignalExplanationLines({
-    tradeSetup,
-    directionalAccuracyPct: getDirectionalAccuracyPct(selectedModel),
-    signal: STRATEGY_SIGNAL.current,
-  });
+  const predictionData = getPredictionSeriesForModel(OVERVIEW_MODEL);
+  const modelEdge = MODEL_EDGE_BY_MODEL[OVERVIEW_MODEL];
+  const optionsContext = OPTIONS_CONTEXT_BY_MODEL[OVERVIEW_MODEL];
+  const intelligenceRibbon = buildIntelligenceRibbon(OVERVIEW_MODEL, modelEdge, predictionData, optionsContext);
 
   useEffect(() => {
     setLoading(true);
     const t = window.setTimeout(() => setLoading(false), 550);
     return () => window.clearTimeout(t);
-  }, [selectedModel]);
+  }, []);
 
   useEffect(() => {
     if (!actionFx) return;
@@ -104,11 +87,6 @@ export const Dashboard: React.FC = () => {
 
   const triggerActionFx = (label: string) => {
     setActionFx({ id: Date.now(), label });
-  };
-
-  const handleModelSelect = (modelId: ModelId) => {
-    setSelectedModel(modelId);
-    triggerActionFx('Model updated');
   };
 
   const handleOpenAnalytics = () => {
@@ -195,24 +173,9 @@ export const Dashboard: React.FC = () => {
           className="relative z-10 flex-1 min-w-0 px-4 sm:px-6 lg:px-8 xl:px-10 py-6 sm:py-8 pb-16"
           {...mainStagger}
         >
-          {view === 'risk' && <RiskDashboardTab />}
+          {view === 'library' && <LibraryDashboardTab />}
 
-          {view === 'strategies' && (
-            <StrategiesResearchWorkspace
-              intelligenceRibbon={intelligenceRibbon}
-              loading={loading}
-              selectedModel={selectedModel}
-              onModelSelect={handleModelSelect}
-              predictionData={predictionData}
-              outlook={outlook}
-              lastBar={lastBar}
-              tradeLevels={tradeLevels}
-              modelEdge={modelEdge}
-              optionsContext={optionsContext}
-              explanationLines={explanationLines}
-              tradeSetup={tradeSetup}
-            />
-          )}
+          {view === 'backspace' && <BackspaceDashboardTab />}
 
           {view === 'overview' && (
             <>

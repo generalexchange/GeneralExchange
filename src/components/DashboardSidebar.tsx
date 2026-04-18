@@ -7,7 +7,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Shield, Workflow } from 'lucide-react';
+import { Eraser, LayoutDashboard, Library } from 'lucide-react';
 import { useDashboardView } from '@/hooks/useDashboardView';
 
 function navLinkClass(active: boolean): string {
@@ -37,17 +37,17 @@ export const DashboardSidebar: React.FC = () => {
                 <span className="font-medium">Dashboard</span>
               </Link>
               <div className="ml-2 pl-3 border-l border-white/[0.08] space-y-1 my-1">
-                <Link href="/dashboard?tab=strategies" className={navLinkClass(view === 'strategies')}>
+                <Link href="/dashboard?tab=library" className={navLinkClass(view === 'library')}>
                   <span className="text-tan/80">
-                    <Workflow size={18} strokeWidth={1.5} />
+                    <Library size={18} strokeWidth={1.5} />
                   </span>
-                  <span className="font-medium">Strategies</span>
+                  <span className="font-medium">Library</span>
                 </Link>
-                <Link href="/dashboard?tab=risk" className={navLinkClass(view === 'risk')}>
+                <Link href="/dashboard?tab=backspace" className={navLinkClass(view === 'backspace')}>
                   <span className="text-tan/80">
-                    <Shield size={18} strokeWidth={1.5} />
+                    <Eraser size={18} strokeWidth={1.5} />
                   </span>
-                  <span className="font-medium">Risk</span>
+                  <span className="font-medium">BackSpace</span>
                 </Link>
               </div>
             </>

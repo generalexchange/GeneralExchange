@@ -1,5 +1,5 @@
 import React, { useId, useMemo, useState } from 'react';
-import { Save, Settings } from 'lucide-react';
+import { Settings } from 'lucide-react';
 import { SessionIntelRibbonSummary } from './IntelligenceStatusBar';
 import {
   Area as ReArea,
@@ -33,8 +33,29 @@ export interface MarketPoint {
 interface MarketChartProps {
   data: MarketPoint[];
   onOpenAnalytics: () => void;
-  /** When set, a save icon shows Edge / Hit / Vol summary on hover (overview dashboard). */
+  /** When set, a cassette control shows Edge / Hit / Vol summary on hover (overview dashboard). */
   intelligenceRibbon?: IntelligenceRibbonProps;
+}
+
+function CassetteTapeIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      aria-hidden
+    >
+      <rect x="2.25" y="5.5" width="19.5" height="13" rx="1.75" stroke="currentColor" strokeWidth="1.65" />
+      <path d="M4 8.25h16" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" opacity="0.45" />
+      <rect x="5.5" y="9.25" width="13" height="4.25" rx="0.5" stroke="currentColor" strokeWidth="1.2" opacity="0.35" />
+      <circle cx="8.75" cy="15.75" r="2.35" stroke="currentColor" strokeWidth="1.35" />
+      <circle cx="15.25" cy="15.75" r="2.35" stroke="currentColor" strokeWidth="1.35" />
+      <circle cx="8.75" cy="15.75" r="0.9" fill="currentColor" opacity="0.35" />
+      <circle cx="15.25" cy="15.75" r="0.9" fill="currentColor" opacity="0.35" />
+      <path d="M7 5.5V4M17 5.5V4" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
+    </svg>
+  );
 }
 
 /** Luxury monochrome: primary line / emphasis vs muted drift */
@@ -125,9 +146,9 @@ export const MarketChart: React.FC<MarketChartProps> = ({ data: baseData, onOpen
               <button
                 type="button"
                 className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-zinc-400 transition-all hover:border-white/20 hover:bg-white/[0.1] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 sm:h-10 sm:w-10"
-                aria-label="Session intelligence snapshot — hover for Edge, Hit rate, and Volatility"
+                aria-label="Session intelligence on tape — hover for Edge, Hit rate, and Volatility"
               >
-                <Save className="h-[18px] w-[18px] sm:h-5 sm:w-5" strokeWidth={1.75} aria-hidden />
+                <CassetteTapeIcon className="h-[18px] w-[18px] sm:h-5 sm:w-5" />
               </button>
               <div
                 className="pointer-events-none invisible absolute right-0 bottom-full z-[60] mb-2 w-[min(calc(100vw-2rem),22rem)] translate-y-1 rounded-xl border border-white/10 bg-[#0b0b0b] p-3 opacity-0 shadow-2xl shadow-black/50 transition duration-150 ease-out group-hover:visible group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100"
