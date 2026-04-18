@@ -16,7 +16,6 @@ import {
   ExecutionLoopIllustration,
 } from '@/components/homepage/HomepageMechanicsIllustrations';
 import { BridgeObserverWalletThree } from '@/components/homepage/BridgeObserverWalletThree';
-import { PositioningCoinIllustration } from '@/components/homepage/PositioningCoinIllustration';
 
 const BAND = {
   bg00: '#ECE8E0',
@@ -162,35 +161,6 @@ export function PillarSectionEmbed({ pillar, index }: { pillar: PillarSection; i
   );
 }
 
-export function HomepagePositioningStrip() {
-  return (
-    <div
-      className="border-y py-8 sm:py-10 lg:py-12"
-      style={{ backgroundColor: BAND.bg00, borderColor: BAND.border, color: BAND.text }}
-    >
-      <div className="mx-auto max-w-content px-4 sm:px-6 lg:px-10">
-        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-[1fr_minmax(220px,320px)] lg:gap-12">
-          <div className="text-center sm:text-left">
-            <p className="font-mono text-[10px] font-medium uppercase tracking-[0.22em]" style={{ color: BAND.text60 }}>
-              Tokenization layer
-            </p>
-            <h2 className="mt-3 font-display text-lg font-medium leading-snug tracking-tight sm:text-xl md:text-2xl" style={{ color: BAND.text }}>
-              Narrative intelligence, entitled like any other workload
-            </h2>
-            <p className="mx-auto mt-4 max-w-3xl text-sm font-light leading-relaxed sm:mx-0 sm:text-[15px] sm:leading-relaxed" style={{ color: BAND.text70 }}>
-              Score and route headlines, filings, and macro events into the same limits, queues, and audit receipts as trading
-              and compute—so desks fund intelligence with explicit credits instead of shadow feeds.
-            </p>
-          </div>
-          <div className="rounded-lg border p-5 sm:p-6" style={{ borderColor: BAND.border, backgroundColor: BAND.plaque }}>
-            <PositioningCoinIllustration theme="light" />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export function HomepageExecutionLoopRestored() {
   return (
     <div
@@ -263,23 +233,17 @@ export function HomepageBridgeObserverRestored() {
           >
             <BridgeObserverWalletThree />
           </div>
-          <div className="flex min-w-0 flex-col items-center gap-5 text-center lg:items-start lg:text-left">
+          <div className="flex min-w-0 flex-col items-center gap-4 text-center lg:items-start lg:text-left">
             <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.22em]" style={{ color: BAND.text60 }}>
-              Tokenization layer
+              Bridge Observer
             </p>
             <h2 className="font-display text-2xl font-medium tracking-tight sm:text-3xl" style={{ color: BAND.text }}>
-              Narrative intelligence, entitled like any other workload
+              Wallet flows with audit-ready context
             </h2>
             <p className="max-w-prose text-sm font-light leading-relaxed sm:text-[15px] sm:leading-relaxed" style={{ color: BAND.text70 }}>
-              Score and route headlines, filings, and macro events into the same limits, queues, and audit receipts as trading
-              and compute—so desks fund intelligence with explicit credits instead of shadow feeds.
+              Funded paths and observer hooks stay visible in the same surface as execution—so research and risk see the same
+              signals the desk does.
             </p>
-            <Link
-              href="/tokenomics"
-              className="inline-flex items-center justify-center rounded-lg bg-tan px-7 py-3.5 text-sm font-semibold text-charcoal transition-colors hover:bg-tan-muted"
-            >
-              Tokenomics
-            </Link>
           </div>
         </div>
       </div>
@@ -317,8 +281,7 @@ export function HomepageTrustCtaRestored() {
                     Policy-locked dataset promotion
                   </p>
                   <p className="mt-1.5 text-xs font-light leading-relaxed" style={{ color: BAND.text70 }}>
-                    Every sentiment-derived module passes the same entitlements and pre-trade gates as internal alpha before it
-                    can power models or routes—no shadow stack beside production risk.
+                    Sentiment-backed datasets only promote after the same checks as production alpha—no side-channel stack.
                   </p>
                 </div>
               </div>
@@ -329,8 +292,8 @@ export function HomepageTrustCtaRestored() {
                     Modular dataset audit
                   </p>
                   <p className="mt-1.5 text-xs font-light leading-relaxed" style={{ color: BAND.text70 }}>
-                    Review, sign off, or export one dataset slice at a time—hashes, inputs, and retention policies travel with
-                    each module so second line and LPs can audit without reverse-engineering the full news graph.
+                    Sign off or export one slice at a time; hashes and retention ride with each module so audits stay scoped and
+                    simple.
                   </p>
                 </div>
               </div>

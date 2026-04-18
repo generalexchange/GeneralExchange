@@ -9,7 +9,6 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Hero } from '@/components/Hero';
 import {
-  HomepagePositioningStrip,
   HomepageBridgeObserverRestored,
   HomepageTrustCtaRestored,
   HomepageRemainingPillars,
@@ -98,7 +97,6 @@ export function HomepageFullPageSections() {
   return (
     <div className="bg-charcoal text-neutral-100">
       <Hero />
-      <HomepagePositioningStrip />
 
       {/* 01 — Risk */}
       <section
@@ -291,7 +289,7 @@ export function HomepageFullPageSections() {
 
           <SectionActions>
             <Link href="/almanac" className={btnPrimary}>
-              Almanac
+              Farmers Almanac
             </Link>
           </SectionActions>
 
@@ -366,7 +364,13 @@ export function HomepageFullPageSections() {
                 </svg>
               </div>
             </div>
-            <div className="flex shrink-0 items-start justify-start border-t border-white/[0.06] pt-6 lg:items-center lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
+            <div className="flex shrink-0 flex-wrap items-center justify-start gap-3 border-t border-white/[0.06] pt-6 lg:items-center lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
+              <Link
+                href="/tokenomics"
+                className="inline-flex min-h-[48px] min-w-[10rem] items-center justify-center rounded-lg border border-white/[0.14] bg-transparent px-8 py-3.5 text-sm font-semibold text-zinc-200 transition-colors hover:border-tan/40 hover:bg-white/[0.05] hover:text-tan"
+              >
+                Tokenomics
+              </Link>
               <Link
                 href="/backspace"
                 className={`${btnGreen} inline-flex min-h-[48px] min-w-[10rem] items-center justify-center px-8 py-3.5`}
