@@ -75,6 +75,25 @@ export const Tokenomics: React.FC = () => {
           </div>
         </div>
 
+        <section className="border-b border-white/[0.06] bg-dark-gray/35" aria-labelledby="tokenomics-backspace-quote">
+          <div className="mx-auto max-w-content px-4 py-10 sm:px-6 sm:py-12 lg:px-10">
+            <p className="font-mono text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500 sm:text-[11px]">
+              <span className="text-tan/90">Backspace</span>
+              <span className="text-zinc-600"> · </span>
+              Proof before capital
+            </p>
+            <blockquote
+              id="tokenomics-backspace-quote"
+              className="mt-6 max-w-4xl border-l-2 border-institutional-green/45 pl-5 text-sm font-light leading-relaxed text-zinc-400 sm:text-base sm:pl-6"
+            >
+              Backspace is where strategies are proven before capital is committed. Feed it a dataset, select your model —
+              XGBoost, LSTM, or Reinforcement Learning — and run your setup against real historical paths. Calibration reports.
+              Prediction vs actual overlays. Execution simulation. Backspace isn&apos;t a research toy — it&apos;s the proof layer
+              between your idea and your position.
+            </blockquote>
+          </div>
+        </section>
+
         {pillar ? <PillarSectionEmbed pillar={pillar} index={0} /> : null}
       </div>
 

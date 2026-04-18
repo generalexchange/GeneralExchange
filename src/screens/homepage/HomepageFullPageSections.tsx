@@ -315,23 +315,24 @@ export function HomepageFullPageSections() {
           </h2>
           <p className="mt-4 text-lg font-light text-zinc-400 sm:text-xl">Our proprietary backtesting engine.</p>
 
-          <blockquote className="mt-8 max-w-4xl border-l-2 border-institutional-green/50 pl-5 text-sm font-light leading-relaxed text-zinc-400 sm:text-base sm:pl-6">
-            Backspace is where strategies are proven before capital is committed. Feed it a dataset, select your model —
-            XGBoost, LSTM, or Reinforcement Learning — and run your setup against real historical paths. Calibration reports.
-            Prediction vs actual overlays. Execution simulation. Backspace isn&apos;t a research toy — it&apos;s the proof layer
-            between your idea and your position.
+          <blockquote className="mt-8 max-w-4xl space-y-4 border-l-2 border-institutional-green/50 pl-5 text-sm font-light leading-relaxed text-zinc-400 sm:text-base sm:pl-6">
+            <p>
+              Backspace is where you test a trading plan before you put real money on the line. You bring your own data (or a
+              sample the desk already trusts), pick a model that fits the question, and run the plan across real history so you
+              can see how it would have behaved—not just on a good week, but across choppy days too.
+            </p>
+            <p>
+              You can work with familiar model families like XGBoost, LSTM, or reinforcement learning. The point is not the
+              buzzwords—it is that each style gives you a different way to learn patterns from the past and stress your idea
+              before you size it.
+            </p>
+            <p>
+              When a run finishes you get clear readouts: how well the model matched what really happened, charts that compare
+              predictions to outcomes, and a straight story about how orders might have filled. That turns a vague hunch into
+              something you can show risk or a partner. Backspace is not a side hobby for tinkering—it is the middle step
+              between &quot;I think this works&quot; and &quot;I am ready to stand behind this position.&quot;
+            </p>
           </blockquote>
-
-          <div className="mt-8 flex flex-wrap gap-2">
-            {['Multi-Model', 'Dataset Import', 'QuantConnect Ready'].map((tag) => (
-              <span
-                key={tag}
-                className="rounded-full border border-white/[0.1] bg-white/[0.04] px-3 py-1 text-[11px] font-medium text-zinc-400"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
 
           <div className="mt-10 flex flex-col gap-6 sm:gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
             <div className="w-full max-w-xl flex-1 rounded-2xl border border-white/[0.1] bg-charcoal/80 p-4 shadow-[0_20px_60px_-24px_rgba(0,0,0,0.55)] sm:p-5">
