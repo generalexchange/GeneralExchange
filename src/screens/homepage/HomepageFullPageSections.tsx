@@ -295,17 +295,10 @@ export function HomepageFullPageSections() {
 
       {/* 04 — Backspace */}
       <section
-        className="relative flex min-h-screen flex-col justify-center overflow-hidden border-b border-white/[0.06] md:min-h-[100dvh]"
+        className="flex min-h-screen flex-col justify-center border-b border-white/[0.06] md:min-h-[100dvh]"
         aria-labelledby="hp-backspace-title"
       >
-        <span
-          className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none font-display text-[clamp(8rem,28vw,18rem)] font-semibold leading-none text-white/[0.04]"
-          aria-hidden
-        >
-          04
-        </span>
-
-        <motion.div className="relative z-10 mx-auto w-full max-w-content px-4 py-16 sm:px-6 sm:py-20 lg:px-10 lg:py-24" {...sectionReveal}>
+        <motion.div className="mx-auto w-full max-w-content px-4 py-16 sm:px-6 sm:py-20 lg:px-10 lg:py-24" {...sectionReveal}>
           <SectionNum n="04" label="Backspace" />
           <h2
             id="hp-backspace-title"
@@ -315,23 +308,12 @@ export function HomepageFullPageSections() {
           </h2>
           <p className="mt-4 text-lg font-light text-zinc-400 sm:text-xl">Our proprietary backtesting engine.</p>
 
-          <blockquote className="mt-8 max-w-4xl space-y-4 border-l-2 border-institutional-green/50 pl-5 text-sm font-light leading-relaxed text-zinc-400 sm:text-base sm:pl-6">
-            <p>
-              Backspace is where you test a trading plan before you put real money on the line. You bring your own data (or a
-              sample the desk already trusts), pick a model that fits the question, and run the plan across real history so you
-              can see how it would have behaved—not just on a good week, but across choppy days too.
-            </p>
-            <p>
-              You can work with familiar model families like XGBoost, LSTM, or reinforcement learning. The point is not the
-              buzzwords—it is that each style gives you a different way to learn patterns from the past and stress your idea
-              before you size it.
-            </p>
-            <p>
-              When a run finishes you get clear readouts: how well the model matched what really happened, charts that compare
-              predictions to outcomes, and a straight story about how orders might have filled. That turns a vague hunch into
-              something you can show risk or a partner. Backspace is not a side hobby for tinkering—it is the middle step
-              between &quot;I think this works&quot; and &quot;I am ready to stand behind this position.&quot;
-            </p>
+          <blockquote className="mt-8 max-w-4xl border-l-2 border-institutional-green/50 pl-5 text-sm font-light leading-relaxed text-zinc-400 sm:text-base sm:pl-6">
+            Backspace is where you prove a trading plan before you risk real money. Load your data, pick a model that
+            fits—XGBoost, LSTM, or reinforcement learning—and run it on real history so you see calm days and rough ones. You get
+            simple reports that stack predictions next to what actually happened and sketch how orders might have filled. It is
+            the step between a hunch and a position your desk can explain with confidence—not a toy, but the proof layer between
+            your idea and your book.
           </blockquote>
 
           <div className="mt-10 flex flex-col gap-6 sm:gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
