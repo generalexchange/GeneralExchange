@@ -48,12 +48,18 @@ export const Hero: React.FC = () => {
               geometry from signal generation through execution and evidence.
             </p>
 
-            <div className="flex justify-center pt-2 lg:justify-start">
+            <div className="flex flex-wrap justify-center gap-3 pt-2 lg:justify-start">
               <Link
                 href="/trade-engine"
                 className="inline-flex items-center justify-center px-8 py-3.5 bg-tan text-charcoal text-sm font-semibold tracking-wide rounded-lg hover:bg-tan-muted transition-all duration-300 shadow-[0_12px_40px_-12px_rgba(210,180,140,0.35)]"
               >
                 TradeEngine
+              </Link>
+              <Link
+                href="/governance"
+                className="inline-flex items-center justify-center px-8 py-3.5 bg-black text-white text-sm font-semibold tracking-wide rounded-lg border border-white/[0.12] transition-all duration-300 hover:bg-neutral-950 hover:border-white/[0.18]"
+              >
+                Governance
               </Link>
             </div>
           </motion.div>
