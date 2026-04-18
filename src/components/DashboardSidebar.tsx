@@ -7,7 +7,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Eraser, LayoutDashboard, Library } from 'lucide-react';
+import { LayoutDashboard, Library, Orbit } from 'lucide-react';
 import { useDashboardView } from '@/hooks/useDashboardView';
 
 function navLinkClass(active: boolean): string {
@@ -45,7 +45,7 @@ export const DashboardSidebar: React.FC = () => {
                 </Link>
                 <Link href="/dashboard?tab=backspace" className={navLinkClass(view === 'backspace')}>
                   <span className="text-tan/80">
-                    <Eraser size={18} strokeWidth={1.5} />
+                    <Orbit size={18} strokeWidth={1.5} />
                   </span>
                   <span className="font-medium">BackSpace</span>
                 </Link>
