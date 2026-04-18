@@ -1,29 +1,18 @@
 import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Settings } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Settings, Wallet } from 'lucide-react';
 import { SessionIntelRibbonSummary } from './IntelligenceStatusBar';
+import type { IntelligenceRibbonProps } from './mockMlDashboardData';
+import { getBenchmarkEndEquity, PAPER_RANGE_TABS } from './paperPortfolioRanges';
 import {
-  Area as ReArea,
-  Bar as ReBar,
-  CartesianGrid as ReCartesianGrid,
-  ComposedChart as ReComposedChart,
-  Line as ReLine,
-  ResponsiveContainer as ReResponsiveContainer,
-  Tooltip as ReTooltip,
-  XAxis as ReXAxis,
-  YAxis as ReYAxis,
-} from 'recharts';
-import {
-  enrichMarketWithPaperEquity,
-  type IntelligenceRibbonProps,
-  type MarketPointWithEquity,
-} from './mockMlDashboardData';
-import {
-  type PaperChartRange,
-  PAPER_RANGE_PERIOD_LABEL,
-  PAPER_RANGE_TABS,
-  buildPaperSeriesForRange,
-} from './paperPortfolioRanges';
+  appendLiveTick,
+  buildEquitySeriesForRange,
+  getOneHourLastEquity,
+  getPortfolioChartSessionSeed,
+  RANGE_PERIOD_LABEL,
+  type RobinhoodRange,
+} from './robinhoodMockSeries';
 
 export interface MarketPoint {
   time: string;
@@ -34,10 +23,15 @@ export interface MarketPoint {
 interface MarketChartProps {
   data: MarketPoint[];
   onOpenAnalytics: () => void;
-  /** When set, a cassette control shows Edge / Hit / Vol summary on hover (overview dashboard). */
   intelligenceRibbon?: IntelligenceRibbonProps;
-  /** Fires when cassette snapshot hover opens/closes (dashboard uses this to blur the session grid). */
   onIntelligenceTapeHoverChange?: (open: boolean) => void;
+}
+
+const LINE_UP = '#00C805';
+const LINE_DOWN = '#FF5000';
+
+function formatUsd(n: number): string {
+  return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
 }
 
 function CassetteTapeIcon({ className }: { className?: string }) {
@@ -61,41 +55,40 @@ function CassetteTapeIcon({ className }: { className?: string }) {
   );
 }
 
-/** Luxury monochrome: primary line / emphasis vs muted drift */
-const LINE_UP = '#f4f4f5';
-const LINE_DOWN = '#a1a1aa';
-
-function formatUsd(n: number): string {
-  return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
+function buildSmoothLinePath(pts: Array<{ x: number; y: number }>): string {
+  if (pts.length < 2) return '';
+  if (pts.length === 2) return `M ${pts[0]!.x} ${pts[0]!.y} L ${pts[1]!.x} ${pts[1]!.y}`;
+  let d = `M ${pts[0]!.x} ${pts[0]!.y}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[Math.max(0, i - 1)]!;
+    const p1 = pts[i]!;
+    const p2 = pts[i + 1]!;
+    const p3 = pts[Math.min(pts.length - 1, i + 2)]!;
+    const cp1x = p1.x + (p2.x - p0.x) / 6;
+    const cp1y = p1.y + (p2.y - p0.y) / 6;
+    const cp2x = p2.x - (p3.x - p1.x) / 6;
+    const cp2y = p2.y - (p3.y - p1.y) / 6;
+    d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`;
+  }
+  return d;
 }
 
-function formatUsdCompact(n: number): string {
-  if (Math.abs(n) >= 1_000_000) return `$${(n / 1_000_000).toFixed(2)}M`;
-  if (Math.abs(n) >= 10_000) return `$${(n / 1_000).toFixed(1)}k`;
-  return formatUsd(n);
+function scaleYs(values: number[], chartH: number, pad: number): { min: number; max: number; y: (v: number) => number } {
+  if (!values.length) {
+    return { min: 0, max: 1, y: () => chartH / 2 };
+  }
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const span = Math.max(max - min, max * 0.0008, 1);
+  const lo = min - span * pad;
+  const hi = max + span * pad;
+  const range = hi - lo;
+  return {
+    min: lo,
+    max: hi,
+    y: (v: number) => chartH - ((v - lo) / range) * chartH,
+  };
 }
-
-const Tip = ({
-  active,
-  payload,
-}: {
-  active?: boolean;
-  payload?: Array<{ payload: MarketPointWithEquity }>;
-}) => {
-  if (!active || !payload?.length) return null;
-  const p = payload[0].payload;
-  const volM = p.volume / 1_000_000;
-  return (
-    <div className="rounded-xl border border-white/10 bg-[#0c0c0c] px-3 py-2.5 text-xs shadow-xl">
-      <p className="font-mono text-zinc-500 mb-1.5">{p.time}</p>
-      <p className="font-semibold tabular-nums text-white">{formatUsd(p.equity)}</p>
-      <p className="text-[11px] text-zinc-500 mt-0.5">Paper equity (mock path)</p>
-      <p className="text-zinc-400 mt-2 tabular-nums">
-        Vol {volM >= 0.01 ? `${volM.toFixed(2)}M` : `${(p.volume / 1000).toFixed(0)}k`} sh
-      </p>
-    </div>
-  );
-};
 
 export const MarketChart: React.FC<MarketChartProps> = ({
   data: baseData,
@@ -104,36 +97,99 @@ export const MarketChart: React.FC<MarketChartProps> = ({
   onIntelligenceTapeHoverChange,
 }) => {
   const gid = useId().replace(/:/g, '');
-  const [range, setRange] = useState<PaperChartRange>('live');
+  const sessionSeed = useMemo(() => getPortfolioChartSessionSeed(), []);
+  const [range, setRange] = useState<RobinhoodRange>('1d');
+  const [liveSeries, setLiveSeries] = useState<number[]>([]);
+  const [chartW, setChartW] = useState(360);
+  const chartH = 200;
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [scrubIdx, setScrubIdx] = useState<number | null>(null);
+  const [pointerX, setPointerX] = useState<number | null>(null);
+  const [portfolioSource, setPortfolioSource] = useState<'paper' | 'ib'>('paper');
 
-  const { series, openEquity } = useMemo(() => buildPaperSeriesForRange(range, baseData), [range, baseData]);
+  const endEquity = useMemo(() => getBenchmarkEndEquity(baseData), [baseData]);
+  const isIb = portfolioSource === 'ib';
 
-  const chartData = useMemo(
-    () => enrichMarketWithPaperEquity(series, openEquity),
-    [series, openEquity],
-  );
+  const staticByRange = useMemo(() => {
+    const out: Partial<Record<RobinhoodRange, number[]>> = {};
+    for (const tab of PAPER_RANGE_TABS) {
+      if (tab.id === 'live') continue;
+      out[tab.id] = buildEquitySeriesForRange(tab.id, endEquity, sessionSeed);
+    }
+    return out;
+  }, [endEquity, sessionSeed]);
 
-  const equityNow = chartData[chartData.length - 1]?.equity ?? openEquity;
-  const sessionOpenEquity = chartData[0]?.equity ?? openEquity;
-  const dayChange = Math.round((equityNow - sessionOpenEquity) * 100) / 100;
-  const dayChangePercent =
-    sessionOpenEquity !== 0 ? Math.round((dayChange / sessionOpenEquity) * 10000) / 100 : 0;
-  const buyingPower = Math.round(equityNow * 0.352 * 100) / 100;
+  const staticSeries = range === 'live' ? [] : staticByRange[range] ?? [];
+  const equitySeries = range === 'live' ? liveSeries : staticSeries;
+  const chartSeries = isIb ? [] : equitySeries;
 
-  const upPeriod = dayChange >= 0;
-  const lineColor = upPeriod ? LINE_UP : LINE_DOWN;
+  useEffect(() => {
+    if (isIb || range !== 'live') return;
+    setLiveSeries((prev) => {
+      if (prev.length) return prev;
+      const anchor = getOneHourLastEquity(endEquity, sessionSeed);
+      return [anchor];
+    });
+  }, [isIb, range, endEquity, sessionSeed]);
 
-  const yDomain = useMemo(() => {
-    if (!chartData.length) return undefined;
-    const vals = chartData.map((d) => d.equity);
-    const lo = Math.min(...vals);
-    const hi = Math.max(...vals);
-    const pad = Math.max((hi - lo) * 0.12, 80);
-    return [lo - pad, hi + pad] as [number, number];
-  }, [chartData]);
+  useEffect(() => {
+    if (isIb || range !== 'live') return;
+    const id = window.setInterval(() => {
+      setLiveSeries((prev) => appendLiveTick(prev, endEquity, sessionSeed));
+    }, 2000);
+    return () => window.clearInterval(id);
+  }, [isIb, range, endEquity, sessionSeed]);
 
-  const areaId = `eq-${gid}`;
-  const volId = `vol-${gid}`;
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver((entries) => {
+      const w = entries[0]?.contentRect.width;
+      if (w && w > 0) setChartW(Math.floor(w));
+    });
+    ro.observe(el);
+    setChartW(Math.floor(el.getBoundingClientRect().width) || 360);
+    return () => ro.disconnect();
+  }, []);
+
+  const rangeStart = chartSeries[0] ?? endEquity;
+  const rangeEnd = chartSeries[chartSeries.length - 1] ?? endEquity;
+  const upRange = rangeEnd >= rangeStart;
+  const lineColor = upRange ? LINE_UP : LINE_DOWN;
+
+  const lastIdx = Math.max(0, chartSeries.length - 1);
+  const hoverIdx = scrubIdx !== null ? scrubIdx : lastIdx;
+  const displayValue = isIb ? 0 : chartSeries[hoverIdx] ?? endEquity;
+  const compareStart = rangeStart;
+  const displayChange = isIb ? 0 : Math.round((displayValue - compareStart) * 100) / 100;
+  const displayPct =
+    isIb || compareStart === 0 ? 0 : Math.round((displayChange / compareStart) * 10000) / 100;
+  const displayUp = displayChange >= 0;
+
+  const buyingPower = Math.round((chartSeries[lastIdx] ?? endEquity) * 0.352 * 100) / 100;
+
+  const pts = useMemo(() => {
+    if (isIb) return [];
+    const src =
+      chartSeries.length >= 2
+        ? chartSeries
+        : chartSeries.length === 1
+          ? [chartSeries[0]!, chartSeries[0]!]
+          : [];
+    if (src.length < 2) return [];
+    const { y } = scaleYs(src, chartH, 0.1);
+    const n = src.length;
+    return src.map((v, i) => ({
+      x: (i / (n - 1)) * chartW,
+      y: y(v),
+    }));
+  }, [chartSeries, chartW, chartH, isIb]);
+
+  const linePath = useMemo(() => buildSmoothLinePath(pts), [pts]);
+  const fillPath =
+    linePath && pts.length
+      ? `${linePath} L ${pts[pts.length - 1]!.x} ${chartH} L ${pts[0]!.x} ${chartH} Z`
+      : '';
 
   const tapeBtnRef = useRef<HTMLButtonElement>(null);
   const tapeLeaveTimer = useRef<number | null>(null);
@@ -172,6 +228,23 @@ export const MarketChart: React.FC<MarketChartProps> = ({
 
   useEffect(() => () => clearTapeLeaveTimer(), [clearTapeLeaveTimer]);
 
+  const onChartPointer = (clientX: number, rect: DOMRect) => {
+    if (isIb || chartSeries.length < 1) return;
+    const x = clientX - rect.left;
+    const clamped = Math.max(0, Math.min(chartW, x));
+    const denom = Math.max(1, chartSeries.length - 1);
+    const t = chartW > 0 ? clamped / chartW : 0;
+    const idx = Math.round(t * denom);
+    setScrubIdx(idx);
+    setPointerX((idx / denom) * chartW);
+  };
+
+  useEffect(() => {
+    if (!isIb) return;
+    setScrubIdx(null);
+    setPointerX(null);
+  }, [isIb]);
+
   const tapePopover =
     tapeHover && intelligenceRibbon && tapeAnchor && typeof document !== 'undefined'
       ? createPortal(
@@ -191,6 +264,9 @@ export const MarketChart: React.FC<MarketChartProps> = ({
           document.body,
         )
       : null;
+
+  const gradId = `rh-fill-${gid}`;
+  const isScrubbing = scrubIdx !== null;
 
   return (
     <div className="relative overflow-x-hidden overflow-y-visible rounded-3xl border border-white/[0.06] bg-[#0a0a0a] shadow-[0_24px_64px_-32px_rgba(0,0,0,0.9)]">
@@ -234,134 +310,202 @@ export const MarketChart: React.FC<MarketChartProps> = ({
             </button>
           ) : null}
         </div>
-        <div className="flex flex-col gap-4 lg:gap-5 pr-24 sm:pr-28">
+
+        <div className="flex flex-col gap-1 pr-24 sm:pr-28">
           <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <span className="inline-flex h-1.5 w-1.5 rounded-full bg-zinc-400" />
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-500">Paper portfolio</p>
-            </div>
-            <p className="mt-3 text-3xl font-semibold tracking-[-0.03em] text-white tabular-nums sm:text-4xl lg:text-[2.75rem] lg:leading-none">
-              {formatUsd(equityNow)}
-            </p>
-            <div className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <span
-                className={`text-sm font-semibold tabular-nums sm:text-base ${upPeriod ? 'text-white' : 'text-zinc-500'}`}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex h-1.5 w-1.5 shrink-0 rounded-full bg-zinc-400" aria-hidden />
+              <div
+                className="inline-flex max-w-full rounded-lg border border-white/[0.12] bg-black/35 p-0.5"
+                role="group"
+                aria-label="Portfolio data source"
               >
-                {upPeriod ? '+' : ''}
-                {formatUsd(dayChange)}
-              </span>
-              <span className={`text-sm font-semibold tabular-nums ${upPeriod ? 'text-zinc-300' : 'text-zinc-600'}`}>
-                ({upPeriod ? '+' : ''}
-                {dayChangePercent.toFixed(2)}%)
-              </span>
-              <span className="text-xs font-medium tracking-wide text-zinc-600">{PAPER_RANGE_PERIOD_LABEL[range]}</span>
+                <button
+                  type="button"
+                  onClick={() => setPortfolioSource('paper')}
+                  className={`rounded-md px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] transition-colors sm:px-3 sm:text-[11px] ${
+                    portfolioSource === 'paper'
+                      ? 'bg-white/[0.12] text-white'
+                      : 'text-zinc-500 hover:text-zinc-300'
+                  }`}
+                >
+                  Paper
+                </button>
+                <button
+                  type="button"
+                  title="Interactive Brokers"
+                  onClick={() => setPortfolioSource('ib')}
+                  className={`rounded-md px-2 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] transition-colors sm:px-3 sm:text-[11px] ${
+                    portfolioSource === 'ib'
+                      ? 'bg-white/[0.12] text-white'
+                      : 'text-zinc-500 hover:text-zinc-300'
+                  }`}
+                >
+                  <span className="sm:hidden">IBKR</span>
+                  <span className="hidden sm:inline">Interactive Brokers</span>
+                </button>
+              </div>
             </div>
-            <div className="mt-4 flex flex-wrap gap-2">
-              <span className="inline-flex items-center rounded-full border border-white/[0.08] bg-white/[0.02] px-3 py-1.5 text-[11px] font-medium text-zinc-400">
-                Buying power <span className="ml-1.5 tabular-nums text-zinc-200">{formatUsd(buyingPower)}</span>
-              </span>
-              <span className="inline-flex items-center rounded-full border border-white/[0.06] bg-transparent px-3 py-1.5 text-[11px] text-zinc-600">
-                Range open{' '}
-                <span className="ml-1.5 tabular-nums text-zinc-500">{formatUsd(sessionOpenEquity)}</span>
-              </span>
-            </div>
+            {isIb ? (
+              <>
+                <p className="mt-3 font-mono text-[32px] font-bold leading-none tracking-tight text-zinc-600 tabular-nums">
+                  —
+                </p>
+                <div className="mt-3 max-w-xl rounded-lg border border-white/[0.08] bg-white/[0.03] px-4 py-3">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
+                    Interactive Brokers · not connected
+                  </p>
+                  <p className="mt-2 text-sm leading-relaxed text-zinc-400">
+                    Live balances, margin, and synced positions for IBKR accounts are still in certification. Paper mode
+                    remains the supported path for now.
+                  </p>
+                  <p className="mt-2 font-mono text-xs text-zinc-500">Status: coming soon</p>
+                </div>
+              </>
+            ) : (
+              <>
+                <motion.p
+                  key={isScrubbing ? `v-${hoverIdx}` : 'v-rest'}
+                  initial={{ opacity: 0.88 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.22, ease: 'easeOut' }}
+                  className="mt-3 font-mono text-[32px] font-bold leading-none tracking-tight text-white tabular-nums"
+                >
+                  {formatUsd(displayValue)}
+                </motion.p>
+                <motion.div
+                  key={isScrubbing ? `c-${hoverIdx}` : 'c-rest'}
+                  initial={{ opacity: 0.88 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.25, ease: 'easeOut' }}
+                  className="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-0.5 font-mono text-base tabular-nums sm:text-[16px]"
+                >
+                  <span className={`font-medium ${displayUp ? 'text-[#00C805]' : 'text-[#FF5000]'}`}>
+                    {displayUp ? '+' : ''}
+                    {formatUsd(displayChange)}
+                  </span>
+                  <span className={`font-medium ${displayUp ? 'text-[#00C805]' : 'text-[#FF5000]'}`}>
+                    ({displayUp ? '+' : ''}
+                    {displayPct.toFixed(2)}%)
+                  </span>
+                  <span className="text-[13px] font-normal text-zinc-500">{RANGE_PERIOD_LABEL[range]}</span>
+                </motion.div>
+                <div className="mt-3 flex items-center gap-2 text-zinc-500">
+                  <Wallet className="h-3.5 w-3.5 shrink-0 text-zinc-400" strokeWidth={1.75} aria-hidden />
+                  <span className="text-xs font-medium tracking-wide">
+                    Buying power{' '}
+                    <span className="font-mono tabular-nums text-zinc-300">{formatUsd(buyingPower)}</span>
+                  </span>
+                </div>
+              </>
+            )}
           </div>
         </div>
 
-        <div className="relative mt-4 h-[220px] w-full sm:h-[260px] lg:h-[300px]">
-          <ReResponsiveContainer width="100%" height="100%">
-            <ReComposedChart data={chartData} margin={{ top: 4, right: 8, left: 0, bottom: 4 }}>
-              <defs>
-                <linearGradient id={areaId} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor={lineColor} stopOpacity={0.2} />
-                  <stop offset="70%" stopColor={lineColor} stopOpacity={0.04} />
-                  <stop offset="100%" stopColor={lineColor} stopOpacity={0} />
-                </linearGradient>
-                <linearGradient id={volId} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#52525b" stopOpacity={0.5} />
-                  <stop offset="100%" stopColor="#27272a" stopOpacity={0.15} />
-                </linearGradient>
-              </defs>
-              <ReCartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
-              <ReXAxis
-                dataKey="time"
-                tick={{ fill: '#71717a', fontSize: 11, fontWeight: 500 }}
-                tickLine={false}
-                axisLine={{ stroke: 'rgba(255,255,255,0.06)' }}
-                interval="preserveStartEnd"
-              />
-              <ReYAxis
-                yAxisId="equity"
-                domain={yDomain ?? ['dataMin - 120', 'dataMax + 120']}
-                tick={{ fill: '#71717a', fontSize: 11 }}
-                tickLine={false}
-                axisLine={false}
-                width={56}
-                tickFormatter={(v) => formatUsdCompact(v as number)}
-              />
-              <ReYAxis
-                yAxisId="vol"
-                orientation="right"
-                tick={{ fill: '#52525b', fontSize: 10 }}
-                tickLine={false}
-                axisLine={false}
-                tickFormatter={(v) => {
-                  const n = v as number;
-                  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
-                  return `${(n / 1000).toFixed(0)}k`;
-                }}
-                width={40}
-              />
-              <ReTooltip content={<Tip />} cursor={{ stroke: 'rgba(255,255,255,0.08)', strokeWidth: 1 }} />
-              <ReBar
-                yAxisId="vol"
-                dataKey="volume"
-                fill={`url(#${volId})`}
-                radius={[2, 2, 0, 0]}
-                maxBarSize={22}
-                isAnimationActive
-                animationDuration={480}
-              />
-              <ReArea
-                yAxisId="equity"
-                type="monotone"
-                dataKey="equity"
-                stroke="none"
-                fill={`url(#${areaId})`}
-                isAnimationActive
-                animationDuration={600}
-              />
-              <ReLine
-                yAxisId="equity"
-                type="monotone"
-                dataKey="equity"
-                stroke={lineColor}
-                strokeWidth={2}
-                dot={false}
-                activeDot={{ r: 5, fill: lineColor, stroke: '#ffffff', strokeWidth: 1 }}
-                isAnimationActive
-                animationDuration={650}
-              />
-            </ReComposedChart>
-          </ReResponsiveContainer>
+        <div ref={wrapRef} className="relative mt-5 w-full select-none" style={{ height: chartH }}>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`${range}-${portfolioSource}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isIb ? 0.35 : 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="absolute inset-0"
+              onPointerMove={(e) => {
+                if (isIb || !wrapRef.current || chartSeries.length < 2) return;
+                onChartPointer(e.clientX, wrapRef.current.getBoundingClientRect());
+              }}
+              onPointerDown={(e) => {
+                if (isIb || !wrapRef.current || chartSeries.length < 2) return;
+                try {
+                  (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);
+                } catch {
+                  /* noop */
+                }
+                onChartPointer(e.clientX, wrapRef.current.getBoundingClientRect());
+              }}
+              onPointerLeave={() => {
+                setScrubIdx(null);
+                setPointerX(null);
+              }}
+              onPointerUp={() => {
+                setScrubIdx(null);
+                setPointerX(null);
+              }}
+            >
+              <svg width={chartW} height={chartH} className="block max-w-full" role="img" aria-label="Portfolio value">
+                <defs>
+                  <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={lineColor} stopOpacity={0.15} />
+                    <stop offset="100%" stopColor={lineColor} stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                {fillPath ? <path d={fillPath} fill={`url(#${gradId})`} /> : null}
+                {linePath ? (
+                  <path d={linePath} fill="none" stroke={lineColor} strokeWidth={2} strokeLinejoin="round" />
+                ) : null}
+                {pointerX !== null && chartSeries.length >= 1 && !isIb ? (
+                  <line
+                    x1={pointerX}
+                    y1={0}
+                    x2={pointerX}
+                    y2={chartH}
+                    stroke="rgba(255,255,255,0.3)"
+                    strokeWidth={1}
+                  />
+                ) : null}
+              </svg>
+            </motion.div>
+          </AnimatePresence>
+          {isIb ? (
+            <div
+              className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center rounded-lg border border-white/[0.06] bg-[#0a0a0a]/90 px-4 text-center backdrop-blur-sm"
+              aria-live="polite"
+            >
+              <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-500">
+                Interactive Brokers
+              </p>
+              <p className="mt-2 max-w-sm text-sm font-medium text-zinc-200">Broker feed unavailable</p>
+              <p className="mt-1 max-w-sm text-xs leading-relaxed text-zinc-500">
+                Read-only portfolio sync and live P&amp;L from IBKR are on the roadmap. Switch to Paper to use the chart.
+              </p>
+              <p className="mt-3 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-zinc-400">
+                Coming soon
+              </p>
+            </div>
+          ) : null}
         </div>
 
-        <div className="mt-4 flex justify-center border-t border-white/[0.06] pt-4">
-          <div className="flex max-w-full gap-1 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:justify-center">
-            {PAPER_RANGE_TABS.map((tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setRange(tab.id)}
-                className={`shrink-0 rounded-full border px-3.5 py-2 text-xs font-medium tabular-nums transition-all sm:px-4 ${
-                  range === tab.id
-                    ? 'border-white/20 bg-white/[0.12] text-white'
-                    : 'border-transparent text-zinc-500 hover:border-white/10 hover:bg-white/[0.04] hover:text-zinc-300'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
+        <div className="mt-5 flex justify-center border-t border-white/[0.06] pt-4">
+          <div className="flex max-w-full flex-wrap justify-center gap-x-1 gap-y-1 sm:gap-x-2">
+            {PAPER_RANGE_TABS.map((tab) => {
+              const tabSeries = tab.id === 'live' ? liveSeries : staticByRange[tab.id] ?? [];
+              const upTab =
+                tab.id === 'live'
+                  ? (tabSeries[tabSeries.length - 1] ?? endEquity) >= (tabSeries[0] ?? endEquity)
+                  : (tabSeries[tabSeries.length - 1] ?? endEquity) >= (tabSeries[0] ?? endEquity);
+              const selColor = upTab ? LINE_UP : LINE_DOWN;
+              const selected = range === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  disabled={isIb}
+                  onClick={() => {
+                    setRange(tab.id);
+                    if (tab.id === 'live') setLiveSeries([]);
+                  }}
+                  className={`shrink-0 px-2 py-1.5 font-mono text-xs transition-colors sm:px-2.5 disabled:cursor-not-allowed disabled:opacity-35 ${
+                    selected
+                      ? `font-bold underline decoration-2 underline-offset-4`
+                      : 'font-medium text-zinc-500 hover:text-zinc-300'
+                  }`}
+                  style={selected && !isIb ? { color: selColor, textDecorationColor: selColor } : undefined}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
