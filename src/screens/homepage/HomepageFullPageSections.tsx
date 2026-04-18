@@ -155,12 +155,20 @@ export function HomepageFullPageSections() {
                 <p className="mb-4 text-[10px] font-semibold uppercase tracking-wider text-zinc-600">Payoff preview</p>
                 <PayoffCurveSvg />
               </div>
-              <Link
-                href="/risk-management"
-                className={`${btnPrimary} inline-flex w-full min-h-[48px] items-center justify-center sm:max-w-md lg:w-full`}
-              >
-                Risk Management
-              </Link>
+              <div className="flex flex-col gap-3 sm:flex-row sm:gap-3 lg:flex-col xl:flex-row">
+                <Link
+                  href="/risk-management"
+                  className={`${btnPrimary} inline-flex min-h-[48px] flex-1 items-center justify-center px-6 py-3.5 sm:max-w-md lg:w-full xl:max-w-none`}
+                >
+                  Risk Management
+                </Link>
+                <Link
+                  href="/reconnaissance"
+                  className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-lg border border-white/[0.14] bg-transparent px-6 py-3.5 text-sm font-semibold text-zinc-200 transition-colors hover:border-tan/40 hover:bg-white/[0.05] hover:text-tan sm:max-w-md lg:w-full xl:max-w-none"
+                >
+                  Reconnaissance
+                </Link>
+              </div>
             </div>
           </div>
         </motion.div>
