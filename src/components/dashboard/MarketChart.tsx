@@ -30,6 +30,9 @@ interface MarketChartProps {
 const LINE_UP = '#00C805';
 const LINE_DOWN = '#FF5000';
 
+/** Stable empty series for IBKR mode — avoids a new `[]` each render (react-hooks/exhaustive-deps). */
+const EMPTY_CHART_SERIES: number[] = [];
+
 function formatUsd(n: number): string {
   return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
 }
@@ -121,7 +124,10 @@ export const MarketChart: React.FC<MarketChartProps> = ({
 
   const staticSeries = range === 'live' ? [] : staticByRange[range] ?? [];
   const equitySeries = range === 'live' ? liveSeries : staticSeries;
-  const chartSeries = isIb ? [] : equitySeries;
+  const chartSeries = useMemo(
+    () => (isIb ? EMPTY_CHART_SERIES : equitySeries),
+    [isIb, equitySeries],
+  );
 
   useEffect(() => {
     if (isIb || range !== 'live') return;
