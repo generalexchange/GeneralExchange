@@ -8,12 +8,7 @@ import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Lock, Layers } from 'lucide-react';
-import {
-  HOMEPAGE_TAGLINE,
-  HOMEPAGE_PILLARS,
-  EXECUTION_LOOP_STEPS,
-  type PillarSection,
-} from '@/data/homepageInstitutionalPillars';
+import { HOMEPAGE_PILLARS, EXECUTION_LOOP_STEPS, type PillarSection } from '@/data/homepageInstitutionalPillars';
 import {
   IllustrationFrame,
   PillarMechanicsIllustration,
@@ -174,20 +169,20 @@ export function HomepagePositioningStrip() {
       style={{ backgroundColor: BAND.bg00, borderColor: BAND.border, color: BAND.text }}
     >
       <div className="mx-auto max-w-content px-4 sm:px-6 lg:px-10">
-        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-[1fr_minmax(280px,1fr)] lg:gap-12">
+        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-[1fr_minmax(220px,320px)] lg:gap-12">
           <div className="text-center sm:text-left">
-            <p className="font-mono text-[10px] font-medium uppercase tracking-[0.2em]" style={{ color: BAND.text60 }}>
-              {HOMEPAGE_TAGLINE.split(' — ')[0]}
+            <p className="font-mono text-[10px] font-medium uppercase tracking-[0.22em]" style={{ color: BAND.text60 }}>
+              Tokenization layer
             </p>
-            <p className="mt-2 font-display text-lg font-medium leading-snug tracking-tight sm:text-xl md:text-2xl">
-              {HOMEPAGE_TAGLINE.includes(' — ') ? HOMEPAGE_TAGLINE.split(' — ').slice(1).join(' — ') : HOMEPAGE_TAGLINE}
-            </p>
-            <p className="mx-auto mt-3 max-w-3xl text-sm font-light leading-relaxed sm:mx-0" style={{ color: BAND.text70 }}>
-              Tokenized accelerator capacity on dedicated GPU paths feeds one deterministic, risk-first loop—from research
-              through execution and audit.
+            <h2 className="mt-3 font-display text-lg font-medium leading-snug tracking-tight sm:text-xl md:text-2xl" style={{ color: BAND.text }}>
+              Narrative intelligence, entitled like any other workload
+            </h2>
+            <p className="mx-auto mt-4 max-w-3xl text-sm font-light leading-relaxed sm:mx-0 sm:text-[15px] sm:leading-relaxed" style={{ color: BAND.text70 }}>
+              Score and route headlines, filings, and macro events into the same limits, queues, and audit receipts as trading
+              and compute—so desks fund intelligence with explicit credits instead of shadow feeds.
             </p>
           </div>
-          <div className="rounded-lg border p-4 sm:p-5" style={{ borderColor: BAND.border, backgroundColor: BAND.plaque }}>
+          <div className="rounded-lg border p-5 sm:p-6" style={{ borderColor: BAND.border, backgroundColor: BAND.plaque }}>
             <PositioningCoinIllustration theme="light" />
           </div>
         </div>
