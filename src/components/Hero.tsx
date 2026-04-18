@@ -38,7 +38,7 @@ export const Hero: React.FC = () => {
         <div className="grid w-full items-center justify-items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 lg:justify-items-stretch">
           <motion.div className="w-full max-w-2xl space-y-6 text-center lg:max-w-none lg:space-y-8 lg:text-left" {...fade}>
             <h1 className="font-display text-[2.25rem] sm:text-5xl lg:text-[3.25rem] xl:text-[3.5rem] leading-[1.06] font-medium tracking-[-0.02em] text-neutral-50">
-              Institutional Risk &amp; Execution on Tokenized Compute
+              Trade Desk: Win on Wall Street
             </h1>
 
             <p className="mx-auto text-base sm:text-lg text-neutral-400 max-w-3xl leading-relaxed font-light lg:mx-0">
