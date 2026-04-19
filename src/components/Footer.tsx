@@ -4,6 +4,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { marketingSubdomainUrl } from '@/lib/subdomains';
 
 const linkClass =
   'text-[13px] text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors';
@@ -26,10 +27,27 @@ function BadgeBeta() {
   );
 }
 
-function FooterColumn({ title, children }: { title: string; children: React.ReactNode }) {
+function FooterColumn({
+  title,
+  titleHref,
+  children,
+}: {
+  title: string;
+  titleHref?: string;
+  children: React.ReactNode;
+}) {
   return (
     <div>
-      <p className={`${colLabelClass} mb-4`}>{title}</p>
+      {titleHref ? (
+        <a
+          href={titleHref}
+          className={`${colLabelClass} mb-4 inline-block transition-colors hover:text-neutral-900 dark:hover:text-white`}
+        >
+          {title}
+        </a>
+      ) : (
+        <p className={`${colLabelClass} mb-4`}>{title}</p>
+      )}
       <ul className="space-y-3">{children}</ul>
     </div>
   );
@@ -62,7 +80,7 @@ export const Footer: React.FC = () => {
             </p>
           </div>
 
-          <FooterColumn title="Platform">
+          <FooterColumn title="Library" titleHref={marketingSubdomainUrl('library')}>
             <LiLink href="#">Trading simulator</LiLink>
             <LiLink href="#">Monte Carlo engine</LiLink>
             <LiLink href="#">Portfolio builder</LiLink>
@@ -76,8 +94,7 @@ export const Footer: React.FC = () => {
             <LiLink href="/bridge-observer">Bridge Observer</LiLink>
           </FooterColumn>
 
-          <FooterColumn title="Learn">
-            <LiLink href="/university">University</LiLink>
+          <FooterColumn title="University" titleHref={marketingSubdomainUrl('university')}>
             <LiLink href="#">Courses & tracks</LiLink>
             <LiLink href="/library">Strategy library</LiLink>
             <LiLink href="#">Glossary</LiLink>
@@ -90,7 +107,7 @@ export const Footer: React.FC = () => {
             </li>
           </FooterColumn>
 
-          <FooterColumn title="Company">
+          <FooterColumn title="Company" titleHref={marketingSubdomainUrl('company')}>
             <LiLink href="#">About</LiLink>
             <LiLink href="#">Blog</LiLink>
             <LiLink href="#">Careers</LiLink>

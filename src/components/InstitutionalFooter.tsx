@@ -5,6 +5,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { MapPin } from 'lucide-react';
+import { marketingSubdomainUrl } from '@/lib/subdomains';
 
 export const InstitutionalFooter: React.FC = () => {
   return (
@@ -24,7 +25,12 @@ export const InstitutionalFooter: React.FC = () => {
             </div>
           </div>
           <div>
-            <h4 className="text-[11px] font-semibold text-neutral-500 uppercase tracking-[0.2em] mb-4">Platform</h4>
+            <a
+              href={marketingSubdomainUrl('library')}
+              className="text-[11px] font-semibold text-neutral-500 uppercase tracking-[0.2em] mb-4 inline-block hover:text-tan transition-colors"
+            >
+              Library
+            </a>
             <ul className="space-y-2.5">
               <li>
                 <Link href="/features" className="text-sm text-neutral-400 hover:text-tan transition-colors">
@@ -54,13 +60,13 @@ export const InstitutionalFooter: React.FC = () => {
             </ul>
           </div>
           <div>
-            <h4 className="text-[11px] font-semibold text-neutral-500 uppercase tracking-[0.2em] mb-4">Resources</h4>
+            <a
+              href={marketingSubdomainUrl('university')}
+              className="text-[11px] font-semibold text-neutral-500 uppercase tracking-[0.2em] mb-4 inline-block hover:text-tan transition-colors"
+            >
+              University
+            </a>
             <ul className="space-y-2.5">
-              <li>
-                <Link href="/university" className="text-sm text-neutral-400 hover:text-tan transition-colors">
-                  University
-                </Link>
-              </li>
               <li>
                 <Link href="/help-center" className="text-sm text-neutral-400 hover:text-tan transition-colors">
                   Help Center
