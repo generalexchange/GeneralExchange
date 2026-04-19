@@ -316,7 +316,7 @@ export function HomepageFullPageSections() {
             your idea and your book.
           </blockquote>
 
-          <div className="mt-10 flex flex-col gap-6 sm:gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
+          <div className="mt-10 flex flex-col gap-6 pb-6 sm:gap-8 sm:pb-8 lg:flex-row lg:items-center lg:justify-between lg:gap-10 lg:pb-10">
             <div className="w-full max-w-xl flex-1 rounded-2xl border border-white/[0.1] bg-charcoal/80 p-4 shadow-[0_20px_60px_-24px_rgba(0,0,0,0.55)] sm:p-5">
               <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-500">Backspace · preview</p>
               <div className="mt-3 rounded-lg border border-dashed border-white/[0.12] bg-white/[0.02] px-4 py-8 text-center">
@@ -359,7 +359,7 @@ export function HomepageFullPageSections() {
             </div>
           </div>
 
-          <div className="mt-12">
+          <div className="mt-20 border-t border-white/[0.06] pt-16 sm:mt-24 sm:pt-20 lg:mt-32 lg:pt-28">
             <HomepageTrustCtaRestored />
           </div>
         </motion.div>

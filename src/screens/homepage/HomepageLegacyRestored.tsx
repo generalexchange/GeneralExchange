@@ -258,9 +258,8 @@ export function HomepageTrustCtaRestored() {
                     Modular dataset audit
                   </p>
                   <p className="mt-1.5 text-xs font-light leading-relaxed" style={{ color: BAND.text70 }}>
-                    You work on one small chunk at a time—review it, approve it, or download it. Each chunk carries its own ID
-                    tags and storage rules, so auditors and partners can verify what they need without rebuilding the whole news
-                    history by hand.
+                    Each chunk carries its own ID tags and storage rules, so auditors and partners can verify what they need
+                    without rebuilding the whole news history by hand.
                   </p>
                 </div>
               </div>
