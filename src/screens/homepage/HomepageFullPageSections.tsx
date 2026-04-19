@@ -1,5 +1,5 @@
 /**
- * Homepage-only full-viewport marketing sections (Risk, Strategies, History, Backspace) after Hero + positioning strip.
+ * Homepage-only full-viewport marketing sections (Risk, Library, Backspace) after Hero + positioning strip.
  */
 
 'use client';
@@ -8,6 +8,7 @@ import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Hero } from '@/components/Hero';
+import { marketingSubdomainUrl } from '@/lib/subdomains';
 import { HomepageTrustCtaRestored, HomepageRemainingPillars } from './HomepageLegacyRestored';
 
 function SectionActions({ children }: { children: React.ReactNode }) {
@@ -168,122 +169,121 @@ export function HomepageFullPageSections() {
         </motion.div>
       </section>
 
-      {/* 02 — Strategies */}
-      <section
-        className="flex min-h-screen flex-col justify-center border-b border-white/[0.06] md:min-h-[100dvh]"
-        aria-labelledby="hp-strategies-title"
-      >
-        <motion.div className="mx-auto w-full max-w-content px-4 py-16 sm:px-6 sm:py-20 lg:px-10 lg:py-24" {...sectionReveal}>
-          <SectionNum n="02" label="Strategies" />
-          <h2
-            id="hp-strategies-title"
-            className="max-w-3xl font-display text-3xl font-medium leading-tight tracking-tight text-neutral-50 sm:text-4xl lg:text-[2.75rem]"
-          >
-            Build once. Deploy anywhere.
-          </h2>
-          <p className="mt-4 max-w-3xl text-sm font-light leading-relaxed text-zinc-400 sm:text-base">
-            Every strategy you save becomes a reusable template. Wire it into TradeEngine, backtest it in Backspace, or share
-            it later.
-          </p>
-
-          <div className="mt-10 overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02]">
-            <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3 sm:px-5">
-              <span className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">Strategy library</span>
-            </div>
-            <ul className="divide-y divide-white/[0.06]" role="list">
-              {STRATEGY_ROWS.map((r) => (
-                <li key={r.name}>
-                  <div className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5 sm:py-3.5">
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium text-zinc-200">
-                        {r.name} <span className="text-zinc-600">·</span> {r.sym}{' '}
-                        <span className="text-zinc-600">·</span> {r.tf}
-                      </p>
-                      <p className="mt-0.5 text-[11px] text-zinc-500">Last run {r.ran}</p>
-                    </div>
-                    <Link
-                      href="/dashboard"
-                      className="shrink-0 self-start rounded-lg border border-white/[0.1] bg-transparent px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-zinc-400 transition-colors hover:border-institutional-green/40 hover:bg-institutional-green/10 hover:text-tan sm:self-center"
-                    >
-                      Load into TradeEngine
-                    </Link>
-                  </div>
-                </li>
-              ))}
-            </ul>
-            <div className="border-t border-white/[0.06] px-4 py-3 sm:px-5">
-              <span className="inline-flex rounded-full border border-tan/25 bg-tan/10 px-3 py-1 text-[10px] font-medium uppercase tracking-wide text-tan/90">
-                Strategies become monetizable — coming soon
-              </span>
-            </div>
-          </div>
-
-          <SectionActions>
-            <Link href="/library" className={btnPrimary}>
-              Library
-            </Link>
-          </SectionActions>
-        </motion.div>
-      </section>
-
-      {/* 03 — History */}
+      {/* 02 — Library (strategies + history) */}
       <section
         className="flex min-h-screen flex-col justify-center border-b border-white/[0.06] bg-dark-gray/35 md:min-h-[100dvh]"
-        aria-labelledby="hp-history-title"
+        aria-labelledby="hp-library-title"
       >
         <motion.div className="mx-auto w-full max-w-content px-4 py-16 sm:px-6 sm:py-20 lg:px-10 lg:py-24" {...sectionReveal}>
-          <SectionNum n="03" label="History" />
+          <SectionNum n="02" label="Library" />
           <h2
-            id="hp-history-title"
+            id="hp-library-title"
             className="max-w-3xl font-display text-3xl font-medium leading-tight tracking-tight text-neutral-50 sm:text-4xl lg:text-[2.75rem]"
           >
-            There Is A Story In Every Trade
+            Library
           </h2>
           <p className="mt-4 max-w-3xl text-sm font-light leading-relaxed text-zinc-400 sm:text-base">
-            P&L tracking. Decision review. Performance broken down by strategy, symbol, and session. This is what makes you
-            better.
+            Reusable strategy templates, deployment into TradeEngine and Backspace, and a full trade history—P&amp;L, decisions,
+            and performance by strategy, symbol, and session—in one place.
           </p>
 
-          <div className="mt-10 overflow-x-auto rounded-xl border border-white/[0.08]">
-            <table className="w-full min-w-[640px] text-left text-xs sm:text-sm">
-              <thead>
-                <tr className="border-b border-white/[0.08] bg-white/[0.03] text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
-                  {['Date', 'Symbol', 'Strategy', 'Entry', 'Exit', 'P&L', 'Result'].map((h) => (
-                    <th key={h} className="px-3 py-3 font-medium sm:px-4">
-                      {h}
-                    </th>
+          <div className="mt-10 grid grid-cols-1 items-start gap-10 lg:grid-cols-2 lg:gap-12">
+            <div className="min-w-0">
+              <h3 className="font-display text-xl font-medium tracking-tight text-neutral-100 sm:text-2xl">
+                Build once. Deploy anywhere.
+              </h3>
+              <p className="mt-3 text-sm font-light leading-relaxed text-zinc-500 sm:text-base">
+                Every strategy you save becomes a reusable template. Wire it into TradeEngine, backtest it in Backspace, or share
+                it later.
+              </p>
+              <div className="mt-6 overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02]">
+                <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3 sm:px-5">
+                  <span className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">Strategy library</span>
+                </div>
+                <ul className="divide-y divide-white/[0.06]" role="list">
+                  {STRATEGY_ROWS.map((r) => (
+                    <li key={r.name}>
+                      <div className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5 sm:py-3.5">
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-sm font-medium text-zinc-200">
+                            {r.name} <span className="text-zinc-600">·</span> {r.sym}{' '}
+                            <span className="text-zinc-600">·</span> {r.tf}
+                          </p>
+                          <p className="mt-0.5 text-[11px] text-zinc-500">Last run {r.ran}</p>
+                        </div>
+                        <Link
+                          href="/dashboard"
+                          className="shrink-0 self-start rounded-lg border border-white/[0.1] bg-transparent px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-zinc-400 transition-colors hover:border-institutional-green/40 hover:bg-institutional-green/10 hover:text-tan sm:self-center"
+                        >
+                          Load into TradeEngine
+                        </Link>
+                      </div>
+                    </li>
                   ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/[0.06]">
-                {HISTORY_ROWS.map((row) => (
-                  <tr key={row.d + row.sym} className="text-zinc-300">
-                    <td className="whitespace-nowrap px-3 py-2.5 font-mono text-[11px] text-zinc-500 sm:px-4">{row.d}</td>
-                    <td className="px-3 py-2.5 font-medium sm:px-4">{row.sym}</td>
-                    <td className="px-3 py-2.5 text-zinc-400 sm:px-4">{row.strat}</td>
-                    <td className="px-3 py-2.5 font-mono tabular-nums sm:px-4">{row.en}</td>
-                    <td className="px-3 py-2.5 font-mono tabular-nums sm:px-4">{row.ex}</td>
-                    <td className={`px-3 py-2.5 font-mono tabular-nums sm:px-4 ${row.pnl.startsWith('+') ? 'text-institutional-green' : 'text-rose-400/90'}`}>
-                      {row.pnl}
-                    </td>
-                    <td className="px-3 py-2.5 sm:px-4">
-                      <span
-                        className={
-                          row.res === 'WIN'
-                            ? 'rounded border border-institutional-green/40 bg-institutional-green/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-tan'
-                            : 'rounded border border-white/[0.12] bg-white/[0.04] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-400'
-                        }
-                      >
-                        {row.res}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                </ul>
+                <div className="border-t border-white/[0.06] px-4 py-3 sm:px-5">
+                  <span className="inline-flex rounded-full border border-tan/25 bg-tan/10 px-3 py-1 text-[10px] font-medium uppercase tracking-wide text-tan/90">
+                    Strategies become monetizable — coming soon
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="min-w-0">
+              <h3 className="font-display text-xl font-medium tracking-tight text-neutral-100 sm:text-2xl">
+                There Is A Story In Every Trade
+              </h3>
+              <p className="mt-3 text-sm font-light leading-relaxed text-zinc-500 sm:text-base">
+                P&L tracking. Decision review. Performance broken down by strategy, symbol, and session. This is what makes you
+                better.
+              </p>
+              <div className="mt-6 overflow-x-auto rounded-xl border border-white/[0.08]">
+                <table className="w-full min-w-[520px] text-left text-xs sm:text-sm">
+                  <thead>
+                    <tr className="border-b border-white/[0.08] bg-white/[0.03] text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+                      {['Date', 'Symbol', 'Strategy', 'Entry', 'Exit', 'P&L', 'Result'].map((h) => (
+                        <th key={h} className="px-3 py-3 font-medium sm:px-4">
+                          {h}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/[0.06]">
+                    {HISTORY_ROWS.map((row) => (
+                      <tr key={row.d + row.sym} className="text-zinc-300">
+                        <td className="whitespace-nowrap px-3 py-2.5 font-mono text-[11px] text-zinc-500 sm:px-4">{row.d}</td>
+                        <td className="px-3 py-2.5 font-medium sm:px-4">{row.sym}</td>
+                        <td className="px-3 py-2.5 text-zinc-400 sm:px-4">{row.strat}</td>
+                        <td className="px-3 py-2.5 font-mono tabular-nums sm:px-4">{row.en}</td>
+                        <td className="px-3 py-2.5 font-mono tabular-nums sm:px-4">{row.ex}</td>
+                        <td
+                          className={`px-3 py-2.5 font-mono tabular-nums sm:px-4 ${row.pnl.startsWith('+') ? 'text-institutional-green' : 'text-rose-400/90'}`}
+                        >
+                          {row.pnl}
+                        </td>
+                        <td className="px-3 py-2.5 sm:px-4">
+                          <span
+                            className={
+                              row.res === 'WIN'
+                                ? 'rounded border border-institutional-green/40 bg-institutional-green/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-tan'
+                                : 'rounded border border-white/[0.12] bg-white/[0.04] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-400'
+                            }
+                          >
+                            {row.res}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
 
           <SectionActions>
+            <a href={marketingSubdomainUrl('library')} className={btnPrimary}>
+              Library
+            </a>
             <Link href="/almanac" className={btnPrimary}>
               Farmers Almanac
             </Link>
@@ -293,13 +293,13 @@ export function HomepageFullPageSections() {
         </motion.div>
       </section>
 
-      {/* 04 — Backspace */}
+      {/* 03 — Backspace */}
       <section
         className="flex min-h-screen flex-col justify-center border-b border-white/[0.06] md:min-h-[100dvh]"
         aria-labelledby="hp-backspace-title"
       >
         <motion.div className="mx-auto w-full max-w-content px-4 py-16 sm:px-6 sm:py-20 lg:px-10 lg:py-24" {...sectionReveal}>
-          <SectionNum n="04" label="Backspace" />
+          <SectionNum n="03" label="Backspace" />
           <h2
             id="hp-backspace-title"
             className="font-display text-[clamp(2.5rem,6vw,4.5rem)] font-semibold leading-none tracking-tight text-neutral-50"

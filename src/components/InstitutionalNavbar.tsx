@@ -8,6 +8,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Search } from 'lucide-react';
+import { marketingSubdomainUrl } from '@/lib/subdomains';
 
 export interface InstitutionalNavbarProps {
   searchQuery?: string;
@@ -75,7 +76,19 @@ export const InstitutionalNavbar: React.FC<InstitutionalNavbarProps> = ({
             </div>
           )}
 
-          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          <div className="flex shrink-0 flex-wrap items-center justify-end gap-x-2 gap-y-1 sm:gap-x-3">
+            <a
+              href={marketingSubdomainUrl('university')}
+              className="text-[11px] font-semibold tracking-wide text-zinc-400 transition-colors hover:text-tan sm:text-[13px]"
+            >
+              University
+            </a>
+            <a
+              href={marketingSubdomainUrl('library')}
+              className="text-[11px] font-semibold tracking-wide text-zinc-400 transition-colors hover:text-tan sm:text-[13px]"
+            >
+              Library
+            </a>
             <Link
               href="/login"
               className={`inline-flex items-center justify-center rounded-lg border px-4 py-2 text-[13px] font-semibold tracking-wide transition-all duration-300 sm:px-5 ${
