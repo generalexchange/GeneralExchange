@@ -237,36 +237,48 @@ export function HomepageFullPageSections() {
                 P&L tracking. Decision review. Performance broken down by strategy, symbol, and session. This is what makes you
                 better.
               </p>
-              <div className="mt-6 overflow-x-auto rounded-xl border border-white/[0.08]">
-                <table className="w-full min-w-[520px] text-left text-xs sm:text-sm">
+              <div className="mt-6 overflow-hidden rounded-xl border border-white/[0.08]">
+                <table className="w-full table-fixed border-collapse text-left text-[10px] leading-snug sm:text-xs sm:leading-normal lg:text-sm">
                   <thead>
-                    <tr className="border-b border-white/[0.08] bg-white/[0.03] text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
-                      {['Date', 'Symbol', 'Strategy', 'Entry', 'Exit', 'P&L', 'Result'].map((h) => (
-                        <th key={h} className="px-3 py-3 font-medium sm:px-4">
-                          {h}
-                        </th>
-                      ))}
+                    <tr className="border-b border-white/[0.08] bg-white/[0.03] text-[9px] font-semibold uppercase tracking-wider text-zinc-500 sm:text-[10px]">
+                      <th className="w-[12%] px-1.5 py-2 font-medium sm:w-[11%] sm:px-2.5 sm:py-2.5 lg:px-3">
+                        Date
+                      </th>
+                      <th className="w-[9%] px-1.5 py-2 font-medium sm:px-2.5 sm:py-2.5 lg:px-3">Sym</th>
+                      <th className="w-[30%] px-1.5 py-2 font-medium sm:w-[28%] sm:px-2.5 sm:py-2.5 lg:px-3">
+                        Strategy
+                      </th>
+                      <th className="w-[12%] px-1.5 py-2 font-medium sm:px-2.5 sm:py-2.5 lg:px-3">Entry</th>
+                      <th className="w-[12%] px-1.5 py-2 font-medium sm:px-2.5 sm:py-2.5 lg:px-3">Exit</th>
+                      <th className="w-[13%] px-1.5 py-2 font-medium sm:px-2.5 sm:py-2.5 lg:px-3">P&amp;L</th>
+                      <th className="w-[12%] px-1.5 py-2 font-medium sm:px-2.5 sm:py-2.5 lg:px-3">Res</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/[0.06]">
                     {HISTORY_ROWS.map((row) => (
                       <tr key={row.d + row.sym} className="text-zinc-300">
-                        <td className="whitespace-nowrap px-3 py-2.5 font-mono text-[11px] text-zinc-500 sm:px-4">{row.d}</td>
-                        <td className="px-3 py-2.5 font-medium sm:px-4">{row.sym}</td>
-                        <td className="px-3 py-2.5 text-zinc-400 sm:px-4">{row.strat}</td>
-                        <td className="px-3 py-2.5 font-mono tabular-nums sm:px-4">{row.en}</td>
-                        <td className="px-3 py-2.5 font-mono tabular-nums sm:px-4">{row.ex}</td>
+                        <td className="px-1.5 py-2 font-mono text-[10px] text-zinc-500 sm:px-2.5 sm:text-[11px] lg:px-3">
+                          {row.d}
+                        </td>
+                        <td className="px-1.5 py-2 font-medium sm:px-2.5 lg:px-3">{row.sym}</td>
+                        <td className="break-words px-1.5 py-2 text-zinc-400 sm:px-2.5 lg:px-3">{row.strat}</td>
+                        <td className="px-1.5 py-2 font-mono tabular-nums text-[10px] sm:px-2.5 sm:text-[11px] lg:px-3">
+                          {row.en}
+                        </td>
+                        <td className="px-1.5 py-2 font-mono tabular-nums text-[10px] sm:px-2.5 sm:text-[11px] lg:px-3">
+                          {row.ex}
+                        </td>
                         <td
-                          className={`px-3 py-2.5 font-mono tabular-nums sm:px-4 ${row.pnl.startsWith('+') ? 'text-institutional-green' : 'text-rose-400/90'}`}
+                          className={`px-1.5 py-2 font-mono tabular-nums text-[10px] sm:px-2.5 sm:text-[11px] lg:px-3 ${row.pnl.startsWith('+') ? 'text-institutional-green' : 'text-rose-400/90'}`}
                         >
                           {row.pnl}
                         </td>
-                        <td className="px-3 py-2.5 sm:px-4">
+                        <td className="px-1.5 py-2 sm:px-2.5 lg:px-3">
                           <span
                             className={
                               row.res === 'WIN'
-                                ? 'rounded border border-institutional-green/40 bg-institutional-green/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-tan'
-                                : 'rounded border border-white/[0.12] bg-white/[0.04] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-400'
+                                ? 'inline-block max-w-full truncate rounded border border-institutional-green/40 bg-institutional-green/15 px-1 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-tan sm:px-1.5 sm:text-[10px]'
+                                : 'inline-block max-w-full truncate rounded border border-white/[0.12] bg-white/[0.04] px-1 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-zinc-400 sm:px-1.5 sm:text-[10px]'
                             }
                           >
                             {row.res}
