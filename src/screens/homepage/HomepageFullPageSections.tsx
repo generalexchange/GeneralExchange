@@ -294,6 +294,7 @@ export function HomepageFullPageSections() {
 
       <SectionShell
         tone="primary"
+        verticalRhythm="lastOnPage"
         eyebrowNum="III"
         eyebrowLabel="Backspace"
         ariaLabelledBy="hp-backspace-title"
@@ -307,7 +308,7 @@ export function HomepageFullPageSections() {
         }
         lede="Our proprietary backtesting engine."
       >
-        <blockquote className="mt-8 max-w-4xl border-l-2 border-brass pl-4 text-pretty text-[15px] font-normal leading-[1.75] text-zinc-300 break-words sm:pl-6 sm:text-base">
+        <blockquote className="mt-6 max-w-4xl border-l-2 border-brass pl-4 text-pretty text-[15px] font-normal leading-[1.75] text-zinc-300 break-words sm:mt-8 sm:pl-6 sm:text-base">
           Backspace is where you prove a trading plan before you risk real money. Load your data, pick a model that
           fits—XGBoost, LSTM, or reinforcement learning—and run it on real history so you see calm days and rough ones. You get
           simple reports that stack predictions next to what actually happened and sketch how orders might have filled. It is
@@ -315,7 +316,7 @@ export function HomepageFullPageSections() {
           your idea and your book.
         </blockquote>
 
-        <div className="mt-10 flex flex-col gap-6 pb-6 sm:gap-8 sm:pb-8 lg:flex-row lg:items-center lg:justify-between lg:gap-10 lg:pb-10">
+        <div className="mt-8 flex flex-col gap-5 pb-4 sm:mt-10 sm:gap-6 sm:pb-6 lg:flex-row lg:items-center lg:justify-between lg:gap-8 lg:pb-7">
           <div className="w-full max-w-xl flex-1 rounded-lg border border-white/[0.08] bg-charcoal/60 p-5 sm:p-6">
             <p className="sc-serif text-[11px] text-zinc-500">Backspace · preview</p>
             <div className="mt-3 rounded border border-dashed border-white/[0.12] bg-white/[0.03] px-4 py-8 text-center">
@@ -341,7 +342,7 @@ export function HomepageFullPageSections() {
               </svg>
             </div>
           </div>
-          <div className="flex shrink-0 flex-wrap items-center justify-start gap-3 border-t border-white/[0.06] pt-6 lg:items-center lg:border-l lg:border-t-0 lg:border-white/[0.08] lg:pl-10 lg:pt-0">
+          <div className="flex shrink-0 flex-wrap items-center justify-start gap-3 border-t border-white/[0.06] pt-5 sm:pt-6 lg:items-center lg:border-l lg:border-t-0 lg:border-white/[0.08] lg:pl-8 lg:pt-0 xl:pl-10">
             <Link href="/backspace" className={`${btnSection} min-w-[10rem] justify-center`}>
               <BackspaceGlyph className="h-[1.05rem] w-[1.05rem] shrink-0 opacity-90" />
               Backspace
@@ -349,9 +350,9 @@ export function HomepageFullPageSections() {
           </div>
         </div>
 
-        <div className="mt-20 border-t border-white/[0.06] pt-16 sm:mt-24 sm:pt-20 lg:mt-32 lg:pt-28">
+        <div className="mt-12 border-t border-white/[0.06] pt-10 sm:mt-14 sm:pt-12 lg:mt-16 lg:pt-14">
           <div className="mx-auto max-w-content layout-gutter">
-            <div className="rule-brass my-16 sm:my-24" aria-hidden />
+            <div className="rule-brass my-6 sm:my-8 lg:my-10" aria-hidden />
           </div>
           <HomepageTrustCtaRestored />
         </div>

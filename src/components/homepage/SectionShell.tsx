@@ -13,6 +13,8 @@ export interface SectionShellProps {
   children: React.ReactNode;
   /** `primary` = charcoal, `secondary` = dark-gray band */
   tone?: 'primary' | 'secondary';
+  /** `lastOnPage` = same top rhythm, less bottom padding before site footer. */
+  verticalRhythm?: 'default' | 'lastOnPage';
   id?: string;
   ariaLabelledBy?: string;
 }
@@ -24,10 +26,15 @@ export function SectionShell({
   lede,
   children,
   tone = 'primary',
+  verticalRhythm = 'default',
   id,
   ariaLabelledBy,
 }: SectionShellProps) {
   const bg = tone === 'primary' ? 'bg-charcoal' : 'bg-dark-gray';
+  const yPad =
+    verticalRhythm === 'lastOnPage'
+      ? 'pt-16 pb-10 sm:pt-20 sm:pb-12 lg:pt-28 lg:pb-14'
+      : 'py-16 sm:py-20 lg:py-32';
 
   return (
     <section id={id} aria-labelledby={ariaLabelledBy} className={`relative ${bg} border-b border-white/[0.06]`}>
@@ -37,7 +44,7 @@ export function SectionShell({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-10% 0px' }}
         transition={{ duration: 0.7, ease: easeLux }}
-        className="relative z-10 mx-auto w-full max-w-content layout-gutter py-16 sm:py-20 lg:py-32"
+        className={`relative z-10 mx-auto w-full max-w-content layout-gutter ${yPad}`}
       >
         <header className="mb-8 max-w-3xl sm:mb-14">
           <p className="sc-serif mb-3 text-[11px] font-medium text-zinc-400 sm:text-xs">
