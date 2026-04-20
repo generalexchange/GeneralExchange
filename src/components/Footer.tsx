@@ -89,6 +89,36 @@ export const Footer: React.FC = () => {
             <LiLink href="#">Monte Carlo engine</LiLink>
             <LiLink href="#">Portfolio builder</LiLink>
             <LiLink href="/tokenomics">Compute tokens</LiLink>
+            <li>
+              <a
+                href="https://www.rockefeller.press"
+                className={linkClass}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Rockefeller Press
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.townandcattle.com"
+                className={linkClass}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Town{' & '}Cattle
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.credit.coffee"
+                className={linkClass}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Credit Coffee
+              </a>
+            </li>
           </FooterColumn>
 
           <FooterColumn title="University" titleHref={marketingSubdomainUrl('university')}>
