@@ -97,7 +97,6 @@ export const Footer: React.FC = () => {
             <LiLink href="/options">Options</LiLink>
             <LiLink href="/strategies">Strategies</LiLink>
             <LiLink href="/sentiment">Sentiment</LiLink>
-            <LiLink href="/tokenomics">Tokenomics</LiLink>
           </FooterColumn>
 
           <FooterColumn title="University" titleHref={marketingSubdomainUrl('university')}>
@@ -136,6 +135,7 @@ export const Footer: React.FC = () => {
             <LiLink href="/our-story">Our Story</LiLink>
             <LiLink href="#">Careers</LiLink>
             <LiLink href="/help-desk">Help Desk</LiLink>
+            <LiLink href="/tokenomics">Tokenomics</LiLink>
           </FooterColumn>
         </div>
 
