@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import { TradeEngine } from '@/screens/TradeEngine';
 
 export const metadata: Metadata = {
-  title: 'TradeEngine',
+  title: 'The Exchange',
   description:
-    'Institutional order workflow: strategy intent, controlled execution, and risk-aware release—aligned to desk policy before capital is committed.',
+    'General Exchange execution surface: tickets, routing, and policy-aware checks so intent becomes a controlled release before size hits the tape.',
   alternates: { canonical: '/trade-engine' },
 };
 

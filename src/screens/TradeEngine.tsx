@@ -1,5 +1,6 @@
 /**
- * TradeEngine product page — order workflow hero, ticket mock, platform topology.
+ * The Exchange product page — order workflow hero, ticket mock, platform topology.
+ * Route remains /trade-engine.
  */
 
 'use client';
@@ -55,10 +56,10 @@ export const TradeEngine: React.FC = () => {
     <div className="min-h-screen bg-charcoal font-sans text-neutral-100 antialiased selection:bg-tan/20">
       <Navbar showSearch={false} />
 
-      <div className="pt-12 sm:pt-14">
+      <div className="pt-[calc(3.5rem+env(safe-area-inset-top,0px))] sm:pt-[calc(3.75rem+env(safe-area-inset-top,0px))]">
         <section
           className="relative overflow-hidden border-b border-white/[0.06] md:min-h-[min(100dvh,900px)]"
-          aria-labelledby="trade-engine-title"
+          aria-labelledby="the-exchange-title"
         >
           <div className="pointer-events-none absolute inset-0">
             <div
@@ -78,26 +79,26 @@ export const TradeEngine: React.FC = () => {
                 <p className="mb-3 font-mono text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500 sm:text-[11px]">
                   <span className="text-tan/90">01</span>
                   <span className="text-zinc-600"> · </span>
-                  TradeEngine
+                  The Exchange
                 </p>
                 <motion.h1
-                  id="trade-engine-title"
+                  id="the-exchange-title"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.75, ease: easeLux }}
                   className="mt-4 font-display text-[clamp(2.25rem,5.5vw,3.75rem)] font-medium leading-[1.08] tracking-tight text-neutral-100"
                 >
-                  TradeEngine
+                  The Exchange
                 </motion.h1>
                 <p className="mt-6 max-w-xl border-l border-white/[0.08] pl-5 text-sm font-light leading-relaxed text-zinc-500 sm:text-[15px] sm:leading-[1.65]">
-                  Institutional order workflow: strategy intent, controlled execution, and risk-aware release—aligned to desk
-                  policy before capital is committed.
+                  General Exchange&apos;s execution surface: tickets, routing, and evidence-bound checks so strategy intent
+                  becomes a controlled release—aligned to desk policy and limits before size touches the tape.
                 </p>
                 <Link
                   href="/dashboard"
                   className="mt-12 inline-flex w-full max-w-xs items-center justify-center border border-white/[0.18] bg-white/[0.04] px-10 py-3.5 text-center text-[11px] font-semibold uppercase tracking-[0.22em] text-neutral-100 transition-colors hover:border-tan/45 hover:bg-white/[0.07] sm:w-auto"
                 >
-                  Open TradeEngine
+                  Open The Exchange
                 </Link>
               </div>
 
@@ -108,14 +109,14 @@ export const TradeEngine: React.FC = () => {
           </div>
         </section>
 
-        <section className="border-b border-white/[0.06] py-14 sm:py-16 lg:py-20" aria-labelledby="trade-engine-topology-title">
+        <section className="border-b border-white/[0.06] py-14 sm:py-16 lg:py-20" aria-labelledby="exchange-topology-title">
           <div className="mx-auto max-w-content px-4 sm:px-6 lg:px-10">
-            <h2 id="trade-engine-topology-title" className="text-[10px] font-semibold uppercase tracking-[0.2em] text-tan/90">
+            <h2 id="exchange-topology-title" className="text-[10px] font-semibold uppercase tracking-[0.2em] text-tan/90">
               End-to-end platform topology
             </h2>
             <p className="mt-2 max-w-2xl text-xs font-light leading-relaxed text-neutral-500">
-              How tape, risk, compute, routing, and evidence connect—one direction of travel so auditors and desks share the
-              same mental model.
+              How orders, risk, compute, routing, and evidence connect through The Exchange—one direction of travel so auditors
+              and desks share the same mental model.
             </p>
             <div className="mt-6 rounded-lg border border-white/[0.1] bg-dark-gray/55 px-3 py-4 backdrop-blur-sm sm:px-5 sm:py-5">
               <HeroSystemTopologyIllustration />

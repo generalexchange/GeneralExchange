@@ -1,5 +1,5 @@
 /**
- * Homepage hero — tall institutional band with TradeEngine CTA
+ * Homepage hero — tall institutional band with The Exchange CTA
  */
 
 'use client';
@@ -52,7 +52,7 @@ export const Hero: React.FC = () => {
                 href="/trade-engine"
                 className="inline-flex min-h-11 w-full items-center justify-center rounded-md bg-tan px-6 py-3 text-sm font-semibold tracking-wide text-charcoal shadow-[0_12px_40px_-12px_rgba(210,180,140,0.35)] transition-all duration-300 hover:bg-tan-muted sm:w-auto sm:min-w-[10.5rem] sm:px-8 sm:py-3.5 active:scale-[0.99]"
               >
-                TradeEngine
+                The Exchange
               </Link>
               <Link
                 href="/governance"

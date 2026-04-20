@@ -232,7 +232,7 @@ export function HomepageFullPageSections() {
         ariaLabelledBy="hp-library-title"
         title={<span id="hp-library-title">Library</span>}
         lede={
-          'Reusable strategy templates, deployment into TradeEngine and Backspace, and a full trade history—P&L, decisions, and performance by strategy, symbol, and session—in one place.'
+          'Reusable strategy templates, deployment into The Exchange and Backspace, and a full trade history—P&L, decisions, and performance by strategy, symbol, and session—in one place.'
         }
       >
         <div className="mt-10 grid grid-cols-1 items-start gap-10 lg:grid-cols-2 lg:gap-12">
@@ -241,7 +241,7 @@ export function HomepageFullPageSections() {
               Build once. Deploy anywhere.
             </h3>
             <p className="mt-3 text-sm font-normal leading-[1.75] text-zinc-400 sm:text-base">
-              Every strategy you save becomes a reusable template. Wire it into TradeEngine, backtest it in Backspace, or share
+              Every strategy you save becomes a reusable template. Wire it into The Exchange, backtest it in Backspace, or share
               it later.
             </p>
             <div className="mt-6 overflow-hidden rounded-lg border border-white/[0.08] bg-charcoal/60">
@@ -260,7 +260,7 @@ export function HomepageFullPageSections() {
                         <p className="mt-0.5 text-[11px] font-normal text-zinc-500">Last run {r.ran}</p>
                       </div>
                       <Link href="/dashboard" className={`${btnSectionCompact} shrink-0 self-stretch sm:self-center sm:shrink-0`}>
-                        Load into TradeEngine
+                        Load into The Exchange
                       </Link>
                     </div>
                   </li>

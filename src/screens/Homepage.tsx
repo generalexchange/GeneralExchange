@@ -1,5 +1,5 @@
 /**
- * Homepage — full-viewport TradeEngine / Risk / Library / Backspace narrative
+ * Homepage — full-viewport Exchange / Risk / Library / Backspace narrative
  */
 
 'use client';
