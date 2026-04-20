@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { Mail } from 'lucide-react';
 
 /**
  * Compact newsletter signup for the marketing footer (replaces static tagline pill).
@@ -33,13 +34,9 @@ export function FooterNewsletterSignup() {
           Subscribe
         </button>
       </form>
-      <p className="mt-2 flex flex-wrap items-center gap-2 text-[10px] font-light text-neutral-400 dark:text-neutral-500">
-        <span>FIrstClassMail</span>
-        <span className="inline-flex items-baseline gap-0.5 font-mono text-[11px] font-semibold tracking-tight" aria-hidden>
-          <span className="text-red-600 dark:text-red-400">X</span>
-          <span className="text-green-600 dark:text-green-400">Y</span>
-          <span className="text-blue-600 dark:text-blue-400">Z</span>
-        </span>
+      <p className="mt-2 flex flex-wrap items-center gap-1.5 text-[10px] font-light text-neutral-400 dark:text-neutral-500">
+        <Mail className="h-3.5 w-3.5 shrink-0 text-neutral-500 dark:text-neutral-400" strokeWidth={2} aria-hidden />
+        <span>FirstClassMail</span>
       </p>
     </div>
   );

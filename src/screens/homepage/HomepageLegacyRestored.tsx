@@ -7,7 +7,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Lock, Layers, Newspaper, UserPlus } from 'lucide-react';
+import { Lock, Layers } from 'lucide-react';
 import { HOMEPAGE_PILLARS, EXECUTION_LOOP_STEPS, type PillarSection } from '@/data/homepageInstitutionalPillars';
 import {
   IllustrationFrame,
@@ -266,16 +266,14 @@ export function HomepageTrustCtaRestored() {
             <div className="flex flex-wrap gap-3 border-t border-neutral-200 pt-6 dark:border-neutral-700">
               <Link
                 href="/bridge-observer"
-                className="inline-flex items-center justify-center gap-2 rounded-md bg-neutral-900 px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-neutral-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-white"
+                className="inline-flex items-center justify-center rounded-md bg-neutral-900 px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-neutral-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-white"
               >
-                <Newspaper className="h-4 w-4 shrink-0 opacity-90" strokeWidth={2} aria-hidden />
                 Bridge Observer
               </Link>
               <Link
                 href="/request-access"
-                className="inline-flex items-center justify-center gap-2 rounded-md border border-neutral-300 bg-transparent px-7 py-3.5 text-sm font-semibold text-neutral-800 transition-colors hover:bg-neutral-100 dark:border-neutral-600 dark:text-neutral-200 dark:hover:bg-neutral-700/60"
+                className="inline-flex items-center justify-center rounded-md border border-neutral-300 bg-transparent px-7 py-3.5 text-sm font-semibold text-neutral-800 transition-colors hover:bg-neutral-100 dark:border-neutral-600 dark:text-neutral-200 dark:hover:bg-neutral-700/60"
               >
-                <UserPlus className="h-4 w-4 shrink-0 opacity-90" strokeWidth={2} aria-hidden />
                 Request access
               </Link>
             </div>
