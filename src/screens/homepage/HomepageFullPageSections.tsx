@@ -8,14 +8,25 @@ import React, { useId } from 'react';
 import Link from 'next/link';
 import { Hero } from '@/components/Hero';
 import { SectionShell } from '@/components/homepage/SectionShell';
-import { marketingSubdomainUrl } from '@/lib/subdomains';
 import { HomepageTrustCtaRestored, HomepageRemainingPillars } from './HomepageLegacyRestored';
+
+/** Rounded tile with erase mark — reads as “delete / rewind proof” without echoing third-party logos. */
+function BackspaceGlyph({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 22 22" fill="none" aria-hidden>
+      <rect x="2.25" y="2.75" width="17.5" height="16.5" rx="4" className="stroke-current" strokeWidth="1.35" opacity="0.9" />
+      <path
+        d="M8.35 8.6l5.3 5.3m0-5.3l-5.3 5.3"
+        className="stroke-current"
+        strokeWidth="1.45"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
 
 const btnPrimary =
   'inline-flex items-center justify-center gap-2 rounded-md bg-tan px-7 py-3.5 text-[13px] font-semibold tracking-wide text-charcoal transition-all duration-300 hover:bg-tan-muted hover:shadow-[0_12px_40px_-12px_rgba(210,180,140,0.35)]';
-
-const btnSecondary =
-  'inline-flex items-center justify-center gap-2 rounded-md border border-brass/50 bg-transparent px-7 py-3.5 text-[13px] font-semibold tracking-wide text-zinc-200 transition-colors hover:border-brass hover:bg-brass/5 hover:text-tan';
 
 const btnGhost =
   'inline-flex items-center justify-center rounded border border-white/[0.12] bg-white/[0.03] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-zinc-300 transition-colors hover:border-tan/40 hover:bg-white/[0.06] hover:text-tan';
@@ -205,11 +216,8 @@ export function HomepageFullPageSections() {
               <PayoffCurveSvg />
             </div>
             <div className="flex flex-col gap-3 sm:flex-row sm:gap-3 lg:flex-col xl:flex-row">
-              <Link href="/risk-management" className={`${btnPrimary} flex-1 sm:max-w-md lg:w-full xl:max-w-none`}>
-                Risk Management
-              </Link>
-              <Link href="/reconnaissance" className={`${btnSecondary} flex-1 sm:max-w-md lg:w-full xl:max-w-none`}>
-                Reconnaissance
+              <Link href="/reconnaissance" className={`${btnPrimary} flex-1 sm:max-w-md lg:w-full xl:max-w-none`}>
+                Riskonometry
               </Link>
             </div>
           </div>
@@ -275,11 +283,8 @@ export function HomepageFullPageSections() {
         </div>
 
         <SectionActions>
-          <a href={marketingSubdomainUrl('library')} className={btnPrimary}>
-            Library
-          </a>
-          <Link href="/almanac" className={btnSecondary}>
-            Farmers Almanac
+          <Link href="/tokenomics" className={btnPrimary}>
+            Tokenomics
           </Link>
         </SectionActions>
 
@@ -333,10 +338,8 @@ export function HomepageFullPageSections() {
             </div>
           </div>
           <div className="flex shrink-0 flex-wrap items-center justify-start gap-3 border-t border-white/[0.06] pt-6 lg:items-center lg:border-l lg:border-t-0 lg:border-white/[0.08] lg:pl-10 lg:pt-0">
-            <Link href="/tokenomics" className={`${btnSecondary} min-w-[10rem]`}>
-              Tokenomics
-            </Link>
-            <Link href="/backspace" className={`${btnPrimary} min-w-[10rem]`}>
+            <Link href="/backspace" className={`${btnPrimary} min-w-[10rem] justify-center`}>
+              <BackspaceGlyph className="h-[1.05rem] w-[1.05rem] shrink-0 opacity-90" />
               Backspace
             </Link>
           </div>

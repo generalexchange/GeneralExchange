@@ -221,20 +221,17 @@ export function HomepageExecutionLoopRestored() {
 
 export function HomepageTrustCtaRestored() {
   return (
-    <div className="rounded-xl border border-white/[0.08]" style={{ backgroundColor: BAND.bg00, color: BAND.text, borderColor: BAND.border }}>
+    <div className="rounded-xl border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900">
       <div className="mx-auto max-w-content px-4 py-10 sm:px-6 sm:py-12 lg:px-10">
-        <div
-          className="grid gap-8 rounded-lg border p-6 shadow-[0_8px_40px_-20px_rgba(46,90,58,0.12)] sm:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start lg:gap-12"
-          style={{ borderColor: BAND.border, backgroundColor: BAND.plaque }}
-        >
+        <div className="grid gap-8 rounded-lg border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-700 dark:bg-neutral-800 sm:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start lg:gap-12">
           <div className="min-w-0">
-            <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em]" style={{ color: BAND.text60 }}>
+            <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-neutral-500 dark:text-neutral-400">
               Bridge Observer · provenance
             </p>
-            <h2 className="mt-2 font-display text-xl font-medium tracking-tight sm:text-2xl" style={{ color: BAND.text }}>
+            <h2 className="mt-2 font-display text-xl font-medium tracking-tight text-neutral-900 dark:text-neutral-100 sm:text-2xl">
               Evidence-grade datasets from sentiment-scored news
             </h2>
-            <p className="mt-3 text-sm font-light leading-relaxed" style={{ color: BAND.text70 }}>
+            <p className="mt-3 text-sm font-light leading-relaxed text-neutral-600 dark:text-neutral-400">
               Headlines and filings are scored for sentiment and structure, then materialized as versioned dataset modules—each
               with its own scope, lineage hash, and promotion path—so research, risk, and compliance can inspect or replay the
               same artifacts the desk trades on, not a one-off narrative dump.
@@ -245,10 +242,10 @@ export function HomepageTrustCtaRestored() {
               <div className="flex gap-3">
                 <Lock className="mt-0.5 h-4 w-4 shrink-0 text-institutional-green" strokeWidth={1.5} aria-hidden />
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.12em]" style={{ color: BAND.text }}>
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-neutral-900 dark:text-neutral-100">
                     Policy-locked dataset promotion
                   </p>
-                  <p className="mt-1.5 text-xs font-light leading-relaxed" style={{ color: BAND.text70 }}>
+                  <p className="mt-1.5 text-xs font-light leading-relaxed text-neutral-600 dark:text-neutral-400">
                     Sentiment-backed datasets only promote after the same checks as production alpha—no side-channel stack.
                   </p>
                 </div>
@@ -256,26 +253,26 @@ export function HomepageTrustCtaRestored() {
               <div className="flex gap-3">
                 <Layers className="mt-0.5 h-4 w-4 shrink-0 text-institutional-green" strokeWidth={1.5} aria-hidden />
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.12em]" style={{ color: BAND.text }}>
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-neutral-900 dark:text-neutral-100">
                     Modular dataset audit
                   </p>
-                  <p className="mt-1.5 text-xs font-light leading-relaxed" style={{ color: BAND.text70 }}>
+                  <p className="mt-1.5 text-xs font-light leading-relaxed text-neutral-600 dark:text-neutral-400">
                     Each chunk carries its own ID tags and storage rules, so auditors and partners can verify what they need
                     without rebuilding the whole news history by hand.
                   </p>
                 </div>
               </div>
             </div>
-            <div className="flex flex-wrap gap-3 border-t pt-6" style={{ borderColor: BAND.border }}>
+            <div className="flex flex-wrap gap-3 border-t border-neutral-200 pt-6 dark:border-neutral-700">
               <Link
                 href="/bridge-observer"
-                className="inline-flex items-center justify-center rounded-md bg-institutional-green px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-institutional-green/90"
+                className="inline-flex items-center justify-center rounded-md bg-neutral-900 px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-neutral-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-white"
               >
                 Bridge Observer
               </Link>
               <Link
                 href="/request-access"
-                className="inline-flex items-center justify-center rounded-md border border-graphite-600/35 bg-transparent px-7 py-3.5 text-sm font-semibold text-graphite-800 transition-colors hover:border-institutional-green/45 hover:bg-institutional-green/5 hover:text-institutional-green"
+                className="inline-flex items-center justify-center rounded-md border border-neutral-300 bg-transparent px-7 py-3.5 text-sm font-semibold text-neutral-800 transition-colors hover:bg-neutral-100 dark:border-neutral-600 dark:text-neutral-200 dark:hover:bg-neutral-700/60"
               >
                 Request access
               </Link>
