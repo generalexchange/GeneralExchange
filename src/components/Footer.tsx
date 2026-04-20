@@ -133,6 +133,7 @@ export const Footer: React.FC = () => {
             <LiLink href="/backspace">Backspace</LiLink>
             <LiLink href="/dividend-properties">Dividend Properties</LiLink>
             <LiLink href="/ether-bonds">Ether Bonds</LiLink>
+            <LiLink href="/money-bagg">MoneyBagg</LiLink>
           </FooterColumn>
 
           <FooterColumn title="Company" titleHref={marketingSubdomainUrl('company')}>
