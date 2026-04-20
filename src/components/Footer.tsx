@@ -39,16 +39,24 @@ function FooterColumn({
   titleExternal?: boolean;
   children: React.ReactNode;
 }) {
+  const titleClass = `${colLabelClass} mb-4 inline-block transition-colors hover:text-neutral-900 dark:hover:text-white`;
+
   return (
     <div>
       {titleHref ? (
-        <a
-          href={titleHref}
-          className={`${colLabelClass} mb-4 inline-block transition-colors hover:text-neutral-900 dark:hover:text-white`}
-          {...(titleExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-        >
-          {title}
-        </a>
+        /^https?:\/\//i.test(titleHref) ? (
+          <a
+            href={titleHref}
+            className={titleClass}
+            {...(titleExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+          >
+            {title}
+          </a>
+        ) : (
+          <Link href={titleHref} className={titleClass}>
+            {title}
+          </Link>
+        )
       ) : (
         <p className={`${colLabelClass} mb-4`}>{title}</p>
       )}
@@ -84,37 +92,10 @@ export const Footer: React.FC = () => {
             </p>
           </div>
 
-          <FooterColumn title="Bridge Observer" titleHref="https://bridgeobserver.com" titleExternal>
-            <li>
-              <a
-                href="https://www.rockefeller.press"
-                className={linkClass}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Rockefeller Press
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://www.townandcattle.com"
-                className={linkClass}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Town{' & '}Cattle
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://www.credit.coffee"
-                className={linkClass}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Credit Coffee
-              </a>
-            </li>
+          <FooterColumn title="Solutions" titleHref="/solutions">
+            <LiLink href="/oil-and-gas">Oil{' & '}Gas</LiLink>
+            <LiLink href="/crop-futures">Crop Futures</LiLink>
+            <LiLink href="/fixed-income">Fixed Income</LiLink>
           </FooterColumn>
 
           <FooterColumn title="University" titleHref={marketingSubdomainUrl('university')}>
