@@ -37,6 +37,38 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
+  .rule-brass {
+    background: linear-gradient(90deg, transparent, rgba(201, 169, 110, 0.35) 15%, rgba(201, 169, 110, 0.35) 85%, transparent);
+    height: 1px;
+  }
+
+  .sc-serif {
+    font-family: var(--font-cormorant), Georgia, serif;
+    font-variant: small-caps;
+    font-feature-settings: 'smcp', 'c2sc';
+    letter-spacing: 0.14em;
+  }
+
+  .paper-grain {
+    position: relative;
+  }
+
+  .paper-grain::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(201, 169, 110, 0.04) 0%, transparent 35%),
+      radial-gradient(circle at 80% 70%, rgba(20, 33, 61, 0.03) 0%, transparent 40%);
+    mix-blend-mode: multiply;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum', 'lnum';
+  }
 }
 
 * {
