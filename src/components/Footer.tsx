@@ -154,19 +154,30 @@ export const Footer: React.FC = () => {
             </Link>
           </div>
           <div className="flex flex-wrap items-center gap-x-1 gap-y-1">
-            <a href="#" className="hover:text-neutral-900 dark:hover:text-white">
-              X (Twitter)
-            </a>
-            <span className="text-neutral-300 dark:text-neutral-600">·</span>
-            <a href="#" className="hover:text-neutral-900 dark:hover:text-white">
+            <a
+              href="https://www.linkedin.com/company/generalexchangeinc"
+              className="hover:text-neutral-900 dark:hover:text-white"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
               LinkedIn
             </a>
             <span className="text-neutral-300 dark:text-neutral-600">·</span>
-            <a href="#" className="hover:text-neutral-900 dark:hover:text-white">
-              Discord
+            <a
+              href="https://www.tiktok.com/@general_exchange"
+              className="hover:text-neutral-900 dark:hover:text-white"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              TikTok
             </a>
             <span className="text-neutral-300 dark:text-neutral-600">·</span>
-            <a href="#" className="hover:text-neutral-900 dark:hover:text-white">
+            <a
+              href="https://github.com/generalexchange"
+              className="hover:text-neutral-900 dark:hover:text-white"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
               GitHub
             </a>
           </div>
