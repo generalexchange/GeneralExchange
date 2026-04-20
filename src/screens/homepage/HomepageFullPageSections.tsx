@@ -25,11 +25,12 @@ function BackspaceGlyph({ className }: { className?: string }) {
   );
 }
 
-const btnPrimary =
-  'inline-flex items-center justify-center gap-2 rounded-md bg-tan px-7 py-3.5 text-[13px] font-semibold tracking-wide text-charcoal transition-all duration-300 hover:bg-tan-muted hover:shadow-[0_12px_40px_-12px_rgba(210,180,140,0.35)]';
+/** Black surface + brass outline — shared by Risk, Library, and Backspace CTAs. */
+const btnSection =
+  'inline-flex items-center justify-center gap-2 rounded-md border border-brass bg-black px-7 py-3.5 text-[13px] font-semibold tracking-wide text-tan transition-all duration-300 hover:border-brass-deep hover:bg-neutral-950 hover:text-brass focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass/40';
 
-const btnGhost =
-  'inline-flex items-center justify-center rounded border border-white/[0.12] bg-white/[0.03] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-zinc-300 transition-colors hover:border-tan/40 hover:bg-white/[0.06] hover:text-tan';
+const btnSectionCompact =
+  'inline-flex items-center justify-center gap-2 rounded border border-brass bg-black px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-tan transition-all duration-300 hover:border-brass-deep hover:bg-neutral-950 hover:text-brass focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass/40';
 
 function SectionActions({ children }: { children: React.ReactNode }) {
   return (
@@ -216,7 +217,7 @@ export function HomepageFullPageSections() {
               <PayoffCurveSvg />
             </div>
             <div className="flex flex-col gap-3 sm:flex-row sm:gap-3 lg:flex-col xl:flex-row">
-              <Link href="/reconnaissance" className={`${btnPrimary} flex-1 sm:max-w-md lg:w-full xl:max-w-none`}>
+              <Link href="/reconnaissance" className={`${btnSection} flex-1 sm:max-w-md lg:w-full xl:max-w-none`}>
                 Riskonometry
               </Link>
             </div>
@@ -258,7 +259,7 @@ export function HomepageFullPageSections() {
                         </p>
                         <p className="mt-0.5 text-[11px] font-normal text-zinc-500">Last run {r.ran}</p>
                       </div>
-                      <Link href="/dashboard" className={`${btnGhost} shrink-0 self-start sm:self-center`}>
+                      <Link href="/dashboard" className={`${btnSectionCompact} shrink-0 self-start sm:self-center`}>
                         Load into TradeEngine
                       </Link>
                     </div>
@@ -283,7 +284,7 @@ export function HomepageFullPageSections() {
         </div>
 
         <SectionActions>
-          <Link href="/tokenomics" className={btnPrimary}>
+          <Link href="/tokenomics" className={btnSection}>
             Tokenomics
           </Link>
         </SectionActions>
@@ -338,7 +339,7 @@ export function HomepageFullPageSections() {
             </div>
           </div>
           <div className="flex shrink-0 flex-wrap items-center justify-start gap-3 border-t border-white/[0.06] pt-6 lg:items-center lg:border-l lg:border-t-0 lg:border-white/[0.08] lg:pl-10 lg:pt-0">
-            <Link href="/backspace" className={`${btnPrimary} min-w-[10rem] justify-center`}>
+            <Link href="/backspace" className={`${btnSection} min-w-[10rem] justify-center`}>
               <BackspaceGlyph className="h-[1.05rem] w-[1.05rem] shrink-0 opacity-90" />
               Backspace
             </Link>
