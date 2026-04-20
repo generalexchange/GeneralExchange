@@ -136,12 +136,6 @@ export const Footer: React.FC = () => {
             <LiLink href="#">Careers</LiLink>
             <LiLink href="#">Contact</LiLink>
           </FooterColumn>
-
-          <FooterColumn title="Account">
-            <LiLink href="/request-access">Create account</LiLink>
-            <LiLink href="#">API & docs</LiLink>
-            <LiLink href="/help-center">Help center</LiLink>
-          </FooterColumn>
         </div>
 
         <p className="mb-5 border-t border-neutral-200 pt-4 text-[11px] font-light leading-relaxed text-neutral-400 dark:border-neutral-800">
