@@ -30,10 +30,13 @@ function BadgeBeta() {
 function FooterColumn({
   title,
   titleHref,
+  titleExternal,
   children,
 }: {
   title: string;
   titleHref?: string;
+  /** When true, column title opens in a new tab (e.g. external marketing site). */
+  titleExternal?: boolean;
   children: React.ReactNode;
 }) {
   return (
@@ -42,6 +45,7 @@ function FooterColumn({
         <a
           href={titleHref}
           className={`${colLabelClass} mb-4 inline-block transition-colors hover:text-neutral-900 dark:hover:text-white`}
+          {...(titleExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
         >
           {title}
         </a>
@@ -80,18 +84,11 @@ export const Footer: React.FC = () => {
             </p>
           </div>
 
-          <FooterColumn title="Library" titleHref={marketingSubdomainUrl('library')}>
+          <FooterColumn title="Bridge Observer" titleHref="https://bridgeobserver.com" titleExternal>
             <LiLink href="#">Trading simulator</LiLink>
             <LiLink href="#">Monte Carlo engine</LiLink>
             <LiLink href="#">Portfolio builder</LiLink>
-            <li>
-              <Link href="#" className={`${linkClass} inline-flex items-center`}>
-                Options lab
-                <BadgeNew />
-              </Link>
-            </li>
             <LiLink href="/tokenomics">Compute tokens</LiLink>
-            <LiLink href="/bridge-observer">Bridge Observer</LiLink>
           </FooterColumn>
 
           <FooterColumn title="University" titleHref={marketingSubdomainUrl('university')}>
@@ -99,6 +96,12 @@ export const Footer: React.FC = () => {
             <LiLink href="/library">Strategy library</LiLink>
             <LiLink href="#">Glossary</LiLink>
             <LiLink href="#">Market mechanics</LiLink>
+            <li>
+              <Link href="#" className={`${linkClass} inline-flex items-center`}>
+                Options lab
+                <BadgeNew />
+              </Link>
+            </li>
             <li>
               <Link href="#" className={`${linkClass} inline-flex items-center`}>
                 SIE exam prep
@@ -111,13 +114,11 @@ export const Footer: React.FC = () => {
             <LiLink href="#">About</LiLink>
             <LiLink href="#">Blog</LiLink>
             <LiLink href="#">Careers</LiLink>
-            <LiLink href="#">Press</LiLink>
             <LiLink href="#">Partner program</LiLink>
             <LiLink href="#">Contact</LiLink>
           </FooterColumn>
 
           <FooterColumn title="Account">
-            <LiLink href="/login">Sign in</LiLink>
             <LiLink href="/request-access">Create account</LiLink>
             <LiLink href="/pricing">Pricing</LiLink>
             <LiLink href="/dashboard">Dashboard</LiLink>
