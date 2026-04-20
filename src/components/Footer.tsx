@@ -102,27 +102,26 @@ export const Footer: React.FC = () => {
             <li>
               <a
                 href="https://www.riskonometry.com"
-                className={linkClass}
+                className={`${linkClass} inline-flex items-center`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 Riskonometry
+                <BadgeBeta />
               </a>
             </li>
-            <LiLink href="/monte-carlo">Monte Carlo</LiLink>
+            <li>
+              <Link href="/monte-carlo" className={`${linkClass} inline-flex items-center`}>
+                Monte Carlo
+                <BadgeNew />
+              </Link>
+            </li>
             <LiLink href="/library">Strategy library</LiLink>
             <LiLink href="#">Glossary</LiLink>
             <LiLink href="#">Market mechanics</LiLink>
             <li>
-              <Link href="#" className={`${linkClass} inline-flex items-center`}>
-                Options lab
-                <BadgeNew />
-              </Link>
-            </li>
-            <li>
-              <Link href="#" className={`${linkClass} inline-flex items-center`}>
-                SIE exam prep
-                <BadgeBeta />
+              <Link href="#" className={linkClass}>
+                FINRA Exam Prep
               </Link>
             </li>
           </FooterColumn>
