@@ -25,6 +25,85 @@ function BackspaceGlyph({ className }: { className?: string }) {
   );
 }
 
+/** Dropbox-style workspace tree — matches Backspace preview panel (charcoal, moss, brass). */
+function BackspaceWorkspaceIllustration() {
+  const moss = 'rgba(46,90,58,0.9)';
+  const mossFill = 'rgba(46,90,58,0.14)';
+  const brass = '#C9A96E';
+  const line = 'rgba(255,255,255,0.12)';
+  const dim = 'rgba(148,163,184,0.55)';
+  const paper = 'rgba(255,255,255,0.06)';
+
+  return (
+    <div className="mt-3 rounded border border-dashed border-white/[0.12] bg-white/[0.03] p-3 sm:p-4">
+      <p className="sr-only">
+        Illustration of a synced workspace: drop zone, folder tree with datasets, ingest queue, and run artifacts.
+      </p>
+      <svg viewBox="0 0 300 244" className="h-auto w-full max-h-[280px]" aria-hidden>
+        <rect x="8" y="8" width="284" height="28" rx="6" fill={paper} stroke={line} strokeWidth="1" />
+        <circle cx="22" cy="22" r="3" fill={dim} />
+        <circle cx="34" cy="22" r="3" fill={dim} />
+        <circle cx="46" cy="22" r="3" fill={dim} />
+        <text x="64" y="24" fill={dim} fontSize="9" fontFamily="ui-sans-serif, system-ui">
+          workspace · synced
+        </text>
+        <path d="M 268 22 L 274 22" stroke={brass} strokeWidth="1.2" strokeLinecap="round" />
+        <path d="M 271 19 L 271 25" stroke={brass} strokeWidth="1.2" strokeLinecap="round" />
+
+        <rect x="8" y="44" width="284" height="52" rx="8" fill="none" stroke={brass} strokeWidth="1" strokeDasharray="4 4" opacity="0.55" />
+        <path
+          d="M 118 64 L 138 64 L 148 74 L 162 74 L 172 64 L 182 64"
+          fill="none"
+          stroke={brass}
+          strokeWidth="1.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          opacity="0.85"
+        />
+        <text x="150" y="88" textAnchor="middle" fill={dim} fontSize="10" fontFamily="ui-sans-serif, system-ui">
+          Drop files to ingest
+        </text>
+
+        <line x1="24" y1="112" x2="24" y2="228" stroke={line} strokeWidth="1" />
+        <line x1="24" y1="128" x2="52" y2="128" stroke={line} strokeWidth="1" />
+        <rect x="52" y="116" width="18" height="14" rx="2" fill={mossFill} stroke={moss} strokeWidth="0.9" />
+        <text x="76" y="128" fill="#e4e4e7" fontSize="10" fontFamily="ui-monospace, monospace">
+          datasets/
+        </text>
+
+        <line x1="40" y1="152" x2="68" y2="152" stroke={line} strokeWidth="1" />
+        <rect x="68" y="140" width="16" height="12" rx="2" fill={paper} stroke={line} strokeWidth="0.8" />
+        <text x="90" y="152" fill={dim} fontSize="9" fontFamily="ui-monospace, monospace">
+          ingest_queue/
+        </text>
+
+        <line x1="56" y1="176" x2="84" y2="176" stroke={line} strokeWidth="1" />
+        <rect x="84" y="166" width="200" height="10" rx="2" fill={paper} stroke={line} strokeWidth="0.7" />
+        <text x="92" y="174" fill="#a1a1aa" fontSize="8" fontFamily="ui-monospace, monospace">
+          staging_batch.csv
+        </text>
+
+        <line x1="40" y1="192" x2="68" y2="192" stroke={line} strokeWidth="1" />
+        <rect x="68" y="180" width="18" height="14" rx="2" fill={mossFill} stroke={moss} strokeWidth="0.9" />
+        <text x="92" y="192" fill="#e4e4e7" fontSize="10" fontFamily="ui-monospace, monospace">
+          runs/
+        </text>
+
+        <line x1="56" y1="206" x2="92" y2="206" stroke={line} strokeWidth="1" />
+        <rect x="92" y="196" width="190" height="10" rx="2" fill={paper} stroke={line} strokeWidth="0.7" />
+        <text x="98" y="204" fill="#a1a1aa" fontSize="8" fontFamily="ui-monospace, monospace">
+          manifest.json
+        </text>
+
+        <rect x="92" y="210" width="190" height="10" rx="2" fill={paper} stroke={moss} strokeWidth="0.5" opacity="0.9" />
+        <text x="98" y="218" fill={brass} fontSize="8" fontFamily="ui-monospace, monospace">
+          predictions.parquet
+        </text>
+      </svg>
+    </div>
+  );
+}
+
 /** Black surface + brass outline — shared by Risk, Library, and Backspace CTAs. */
 const btnSection =
   'inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md border border-brass bg-black px-5 py-3 text-[13px] font-semibold tracking-wide text-tan transition-all duration-300 hover:border-brass-deep hover:bg-neutral-950 hover:text-brass focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass/40 active:scale-[0.99] sm:w-auto sm:min-w-[10.25rem] sm:px-7 sm:py-3.5';
@@ -316,8 +395,8 @@ export function HomepageFullPageSections() {
           your idea and your book.
         </blockquote>
 
-        <div className="mt-8 flex flex-col gap-5 pb-4 sm:mt-10 sm:gap-6 sm:pb-6 lg:flex-row lg:items-center lg:justify-between lg:gap-8 lg:pb-7">
-          <div className="w-full max-w-xl flex-1 rounded-lg border border-white/[0.08] bg-charcoal/60 p-5 sm:p-6">
+        <div className="mt-8 grid grid-cols-1 gap-6 pb-4 sm:mt-10 sm:gap-6 sm:pb-6 lg:grid-cols-2 lg:items-stretch lg:gap-8 lg:pb-7">
+          <div className="w-full min-w-0 rounded-lg border border-white/[0.08] bg-charcoal/60 p-5 sm:p-6">
             <p className="sc-serif text-[11px] text-zinc-500">Backspace · preview</p>
             <div className="mt-3 rounded border border-dashed border-white/[0.12] bg-white/[0.03] px-4 py-8 text-center">
               <p className="text-xs text-zinc-300">Drop dataset or browse</p>
@@ -342,11 +421,18 @@ export function HomepageFullPageSections() {
               </svg>
             </div>
           </div>
-          <div className="flex shrink-0 flex-wrap items-center justify-start gap-3 border-t border-white/[0.06] pt-5 sm:pt-6 lg:items-center lg:border-l lg:border-t-0 lg:border-white/[0.08] lg:pl-8 lg:pt-0 xl:pl-10">
-            <Link href="/backspace" className={`${btnSection} min-w-[10rem] justify-center`}>
-              <BackspaceGlyph className="h-[1.05rem] w-[1.05rem] shrink-0 opacity-90" />
-              Backspace
-            </Link>
+
+          <div className="flex min-h-0 w-full min-w-0 flex-col gap-5 rounded-lg border border-white/[0.08] bg-charcoal/60 p-5 sm:flex-row sm:items-stretch sm:gap-6 sm:p-6">
+            <div className="min-w-0 flex-1">
+              <p className="sc-serif text-[11px] text-zinc-500">Backspace · workspace</p>
+              <BackspaceWorkspaceIllustration />
+            </div>
+            <div className="flex shrink-0 flex-col justify-center border-t border-white/[0.08] pt-5 sm:w-auto sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0">
+              <Link href="/backspace" className={`${btnSection} w-full min-w-0 justify-center sm:w-auto sm:min-w-[10.25rem]`}>
+                <BackspaceGlyph className="h-[1.05rem] w-[1.05rem] shrink-0 opacity-90" />
+                Backspace
+              </Link>
+            </div>
           </div>
         </div>
 
