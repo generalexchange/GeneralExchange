@@ -5,6 +5,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { marketingSubdomainUrl } from '@/lib/subdomains';
+import { FooterNewsletterSignup } from '@/components/FooterNewsletterSignup';
+import { FooterSocialLinks } from '@/components/FooterSocialLinks';
 
 const linkClass =
   'text-[13px] text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors';
@@ -87,9 +89,7 @@ export const Footer: React.FC = () => {
             <p className="mt-3 max-w-sm text-[13px] font-light leading-relaxed text-neutral-600 dark:text-neutral-400">
               Simulate, learn, and master markets — without risking real capital.
             </p>
-            <p className="mt-4 inline-flex rounded-full border border-neutral-200 bg-white px-3 py-1 text-[10px] font-medium text-neutral-600 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
-              Paper trading powered by Monte Carlo
-            </p>
+            <FooterNewsletterSignup />
           </div>
 
           <FooterColumn title="Solutions" titleHref="/solutions">
@@ -130,13 +130,12 @@ export const Footer: React.FC = () => {
             <LiLink href="/backspace">Backspace</LiLink>
             <LiLink href="/dividend-properties">Dividend Properties</LiLink>
             <LiLink href="/ether-bonds">Ether Bonds</LiLink>
-            <LiLink href="/newsletter">Newsletter</LiLink>
           </FooterColumn>
 
           <FooterColumn title="Company" titleHref={marketingSubdomainUrl('company')}>
-            <LiLink href="#">About</LiLink>
+            <LiLink href="/our-story">Our Story</LiLink>
             <LiLink href="#">Careers</LiLink>
-            <LiLink href="#">Contact</LiLink>
+            <LiLink href="/help-desk">Help Desk</LiLink>
           </FooterColumn>
         </div>
 
@@ -179,34 +178,7 @@ export const Footer: React.FC = () => {
               Disclosures
             </Link>
           </div>
-          <div className="flex flex-wrap items-center gap-x-1 gap-y-2">
-            <a
-              href="https://www.linkedin.com/company/generalexchangeinc"
-              className="inline-flex min-h-11 items-center rounded-md px-1 hover:text-neutral-900 dark:hover:text-white"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              LinkedIn
-            </a>
-            <span className="text-neutral-300 dark:text-neutral-600">·</span>
-            <a
-              href="https://www.tiktok.com/@general_exchange"
-              className="inline-flex min-h-11 items-center rounded-md px-1 hover:text-neutral-900 dark:hover:text-white"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              TikTok
-            </a>
-            <span className="text-neutral-300 dark:text-neutral-600">·</span>
-            <a
-              href="https://github.com/generalexchange"
-              className="inline-flex min-h-11 items-center rounded-md px-1 hover:text-neutral-900 dark:hover:text-white"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              GitHub
-            </a>
-          </div>
+          <FooterSocialLinks />
         </div>
       </div>
     </footer>
