@@ -74,7 +74,7 @@ export const Hero: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.08, ease: fadeEase }}
           >
-            <figure className="relative mx-auto aspect-square w-full max-w-[min(100%,520px)] overflow-hidden rounded-sm border border-brass/30 bg-paper-50 shadow-[0_40px_80px_-32px_rgba(20,33,61,0.35)] lg:mx-0">
+            <figure className="relative mx-auto aspect-square w-full max-w-[min(100%,520px)] overflow-hidden rounded-xl border border-brass/30 bg-paper-50 shadow-[0_40px_80px_-32px_rgba(20,33,61,0.35)] lg:mx-0">
               <Image
                 src="/images/hero.png"
                 alt="Western landscape — rider and horse at golden hour"
@@ -84,7 +84,7 @@ export const Hero: React.FC = () => {
                 priority
               />
               <div
-                className="pointer-events-none absolute inset-0 rounded-sm bg-gradient-to-br from-transparent via-transparent to-paper-100/30"
+                className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-br from-transparent via-transparent to-paper-100/30"
                 aria-hidden
               />
               <figcaption className="sr-only">Hero artwork in public/images/hero.png</figcaption>

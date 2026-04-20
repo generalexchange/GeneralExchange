@@ -46,7 +46,7 @@ export const InstitutionalNavbar: React.FC<InstitutionalNavbarProps> = ({
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 border-b border-tan/25 bg-dark-gray/95 backdrop-blur-xl ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 border-b border-neutral-200 bg-neutral-50/95 backdrop-blur-xl dark:border-neutral-800 dark:bg-neutral-900/95 ${
         isVisible ? 'translate-y-0' : '-translate-y-full'
       }`}
       aria-label="Primary"
@@ -54,7 +54,7 @@ export const InstitutionalNavbar: React.FC<InstitutionalNavbarProps> = ({
       <div className="max-w-content mx-auto px-4 sm:px-6 lg:px-10">
         <div className="flex justify-between items-center gap-4 h-14 sm:h-[3.75rem]">
           <Link href="/" className="shrink-0">
-            <span className="font-display text-[1.125rem] sm:text-xl font-medium text-neutral-100 tracking-tight">
+            <span className="font-display text-[1.125rem] sm:text-xl font-medium tracking-tight text-neutral-900 dark:text-neutral-100">
               General Exchange
             </span>
           </Link>
@@ -70,7 +70,7 @@ export const InstitutionalNavbar: React.FC<InstitutionalNavbarProps> = ({
                   placeholder="Search…"
                   value={searchQuery}
                   onChange={(e) => onSearchChange(e.target.value)}
-                  className="block w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-1.5 sm:py-2 border border-white/[0.08] rounded-lg bg-white/[0.04] text-neutral-100 placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-institutional-green/35 focus:border-tan/30 transition-all text-xs sm:text-sm"
+                  className="block w-full rounded-lg border border-neutral-200 bg-white py-1.5 pr-2 pl-8 text-xs text-neutral-900 placeholder-neutral-500 transition-all focus:border-tan/30 focus:ring-2 focus:ring-institutional-green/35 focus:outline-none sm:py-2 sm:pl-10 sm:pr-3 sm:text-sm dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder-neutral-400"
                 />
               </div>
             </div>
@@ -94,7 +94,7 @@ export const InstitutionalNavbar: React.FC<InstitutionalNavbarProps> = ({
               className={`inline-flex items-center justify-center rounded-lg border px-4 py-2 text-[13px] font-semibold tracking-wide transition-all duration-300 sm:px-5 ${
                 isActive('/login')
                   ? 'border-tan bg-tan text-charcoal'
-                  : 'border-white/[0.12] bg-white/[0.03] text-neutral-200 hover:border-institutional-green/45 hover:bg-institutional-green/20'
+                  : 'border-neutral-200 bg-white text-neutral-800 hover:border-institutional-green/45 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700'
               }`}
             >
               Sign in
