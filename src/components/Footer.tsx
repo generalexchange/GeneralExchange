@@ -1,5 +1,5 @@
 /**
- * Marketing footer — 5-column layout, disclaimer, bottom bar (homepage).
+ * Marketing footer — multi-column layout, disclaimer, bottom bar (homepage).
  */
 
 import React from 'react';
@@ -126,18 +126,19 @@ export const Footer: React.FC = () => {
             </li>
           </FooterColumn>
 
+          <FooterColumn title="Products">
+            <LiLink href="/backspace">Backspace</LiLink>
+            <LiLink href="/newsletter">Newsletter</LiLink>
+          </FooterColumn>
+
           <FooterColumn title="Company" titleHref={marketingSubdomainUrl('company')}>
             <LiLink href="#">About</LiLink>
-            <LiLink href="/newsletter">Newsletter</LiLink>
             <LiLink href="#">Careers</LiLink>
-            <LiLink href="#">Partner program</LiLink>
             <LiLink href="#">Contact</LiLink>
           </FooterColumn>
 
           <FooterColumn title="Account">
             <LiLink href="/request-access">Create account</LiLink>
-            <LiLink href="/pricing">Pricing</LiLink>
-            <LiLink href="/dashboard">Dashboard</LiLink>
             <LiLink href="#">API & docs</LiLink>
             <LiLink href="/help-center">Help center</LiLink>
           </FooterColumn>
