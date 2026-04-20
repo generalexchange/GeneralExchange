@@ -12,17 +12,17 @@ import { marketingSubdomainUrl } from '@/lib/subdomains';
 import { HomepageTrustCtaRestored, HomepageRemainingPillars } from './HomepageLegacyRestored';
 
 const btnPrimary =
-  'inline-flex items-center justify-center gap-2 rounded-md bg-navy px-7 py-3.5 text-[13px] font-semibold tracking-wide text-paper-50 transition-all duration-300 hover:bg-navy-deep hover:shadow-[0_12px_40px_-12px_rgba(20,33,61,0.4)]';
+  'inline-flex items-center justify-center gap-2 rounded-md bg-tan px-7 py-3.5 text-[13px] font-semibold tracking-wide text-charcoal transition-all duration-300 hover:bg-tan-muted hover:shadow-[0_12px_40px_-12px_rgba(210,180,140,0.35)]';
 
 const btnSecondary =
-  'inline-flex items-center justify-center gap-2 rounded-md border border-brass/50 bg-transparent px-7 py-3.5 text-[13px] font-semibold tracking-wide text-graphite-800 transition-colors hover:border-brass hover:bg-brass/5 hover:text-navy';
+  'inline-flex items-center justify-center gap-2 rounded-md border border-brass/50 bg-transparent px-7 py-3.5 text-[13px] font-semibold tracking-wide text-zinc-200 transition-colors hover:border-brass hover:bg-brass/5 hover:text-tan';
 
 const btnGhost =
-  'inline-flex items-center justify-center rounded border border-graphite-600/20 bg-transparent px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-graphite-600 transition-colors hover:border-navy/40 hover:bg-navy-wash hover:text-navy';
+  'inline-flex items-center justify-center rounded border border-white/[0.12] bg-white/[0.03] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-zinc-300 transition-colors hover:border-tan/40 hover:bg-white/[0.06] hover:text-tan';
 
 function SectionActions({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mt-10 flex flex-col gap-3 border-t border-paper-300/60 pt-8 sm:flex-row sm:flex-wrap sm:items-center">
+    <div className="mt-10 flex flex-col gap-3 border-t border-white/[0.06] pt-8 sm:flex-row sm:flex-wrap sm:items-center">
       {children}
     </div>
   );
@@ -70,27 +70,26 @@ function PayoffCurveSvg({ className = '' }: { className?: string }) {
     >
       <defs>
         <linearGradient id={`${gid}-fill`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="rgba(20,33,61,0.12)" />
-          <stop offset="100%" stopColor="rgba(20,33,61,0)" />
+          <stop offset="0%" stopColor="rgba(46,90,58,0.38)" />
+          <stop offset="100%" stopColor="rgba(46,90,58,0)" />
         </linearGradient>
       </defs>
       <rect x="0" y="0" width="400" height="220" fill="transparent" />
-      <line x1="40" y1="20" x2="40" y2="200" stroke="#C9A96E" strokeOpacity="0.4" strokeWidth="1" />
-      <line x1="40" y1="200" x2="380" y2="200" stroke="#C9A96E" strokeOpacity="0.4" strokeWidth="1" />
+      <line x1="40" y1="20" x2="40" y2="200" stroke="#C9A96E" strokeOpacity="0.35" strokeWidth="1" />
+      <line x1="40" y1="200" x2="380" y2="200" stroke="#C9A96E" strokeOpacity="0.35" strokeWidth="1" />
       <path
         d="M 40 170 Q 120 80 200 115 T 380 90"
         fill="none"
-        stroke="#C9A96E"
+        stroke="rgba(212,212,216,0.35)"
         strokeWidth="1"
-        strokeOpacity="0.35"
         strokeDasharray="3 4"
       />
       <path
         d="M 40 165 Q 120 40 200 95 T 380 55"
         fill="none"
-        stroke="#14213D"
+        stroke="#C9A96E"
         strokeWidth="1.5"
-        strokeOpacity="0.9"
+        strokeOpacity="0.95"
       />
       <path
         d="M 40 165 Q 120 40 200 95 T 380 55 L 380 200 L 40 200 Z"
@@ -104,23 +103,23 @@ function PayoffCurveSvg({ className = '' }: { className?: string }) {
 function HistoryIllustration() {
   return (
     <>
-      <ul className="divide-y divide-paper-300/60 sm:hidden" role="list">
+      <ul className="divide-y divide-white/[0.08] sm:hidden" role="list">
         {HISTORY_ROWS.map((row) => {
           const isWin = row.res === 'WIN';
           return (
             <li key={row.d + row.sym} className="flex items-center justify-between gap-4 px-4 py-3.5">
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-graphite-900">
+                <p className="text-sm font-medium text-neutral-50">
                   {row.sym}
-                  <span className="ml-2 text-paper-400">·</span>
-                  <span className="ml-2 text-graphite-600">{row.strat}</span>
+                  <span className="ml-2 text-zinc-600">·</span>
+                  <span className="ml-2 text-zinc-400">{row.strat}</span>
                 </p>
-                <p className="mt-0.5 font-mono text-[10px] text-graphite-500 tabular">{row.d}</p>
+                <p className="mt-0.5 font-mono text-[10px] text-zinc-500 tabular">{row.d}</p>
               </div>
               <div className="flex shrink-0 items-center gap-3">
-                <span className={`font-mono text-sm tabular ${isWin ? 'text-moss' : 'text-rose-700'}`}>{row.pnl}</span>
+                <span className={`font-mono text-sm tabular ${isWin ? 'text-moss' : 'text-rose-400'}`}>{row.pnl}</span>
                 <span
-                  className={`font-display text-base ${isWin ? 'text-moss' : 'text-graphite-500'}`}
+                  className={`font-display text-base ${isWin ? 'text-moss' : 'text-zinc-500'}`}
                   aria-label={row.res}
                 >
                   {isWin ? '▲' : '▽'}
@@ -131,10 +130,10 @@ function HistoryIllustration() {
         })}
       </ul>
 
-      <div className="hidden overflow-hidden rounded-lg border border-paper-300 bg-paper-50 shadow-vellum sm:block">
+      <div className="hidden overflow-hidden rounded-lg border border-white/[0.08] bg-charcoal/70 shadow-[0_24px_48px_-28px_rgba(0,0,0,0.45)] sm:block">
         <table className="w-full table-fixed border-collapse text-left text-xs">
           <thead>
-            <tr className="border-b border-paper-300 bg-paper-100 sc-serif text-[10px] text-graphite-600">
+            <tr className="border-b border-white/[0.08] bg-white/[0.04] sc-serif text-[10px] text-zinc-400">
               <th className="w-[12%] px-3 py-3 font-medium">Date</th>
               <th className="w-[9%] px-3 py-3 font-medium">Sym</th>
               <th className="w-[32%] px-3 py-3 font-medium">Strategy</th>
@@ -144,24 +143,24 @@ function HistoryIllustration() {
               <th className="w-[8%] px-3 py-3 text-center font-medium">·</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-paper-300/70">
+          <tbody className="divide-y divide-white/[0.06]">
             {HISTORY_ROWS.map((row) => {
               const isWin = row.res === 'WIN';
               return (
                 <tr
                   key={row.d + row.sym}
-                  className="text-graphite-800 transition-colors hover:bg-paper-100/60"
+                  className="text-zinc-200 transition-colors hover:bg-white/[0.04]"
                 >
-                  <td className="px-3 py-3 font-mono text-[11px] text-graphite-600 tabular">{row.d}</td>
-                  <td className="px-3 py-3 font-medium text-graphite-900">{row.sym}</td>
-                  <td className="px-3 py-3 text-graphite-700">{row.strat}</td>
-                  <td className="px-3 py-3 font-mono text-[11px] tabular">{row.en}</td>
-                  <td className="px-3 py-3 font-mono text-[11px] tabular">{row.ex}</td>
-                  <td className={`px-3 py-3 font-mono text-[11px] tabular ${isWin ? 'text-moss' : 'text-rose-700'}`}>
+                  <td className="px-3 py-3 font-mono text-[11px] text-zinc-500 tabular">{row.d}</td>
+                  <td className="px-3 py-3 font-medium text-neutral-50">{row.sym}</td>
+                  <td className="px-3 py-3 text-zinc-400">{row.strat}</td>
+                  <td className="px-3 py-3 font-mono text-[11px] tabular text-zinc-300">{row.en}</td>
+                  <td className="px-3 py-3 font-mono text-[11px] tabular text-zinc-300">{row.ex}</td>
+                  <td className={`px-3 py-3 font-mono text-[11px] tabular ${isWin ? 'text-moss' : 'text-rose-400'}`}>
                     {row.pnl}
                   </td>
                   <td
-                    className={`px-3 py-3 text-center font-display text-base ${isWin ? 'text-moss' : 'text-graphite-500'}`}
+                    className={`px-3 py-3 text-center font-display text-base ${isWin ? 'text-moss' : 'text-zinc-500'}`}
                     aria-label={row.res}
                   >
                     {isWin ? '▲' : '▽'}
@@ -178,7 +177,7 @@ function HistoryIllustration() {
 
 export function HomepageFullPageSections() {
   return (
-    <div className="bg-paper-50 text-graphite-800">
+    <div className="bg-charcoal text-neutral-100">
       <Hero />
 
       <SectionShell
@@ -194,15 +193,15 @@ export function HomepageFullPageSections() {
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-1 lg:gap-7">
               {RISK_CARDS.map((c) => (
                 <div key={c.title} className="border-l-2 border-brass/40 py-1 pl-5">
-                  <h3 className="sc-serif text-[13px] font-medium text-graphite-900">{c.title}</h3>
-                  <p className="mt-2 text-[14px] font-normal leading-[1.7] text-graphite-600">{c.body}</p>
+                  <h3 className="sc-serif text-[13px] font-medium text-neutral-50">{c.title}</h3>
+                  <p className="mt-2 text-[14px] font-normal leading-[1.7] text-zinc-400">{c.body}</p>
                 </div>
               ))}
             </div>
           </div>
           <div className="flex w-full flex-col gap-6 lg:max-w-xl xl:max-w-2xl lg:shrink-0">
-            <div className="rounded-lg border border-paper-300 bg-paper-50 p-5 shadow-vellum sm:p-7">
-              <p className="mb-4 text-[10px] font-semibold uppercase tracking-wider text-graphite-500">Payoff preview</p>
+            <div className="rounded-lg border border-white/[0.08] bg-charcoal/60 p-5 sm:p-7">
+              <p className="mb-4 text-[10px] font-semibold uppercase tracking-wider text-zinc-500">Payoff preview</p>
               <PayoffCurveSvg />
             </div>
             <div className="flex flex-col gap-3 sm:flex-row sm:gap-3 lg:flex-col xl:flex-row">
@@ -229,27 +228,27 @@ export function HomepageFullPageSections() {
       >
         <div className="mt-10 grid grid-cols-1 items-start gap-10 lg:grid-cols-2 lg:gap-12">
           <div className="min-w-0">
-            <h3 className="font-display text-xl font-normal tracking-tight text-graphite-900 sm:text-2xl">
+            <h3 className="font-display text-xl font-normal tracking-tight text-neutral-50 sm:text-2xl">
               Build once. Deploy anywhere.
             </h3>
-            <p className="mt-3 text-sm font-normal leading-[1.75] text-graphite-600 sm:text-base">
+            <p className="mt-3 text-sm font-normal leading-[1.75] text-zinc-400 sm:text-base">
               Every strategy you save becomes a reusable template. Wire it into TradeEngine, backtest it in Backspace, or share
               it later.
             </p>
-            <div className="mt-6 overflow-hidden rounded-lg border border-paper-300 bg-paper-50 shadow-vellum">
-              <div className="flex items-center justify-between border-b border-paper-300 bg-paper-100 px-4 py-3 sm:px-5">
-                <span className="sc-serif text-[11px] text-graphite-600">Strategy library</span>
+            <div className="mt-6 overflow-hidden rounded-lg border border-white/[0.08] bg-charcoal/60">
+              <div className="flex items-center justify-between border-b border-white/[0.08] bg-white/[0.04] px-4 py-3 sm:px-5">
+                <span className="sc-serif text-[11px] text-zinc-400">Strategy library</span>
               </div>
-              <ul className="divide-y divide-paper-300/70" role="list">
+              <ul className="divide-y divide-white/[0.06]" role="list">
                 {STRATEGY_ROWS.map((r) => (
                   <li key={r.name}>
                     <div className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5 sm:py-3.5">
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium text-graphite-900">
-                          {r.name} <span className="text-graphite-500">·</span> {r.sym}{' '}
-                          <span className="text-graphite-500">·</span> {r.tf}
+                        <p className="truncate text-sm font-medium text-neutral-50">
+                          {r.name} <span className="text-zinc-500">·</span> {r.sym}{' '}
+                          <span className="text-zinc-500">·</span> {r.tf}
                         </p>
-                        <p className="mt-0.5 text-[11px] font-normal text-graphite-600">Last run {r.ran}</p>
+                        <p className="mt-0.5 text-[11px] font-normal text-zinc-500">Last run {r.ran}</p>
                       </div>
                       <Link href="/dashboard" className={`${btnGhost} shrink-0 self-start sm:self-center`}>
                         Load into TradeEngine
@@ -258,23 +257,18 @@ export function HomepageFullPageSections() {
                   </li>
                 ))}
               </ul>
-              <div className="border-t border-paper-300 bg-paper-100 px-4 py-3 sm:px-5">
-                <span className="inline-flex rounded-full border border-brass/40 bg-brass/10 px-3 py-1 text-[10px] font-medium uppercase tracking-wide text-brass-deep">
-                  Strategies become monetizable — coming soon
-                </span>
-              </div>
             </div>
           </div>
 
           <div className="min-w-0">
-            <h3 className="font-display text-xl font-normal tracking-tight text-graphite-900 sm:text-2xl">
+            <h3 className="font-display text-xl font-normal tracking-tight text-neutral-50 sm:text-2xl">
               There Is A Story In Every Trade
             </h3>
-            <p className="mt-3 text-sm font-normal leading-[1.75] text-graphite-600 sm:text-base">
+            <p className="mt-3 text-sm font-normal leading-[1.75] text-zinc-400 sm:text-base">
               P&amp;L tracking. Decision review. Performance broken down by strategy, symbol, and session. This is what makes you
               better.
             </p>
-            <div className="mt-6">
+            <div className="mt-6 rounded-lg border border-white/[0.08] bg-charcoal/40 p-1 sm:p-0 sm:bg-transparent sm:border-0">
               <HistoryIllustration />
             </div>
           </div>
@@ -304,7 +298,7 @@ export function HomepageFullPageSections() {
         }
         lede="Our proprietary backtesting engine."
       >
-        <blockquote className="mt-8 max-w-4xl border-l-2 border-brass pl-5 text-[15px] font-normal leading-[1.75] text-graphite-700 sm:pl-6 sm:text-base">
+        <blockquote className="mt-8 max-w-4xl border-l-2 border-brass pl-5 text-[15px] font-normal leading-[1.75] text-zinc-300 sm:pl-6 sm:text-base">
           Backspace is where you prove a trading plan before you risk real money. Load your data, pick a model that
           fits—XGBoost, LSTM, or reinforcement learning—and run it on real history so you see calm days and rough ones. You get
           simple reports that stack predictions next to what actually happened and sketch how orders might have filled. It is
@@ -313,33 +307,32 @@ export function HomepageFullPageSections() {
         </blockquote>
 
         <div className="mt-10 flex flex-col gap-6 pb-6 sm:gap-8 sm:pb-8 lg:flex-row lg:items-center lg:justify-between lg:gap-10 lg:pb-10">
-          <div className="w-full max-w-xl flex-1 rounded-lg border border-paper-300 bg-paper-50 p-5 shadow-vellum sm:p-6">
-            <p className="sc-serif text-[11px] text-graphite-600">Backspace · preview</p>
-            <div className="mt-3 rounded border border-dashed border-paper-300 bg-paper-100 px-4 py-8 text-center">
-              <p className="text-xs text-graphite-700">Drop dataset or browse</p>
-              <p className="mt-1 text-[10px] text-graphite-500 tabular">.csv · .json · .parquet</p>
+          <div className="w-full max-w-xl flex-1 rounded-lg border border-white/[0.08] bg-charcoal/60 p-5 sm:p-6">
+            <p className="sc-serif text-[11px] text-zinc-500">Backspace · preview</p>
+            <div className="mt-3 rounded border border-dashed border-white/[0.12] bg-white/[0.03] px-4 py-8 text-center">
+              <p className="text-xs text-zinc-300">Drop dataset or browse</p>
+              <p className="mt-1 text-[10px] text-zinc-500 tabular">.csv · .json · .parquet</p>
             </div>
-            <div className="mt-4 h-28 rounded border border-paper-300 bg-paper-100 p-3">
-              <p className="sc-serif text-[10px] text-graphite-500">Prediction vs actual</p>
-              <svg viewBox="0 0 280 72" className="mt-2 h-full w-full text-graphite-500" aria-hidden>
+            <div className="mt-4 h-28 rounded border border-white/[0.08] bg-white/[0.03] p-3">
+              <p className="sc-serif text-[10px] text-zinc-500">Prediction vs actual</p>
+              <svg viewBox="0 0 280 72" className="mt-2 h-full w-full" aria-hidden>
                 <path
                   d="M 0 50 L 40 45 L 80 52 L 120 38 L 160 44 L 200 28 L 240 36 L 280 22"
                   fill="none"
-                  stroke="#14213D"
+                  stroke="rgba(46,90,58,0.85)"
                   strokeWidth="1.25"
-                  strokeOpacity="0.75"
                 />
                 <path
                   d="M 0 54 L 40 48 L 80 55 L 120 42 L 160 48 L 200 32 L 240 40 L 280 28"
                   fill="none"
                   stroke="#C9A96E"
                   strokeWidth="1.25"
-                  strokeOpacity="0.9"
+                  strokeOpacity="0.95"
                 />
               </svg>
             </div>
           </div>
-          <div className="flex shrink-0 flex-wrap items-center justify-start gap-3 border-t border-paper-300/60 pt-6 lg:items-center lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
+          <div className="flex shrink-0 flex-wrap items-center justify-start gap-3 border-t border-white/[0.06] pt-6 lg:items-center lg:border-l lg:border-t-0 lg:border-white/[0.08] lg:pl-10 lg:pt-0">
             <Link href="/tokenomics" className={`${btnSecondary} min-w-[10rem]`}>
               Tokenomics
             </Link>
@@ -349,7 +342,7 @@ export function HomepageFullPageSections() {
           </div>
         </div>
 
-        <div className="mt-20 border-t border-paper-300/60 pt-16 sm:mt-24 sm:pt-20 lg:mt-32 lg:pt-28">
+        <div className="mt-20 border-t border-white/[0.06] pt-16 sm:mt-24 sm:pt-20 lg:mt-32 lg:pt-28">
           <div className="mx-auto max-w-content px-4 sm:px-6 lg:px-10">
             <div className="rule-brass my-16 sm:my-24" aria-hidden />
           </div>
