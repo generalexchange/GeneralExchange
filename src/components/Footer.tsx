@@ -97,9 +97,9 @@ export const Footer: React.FC = () => {
           </div>
 
           <FooterColumn title="Solutions" titleHref="/solutions">
+            <LiLink href="/stocks">Stocks</LiLink>
             <LiLink href="/futures">Futures</LiLink>
             <LiLink href="/options">Options</LiLink>
-            <LiLink href="/strategies">Strategies</LiLink>
             <LiLink href="/sentiment">Sentiment</LiLink>
           </FooterColumn>
 
@@ -156,31 +156,24 @@ export const Footer: React.FC = () => {
               ·
             </span>
             <Link
-              href="#"
+              href="/terms-and-conditions"
               className="inline-flex min-h-11 items-center rounded-md px-1 hover:text-neutral-900 dark:hover:text-white"
             >
-              Terms
+              Terms and Conditions
             </Link>
             <span className="text-neutral-300 dark:text-neutral-600">·</span>
             <Link
-              href="#"
+              href="/privacy-policy"
               className="inline-flex min-h-11 items-center rounded-md px-1 hover:text-neutral-900 dark:hover:text-white"
             >
-              Privacy
+              Privacy Policy
             </Link>
             <span className="text-neutral-300 dark:text-neutral-600">·</span>
             <Link
-              href="#"
+              href="/legal"
               className="inline-flex min-h-11 items-center rounded-md px-1 hover:text-neutral-900 dark:hover:text-white"
             >
-              Cookie preferences
-            </Link>
-            <span className="text-neutral-300 dark:text-neutral-600">·</span>
-            <Link
-              href="#"
-              className="inline-flex min-h-11 items-center rounded-md px-1 hover:text-neutral-900 dark:hover:text-white"
-            >
-              Disclosures
+              Legal
             </Link>
           </div>
           <FooterSocialLinks />

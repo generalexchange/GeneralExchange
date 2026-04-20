@@ -11,6 +11,11 @@ import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 
 const cards = [
   {
+    href: '/stocks',
+    title: 'Stocks',
+    body: 'Listed equities with session rules, corporate-action awareness, and concentration views—manifest-tagged runs so risk and research cite the same tape.',
+  },
+  {
     href: '/futures',
     title: 'Futures',
     body: 'Curve-aware simulators and margin discipline for outrights, spreads, and rolls—same replay and lineage standards as the rest of the exchange.',
@@ -19,11 +24,6 @@ const cards = [
     href: '/options',
     title: 'Options',
     body: 'Vol surfaces, greeks, and scenario grids built for education and desk review—not folklore approximations disconnected from your book.',
-  },
-  {
-    href: '/strategies',
-    title: 'Strategies',
-    body: 'Systematic sleeves, risk overlays, and allocator-ready narratives you can version, diff, and defend when limits and governance ask why.',
   },
   {
     href: '/sentiment',
@@ -54,8 +54,8 @@ export const SolutionsHub: React.FC = () => {
               Solutions
             </h1>
             <p className="mt-4 max-w-2xl text-sm font-light leading-relaxed text-zinc-400 sm:text-base">
-              Futures, options, strategy design, sentiment inputs, and tokenized infrastructure—each area gets the same evidence-bound posture as
-              TradeEngine, Backspace, and Monte Carlo.
+              Stocks, futures, options, sentiment inputs, and tokenized infrastructure—each area gets the same evidence-bound posture as TradeEngine,
+              Backspace, and Monte Carlo.
             </p>
           </div>
         </header>
