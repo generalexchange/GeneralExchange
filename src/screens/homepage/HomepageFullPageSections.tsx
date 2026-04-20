@@ -25,80 +25,75 @@ function BackspaceGlyph({ className }: { className?: string }) {
   );
 }
 
-/** Dropbox-style workspace tree — matches Backspace preview panel (charcoal, moss, brass). */
+/** Symmetrical file-tree panel (ingest lives in the left column preview). */
 function BackspaceWorkspaceIllustration() {
-  const moss = 'rgba(46,90,58,0.9)';
-  const mossFill = 'rgba(46,90,58,0.14)';
+  const moss = 'rgba(46,90,58,0.95)';
+  const mossFill = 'rgba(46,90,58,0.16)';
   const brass = '#C9A96E';
-  const line = 'rgba(255,255,255,0.12)';
-  const dim = 'rgba(148,163,184,0.55)';
-  const paper = 'rgba(255,255,255,0.06)';
+  const line = 'rgba(255,255,255,0.14)';
+  const dim = 'rgba(148,163,184,0.7)';
+  const paper = 'rgba(255,255,255,0.05)';
+  const text = '#e4e4e7';
+  const file = '#a1a1aa';
 
   return (
-    <div className="mt-3 rounded border border-dashed border-white/[0.12] bg-white/[0.03] p-3 sm:p-4">
+    <div className="mt-3 rounded border border-white/[0.1] bg-white/[0.03] p-3 sm:p-4">
       <p className="sr-only">
-        Illustration of a synced workspace: drop zone, folder tree with datasets, ingest queue, and run artifacts.
+        Illustration of a synced workspace file tree: root workspace, datasets and runs folders, and versioned artifacts.
       </p>
-      <svg viewBox="0 0 300 244" className="h-auto w-full max-h-[280px]" aria-hidden>
-        <rect x="8" y="8" width="284" height="28" rx="6" fill={paper} stroke={line} strokeWidth="1" />
-        <circle cx="22" cy="22" r="3" fill={dim} />
-        <circle cx="34" cy="22" r="3" fill={dim} />
-        <circle cx="46" cy="22" r="3" fill={dim} />
-        <text x="64" y="24" fill={dim} fontSize="9" fontFamily="ui-sans-serif, system-ui">
+      <svg viewBox="0 0 300 218" className="mx-auto h-auto w-full max-w-[320px] max-h-[260px]" aria-hidden>
+        <rect x="10" y="10" width="280" height="198" rx="8" fill="none" stroke={line} strokeWidth="1" />
+        <rect x="10" y="10" width="280" height="30" rx="8" fill={paper} stroke="none" />
+        <line x1="10" y1="40" x2="290" y2="40" stroke={line} strokeWidth="1" />
+        <circle cx="24" cy="25" r="3.25" fill="rgba(248,113,113,0.45)" />
+        <circle cx="38" cy="25" r="3.25" fill="rgba(234,179,8,0.45)" />
+        <circle cx="52" cy="25" r="3.25" fill="rgba(74,222,128,0.45)" />
+        <text x="150" y="27.5" textAnchor="middle" fill={dim} fontSize="9" fontFamily="ui-monospace, ui-sans-serif, system-ui" letterSpacing="0.02em">
           workspace · synced
         </text>
-        <path d="M 268 22 L 274 22" stroke={brass} strokeWidth="1.2" strokeLinecap="round" />
-        <path d="M 271 19 L 271 25" stroke={brass} strokeWidth="1.2" strokeLinecap="round" />
+        <path d="M 268 25 h 6 M 271 22 v 6" stroke={brass} strokeWidth="1.15" strokeLinecap="round" />
 
-        <rect x="8" y="44" width="284" height="52" rx="8" fill="none" stroke={brass} strokeWidth="1" strokeDasharray="4 4" opacity="0.55" />
-        <path
-          d="M 118 64 L 138 64 L 148 74 L 162 74 L 172 64 L 182 64"
-          fill="none"
-          stroke={brass}
-          strokeWidth="1.2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          opacity="0.85"
-        />
-        <text x="150" y="88" textAnchor="middle" fill={dim} fontSize="10" fontFamily="ui-sans-serif, system-ui">
-          Drop files to ingest
-        </text>
+        <g transform="translate(0, 4)">
+          <rect x="22" y="52" width="14" height="11" rx="2" fill={mossFill} stroke={moss} strokeWidth="0.85" />
+          <text x="42" y="61" fill={text} fontSize="10" fontFamily="ui-monospace, monospace" fontWeight="500">
+            workspace/
+          </text>
 
-        <line x1="24" y1="112" x2="24" y2="228" stroke={line} strokeWidth="1" />
-        <line x1="24" y1="128" x2="52" y2="128" stroke={line} strokeWidth="1" />
-        <rect x="52" y="116" width="18" height="14" rx="2" fill={mossFill} stroke={moss} strokeWidth="0.9" />
-        <text x="76" y="128" fill="#e4e4e7" fontSize="10" fontFamily="ui-monospace, monospace">
-          datasets/
-        </text>
+          <line x1="29" y1="63" x2="29" y2="188" stroke={line} strokeWidth="1" />
 
-        <line x1="40" y1="152" x2="68" y2="152" stroke={line} strokeWidth="1" />
-        <rect x="68" y="140" width="16" height="12" rx="2" fill={paper} stroke={line} strokeWidth="0.8" />
-        <text x="90" y="152" fill={dim} fontSize="9" fontFamily="ui-monospace, monospace">
-          ingest_queue/
-        </text>
+          <path d="M 29 74 H 44 V 88" fill="none" stroke={line} strokeWidth="1" />
+          <rect x="46" y="80" width="13" height="10" rx="2" fill={mossFill} stroke={moss} strokeWidth="0.8" />
+          <text x="64" y="89" fill={text} fontSize="9.5" fontFamily="ui-monospace, monospace">
+            datasets/
+          </text>
 
-        <line x1="56" y1="176" x2="84" y2="176" stroke={line} strokeWidth="1" />
-        <rect x="84" y="166" width="200" height="10" rx="2" fill={paper} stroke={line} strokeWidth="0.7" />
-        <text x="92" y="174" fill="#a1a1aa" fontSize="8" fontFamily="ui-monospace, monospace">
-          staging_batch.csv
-        </text>
+          <path d="M 29 100 H 52 V 114" fill="none" stroke={line} strokeWidth="1" />
+          <path d="M 52 114 H 60" fill="none" stroke={line} strokeWidth="1" />
+          <rect x="62" y="106" width="176" height="10" rx="2" fill={paper} stroke={line} strokeWidth="0.75" />
+          <text x="68" y="114" fill={file} fontSize="8.5" fontFamily="ui-monospace, monospace">
+            prices_daily.parquet
+          </text>
 
-        <line x1="40" y1="192" x2="68" y2="192" stroke={line} strokeWidth="1" />
-        <rect x="68" y="180" width="18" height="14" rx="2" fill={mossFill} stroke={moss} strokeWidth="0.9" />
-        <text x="92" y="192" fill="#e4e4e7" fontSize="10" fontFamily="ui-monospace, monospace">
-          runs/
-        </text>
+          <path d="M 29 126 H 44 V 140" fill="none" stroke={line} strokeWidth="1" />
+          <rect x="46" y="132" width="13" height="10" rx="2" fill={mossFill} stroke={moss} strokeWidth="0.8" />
+          <text x="64" y="141" fill={text} fontSize="9.5" fontFamily="ui-monospace, monospace">
+            runs/
+          </text>
 
-        <line x1="56" y1="206" x2="92" y2="206" stroke={line} strokeWidth="1" />
-        <rect x="92" y="196" width="190" height="10" rx="2" fill={paper} stroke={line} strokeWidth="0.7" />
-        <text x="98" y="204" fill="#a1a1aa" fontSize="8" fontFamily="ui-monospace, monospace">
-          manifest.json
-        </text>
+          <path d="M 29 152 H 52 V 166" fill="none" stroke={line} strokeWidth="1" />
+          <path d="M 52 166 H 60" fill="none" stroke={line} strokeWidth="1" />
+          <rect x="62" y="158" width="176" height="10" rx="2" fill={paper} stroke={line} strokeWidth="0.75" />
+          <text x="68" y="166" fill={file} fontSize="8.5" fontFamily="ui-monospace, monospace">
+            manifest.json
+          </text>
 
-        <rect x="92" y="210" width="190" height="10" rx="2" fill={paper} stroke={moss} strokeWidth="0.5" opacity="0.9" />
-        <text x="98" y="218" fill={brass} fontSize="8" fontFamily="ui-monospace, monospace">
-          predictions.parquet
-        </text>
+          <path d="M 29 178 H 52 V 192" fill="none" stroke={line} strokeWidth="1" />
+          <path d="M 52 192 H 60" fill="none" stroke={line} strokeWidth="1" />
+          <rect x="62" y="184" width="176" height="10" rx="2" fill={paper} stroke={moss} strokeWidth="0.65" opacity="0.95" />
+          <text x="68" y="192" fill={brass} fontSize="8.5" fontFamily="ui-monospace, monospace">
+            predictions.parquet
+          </text>
+        </g>
       </svg>
     </div>
   );

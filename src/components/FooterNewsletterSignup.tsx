@@ -33,7 +33,14 @@ export function FooterNewsletterSignup() {
           Subscribe
         </button>
       </form>
-      <p className="mt-2 text-[10px] font-light text-neutral-400 dark:text-neutral-500">FIrstClassMail</p>
+      <p className="mt-2 flex flex-wrap items-center gap-2 text-[10px] font-light text-neutral-400 dark:text-neutral-500">
+        <span>FIrstClassMail</span>
+        <span className="inline-flex items-baseline gap-0.5 font-mono text-[11px] font-semibold tracking-tight" aria-hidden>
+          <span className="text-red-600 dark:text-red-400">X</span>
+          <span className="text-green-600 dark:text-green-400">Y</span>
+          <span className="text-blue-600 dark:text-blue-400">Z</span>
+        </span>
+      </p>
     </div>
   );
 }

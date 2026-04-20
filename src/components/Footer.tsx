@@ -103,6 +103,13 @@ export const Footer: React.FC = () => {
             <LiLink href="/sentiment">Sentiment</LiLink>
           </FooterColumn>
 
+          <FooterColumn title="Products">
+            <LiLink href="/backspace">Backspace</LiLink>
+            <LiLink href="/dividend-properties">Dividend Properties</LiLink>
+            <LiLink href="/ether-bonds">Ether Bonds</LiLink>
+            <LiLink href="/money-bagg">MoneyBagg</LiLink>
+          </FooterColumn>
+
           <FooterColumn title="University" titleHref={marketingSubdomainUrl('university')}>
             <li>
               <a
@@ -127,13 +134,6 @@ export const Footer: React.FC = () => {
                 FINRA Exam Prep
               </Link>
             </li>
-          </FooterColumn>
-
-          <FooterColumn title="Products">
-            <LiLink href="/backspace">Backspace</LiLink>
-            <LiLink href="/dividend-properties">Dividend Properties</LiLink>
-            <LiLink href="/ether-bonds">Ether Bonds</LiLink>
-            <LiLink href="/money-bagg">MoneyBagg</LiLink>
           </FooterColumn>
 
           <FooterColumn title="Company" titleHref={marketingSubdomainUrl('company')}>
