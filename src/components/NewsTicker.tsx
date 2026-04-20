@@ -16,7 +16,7 @@ interface NewsTickerProps {
 
 export const NewsTicker: React.FC<NewsTickerProps> = ({ news }) => {
   return (
-    <div className="bg-charcoal border-y border-white/[0.08] overflow-hidden relative">
+    <div className="bg-dark-gray border-y border-white/[0.08] overflow-hidden relative">
       <div className="flex items-center h-8 sm:h-10">
         {/* Breaking News Label */}
         <div className="bg-gray-900 px-2 sm:px-4 h-full flex items-center flex-shrink-0 border-r border-gray-800">

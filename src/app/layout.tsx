@@ -48,7 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${cormorant.variable} font-sans antialiased`}>
         <Providers>
-          <div className="bg-stone-100 dark:bg-charcoal min-h-screen">{children}</div>
+          <div className="bg-stone-100 dark:bg-dark-gray min-h-screen">{children}</div>
           <Analytics />
         </Providers>
       </body>

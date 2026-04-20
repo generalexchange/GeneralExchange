@@ -11,7 +11,7 @@ import { HomepageFullPageSections } from './homepage/HomepageFullPageSections';
 
 export const Homepage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-charcoal font-sans text-neutral-100 antialiased selection:bg-tan/20">
+    <div className="min-h-screen bg-dark-gray font-sans text-neutral-100 antialiased selection:bg-tan/20">
       <Navbar showSearch={false} />
 
       <div className="pt-12 sm:pt-14">

@@ -45,7 +45,7 @@ function PillarCardTile({
       viewport={{ once: true, margin: '-40px' }}
       transition={{ duration: 0.45, delay: index * 0.04, ease: fadeEase }}
       className={`flex h-full flex-col rounded-lg border p-5 transition-all duration-300 hover:border-institutional-green/35 sm:p-6 ${
-        isLight ? 'shadow-[0_2px_12px_rgba(0,0,0,0.06)]' : 'border-white/[0.08] bg-charcoal/80 hover:bg-charcoal'
+        isLight ? 'shadow-[0_2px_12px_rgba(0,0,0,0.06)]' : 'border-white/[0.08] bg-white/[0.05] hover:bg-white/[0.08]'
       }`}
       style={
         isLight

@@ -46,7 +46,7 @@ export const InstitutionalNavbar: React.FC<InstitutionalNavbarProps> = ({
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 border-b border-tan/25 bg-charcoal/92 backdrop-blur-xl ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 border-b border-tan/25 bg-dark-gray/95 backdrop-blur-xl ${
         isVisible ? 'translate-y-0' : '-translate-y-full'
       }`}
       aria-label="Primary"

@@ -17,7 +17,7 @@ const fade = {
 
 export const Hero: React.FC = () => {
   return (
-    <section className="relative flex min-h-[calc(100dvh-3rem)] flex-col overflow-hidden border-b border-white/[0.05] pb-24 sm:min-h-[calc(100dvh-3.5rem)] sm:pb-32 lg:pb-44">
+    <section className="relative flex min-h-[calc(100dvh-3rem)] flex-col overflow-hidden border-b border-white/[0.05] bg-dark-gray pb-24 sm:min-h-[calc(100dvh-3.5rem)] sm:pb-32 lg:pb-44">
       <div
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_85%_70%_at_50%_-15%,rgba(46,90,58,0.12),transparent_58%)]"
         aria-hidden
@@ -51,7 +51,7 @@ export const Hero: React.FC = () => {
               </Link>
               <Link
                 href="/governance"
-                className="inline-flex items-center justify-center px-8 py-3.5 bg-dark-gray text-white text-sm font-semibold tracking-wide rounded-lg border border-white/[0.12] transition-all duration-300 hover:bg-charcoal hover:border-white/[0.18]"
+                className="inline-flex items-center justify-center px-8 py-3.5 bg-white/[0.06] text-white text-sm font-semibold tracking-wide rounded-lg border border-white/[0.12] transition-all duration-300 hover:bg-white/[0.1] hover:border-white/[0.18]"
               >
                 Governance
               </Link>
@@ -64,7 +64,7 @@ export const Hero: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.08, ease: fadeEase }}
           >
-            <figure className="relative mx-auto aspect-square w-full max-w-[min(100%,520px)] overflow-hidden rounded-xl border border-white/[0.08] bg-charcoal/50 shadow-[0_32px_64px_-28px_rgba(0,0,0,0.65)] lg:mx-0">
+            <figure className="relative mx-auto aspect-square w-full max-w-[min(100%,520px)] overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.04] shadow-[0_32px_64px_-28px_rgba(0,0,0,0.45)] lg:mx-0">
               <Image
                 src="/images/hero.png"
                 alt="Western landscape — rider and horse at golden hour"
@@ -74,11 +74,11 @@ export const Hero: React.FC = () => {
                 priority
               />
               <div
-                className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-r from-charcoal/50 via-transparent to-charcoal/35"
+                className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-r from-zinc-950/40 via-transparent to-zinc-950/25"
                 aria-hidden
               />
               <div
-                className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-t from-charcoal/55 via-transparent to-charcoal/25"
+                className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-t from-zinc-950/45 via-transparent to-zinc-950/20"
                 aria-hidden
               />
               <figcaption className="sr-only">Hero artwork in public/images/hero.png</figcaption>

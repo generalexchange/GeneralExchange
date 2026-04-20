@@ -92,12 +92,12 @@ const HISTORY_ROWS = [
 
 export function HomepageFullPageSections() {
   return (
-    <div className="bg-charcoal text-neutral-100">
+    <div className="bg-dark-gray text-neutral-100">
       <Hero />
 
       {/* 01 — Risk */}
       <section
-        className="flex min-h-screen flex-col justify-center border-b border-white/[0.06] bg-dark-gray/40 md:min-h-[100dvh]"
+        className="flex min-h-screen flex-col justify-center border-b border-white/[0.06] bg-dark-gray md:min-h-[100dvh]"
         aria-labelledby="hp-risk-title"
       >
         <motion.div className="mx-auto w-full max-w-content px-4 py-16 sm:px-6 sm:py-20 lg:px-10 lg:py-24" {...sectionReveal}>
@@ -171,7 +171,7 @@ export function HomepageFullPageSections() {
 
       {/* 02 — Library (strategies + history) */}
       <section
-        className="flex min-h-screen flex-col justify-center border-b border-white/[0.06] bg-dark-gray/35 md:min-h-[100dvh]"
+        className="flex min-h-screen flex-col justify-center border-b border-white/[0.06] bg-dark-gray md:min-h-[100dvh]"
         aria-labelledby="hp-library-title"
       >
         <motion.div className="mx-auto w-full max-w-content px-4 py-16 sm:px-6 sm:py-20 lg:px-10 lg:py-24" {...sectionReveal}>
@@ -307,7 +307,7 @@ export function HomepageFullPageSections() {
 
       {/* 03 — Backspace */}
       <section
-        className="flex min-h-screen flex-col justify-center border-b border-white/[0.06] md:min-h-[100dvh]"
+        className="flex min-h-screen flex-col justify-center border-b border-white/[0.06] bg-dark-gray md:min-h-[100dvh]"
         aria-labelledby="hp-backspace-title"
       >
         <motion.div className="mx-auto w-full max-w-content px-4 py-16 sm:px-6 sm:py-20 lg:px-10 lg:py-24" {...sectionReveal}>
@@ -329,7 +329,7 @@ export function HomepageFullPageSections() {
           </blockquote>
 
           <div className="mt-10 flex flex-col gap-6 pb-6 sm:gap-8 sm:pb-8 lg:flex-row lg:items-center lg:justify-between lg:gap-10 lg:pb-10">
-            <div className="w-full max-w-xl flex-1 rounded-2xl border border-white/[0.1] bg-charcoal/80 p-4 shadow-[0_20px_60px_-24px_rgba(0,0,0,0.55)] sm:p-5">
+            <div className="w-full max-w-xl flex-1 rounded-2xl border border-white/[0.1] bg-white/[0.04] p-4 shadow-[0_20px_60px_-24px_rgba(0,0,0,0.35)] sm:p-5">
               <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-500">Backspace · preview</p>
               <div className="mt-3 rounded-lg border border-dashed border-white/[0.12] bg-white/[0.02] px-4 py-8 text-center">
                 <p className="text-xs text-zinc-400">Drop dataset or browse</p>
