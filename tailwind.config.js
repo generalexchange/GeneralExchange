@@ -24,8 +24,10 @@ export default {
         'slide-up-fade': 'slideUpFade 0.5s ease-out both',
       },
       colors: {
-        charcoal: '#0C0C0C',
-        'dark-gray': '#1A1A1A',
+        /** Deepest app background — cool graphite, not pure black */
+        charcoal: '#13141c',
+        /** Panels / inset surfaces, one step above charcoal */
+        'dark-gray': '#1c1d26',
         tan: {
           DEFAULT: '#D2B48C',
           muted: '#c4a57e',

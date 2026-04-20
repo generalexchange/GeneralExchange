@@ -51,7 +51,7 @@ export const Hero: React.FC = () => {
               </Link>
               <Link
                 href="/governance"
-                className="inline-flex items-center justify-center px-8 py-3.5 bg-black text-white text-sm font-semibold tracking-wide rounded-lg border border-white/[0.12] transition-all duration-300 hover:bg-neutral-950 hover:border-white/[0.18]"
+                className="inline-flex items-center justify-center px-8 py-3.5 bg-dark-gray text-white text-sm font-semibold tracking-wide rounded-lg border border-white/[0.12] transition-all duration-300 hover:bg-charcoal hover:border-white/[0.18]"
               >
                 Governance
               </Link>
@@ -64,7 +64,7 @@ export const Hero: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.08, ease: fadeEase }}
           >
-            <figure className="relative mx-auto aspect-square w-full max-w-[min(100%,520px)] overflow-hidden rounded-xl border border-white/[0.08] bg-black/40 shadow-[0_32px_64px_-28px_rgba(0,0,0,0.65)] lg:mx-0">
+            <figure className="relative mx-auto aspect-square w-full max-w-[min(100%,520px)] overflow-hidden rounded-xl border border-white/[0.08] bg-charcoal/50 shadow-[0_32px_64px_-28px_rgba(0,0,0,0.65)] lg:mx-0">
               <Image
                 src="/images/hero.png"
                 alt="Western landscape — rider and horse at golden hour"
