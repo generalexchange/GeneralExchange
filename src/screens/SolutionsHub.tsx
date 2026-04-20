@@ -1,5 +1,5 @@
 /**
- * Solutions hub — entry to vertical solution pages linked from the footer.
+ * Solutions hub — entry to solution areas linked from the footer.
  */
 
 'use client';
@@ -11,19 +11,29 @@ import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 
 const cards = [
   {
-    href: '/oil-and-gas',
-    title: 'Oil & Gas',
-    body: 'Curve structure, inventory, and margin-aware simulators for hydrocarbon books—same evidence discipline as the rest of the exchange.',
+    href: '/futures',
+    title: 'Futures',
+    body: 'Curve-aware simulators and margin discipline for outrights, spreads, and rolls—same replay and lineage standards as the rest of the exchange.',
   },
   {
-    href: '/crop-futures',
-    title: 'Crop Futures',
-    body: 'Seasonal risk, basis, and weather volatility framed for agricultural futures—deterministic scenarios you can replay and audit.',
+    href: '/options',
+    title: 'Options',
+    body: 'Vol surfaces, greeks, and scenario grids built for education and desk review—not folklore approximations disconnected from your book.',
   },
   {
-    href: '/fixed-income',
-    title: 'Fixed Income',
-    body: 'Rates, credit spreads, and carry in one surface—built for desks that need manifest-bound runs, not one-off spreadsheets.',
+    href: '/strategies',
+    title: 'Strategies',
+    body: 'Systematic sleeves, risk overlays, and allocator-ready narratives you can version, diff, and defend when limits and governance ask why.',
+  },
+  {
+    href: '/sentiment',
+    title: 'Sentiment',
+    body: 'Narrative and positioning signals framed as features for simulation—so research, risk, and execution share one honest feature store.',
+  },
+  {
+    href: '/tokenomics',
+    title: 'Tokenomics',
+    body: 'Entitlements, tokenized compute, and scheduler policy on one ledger—how capacity and access stay metered and explainable.',
   },
 ] as const;
 
@@ -41,17 +51,17 @@ export const SolutionsHub: React.FC = () => {
               Solutions
             </p>
             <h1 className="mt-4 max-w-3xl font-display text-3xl font-medium leading-tight tracking-tight text-neutral-50 sm:text-4xl lg:text-[2.75rem]">
-              Institutional solutions
+              Solutions
             </h1>
             <p className="mt-4 max-w-2xl text-sm font-light leading-relaxed text-zinc-400 sm:text-base">
-              Vertical workflows and education paths that share the same risk-first, evidence-bound posture as TradeEngine,
-              Backspace, and Bridge Observer—tailored to how different asset classes actually move.
+              Futures, options, strategy design, sentiment inputs, and tokenized infrastructure—each area gets the same evidence-bound posture as
+              TradeEngine, Backspace, and Monte Carlo.
             </p>
           </div>
         </header>
 
         <div className="mx-auto max-w-content layout-gutter py-12 sm:py-16">
-          <ul className="m-0 grid list-none grid-cols-1 gap-6 p-0 md:grid-cols-3">
+          <ul className="m-0 grid list-none grid-cols-1 gap-6 p-0 sm:grid-cols-2 lg:grid-cols-3">
             {cards.map((c) => (
               <li key={c.href}>
                 <Link
