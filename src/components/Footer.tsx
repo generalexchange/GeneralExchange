@@ -85,10 +85,6 @@ export const Footer: React.FC = () => {
           </div>
 
           <FooterColumn title="Bridge Observer" titleHref="https://bridgeobserver.com" titleExternal>
-            <LiLink href="#">Trading simulator</LiLink>
-            <LiLink href="#">Monte Carlo engine</LiLink>
-            <LiLink href="#">Portfolio builder</LiLink>
-            <LiLink href="/tokenomics">Compute tokens</LiLink>
             <li>
               <a
                 href="https://www.rockefeller.press"
