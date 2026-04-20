@@ -122,7 +122,17 @@ export const Footer: React.FC = () => {
           </FooterColumn>
 
           <FooterColumn title="University" titleHref={marketingSubdomainUrl('university')}>
-            <LiLink href="#">Courses & tracks</LiLink>
+            <li>
+              <a
+                href="https://www.riskonometry.com"
+                className={linkClass}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Riskonometry
+              </a>
+            </li>
+            <LiLink href="/monte-carlo">Monte Carlo</LiLink>
             <LiLink href="/library">Strategy library</LiLink>
             <LiLink href="#">Glossary</LiLink>
             <LiLink href="#">Market mechanics</LiLink>
