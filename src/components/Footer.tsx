@@ -128,6 +128,8 @@ export const Footer: React.FC = () => {
 
           <FooterColumn title="Products">
             <LiLink href="/backspace">Backspace</LiLink>
+            <LiLink href="/dividend-properties">Dividend Properties</LiLink>
+            <LiLink href="/ether-bonds">Ether Bonds</LiLink>
             <LiLink href="/newsletter">Newsletter</LiLink>
           </FooterColumn>
 
