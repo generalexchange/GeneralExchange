@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Cormorant_Garamond, Inter } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { Providers } from './providers';
@@ -16,6 +16,16 @@ const cormorant = Cormorant_Garamond({
   variable: '--font-cormorant',
   display: 'swap',
 });
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#f5f5f4' },
+    { media: '(prefers-color-scheme: dark)', color: '#1c1d26' },
+  ],
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://generalexchange.com'),

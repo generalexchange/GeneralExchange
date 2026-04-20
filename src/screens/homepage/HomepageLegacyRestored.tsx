@@ -97,7 +97,7 @@ export function PillarSectionEmbed({ pillar, index }: { pillar: PillarSection; i
       style={isLight ? { ...bgStyle, color: BAND.text, borderColor: BAND.border } : undefined}
       aria-labelledby={`pillar-heading-${pillar.id}`}
     >
-      <div className="mx-auto max-w-content px-4 py-10 sm:px-6 sm:py-12 lg:px-10">
+      <div className="mx-auto max-w-content layout-gutter py-10 sm:py-12">
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(260px,380px)] xl:grid-cols-[1fr_400px] xl:gap-12">
           <div className="min-w-0">
             <header className="mb-6 max-w-3xl sm:mb-8">
@@ -169,7 +169,7 @@ export function HomepageExecutionLoopRestored() {
       style={{ backgroundColor: BAND.bg10, color: BAND.text, borderColor: BAND.border }}
       aria-labelledby="execution-loop-heading"
     >
-      <div className="mx-auto max-w-content px-4 py-10 sm:px-6 sm:py-12 lg:px-10">
+      <div className="mx-auto max-w-content layout-gutter py-10 sm:py-12">
         <header className="mb-8 max-w-3xl">
           <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em]" style={{ color: BAND.text60 }}>
             Signature workflow
@@ -222,7 +222,7 @@ export function HomepageExecutionLoopRestored() {
 export function HomepageTrustCtaRestored() {
   return (
     <div className="rounded-xl border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900">
-      <div className="mx-auto max-w-content px-4 py-10 sm:px-6 sm:py-12 lg:px-10">
+      <div className="mx-auto max-w-content layout-gutter py-10 sm:py-12">
         <div className="grid gap-8 rounded-lg border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-700 dark:bg-neutral-800 sm:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start lg:gap-12">
           <div className="min-w-0">
             <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-neutral-500 dark:text-neutral-400">

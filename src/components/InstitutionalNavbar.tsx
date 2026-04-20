@@ -46,14 +46,14 @@ export const InstitutionalNavbar: React.FC<InstitutionalNavbarProps> = ({
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 border-b border-tan/25 bg-dark-gray/95 backdrop-blur-xl ${
+      className={`fixed top-0 left-0 right-0 z-50 border-b border-tan/25 bg-dark-gray/95 pt-[env(safe-area-inset-top,0px)] backdrop-blur-xl transition-transform duration-300 ${
         isVisible ? 'translate-y-0' : '-translate-y-full'
       }`}
       aria-label="Primary"
     >
-      <div className="max-w-content mx-auto px-4 sm:px-6 lg:px-10">
-        <div className="flex justify-between items-center gap-4 h-14 sm:h-[3.75rem]">
-          <Link href="/" className="shrink-0">
+      <div className="mx-auto max-w-content layout-gutter">
+        <div className="flex min-h-14 items-center justify-between gap-3 sm:min-h-[3.75rem] sm:gap-4">
+          <Link href="/" className="-ml-1 inline-flex min-h-11 shrink-0 items-center rounded-md px-1 py-2 sm:min-h-0">
             <span className="font-display text-[1.125rem] sm:text-xl font-medium tracking-tight text-neutral-100">
               General Exchange
             </span>
@@ -79,19 +79,19 @@ export const InstitutionalNavbar: React.FC<InstitutionalNavbarProps> = ({
           <div className="flex shrink-0 flex-wrap items-center justify-end gap-x-2 gap-y-1 sm:gap-x-3">
             <a
               href={marketingSubdomainUrl('university')}
-              className="text-[11px] font-semibold tracking-wide text-zinc-400 transition-colors hover:text-tan sm:text-[13px]"
+              className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md px-2 text-[11px] font-semibold tracking-wide text-zinc-400 transition-colors hover:bg-white/[0.04] hover:text-tan sm:min-h-0 sm:min-w-0 sm:px-3 sm:text-[13px]"
             >
               University
             </a>
             <a
               href={marketingSubdomainUrl('library')}
-              className="text-[11px] font-semibold tracking-wide text-zinc-400 transition-colors hover:text-tan sm:text-[13px]"
+              className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md px-2 text-[11px] font-semibold tracking-wide text-zinc-400 transition-colors hover:bg-white/[0.04] hover:text-tan sm:min-h-0 sm:min-w-0 sm:px-3 sm:text-[13px]"
             >
               Library
             </a>
             <Link
               href="/login"
-              className={`inline-flex items-center justify-center rounded-lg border px-4 py-2 text-[13px] font-semibold tracking-wide transition-all duration-300 sm:px-5 ${
+              className={`inline-flex min-h-11 items-center justify-center rounded-lg border px-4 py-2 text-[13px] font-semibold tracking-wide transition-all duration-300 sm:min-h-0 sm:px-5 ${
                 isActive('/login')
                   ? 'border-tan bg-tan text-charcoal'
                   : 'border-white/[0.12] bg-white/[0.03] text-neutral-200 hover:border-institutional-green/45 hover:bg-institutional-green/20'

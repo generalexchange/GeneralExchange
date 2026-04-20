@@ -66,7 +66,7 @@ function LiLink({ href, children }: { href: string; children: React.ReactNode })
 export const Footer: React.FC = () => {
   return (
     <footer className="border-t border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900">
-      <div className="mx-auto max-w-content px-8 pb-6 pt-10">
+      <div className="mx-auto max-w-content layout-gutter pb-[max(1.5rem,env(safe-area-inset-bottom,0px))] pt-10">
         <div className="mb-10 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:mb-12 lg:grid-cols-[minmax(0,1.6fr)_repeat(4,minmax(0,1fr))] lg:gap-8 xl:gap-10">
           <div className="sm:col-span-2 lg:col-span-1">
             <p className="font-display text-lg font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
@@ -132,31 +132,43 @@ export const Footer: React.FC = () => {
         </p>
 
         <div className="flex flex-col gap-4 border-t border-neutral-200 pt-4 text-[12px] text-neutral-400 dark:border-neutral-800 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-wrap items-center gap-x-1 gap-y-1">
-            <span>© 2025 General Exchange</span>
+          <div className="flex flex-wrap items-center gap-x-1 gap-y-2">
+            <span className="inline-flex min-h-11 items-center">© 2025 General Exchange</span>
             <span className="text-neutral-300 dark:text-neutral-600" aria-hidden>
               ·
             </span>
-            <Link href="#" className="hover:text-neutral-900 dark:hover:text-white">
+            <Link
+              href="#"
+              className="inline-flex min-h-11 items-center rounded-md px-1 hover:text-neutral-900 dark:hover:text-white"
+            >
               Terms
             </Link>
             <span className="text-neutral-300 dark:text-neutral-600">·</span>
-            <Link href="#" className="hover:text-neutral-900 dark:hover:text-white">
+            <Link
+              href="#"
+              className="inline-flex min-h-11 items-center rounded-md px-1 hover:text-neutral-900 dark:hover:text-white"
+            >
               Privacy
             </Link>
             <span className="text-neutral-300 dark:text-neutral-600">·</span>
-            <Link href="#" className="hover:text-neutral-900 dark:hover:text-white">
+            <Link
+              href="#"
+              className="inline-flex min-h-11 items-center rounded-md px-1 hover:text-neutral-900 dark:hover:text-white"
+            >
               Cookie preferences
             </Link>
             <span className="text-neutral-300 dark:text-neutral-600">·</span>
-            <Link href="#" className="hover:text-neutral-900 dark:hover:text-white">
+            <Link
+              href="#"
+              className="inline-flex min-h-11 items-center rounded-md px-1 hover:text-neutral-900 dark:hover:text-white"
+            >
               Disclosures
             </Link>
           </div>
-          <div className="flex flex-wrap items-center gap-x-1 gap-y-1">
+          <div className="flex flex-wrap items-center gap-x-1 gap-y-2">
             <a
               href="https://www.linkedin.com/company/generalexchangeinc"
-              className="hover:text-neutral-900 dark:hover:text-white"
+              className="inline-flex min-h-11 items-center rounded-md px-1 hover:text-neutral-900 dark:hover:text-white"
               rel="noopener noreferrer"
               target="_blank"
             >
@@ -165,7 +177,7 @@ export const Footer: React.FC = () => {
             <span className="text-neutral-300 dark:text-neutral-600">·</span>
             <a
               href="https://www.tiktok.com/@general_exchange"
-              className="hover:text-neutral-900 dark:hover:text-white"
+              className="inline-flex min-h-11 items-center rounded-md px-1 hover:text-neutral-900 dark:hover:text-white"
               rel="noopener noreferrer"
               target="_blank"
             >
@@ -174,7 +186,7 @@ export const Footer: React.FC = () => {
             <span className="text-neutral-300 dark:text-neutral-600">·</span>
             <a
               href="https://github.com/generalexchange"
-              className="hover:text-neutral-900 dark:hover:text-white"
+              className="inline-flex min-h-11 items-center rounded-md px-1 hover:text-neutral-900 dark:hover:text-white"
               rel="noopener noreferrer"
               target="_blank"
             >

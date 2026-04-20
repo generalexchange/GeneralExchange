@@ -27,14 +27,14 @@ function BackspaceGlyph({ className }: { className?: string }) {
 
 /** Black surface + brass outline — shared by Risk, Library, and Backspace CTAs. */
 const btnSection =
-  'inline-flex items-center justify-center gap-2 rounded-md border border-brass bg-black px-7 py-3.5 text-[13px] font-semibold tracking-wide text-tan transition-all duration-300 hover:border-brass-deep hover:bg-neutral-950 hover:text-brass focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass/40';
+  'inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md border border-brass bg-black px-5 py-3 text-[13px] font-semibold tracking-wide text-tan transition-all duration-300 hover:border-brass-deep hover:bg-neutral-950 hover:text-brass focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass/40 active:scale-[0.99] sm:w-auto sm:min-w-[10.25rem] sm:px-7 sm:py-3.5';
 
 const btnSectionCompact =
-  'inline-flex items-center justify-center gap-2 rounded border border-brass bg-black px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-tan transition-all duration-300 hover:border-brass-deep hover:bg-neutral-950 hover:text-brass focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass/40';
+  'inline-flex min-h-11 w-full items-center justify-center gap-2 rounded border border-brass bg-black px-3 py-2.5 text-[10px] font-semibold uppercase leading-tight tracking-[0.14em] text-tan transition-all duration-300 hover:border-brass-deep hover:bg-neutral-950 hover:text-brass focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass/40 active:scale-[0.99] sm:w-auto sm:min-h-0 sm:min-w-[11rem] sm:py-1.5';
 
 function SectionActions({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mt-10 flex flex-col gap-3 border-t border-white/[0.06] pt-8 sm:flex-row sm:flex-wrap sm:items-center">
+    <div className="mt-10 flex w-full max-w-lg flex-col gap-3 border-t border-white/[0.06] pt-8 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center">
       {children}
     </div>
   );
@@ -119,7 +119,7 @@ function HistoryIllustration() {
         {HISTORY_ROWS.map((row) => {
           const isWin = row.res === 'WIN';
           return (
-            <li key={row.d + row.sym} className="flex items-center justify-between gap-4 px-4 py-3.5">
+            <li key={row.d + row.sym} className="flex items-center justify-between gap-4 px-3 py-4 sm:px-4">
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-neutral-50">
                   {row.sym}
@@ -200,13 +200,13 @@ export function HomepageFullPageSections() {
         title={<span id="hp-risk-title">Real Time Payoff Simulation</span>}
         lede="Exposure visualization is how you actually see the book: net and gross by name, Greeks and decay through the session, where theta is earned or spent, and how concentration stacks across sectors, expiries, and venues—ladders, heatmaps, and drill-downs in one surface so you are not reconciling three spreadsheets at midnight. The goal is a live, legible picture of risk and capital before you size anything, not a static report that was already stale when it left the queue."
       >
-        <div className="mt-12 flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-12">
+        <div className="mt-10 flex min-w-0 flex-col gap-10 sm:mt-12 lg:flex-row lg:items-start lg:gap-12">
           <div className="min-w-0 flex-1">
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-1 lg:gap-7">
               {RISK_CARDS.map((c) => (
-                <div key={c.title} className="border-l-2 border-brass/40 py-1 pl-5">
+                <div key={c.title} className="min-w-0 border-l-2 border-brass/40 py-1 pl-4 sm:pl-5">
                   <h3 className="sc-serif text-[13px] font-medium text-neutral-50">{c.title}</h3>
-                  <p className="mt-2 text-[14px] font-normal leading-[1.7] text-zinc-400">{c.body}</p>
+                  <p className="mt-2 text-pretty text-[14px] font-normal leading-[1.7] text-zinc-400 break-words">{c.body}</p>
                 </div>
               ))}
             </div>
@@ -251,15 +251,15 @@ export function HomepageFullPageSections() {
               <ul className="divide-y divide-white/[0.06]" role="list">
                 {STRATEGY_ROWS.map((r) => (
                   <li key={r.name}>
-                    <div className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5 sm:py-3.5">
+                    <div className="flex flex-col gap-3 px-3 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5 sm:py-3.5">
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium text-neutral-50">
+                        <p className="text-sm font-medium text-neutral-50 sm:truncate">
                           {r.name} <span className="text-zinc-500">·</span> {r.sym}{' '}
                           <span className="text-zinc-500">·</span> {r.tf}
                         </p>
                         <p className="mt-0.5 text-[11px] font-normal text-zinc-500">Last run {r.ran}</p>
                       </div>
-                      <Link href="/dashboard" className={`${btnSectionCompact} shrink-0 self-start sm:self-center`}>
+                      <Link href="/dashboard" className={`${btnSectionCompact} shrink-0 self-stretch sm:self-center sm:shrink-0`}>
                         Load into TradeEngine
                       </Link>
                     </div>
@@ -298,13 +298,16 @@ export function HomepageFullPageSections() {
         eyebrowLabel="Backspace"
         ariaLabelledBy="hp-backspace-title"
         title={
-          <span id="hp-backspace-title" className="block text-[clamp(2.25rem,5.5vw,3.5rem)] leading-none tracking-tight">
+          <span
+            id="hp-backspace-title"
+            className="block text-pretty text-[clamp(1.85rem,8vw,3.5rem)] leading-[1.02] tracking-tight break-words"
+          >
             Backspace
           </span>
         }
         lede="Our proprietary backtesting engine."
       >
-        <blockquote className="mt-8 max-w-4xl border-l-2 border-brass pl-5 text-[15px] font-normal leading-[1.75] text-zinc-300 sm:pl-6 sm:text-base">
+        <blockquote className="mt-8 max-w-4xl border-l-2 border-brass pl-4 text-pretty text-[15px] font-normal leading-[1.75] text-zinc-300 break-words sm:pl-6 sm:text-base">
           Backspace is where you prove a trading plan before you risk real money. Load your data, pick a model that
           fits—XGBoost, LSTM, or reinforcement learning—and run it on real history so you see calm days and rough ones. You get
           simple reports that stack predictions next to what actually happened and sketch how orders might have filled. It is
@@ -347,7 +350,7 @@ export function HomepageFullPageSections() {
         </div>
 
         <div className="mt-20 border-t border-white/[0.06] pt-16 sm:mt-24 sm:pt-20 lg:mt-32 lg:pt-28">
-          <div className="mx-auto max-w-content px-4 sm:px-6 lg:px-10">
+          <div className="mx-auto max-w-content layout-gutter">
             <div className="rule-brass my-16 sm:my-24" aria-hidden />
           </div>
           <HomepageTrustCtaRestored />

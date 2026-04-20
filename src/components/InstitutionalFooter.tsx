@@ -9,8 +9,8 @@ import { marketingSubdomainUrl } from '@/lib/subdomains';
 
 export const InstitutionalFooter: React.FC = () => {
   return (
-    <footer className="bg-charcoal border-t border-white/[0.06] py-14 sm:py-16">
-      <div className="max-w-content mx-auto px-4 sm:px-6 lg:px-10">
+    <footer className="border-t border-white/[0.06] bg-charcoal py-14 pb-[max(3.5rem,env(safe-area-inset-bottom,0px))] sm:py-16">
+      <div className="mx-auto max-w-content layout-gutter">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8 md:gap-8 mb-14">
           <div className="col-span-2 md:col-span-1">
             <div className="mb-4">

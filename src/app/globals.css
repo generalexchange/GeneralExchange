@@ -18,6 +18,9 @@
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* Prevent iOS from inflating type past authored sizes */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 
   body {
@@ -29,6 +32,33 @@
 }
 
 @layer utilities {
+  /**
+   * Horizontal gutter that respects iPhone safe areas (notch / home indicator margins in landscape).
+   * Matches previous px-4 / sm:px-6 / lg:px-10 rhythm.
+   */
+  .layout-gutter {
+    padding-left: max(1rem, env(safe-area-inset-left, 0px));
+    padding-right: max(1rem, env(safe-area-inset-right, 0px));
+  }
+
+  @media (min-width: 640px) {
+    .layout-gutter {
+      padding-left: max(1.5rem, env(safe-area-inset-left, 0px));
+      padding-right: max(1.5rem, env(safe-area-inset-right, 0px));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .layout-gutter {
+      padding-left: max(2.5rem, env(safe-area-inset-left, 0px));
+      padding-right: max(2.5rem, env(safe-area-inset-right, 0px));
+    }
+  }
+
+  .pb-safe {
+    padding-bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
+  }
+
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
@@ -147,27 +177,12 @@
   }
 }
 
-@supports (padding-top: env(safe-area-inset-top)) {
-  body {
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-}
-
 button,
 a,
 input,
 textarea,
 select {
   @apply transition-all duration-200 ease-in-out;
-}
-
-@media (max-width: 768px) {
-  button,
-  a {
-    min-height: 44px;
-    min-width: 44px;
-  }
 }
 
 img {
