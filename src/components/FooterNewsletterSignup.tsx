@@ -9,9 +9,6 @@ export function FooterNewsletterSignup() {
   return (
     <div className="mt-4 max-w-sm rounded-lg border border-neutral-200 bg-white p-3 dark:border-neutral-700 dark:bg-neutral-800/80">
       <p className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Newsletter</p>
-      <p className="mt-1 text-[12px] font-light leading-snug text-neutral-600 dark:text-neutral-400">
-        Product notes, risk-engine updates, and Monte Carlo releases—brief and infrequent.
-      </p>
       <form
         className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-stretch"
         onSubmit={(e) => {
@@ -36,7 +33,7 @@ export function FooterNewsletterSignup() {
           Subscribe
         </button>
       </form>
-      <p className="mt-2 text-[10px] font-light text-neutral-400 dark:text-neutral-500">Unsubscribe anytime. No spam.</p>
+      <p className="mt-2 text-[10px] font-light text-neutral-400 dark:text-neutral-500">FIrstClassMail</p>
     </div>
   );
 }

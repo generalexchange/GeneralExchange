@@ -83,12 +83,16 @@ export const Footer: React.FC = () => {
       <div className="mx-auto max-w-content layout-gutter pb-[max(1.5rem,env(safe-area-inset-bottom,0px))] pt-10">
         <div className="mb-10 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:mb-12 lg:grid-cols-[minmax(0,1.6fr)_repeat(4,minmax(0,1fr))] lg:gap-8 xl:gap-10">
           <div className="sm:col-span-2 lg:col-span-1">
-            <p className="font-display text-lg font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
-              General Exchange
-            </p>
-            <p className="mt-3 max-w-sm text-[13px] font-light leading-relaxed text-neutral-600 dark:text-neutral-400">
-              Simulate, learn, and master markets — without risking real capital.
-            </p>
+            <div className="flex items-start gap-3">
+              <div
+                className="mt-0.5 h-10 w-10 shrink-0 rounded-lg border border-dashed border-neutral-300 bg-neutral-100 dark:border-neutral-600 dark:bg-neutral-800"
+                role="img"
+                aria-label="Logo placeholder"
+              />
+              <p className="min-w-0 font-display text-lg font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
+                General Exchange
+              </p>
+            </div>
             <FooterNewsletterSignup />
           </div>
 
