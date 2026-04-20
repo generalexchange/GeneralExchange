@@ -25,12 +25,12 @@ export const InstitutionalFooter: React.FC = () => {
             </div>
           </div>
           <div>
-            <a
-              href={marketingSubdomainUrl('library')}
+            <Link
+              href="/lecture-hall"
               className="text-[11px] font-semibold text-neutral-500 uppercase tracking-[0.2em] mb-4 inline-block hover:text-tan transition-colors"
             >
-              Library
-            </a>
+              Lecture Hall
+            </Link>
             <ul className="space-y-2.5">
               <li>
                 <Link href="/features" className="text-sm text-neutral-400 hover:text-tan transition-colors">

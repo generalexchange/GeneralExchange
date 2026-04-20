@@ -6,7 +6,6 @@ const ROOT_DOMAIN = (process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? 'general.exchange').
 const SUBDOMAIN_TO_PATH: Record<string, string> = {
   company: '/company',
   university: '/university',
-  library: '/library',
 };
 
 function subdomainFromHost(host: string): string | null {

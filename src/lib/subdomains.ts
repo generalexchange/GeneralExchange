@@ -4,7 +4,7 @@
  */
 const ROOT_DOMAIN = process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? 'general.exchange';
 
-export type MarketingSubdomain = 'company' | 'university' | 'library';
+export type MarketingSubdomain = 'company' | 'university';
 
 export function marketingSubdomainUrl(sub: MarketingSubdomain): string {
   return `https://${sub}.${ROOT_DOMAIN}`;

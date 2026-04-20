@@ -118,9 +118,7 @@ export const Footer: React.FC = () => {
                 <BadgeNew />
               </Link>
             </li>
-            <LiLink href="/library">Strategy library</LiLink>
-            <LiLink href="#">Glossary</LiLink>
-            <LiLink href="#">Market mechanics</LiLink>
+            <LiLink href="/lecture-hall">Lecture Hall</LiLink>
             <li>
               <Link href="#" className={linkClass}>
                 FINRA Exam Prep
@@ -130,7 +128,7 @@ export const Footer: React.FC = () => {
 
           <FooterColumn title="Company" titleHref={marketingSubdomainUrl('company')}>
             <LiLink href="#">About</LiLink>
-            <LiLink href="#">Blog</LiLink>
+            <LiLink href="/newsletter">Newsletter</LiLink>
             <LiLink href="#">Careers</LiLink>
             <LiLink href="#">Partner program</LiLink>
             <LiLink href="#">Contact</LiLink>
