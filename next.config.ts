@@ -3,7 +3,12 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   async redirects() {
-    return [{ source: '/strategies', destination: '/stocks', permanent: true }];
+    return [
+      { source: '/strategies', destination: '/stocks', permanent: true },
+      { source: '/dividend-properties', destination: '/fixed-income', permanent: true },
+      { source: '/ether-bonds', destination: '/town-and-cattle', permanent: true },
+      { source: '/sentiment', destination: '/fixed-income', permanent: true },
+    ];
   },
   images: {
     remotePatterns: [

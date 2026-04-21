@@ -1,5 +1,5 @@
 /**
- * Dividend Properties — product marketing (footer).
+ * Town & Cattle — product marketing (footer). Agricultural cash and futures context.
  */
 
 'use client';
@@ -12,7 +12,7 @@ import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 const btnGhost =
   'inline-flex min-h-11 items-center justify-center rounded-lg border border-white/[0.12] bg-transparent px-5 text-sm font-semibold text-zinc-300 transition-colors hover:border-tan/35 hover:bg-white/[0.04] hover:text-tan';
 
-export const DividendProperties: React.FC = () => {
+export const TownAndCattle: React.FC = () => {
   return (
     <div className="min-h-screen bg-charcoal font-sans text-neutral-100 antialiased selection:bg-tan/20">
       <Navbar showSearch={false} />
@@ -23,21 +23,21 @@ export const DividendProperties: React.FC = () => {
             <p className="font-mono text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500 sm:text-[11px]">
               <span className="text-tan/90">Products</span>
               <span className="text-zinc-600"> · </span>
-              Dividend Properties
+              Town{' & '}Cattle
             </p>
             <h1 className="mt-4 max-w-3xl font-display text-3xl font-medium leading-tight tracking-tight text-neutral-50 sm:text-4xl lg:text-[2.75rem]">
-              Cash-flow streams you can model before you size
+              Cash cattle, grains, and basis risk with the same replay standard as the rest of the book
             </h1>
             <p className="mt-4 max-w-2xl text-sm font-light leading-relaxed text-zinc-400 sm:text-base">
-              Treat dividend-style cash flows like any other institutional surface on General Exchange—scenario libraries, transparent assumptions,
-              and paper workflows that stay tied to the evidence chain.
+              Town{' & '}Cattle is the product lane for livestock and row-crop workflows—seasonality, delivery windows, and elevator-shaped basis in
+              one surface so hedgers and funds rehearse scenarios without folklore spreadsheets.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/backspace" className={btnGhost}>
-                Backspace
+              <Link href="/futures" className={btnGhost}>
+                Futures
               </Link>
-              <Link href="/tokenomics" className={btnGhost}>
-                Tokenomics
+              <Link href="/solutions" className={btnGhost}>
+                Solutions
               </Link>
             </div>
           </div>
@@ -46,12 +46,12 @@ export const DividendProperties: React.FC = () => {
         <article className="mx-auto max-w-content layout-gutter py-12 sm:py-14 lg:py-16">
           <div className="max-w-3xl space-y-6 text-sm font-light leading-relaxed text-zinc-400 sm:text-base">
             <p>
-              Dividend Properties is where we land templates and education for income-oriented structures—distribution timing, reinvestment paths,
-              and how they interact with your broader simulated book.
+              We emphasize manifest-bound runs for auction-to-futures convergence, margin-aware spreads, and weather-tailed inventories—aligned with
+              how physical markets actually clear, not a generic “commodities” toggle.
             </p>
             <p>
-              Nothing here is an offer to sell securities; it is simulation-first tooling and narrative so desks and learners can rehearse decisions
-              with the same rigor as the rest of the platform.
+              Educational simulation only; nothing here is investment advice or an offer. Pair with Monte Carlo when you need path sampling on the
+              same positions you stress in Backspace.
             </p>
           </div>
         </article>

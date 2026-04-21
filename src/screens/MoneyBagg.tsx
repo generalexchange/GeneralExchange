@@ -33,11 +33,11 @@ export const MoneyBagg: React.FC = () => {
               first-class risk question—not a footnote on a slide deck.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/backspace" className={btnGhost}>
-                Backspace
+              <Link href="/consultation" className={btnGhost}>
+                Consultation
               </Link>
-              <Link href="/dividend-properties" className={btnGhost}>
-                Dividend Properties
+              <Link href="/fixed-income" className={btnGhost}>
+                Fixed Income
               </Link>
             </div>
           </div>

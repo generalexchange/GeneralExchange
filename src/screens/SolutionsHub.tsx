@@ -26,9 +26,9 @@ const cards = [
     body: 'Vol surfaces, greeks, and scenario grids built for education and desk review—not folklore approximations disconnected from your book.',
   },
   {
-    href: '/sentiment',
-    title: 'Sentiment',
-    body: 'Narrative and positioning signals framed as features for simulation—so research, risk, and execution share one honest feature store.',
+    href: '/fixed-income',
+    title: 'Fixed Income',
+    body: 'Rates, credit, and dividend-style cash flows with manifest-tagged runs—coupons, reinvestment paths, and DV01 integrity on one surface.',
   },
   {
     href: '/tokenomics',
@@ -54,7 +54,7 @@ export const SolutionsHub: React.FC = () => {
               Solutions
             </h1>
             <p className="mt-4 max-w-2xl text-sm font-light leading-relaxed text-zinc-400 sm:text-base">
-              Stocks, futures, options, sentiment inputs, and tokenized infrastructure—each area gets the same evidence-bound posture as TradeEngine,
+              Stocks, futures, options, fixed income, and tokenized infrastructure—each area gets the same evidence-bound posture as TradeEngine,
               Backspace, and Monte Carlo.
             </p>
           </div>
