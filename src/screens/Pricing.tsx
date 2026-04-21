@@ -24,7 +24,7 @@ export const Pricing: React.FC = () => {
       features: [
         { name: 'Token wallet & usage ledger', included: true },
         { name: 'Backtesting sandbox (shared pool)', included: true },
-        { name: 'Bridge Observer digest', included: true },
+        { name: 'Rockefeller digest', included: true },
         { name: 'Email support', included: true },
         { name: 'Dedicated premium GPU lanes', included: false },
         { name: 'Custom risk model templates', included: false },

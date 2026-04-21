@@ -26,10 +26,10 @@ export const InstitutionalFooter: React.FC = () => {
           </div>
           <div>
             <Link
-              href="/lecture-hall"
+              href="/assembly"
               className="text-[11px] font-semibold text-neutral-500 uppercase tracking-[0.2em] mb-4 inline-block hover:text-tan transition-colors"
             >
-              Lecture Hall
+              Assembly
             </Link>
             <ul className="space-y-2.5">
               <li>
@@ -48,8 +48,8 @@ export const InstitutionalFooter: React.FC = () => {
             <h4 className="text-[11px] font-semibold text-neutral-500 uppercase tracking-[0.2em] mb-4">Intelligence</h4>
             <ul className="space-y-2.5">
               <li>
-                <Link href="/bridge-observer" className="text-sm text-neutral-400 hover:text-tan transition-colors">
-                  Bridge Observer
+                <Link href="/rockefeller" className="text-sm text-neutral-400 hover:text-tan transition-colors">
+                  Rockefeller
                 </Link>
               </li>
               <li>

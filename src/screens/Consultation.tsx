@@ -47,7 +47,7 @@ export const Consultation: React.FC = () => {
           <div className="max-w-3xl space-y-6 text-sm font-light leading-relaxed text-zinc-400 sm:text-base">
             <p>
               Use this lane to book structured reviews: portfolio simulation design, entitlement boundaries for tokenized GPU, and how evidence from
-              Bridge Observer should land in your feature store—not slide-only promises.
+              Rockefeller should land in your feature store—not slide-only promises.
             </p>
             <p>
               Educational simulation only; consultation does not constitute investment advice. Your executed agreements and compliance policy still

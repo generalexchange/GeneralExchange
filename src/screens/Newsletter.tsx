@@ -19,7 +19,7 @@ export const Newsletter: React.FC = () => {
           <p className="text-blue-400 text-sm font-semibold tracking-widest uppercase mb-4">Newsletter</p>
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6 leading-tight">Stay in the loop</h1>
           <p className="text-lg text-gray-400 mb-10 leading-relaxed">
-            Product releases, risk-engine notes, and Bridge Observer highlights—concise and infrequent.
+            Product releases, risk-engine notes, and Rockefeller highlights—concise and infrequent.
           </p>
           <form
             className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"

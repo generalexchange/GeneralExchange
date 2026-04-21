@@ -1,5 +1,5 @@
 /**
- * Lecture Hall — live and replayable learning sessions (University).
+ * Assembly — live and replayable learning sessions (University).
  */
 
 'use client';
@@ -12,7 +12,7 @@ import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 const btnGhost =
   'inline-flex min-h-11 items-center justify-center rounded-lg border border-white/[0.12] bg-transparent px-5 text-sm font-semibold text-zinc-300 transition-colors hover:border-tan/35 hover:bg-white/[0.04] hover:text-tan';
 
-export const LectureHall: React.FC = () => {
+export const Assembly: React.FC = () => {
   return (
     <div className="min-h-screen bg-charcoal font-sans text-neutral-100 antialiased selection:bg-tan/20">
       <Navbar showSearch={false} />
@@ -23,7 +23,7 @@ export const LectureHall: React.FC = () => {
             <p className="font-mono text-[10px] font-medium uppercase tracking-[0.22em] text-zinc-500 sm:text-[11px]">
               <span className="text-tan/90">University</span>
               <span className="text-zinc-600"> · </span>
-              Lecture Hall
+              Assembly
             </p>
             <h1 className="mt-4 max-w-3xl font-display text-3xl font-medium leading-tight tracking-tight text-neutral-50 sm:text-4xl lg:text-[2.75rem]">
               Deep dives, office hours, and replayable sessions
@@ -46,8 +46,8 @@ export const LectureHall: React.FC = () => {
         <article className="mx-auto max-w-content layout-gutter py-12 sm:py-14 lg:py-16">
           <div className="max-w-3xl space-y-6 text-sm font-light leading-relaxed text-zinc-400 sm:text-base">
             <p>
-              Lecture Hall is the home for instructor-led and async curriculum on General Exchange—aligned with FINRA-style prep where we publish
-              it, and with the same evidence posture as the rest of University.
+              Assembly is the home for instructor-led and async curriculum on General Exchange—aligned with FINRA-style prep where we publish it,
+              and with the same evidence posture as the rest of University.
             </p>
             <p>
               New sessions land here first; subscribe via the{' '}
