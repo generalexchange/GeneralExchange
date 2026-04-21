@@ -139,9 +139,9 @@ export const Footer: React.FC = () => {
 
           <FooterColumn title="Company" titleHref={marketingSubdomainUrl('company')}>
             <LiLink href="/our-story">Our Story</LiLink>
+            <LiLink href="/tokenomics">Tokenomics</LiLink>
             <LiLink href="#">Careers</LiLink>
             <LiLink href="/help-desk">Help Desk</LiLink>
-            <LiLink href="/tokenomics">Tokenomics</LiLink>
           </FooterColumn>
         </div>
 
