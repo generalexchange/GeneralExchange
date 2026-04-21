@@ -90,7 +90,7 @@ export const HOMEPAGE_PILLARS: PillarSection[] = [
   },
   {
     id: 'bridge-observer',
-    title: 'Rockefeller: From News to Signals to Execution',
+    title: 'Bridge Observer: From News to Signals to Execution',
     subtitle: 'Narrative and events folded into time series, alerts, and route-ready signals.',
     mechanicsCaption:
       'Headlines become dense vectors, then regime-aware signals that meet the same pre-trade gates as any internal alpha.',

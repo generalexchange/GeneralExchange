@@ -226,7 +226,7 @@ export function HomepageTrustCtaRestored() {
         <div className="grid gap-8 rounded-lg border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-700 dark:bg-neutral-800 sm:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start lg:gap-12">
           <div className="min-w-0">
             <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-neutral-500 dark:text-neutral-400">
-              Rockefeller · provenance
+              Bridge Observer · provenance
             </p>
             <h2 className="mt-2 font-display text-xl font-medium tracking-tight text-neutral-900 dark:text-neutral-100 sm:text-2xl">
               Evidence-grade datasets from sentiment-scored news
@@ -265,10 +265,10 @@ export function HomepageTrustCtaRestored() {
             </div>
             <div className="flex flex-wrap gap-3 border-t border-neutral-200 pt-6 dark:border-neutral-700">
               <Link
-                href="/rockefeller"
+                href="/bridge-observer"
                 className="inline-flex items-center justify-center rounded-md bg-neutral-900 px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-neutral-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-white"
               >
-                Rockefeller
+                Bridge Observer
               </Link>
               <Link
                 href="/request-access"
