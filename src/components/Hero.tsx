@@ -16,6 +16,20 @@ const fade = {
   transition: { duration: 0.5, ease: fadeEase },
 };
 
+/** Compact pill links — secondary exploration under hero CTAs */
+const HERO_EXPLORE_LINKS = [
+  { href: '/features', label: 'Features' },
+  { href: '/solutions', label: 'Solutions' },
+  { href: '/risk-management', label: 'Risk' },
+  { href: '/trade-engine', label: 'Trade engine' },
+  { href: '/monte-carlo', label: 'Monte Carlo' },
+  { href: '/pricing', label: 'Pricing' },
+  { href: '/request-access', label: 'Request access' },
+] as const;
+
+const bubbleLinkClass =
+  'inline-flex items-center rounded-full border border-white/[0.1] bg-white/[0.04] px-3.5 py-1.5 text-[12px] font-medium tracking-wide text-zinc-300 shadow-[0_0_0_1px_rgba(0,0,0,0.2)_inset] backdrop-blur-sm transition-all duration-200 hover:border-brass/45 hover:bg-brass/[0.07] hover:text-tan hover:shadow-[0_8px_28px_-12px_rgba(210,180,140,0.25)] active:scale-[0.98]';
+
 export const Hero: React.FC = () => {
   return (
     <section className="relative flex min-h-[calc(100svh-3.5rem-env(safe-area-inset-top,0px))] flex-col overflow-hidden border-b border-white/[0.06] bg-dark-gray pb-[max(4rem,calc(env(safe-area-inset-bottom,0px)+2rem))] sm:min-h-[calc(100svh-3.75rem-env(safe-area-inset-top,0px))] sm:pb-28 lg:pb-44">
@@ -37,9 +51,12 @@ export const Hero: React.FC = () => {
 
       <div className="relative z-10 mx-auto flex w-full max-w-content flex-1 flex-col justify-center layout-gutter pb-8 pt-12 sm:pb-14 sm:pt-16 lg:pb-20 lg:pt-24">
         <div className="grid w-full min-w-0 items-center justify-items-center gap-8 sm:gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 lg:justify-items-stretch">
-          <motion.div className="w-full max-w-2xl space-y-5 text-center sm:space-y-6 lg:max-w-none lg:space-y-8 lg:text-left" {...fade}>
+          <motion.div
+            className="order-2 w-full max-w-2xl space-y-5 text-center sm:space-y-6 lg:order-1 lg:max-w-none lg:space-y-8 lg:text-left"
+            {...fade}
+          >
             <h1 className="text-pretty font-display text-[clamp(1.75rem,6.5vw,2.5rem)] font-normal leading-[1.08] tracking-[-0.02em] text-neutral-50 sm:text-[3.125rem] lg:text-[3.5rem] xl:text-[3.75rem]">
-              Institutional markets, built on provable compute.
+              Trade Desk: Win On Wall Street
             </h1>
 
             <p className="mx-auto max-w-3xl text-pretty text-base font-normal leading-[1.75] text-zinc-400 sm:text-lg lg:mx-0">
@@ -69,10 +86,21 @@ export const Hero: React.FC = () => {
                 Read the whitepaper →
               </Link>
             </div>
+
+            <nav
+              aria-label="Explore the platform"
+              className="flex flex-wrap justify-center gap-2 pt-4 sm:gap-2.5 lg:justify-start lg:pt-5"
+            >
+              {HERO_EXPLORE_LINKS.map(({ href, label }) => (
+                <Link key={href} href={href} className={bubbleLinkClass}>
+                  {label}
+                </Link>
+              ))}
+            </nav>
           </motion.div>
 
           <motion.div
-            className="relative w-full max-w-md justify-self-center lg:max-w-none lg:justify-self-auto"
+            className="order-1 relative w-full max-w-md justify-self-center lg:order-2 lg:max-w-none lg:justify-self-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.08, ease: fadeEase }}
