@@ -105,9 +105,9 @@ export const Footer: React.FC = () => {
           </FooterColumn>
 
           <FooterColumn title="Products">
-            <LiLink href="/consultation">Consultation</LiLink>
-            <LiLink href="/rockefeller">Rockefeller</LiLink>
             <LiLink href="/town-and-cattle">Town{' & '}Cattle</LiLink>
+            <LiLink href="/rockefeller">Rockefeller</LiLink>
+            <LiLink href="/consultation">Consultation</LiLink>
             <LiLink href="/coffee">Coffee</LiLink>
           </FooterColumn>
 
