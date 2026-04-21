@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
       { source: '/dividend-properties', destination: '/fixed-income', permanent: true },
       { source: '/ether-bonds', destination: '/town-and-cattle', permanent: true },
       { source: '/sentiment', destination: '/fixed-income', permanent: true },
+      { source: '/lecture-hall', destination: '/assembly', permanent: true },
+      { source: '/money-bagg', destination: '/coffee', permanent: true },
     ];
   },
   images: {

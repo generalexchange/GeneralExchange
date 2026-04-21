@@ -5,6 +5,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { marketingSubdomainUrl } from '@/lib/subdomains';
+import { FooterCopyrightLine } from '@/components/FooterCopyrightLine';
 import { FooterNewsletterSignup } from '@/components/FooterNewsletterSignup';
 import { FooterSocialLinks } from '@/components/FooterSocialLinks';
 
@@ -107,7 +108,7 @@ export const Footer: React.FC = () => {
             <LiLink href="/consultation">Consultation</LiLink>
             <LiLink href="/bridge-observer">Bridge Observer</LiLink>
             <LiLink href="/town-and-cattle">Town{' & '}Cattle</LiLink>
-            <LiLink href="/money-bagg">MoneyBagg</LiLink>
+            <LiLink href="/coffee">Coffee</LiLink>
           </FooterColumn>
 
           <FooterColumn title="University" titleHref={marketingSubdomainUrl('university')}>
@@ -128,12 +129,12 @@ export const Footer: React.FC = () => {
                 <BadgeNew />
               </Link>
             </li>
-            <LiLink href="/lecture-hall">Lecture Hall</LiLink>
             <li>
               <Link href="#" className={linkClass}>
                 FINRA Exam Prep
               </Link>
             </li>
+            <LiLink href="/assembly">Assembly</LiLink>
           </FooterColumn>
 
           <FooterColumn title="Company" titleHref={marketingSubdomainUrl('company')}>
@@ -151,7 +152,7 @@ export const Footer: React.FC = () => {
 
         <div className="flex flex-col gap-4 border-t border-neutral-200 pt-4 text-[12px] text-neutral-400 dark:border-neutral-800 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-x-1 gap-y-2">
-            <span className="inline-flex min-h-11 items-center">© 2025 General Exchange</span>
+            <FooterCopyrightLine className="inline-flex min-h-11 items-center" />
             <span className="text-neutral-300 dark:text-neutral-600" aria-hidden>
               ·
             </span>
