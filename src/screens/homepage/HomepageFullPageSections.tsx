@@ -22,12 +22,12 @@ import { useTypewriter, Cursor } from 'react-simple-typewriter';
 import { motion } from 'framer-motion';
 import { SectionShell } from '@/components/homepage/SectionShell';
 import {
-  BacktestIllustration,
-  OptionsIllustration,
+  ExecutionIntegrationIllustration,
   MarketIntelIllustration,
   StrategyLibraryIllustration,
+  WarehouseServiceIllustration,
   DataAccessIllustration,
-  LineageIllustration,
+  CommoditiesIllustration,
 } from '@/components/homepage/HomepageProductIllustrations';
 
 const easeLux = [0.22, 1, 0.36, 1] as const;
@@ -165,15 +165,15 @@ export function HomepageFullPageSections() {
         eyebrowNum="II"
         eyebrowLabel="Execution"
         ariaLabelledBy="hp-exec-title"
-        title={<span id="hp-exec-title">Trade what you find, from the same terminal you found it in.</span>}
-        lede="The platform connects directly to Interactive Brokers. Send orders from the same screen where you ran the research — no copy-paste, no switching platforms, no gap between the decision and the desk. One connection from signal to fill."
+        title={<span id="hp-exec-title">Interactive Brokers execution, embedded directly into the workflow.</span>}
+        lede="Route orders through Interactive Brokers from the same terminal where the strategy is researched and validated. Every submission carries pre-trade controls, policy checks, and an audit trail from decision to fill."
       >
         <div className="mt-10">
-          <BacktestIllustration />
+          <ExecutionIntegrationIllustration />
         </div>
         <SectionActions>
-          <Link href="/request-access" className={btnSection}>
-            Connect to Interactive Brokers
+          <Link href="/trade-engine" className={btnSection}>
+            Interactive Brokers
           </Link>
         </SectionActions>
       </SectionShell>
@@ -184,15 +184,18 @@ export function HomepageFullPageSections() {
         eyebrowNum="III"
         eyebrowLabel="The warehouse"
         ariaLabelledBy="hp-wh-title"
-        title={<span id="hp-wh-title">Every piece of data the platform runs on, in one place.</span>}
-        lede="Tick-level market data, options analytics, aggregated flow signals, and historical fundamentals — structured, normalized, and updated continuously. The same warehouse powers every backtest, every chart, and every computed signal in the system."
+        title={<span id="hp-wh-title">Warehouse service: one normalized source for every model, chart, and run.</span>}
+        lede="The warehouse service publishes strategy-ready parameters — regime, sentiment, liquidity state, volatility state, and flow structure — from a point-in-time governed record. Core snapshots are archived through floppydisk.cc and IPFS content-addressed layers so retrieval stays deterministic."
       >
-        <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_1.2fr] lg:items-center">
+        <div className="mt-10">
+          <WarehouseServiceIllustration />
+        </div>
+        <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_1.2fr] lg:items-start">
           <div className="space-y-5">
             {[
-              ['Tick data', 'The raw record of every trade and quote — stored at full resolution and queryable across any time range.'],
-              ['Options surface', 'Implied vol, greeks, and open interest computed continuously across every expiry and strike.'],
-              ['Flow aggregates', 'Institutional order flow, dark pool prints, and sweep activity normalized into queryable signals.'],
+              ['Regime + sentiment', 'Market state and directional pressure features produced from unified price, flow, and volatility datasets.'],
+              ['Execution parameters', 'Liquidity depth, spread stress, and venue quality parameters exposed for route and sizing decisions.'],
+              ['Storage and lineage', 'Versioned snapshots persisted with floppydisk.cc and IPFS CIDs so each run can recover the exact source state.'],
             ].map(([h, b]) => (
               <div key={h} className="border-l-2 border-brass/40 pl-4">
                 <h3 className="sc-serif text-[13px] text-neutral-50">{h}</h3>
@@ -200,7 +203,7 @@ export function HomepageFullPageSections() {
               </div>
             ))}
           </div>
-          <OptionsIllustration />
+          <MarketIntelIllustration />
         </div>
         <SectionActions>
           <Link href="/reconnaissance" className={btnSection}>
@@ -215,8 +218,8 @@ export function HomepageFullPageSections() {
         eyebrowNum="IV"
         eyebrowLabel="Backtesting"
         ariaLabelledBy="hp-bt-title"
-        title={<span id="hp-bt-title">Replay any decision against any environment that ever happened.</span>}
-        lede="Run the trade as if for the first time, against the market exactly as it was. See not only what happened, but why it worked in the conditions where it worked — and why it failed in the ones where it did not."
+        title={<span id="hp-bt-title">Graduate-level backtesting for regime-aware strategy design.</span>}
+        lede="Run path-dependent simulations with realistic fills, slippage modeling, spread-aware execution assumptions, and environment segmentation. A plain-English LLM research assistant summarizes what changed across regimes and highlights why a strategy held up or failed before risk goes live."
       >
         <div className="mt-10 grid gap-6 lg:grid-cols-[1.4fr_1fr] lg:items-center">
           <MarketIntelIllustration />
@@ -235,7 +238,7 @@ export function HomepageFullPageSections() {
         </div>
         <SectionActions>
           <Link href="/backspace" className={btnSection}>
-            Open the proving ground
+            BackSpace
           </Link>
         </SectionActions>
       </SectionShell>
@@ -244,10 +247,10 @@ export function HomepageFullPageSections() {
       <SectionShell
         tone="secondary"
         eyebrowNum="V"
-        eyebrowLabel="Versioned & portable"
+        eyebrowLabel="Research Library"
         ariaLabelledBy="hp-lib-title"
-        title={<span id="hp-lib-title">Build a strategy, test it, and keep every version of its results beside it.</span>}
-        lede="Each strategy is versioned and portable — stored alongside every backtest it ever produced. Start from your own work, or from a strategy someone else has already proven, and make it yours."
+        title={<span id="hp-lib-title">Build, fork, and govern strategy research in one institutional library.</span>}
+        lede="The library keeps strategy logic, parameter sets, and every historical run versioned together. Teams can branch, review, and promote research to production without losing provenance or reproducibility."
       >
         <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_1.2fr] lg:items-center">
           <div className="space-y-5">
@@ -271,56 +274,61 @@ export function HomepageFullPageSections() {
         </SectionActions>
       </SectionShell>
 
-      {/* VI — Institutional data access */}
+      {/* VI — Newspaper */}
       <SectionShell
         tone="primary"
         eyebrowNum="VI"
-        eyebrowLabel="For institutions"
+        eyebrowLabel="Newspaper"
         ariaLabelledBy="hp-data-title"
-        title={<span id="hp-data-title">The access layer you have been looking for.</span>}
-        lede="If you need institutional market data, options analytics, or computed signals to power your own systems, the platform's infrastructure is available to your firm directly. One access layer, built to be relied on."
+        title={<span id="hp-data-title">The market newspaper for decision-makers.</span>}
+        lede="Bridge Observer distills the live market record into a readable intelligence layer for the desk: what changed, who moved size, where pressure is building, and which environments are strengthening or breaking down."
       >
         <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-center">
           <DataAccessIllustration />
           <div className="space-y-5">
             {[
-              ['Market data', 'The same record the platform itself runs on.'],
-              ['Options analytics', 'Every sensitivity, surface, and flow measure, computed and ready.'],
-              ['Computed signals', 'Delivered to your systems, with the timestamp of the data behind them.'],
+              ['Market narrative', 'Session-level context on participation, pressure, and structural changes that matter now.'],
+              ['Flow intelligence', 'Institutional prints, options flow, and liquidity shifts translated into an actionable brief.'],
+              ['Execution context', 'Where conditions are favorable or hostile before risk is committed to the tape.'],
             ].map(([h, b]) => (
               <div key={h} className="border-l-2 border-brass/40 pl-4">
                 <h3 className="sc-serif text-[13px] text-neutral-50">{h}</h3>
                 <p className="mt-1.5 text-[14px] leading-[1.7] text-zinc-400">{b}</p>
               </div>
             ))}
-            <Link href="/pricing" className={btnSection}>
-              Talk to us about access
-            </Link>
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Link href="/bridge-observer" className={btnSection}>
+                Bridge Observer
+              </Link>
+              <Link href="/rockefeller-press" className={btnSection}>
+                Rockefeller Press
+              </Link>
+            </div>
           </div>
         </div>
       </SectionShell>
 
-      {/* VII — Trust & audit */}
+      {/* VII — Commodities */}
       <SectionShell
         tone="secondary"
         verticalRhythm="lastOnPage"
         eyebrowNum="VII"
-        eyebrowLabel="Provenance"
+        eyebrowLabel="Commodities"
         ariaLabelledBy="hp-trust-title"
-        title={<span id="hp-trust-title">If a number is wrong, you can find out exactly why.</span>}
-        lede="Every signal, every backtest, and every computation traces back to the raw data that produced it. Nothing is a black box. When you need to defend a number, the whole chain is there."
+        title={<span id="hp-trust-title">Alternative commodity markets, transactable with the same research standard.</span>}
+        lede="Trade and hedge beyond equities with commodity workflows built for real execution: energy, metals, agriculture, and related basis structures — all with replayable context, margin-aware controls, and decision-ready analytics."
       >
         <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_1.3fr] lg:items-center">
-          <LineageIllustration />
+          <CommoditiesIllustration />
           <div>
             <blockquote className="border-l-2 border-brass pl-5 text-pretty text-[15px] leading-[1.75] text-zinc-300 sm:text-base">
-              The point of provenance is not bookkeeping. It is the difference between a result you can stand behind in
-              front of a risk committee and one you simply hope is right. Here, every figure is the end of a chain you
-              can walk, all the way back to the tick.
+              Commodities are not a side panel. They are a first-class risk lane with their own inventory cycles,
+              delivery constraints, and cross-market dependencies. Here, users can rehearse those dynamics before
+              committing capital, then execute with the same discipline used across the rest of the platform.
             </blockquote>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/request-access" className={btnPrimary}>
-                Request access
+              <Link href="/town-and-cattle" className={btnPrimary}>
+                Town & Cattle
               </Link>
               <Link href="/our-story" className={btnOutline}>
                 Our story

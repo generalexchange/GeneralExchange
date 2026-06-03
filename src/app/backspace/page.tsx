@@ -4,7 +4,7 @@ import { Backspace } from '@/screens/Backspace';
 export const metadata: Metadata = {
   title: 'Backspace',
   description:
-    'Compute-driven backtesting and model research: parallel grids, genetic optimizers, RL lab, latency-aware replay, and correlation exploration on tokenized GPU pools.',
+    'Compute-driven backtesting and model research with a plain-English LLM decision assistant: parallel grids, optimizers, replay, and environment diagnostics.',
   alternates: { canonical: '/backspace' },
 };
 

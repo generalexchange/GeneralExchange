@@ -53,7 +53,7 @@ export const Login: React.FC = () => {
             />
           </div>
           <span className="font-display text-[15px] tracking-[-0.01em] text-neutral-200 transition-colors group-hover:text-tan">
-            general.exchange
+            General Exchange
           </span>
         </Link>
         <p className="hidden text-[11px] uppercase tracking-[0.2em] text-zinc-500 sm:block">

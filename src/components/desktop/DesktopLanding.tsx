@@ -9,7 +9,7 @@
  * access page, which are both bundled inside the desktop app.
  */
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -82,7 +82,7 @@ export function DesktopLanding() {
 
         {/* Buttons */}
         <motion.div
-          className="mt-8 flex flex-col gap-3 sm:flex-row"
+          className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap"
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.65, ease: easeLux, delay: 0.48 }}
@@ -92,6 +92,12 @@ export function DesktopLanding() {
             className="inline-flex h-12 min-w-[10rem] items-center justify-center rounded-md bg-tan px-8 text-sm font-semibold tracking-wide text-charcoal shadow-[0_12px_40px_-12px_rgba(210,180,140,0.45)] transition-all hover:bg-tan-muted active:scale-[0.99]"
           >
             Sign In
+          </Link>
+          <Link
+            href="/pricing"
+            className="inline-flex h-12 min-w-[10rem] items-center justify-center rounded-md border border-white/20 bg-white/[0.03] px-8 text-sm font-semibold tracking-wide text-zinc-100 transition-all hover:border-tan/45 hover:bg-white/[0.08] hover:text-tan active:scale-[0.99]"
+          >
+            Pricing
           </Link>
           <Link
             href="/request-access"

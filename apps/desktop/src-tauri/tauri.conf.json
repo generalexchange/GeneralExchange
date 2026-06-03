@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "general.exchange",
+  "productName": "General Exchange",
   "version": "0.2.0",
   "identifier": "exchange.general.terminal",
   "build": {
@@ -14,7 +14,7 @@
       {
         "label": "splashscreen",
         "url": "splash.html",
-        "title": "general.exchange",
+        "title": "General Exchange",
         "width": 420,
         "height": 420,
         "resizable": false,
@@ -27,7 +27,7 @@
       },
       {
         "label": "main",
-        "title": "general.exchange",
+        "title": "General Exchange",
         "width": 1440,
         "height": 900,
         "minWidth": 1280,
@@ -50,12 +50,13 @@
       "id": "main",
       "iconPath": "icons/icon.png",
       "iconAsTemplate": true,
-      "tooltip": "general.exchange"
+      "tooltip": "General Exchange"
     }
   },
   "bundle": {
     "active": true,
     "targets": "all",
+    "publisher": "Old West Solutions",
     "category": "Finance",
     "shortDescription": "general.exchange desktop app",
     "longDescription": "The full general.exchange platform as a native desktop application — the complete trading portal and every route, bundled and installable, connecting to general.exchange services for live data.",

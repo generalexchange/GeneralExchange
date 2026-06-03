@@ -143,8 +143,75 @@ export function BacktestIllustration() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Section III — Options intelligence: chain + sensitivities panel     */
+/* Section III — Execution integration + options/warehouse surfaces     */
 /* ------------------------------------------------------------------ */
+
+export function ExecutionIntegrationIllustration() {
+  return (
+    <div className={`${panel} overflow-hidden`}>
+      <div className={panelHead}>
+        <span className={eyebrow}>Execution layer · Interactive Brokers</span>
+        <span className="rounded-full border border-moss/40 bg-moss/10 px-2 py-0.5 text-[9px] font-medium text-moss">
+          LIVE QUOTES
+        </span>
+      </div>
+      <div className="grid gap-px bg-white/[0.06] lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="bg-charcoal/80 p-4">
+          <p className="mb-3 text-[9px] uppercase tracking-wider text-zinc-500">Wallet view · account context</p>
+          <div className="rounded border border-white/[0.08] bg-black/25">
+            <div className="flex items-center justify-between border-b border-white/[0.08] px-3 py-2.5">
+              <span className="text-[10px] uppercase tracking-wider text-zinc-500">Portfolio</span>
+              <span className="font-mono text-[11px] tabular text-moss">$1,284,220</span>
+            </div>
+            <div className="space-y-2.5 px-3 py-3 text-[12px]">
+              {[
+                ['Buying power', '$392,110'],
+                ['Available margin', '$188,440'],
+                ['Daily P&L', '+$12,842'],
+                ['Open risk', '$71,300'],
+              ].map(([k, v]) => (
+                <div key={k} className="flex items-center justify-between gap-4">
+                  <span className="text-zinc-500">{k}</span>
+                  <span className="font-mono tabular text-zinc-300">{v}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="bg-charcoal/80 p-4">
+          <p className="mb-3 text-[9px] uppercase tracking-wider text-zinc-500">Options chain · live contract pricing</p>
+          <table className="w-full table-fixed text-left text-xs">
+            <thead>
+              <tr className="bg-white/[0.03] text-[9px] uppercase tracking-wider text-zinc-500">
+                <th className="px-2.5 py-2 font-medium">Strike</th>
+                <th className="px-2.5 py-2 font-medium">Bid</th>
+                <th className="px-2.5 py-2 font-medium">Ask</th>
+                <th className="px-2.5 py-2 font-medium">Last</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/[0.05]">
+              {[
+                ['470', '12.10', '12.45', '12.40'],
+                ['475', '8.65', '8.92', '8.85'],
+                ['480', '5.46', '5.72', '5.60'],
+                ['485', '3.04', '3.22', '3.15'],
+                ['490', '1.54', '1.69', '1.62'],
+              ].map(([strike, bid, ask, last]) => (
+                <tr key={strike}>
+                  <td className="px-2.5 py-2.5 font-mono tabular text-neutral-100">{strike}</td>
+                  <td className="px-2.5 py-2.5 font-mono tabular text-zinc-300">{bid}</td>
+                  <td className="px-2.5 py-2.5 font-mono tabular text-zinc-300">{ask}</td>
+                  <td className="px-2.5 py-2.5 font-mono tabular text-tan">{last}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="mt-3 text-[10px] text-zinc-500">Quotes shown before order submission for price-aware execution.</p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 const CHAIN = [
   { strike: '470', moneyness: 'ITM', last: '12.40', vol: '8.2k', iv: '18.4' },
@@ -210,6 +277,62 @@ export function OptionsIllustration() {
           <li className="rounded border border-brass/30 bg-brass/[0.05] px-3 py-2">
             <p className="text-zinc-200">Manage near <span className="font-mono tabular text-tan">486.50</span></p>
             <p className="text-[11px] text-zinc-500">where the position needs attention or a close</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+export function WarehouseServiceIllustration() {
+  return (
+    <div className="grid gap-5 lg:grid-cols-[1.25fr_1fr]">
+      <div className={`${panel} overflow-hidden`}>
+        <div className={panelHead}>
+          <span className={eyebrow}>Warehouse service · feature parameters</span>
+          <span className="font-mono text-[9px] text-zinc-500 tabular">as_of · 2026-06-03T13:45:11Z</span>
+        </div>
+        <table className="w-full table-fixed text-left text-xs">
+          <thead>
+            <tr className="bg-white/[0.03] text-[9px] uppercase tracking-wider text-zinc-500">
+              <th className="px-3 py-2 font-medium">Parameter</th>
+              <th className="px-3 py-2 font-medium">Example</th>
+              <th className="px-3 py-2 font-medium">Source</th>
+              <th className="px-3 py-2 font-medium">Usage</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-white/[0.05]">
+            {[
+              ['Regime', 'compressed_vol', 'market microstructure', 'strategy gating'],
+              ['Sentiment', 'risk_on_0.67', 'flow + news blends', 'position sizing'],
+              ['Liquidity score', '0.82', 'lit/dark venue depth', 'entry timing'],
+              ['Vol state', 'elevated_vol', 'surface + realized bands', 'hedging logic'],
+            ].map(([p, e, s, u]) => (
+              <tr key={p}>
+                <td className="px-3 py-2.5 text-zinc-200">{p}</td>
+                <td className="px-3 py-2.5 font-mono tabular text-zinc-400">{e}</td>
+                <td className="px-3 py-2.5 text-zinc-400">{s}</td>
+                <td className="px-3 py-2.5 font-mono tabular text-moss">{u}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className={`${panel} p-4`}>
+        <p className="mb-3 text-[9px] uppercase tracking-wider text-zinc-500">Service outputs</p>
+        <ul className="space-y-3 text-[13px]">
+          <li>
+            <p className="text-zinc-300">Point-in-time snapshots for deterministic replay</p>
+            <p className="text-[11px] text-zinc-500">no look-ahead leakage in research pipelines</p>
+          </li>
+          <li>
+            <p className="text-zinc-300">Feature-ready marts for model and strategy training</p>
+            <p className="text-[11px] text-zinc-500">normalized joins across price, options, and flow</p>
+          </li>
+          <li className="rounded border border-brass/30 bg-brass/[0.05] px-3 py-2">
+            <p className="text-zinc-200">Storage: floppydisk.cc + IPFS archival layers</p>
+            <p className="text-[11px] text-zinc-500">content-addressed snapshots with CID lineage for reproducible retrieval</p>
           </li>
         </ul>
       </div>
@@ -379,6 +502,66 @@ export function LineageIllustration() {
           </li>
         ))}
       </ol>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Section VII — Commodities                                           */
+/* ------------------------------------------------------------------ */
+
+export function CommoditiesIllustration() {
+  return (
+    <div className={`${panel} overflow-hidden`}>
+      <div className={panelHead}>
+        <span className={eyebrow}>Commodities lane · alternative markets</span>
+        <span className="font-mono text-[9px] text-zinc-500 tabular">session mix · live</span>
+      </div>
+      <div className="grid gap-px bg-white/[0.06] sm:grid-cols-2">
+        <div className="bg-charcoal/80 p-4">
+          <p className="mb-3 text-[9px] uppercase tracking-wider text-zinc-500">Tradable groups</p>
+          <div className="space-y-2.5 text-[12px]">
+            {[
+              ['Energy', 'Crude, nat gas, power spreads'],
+              ['Metals', 'Gold, silver, copper curves'],
+              ['Agriculture', 'Cattle, grains, softs'],
+              ['Freight / inputs', 'shipping and industrial input proxies'],
+            ].map(([h, b]) => (
+              <div key={h} className="rounded border border-white/[0.08] bg-black/25 px-3 py-2.5">
+                <p className="text-zinc-200">{h}</p>
+                <p className="text-[10px] text-zinc-500">{b}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="bg-charcoal/80 p-4">
+          <p className="mb-3 text-[9px] uppercase tracking-wider text-zinc-500">Risk context</p>
+          <table className="w-full table-fixed text-left text-xs">
+            <thead>
+              <tr className="bg-white/[0.03] text-[9px] uppercase tracking-wider text-zinc-500">
+                <th className="px-2.5 py-2 font-medium">Theme</th>
+                <th className="px-2.5 py-2 font-medium">Signal</th>
+                <th className="px-2.5 py-2 font-medium">State</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/[0.05]">
+              {[
+                ['Seasonality', 'harvest_window', 'active'],
+                ['Basis risk', 'regional_spread', 'elevated'],
+                ['Inventory', 'drawdown_rate', 'tightening'],
+                ['Vol regime', 'term_structure', 'compressed'],
+              ].map(([theme, sig, state]) => (
+                <tr key={theme}>
+                  <td className="px-2.5 py-2.5 text-zinc-300">{theme}</td>
+                  <td className="px-2.5 py-2.5 font-mono tabular text-zinc-400">{sig}</td>
+                  <td className="px-2.5 py-2.5 font-mono tabular text-tan">{state}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="mt-3 text-[10px] text-zinc-500">Designed for transactable, margin-aware commodities workflows.</p>
+        </div>
+      </div>
     </div>
   );
 }

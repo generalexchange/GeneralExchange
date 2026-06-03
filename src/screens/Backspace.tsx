@@ -105,6 +105,13 @@ export const Backspace: React.FC = () => {
     <div className="min-h-screen bg-charcoal text-zinc-100">
       <Header />
       <main className="mx-auto max-w-[1800px] px-2 py-3 sm:px-3">
+        <div className="mb-3 rounded-md border border-white/[0.08] bg-black/25 px-3 py-2.5">
+          <p className="text-[11px] leading-relaxed text-zinc-400">
+            BackSpace includes a plain-English <span className="text-tan">LLM research assistant</span> that reads your
+            run outputs and explains, in human terms, what changed across environments. It is decision support — not an
+            auto-trader — and you stay in control of every parameter and trade.
+          </p>
+        </div>
         <div className="flex flex-col gap-3 xl:flex-row">
           {/* ---------------- config column ---------------- */}
           <div className="flex w-full flex-col gap-3 xl:w-80 xl:shrink-0">

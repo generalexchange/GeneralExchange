@@ -11,6 +11,7 @@ import { motion } from 'framer-motion';
 import { Navbar } from '@/components/Navbar';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 import { HeroSystemTopologyIllustration } from '@/components/homepage/HomepageMechanicsIllustrations';
+import { BacktestIllustration } from '@/components/homepage/HomepageProductIllustrations';
 import {
   HomepageExecutionLoopRestored,
   PillarSectionEmbed,
@@ -91,20 +92,71 @@ export const TradeEngine: React.FC = () => {
                   The Exchange
                 </motion.h1>
                 <p className="mt-6 max-w-xl border-l border-white/[0.08] pl-5 text-sm font-light leading-relaxed text-zinc-500 sm:text-[15px] sm:leading-[1.65]">
-                  General Exchange&apos;s execution surface: tickets, routing, and evidence-bound checks so strategy intent
-                  becomes a controlled release—aligned to desk policy and limits before size touches the tape.
+                  General Exchange&apos;s execution surface: Interactive Brokers connectivity, staged routing, and
+                  evidence-bound checks so strategy intent becomes a controlled release aligned to desk policy and limits
+                  before size touches the tape.
                 </p>
                 <Link
-                  href="/dashboard"
+                  href="/request-access"
                   className="mt-12 inline-flex w-full max-w-xs items-center justify-center border border-white/[0.18] bg-white/[0.04] px-10 py-3.5 text-center text-[11px] font-semibold uppercase tracking-[0.22em] text-neutral-100 transition-colors hover:border-tan/45 hover:bg-white/[0.07] sm:w-auto"
                 >
-                  Open The Exchange
+                  Interactive Brokers
                 </Link>
               </div>
 
               <div className="flex justify-center border-t border-white/[0.06] pt-10 lg:border-l lg:border-t-0 lg:pl-12 lg:pt-0">
                 <TradeTicketMock />
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-b border-white/[0.06] py-14 sm:py-16 lg:py-20" aria-labelledby="ib-depth-title">
+          <div className="mx-auto max-w-content px-4 sm:px-6 lg:px-10">
+            <h2 id="ib-depth-title" className="text-[10px] font-semibold uppercase tracking-[0.2em] text-tan/90">
+              Interactive Brokers execution layer
+            </h2>
+            <p className="mt-2 max-w-3xl text-sm font-light leading-relaxed text-neutral-400 sm:text-[15px] sm:leading-[1.75]">
+              Orders are not pushed blindly. Each instruction carries strategy metadata, risk context, and route intent.
+              Before transmission, the platform enforces account-level limits, concentration controls, and slippage
+              thresholds; after transmission, fill quality and route behavior are measured against expected execution
+              envelopes so desk operators can attribute variance and tighten policies over time.
+            </p>
+            <div className="mt-8 grid gap-5 md:grid-cols-3">
+              {[
+                [
+                  'Pre-trade controls',
+                  'Margin checks, notional caps, venue constraints, and policy validation run before any order is released.',
+                ],
+                [
+                  'Smart routing governance',
+                  'Primary route selection with deterministic fallback logic, partial-fill handling, and cancel/replace discipline.',
+                ],
+                [
+                  'Post-trade analytics',
+                  'Fill latency, realized slippage, and route outcome distributions are persisted for audit and model feedback.',
+                ],
+              ].map(([title, body]) => (
+                <div key={title} className="rounded-lg border border-white/[0.08] bg-dark-gray/55 p-5">
+                  <h3 className="sc-serif text-[13px] text-neutral-100">{title}</h3>
+                  <p className="mt-2 text-[13px] leading-[1.75] text-zinc-400">{body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="border-b border-white/[0.06] py-14 sm:py-16 lg:py-20" aria-labelledby="decision-replay-title">
+          <div className="mx-auto max-w-content px-4 sm:px-6 lg:px-10">
+            <h2 id="decision-replay-title" className="text-[10px] font-semibold uppercase tracking-[0.2em] text-tan/90">
+              Decision replay and performance context
+            </h2>
+            <p className="mt-2 max-w-3xl text-xs font-light leading-relaxed text-neutral-500 sm:text-[14px] sm:leading-[1.7]">
+              Backtest, momentum run context, equity and drawdown, monthly return distribution, environment win rates, and
+              benchmark risk metrics are all surfaced here so execution decisions are made with full historical context.
+            </p>
+            <div className="mt-6">
+              <BacktestIllustration />
             </div>
           </div>
         </section>
