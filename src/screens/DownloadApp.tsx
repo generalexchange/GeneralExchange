@@ -1,8 +1,8 @@
 /**
  * Download — the general.exchange desktop terminal.
  *
- * Detects platform, auto-starts the matching installer when a GitHub release
- * exists, and shows manual Mac / Windows buttons as fallback.
+ * Detects platform, auto-starts the matching installer, and shows manual
+ * Mac / Windows buttons. Uses stable GitHub release asset URLs.
  */
 
 'use client';
@@ -10,19 +10,29 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Apple, Monitor, Download, Loader2 } from 'lucide-react';
+import { Apple, Monitor, Download } from 'lucide-react';
 
 const easeLux = [0.22, 1, 0.36, 1] as const;
 
-type Platform = 'mac' | 'windows' | 'unknown';
+const RELEASES_BASE =
+  'https://github.com/generalexchange/GeneralExchange/releases/download/v0.1.0';
 
-type ReleaseInfo = {
-  available: boolean;
-  tag?: string;
-  releasesUrl?: string;
-  windows: string | null;
-  mac: string | null;
-};
+const DOWNLOADS = {
+  mac: {
+    label: 'Download for Mac',
+    sub: 'Universal · macOS 12+',
+    href: `${RELEASES_BASE}/General-Exchange_universal.dmg`,
+    ext: 'DMG',
+  },
+  windows: {
+    label: 'Download for Windows',
+    sub: 'Windows 10 & 11',
+    href: `${RELEASES_BASE}/General-Exchange_x64-setup.exe`,
+    ext: 'EXE',
+  },
+} as const;
+
+type Platform = 'mac' | 'windows' | 'unknown';
 
 function detectPlatform(): Platform {
   if (typeof navigator === 'undefined') return 'unknown';
@@ -43,8 +53,6 @@ function triggerDownload(url: string) {
 
 export const DownloadApp: React.FC = () => {
   const [platform, setPlatform] = useState<Platform>('unknown');
-  const [release, setRelease] = useState<ReleaseInfo | null>(null);
-  const [loading, setLoading] = useState(true);
   const [autoStarted, setAutoStarted] = useState(false);
   const autoDownloaded = useRef(false);
 
@@ -52,47 +60,15 @@ export const DownloadApp: React.FC = () => {
     const detected = detectPlatform();
     setPlatform(detected);
 
-    fetch('/api/desktop-release')
-      .then(async (res) => {
-        const data = (await res.json()) as ReleaseInfo;
-        setRelease(data);
+    if (autoDownloaded.current || detected === 'unknown') return;
 
-        if (!data.available || autoDownloaded.current || detected === 'unknown') return;
-
-        const url = detected === 'mac' ? data.mac : data.windows;
-        if (!url) return;
-
-        autoDownloaded.current = true;
-        setAutoStarted(true);
-        triggerDownload(url);
-      })
-      .catch(() => {
-        setRelease({
-          available: false,
-          windows: null,
-          mac: null,
-          releasesUrl: 'https://github.com/generalexchange/GeneralExchange/releases',
-        });
-      })
-      .finally(() => setLoading(false));
+    const url = detected === 'mac' ? DOWNLOADS.mac.href : DOWNLOADS.windows.href;
+    autoDownloaded.current = true;
+    setAutoStarted(true);
+    triggerDownload(url);
   }, []);
 
   const primary = platform === 'mac' || platform === 'windows' ? platform : 'mac';
-
-  const downloads = {
-    mac: {
-      label: 'Download for Mac',
-      sub: 'Universal · macOS 12+',
-      href: release?.mac ?? undefined,
-      ext: 'DMG',
-    },
-    windows: {
-      label: 'Download for Windows',
-      sub: 'Windows 10 & 11',
-      href: release?.windows ?? undefined,
-      ext: 'EXE',
-    },
-  } as const;
 
   return (
     <div className="min-h-screen bg-charcoal text-neutral-100">
@@ -130,86 +106,45 @@ export const DownloadApp: React.FC = () => {
             The full general.exchange terminal — live data, options chain, and order entry — as a native app.
           </p>
 
-          {loading && (
-            <p className="mt-8 flex items-center justify-center gap-2 text-[13px] text-zinc-500">
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Checking for the latest release…
-            </p>
-          )}
-
-          {!loading && autoStarted && (
+          {autoStarted && (
             <p className="mt-8 text-[13px] text-tan/90">
               Your download should start automatically. If it didn&apos;t, use the buttons below.
             </p>
           )}
 
-          {!loading && release && !release.available && (
-            <p className="mt-8 text-[13px] leading-relaxed text-zinc-500">
-              Installers aren&apos;t published yet.{' '}
-              <a
-                href={release.releasesUrl ?? 'https://github.com/generalexchange/GeneralExchange/releases'}
-                className="text-tan underline-offset-4 hover:underline"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Watch GitHub Releases
-              </a>{' '}
-              for the first build.
-            </p>
-          )}
-
-          {!loading && release?.available && release.tag && (
-            <p className="mt-8 text-[12px] uppercase tracking-[0.18em] text-zinc-600">
-              Latest · {release.tag}
-            </p>
-          )}
+          <p className="mt-8 text-[12px] uppercase tracking-[0.18em] text-zinc-600">Latest · v0.1.0</p>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
             {(['mac', 'windows'] as const).map((id) => {
-              const d = downloads[id];
+              const d = DOWNLOADS[id];
               const recommended = id === primary;
               const Icon = id === 'mac' ? Apple : Monitor;
-              const ready = Boolean(d.href);
-
-              if (ready) {
-                return (
-                  <a
-                    key={id}
-                    href={d.href}
-                    className={`group flex min-w-[220px] flex-1 flex-col items-center rounded-xl px-6 py-5 transition-all duration-300 sm:max-w-[240px] ${
-                      recommended
-                        ? 'border border-brass/50 bg-tan text-charcoal shadow-[0_24px_60px_-20px_rgba(210,180,140,0.45)] hover:bg-tan-muted'
-                        : 'border border-white/[0.1] bg-white/[0.03] text-neutral-100 hover:border-brass/30 hover:bg-white/[0.05]'
-                    }`}
-                  >
-                    <Icon className={`mb-3 h-6 w-6 ${recommended ? 'text-charcoal' : 'text-tan'}`} />
-                    <span className="text-[15px] font-semibold tracking-wide">{d.label}</span>
-                    <span className={`mt-1 text-[12px] ${recommended ? 'text-charcoal/70' : 'text-zinc-500'}`}>
-                      {d.sub}
-                    </span>
-                    <span
-                      className={`mt-3 inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider ${
-                        recommended ? 'text-charcoal/80' : 'text-zinc-400'
-                      }`}
-                    >
-                      <Download className="h-3.5 w-3.5" />
-                      {d.ext}
-                      {recommended && platform !== 'unknown' && ' · recommended'}
-                    </span>
-                  </a>
-                );
-              }
 
               return (
-                <div
+                <a
                   key={id}
-                  className="flex min-w-[220px] flex-1 flex-col items-center rounded-xl border border-white/[0.06] bg-white/[0.02] px-6 py-5 opacity-60 sm:max-w-[240px]"
+                  href={d.href}
+                  className={`group flex min-w-[220px] flex-1 flex-col items-center rounded-xl px-6 py-5 transition-all duration-300 sm:max-w-[240px] ${
+                    recommended
+                      ? 'border border-brass/50 bg-tan text-charcoal shadow-[0_24px_60px_-20px_rgba(210,180,140,0.45)] hover:bg-tan-muted'
+                      : 'border border-white/[0.1] bg-white/[0.03] text-neutral-100 hover:border-brass/30 hover:bg-white/[0.05]'
+                  }`}
                 >
-                  <Icon className="mb-3 h-6 w-6 text-zinc-600" />
-                  <span className="text-[15px] font-semibold tracking-wide text-zinc-500">{d.label}</span>
-                  <span className="mt-1 text-[12px] text-zinc-600">{d.sub}</span>
-                  <span className="mt-3 text-[11px] uppercase tracking-wider text-zinc-600">Coming soon</span>
-                </div>
+                  <Icon className={`mb-3 h-6 w-6 ${recommended ? 'text-charcoal' : 'text-tan'}`} />
+                  <span className="text-[15px] font-semibold tracking-wide">{d.label}</span>
+                  <span className={`mt-1 text-[12px] ${recommended ? 'text-charcoal/70' : 'text-zinc-500'}`}>
+                    {d.sub}
+                  </span>
+                  <span
+                    className={`mt-3 inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider ${
+                      recommended ? 'text-charcoal/80' : 'text-zinc-400'
+                    }`}
+                  >
+                    <Download className="h-3.5 w-3.5" />
+                    {d.ext}
+                    {recommended && platform !== 'unknown' && ' · recommended'}
+                  </span>
+                </a>
               );
             })}
           </div>
