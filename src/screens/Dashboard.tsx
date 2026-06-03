@@ -34,6 +34,7 @@ import { TradeHistoryGrid } from '../components/grids/TradeHistoryGrid';
 import { WatchlistGrid } from '../components/grids/WatchlistGrid';
 import { RegimeSparklines, type SparkItem } from '../components/analytics/RegimeSparklines';
 import { PositionAnalysis } from '../components/analytics/PositionAnalysis';
+import { StrategyAssistantChat } from '../components/dashboard/StrategyAssistantChat';
 import type { ChainRow } from '../components/perspective/usePerspectiveTables';
 import {
   ACCOUNT,
@@ -56,7 +57,7 @@ const PerspectiveWorkspace = dynamic(() => import('../components/perspective/Per
   ),
 });
 
-type Tab = 'chain' | 'positions' | 'history' | 'signals';
+type Tab = 'chain' | 'positions' | 'history' | 'signals' | 'backtest-llm';
 
 const fmtMoney = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -287,6 +288,7 @@ export const Dashboard: React.FC = () => {
                     ['positions', 'Positions'],
                     ['history', 'History'],
                     ['signals', 'Signals'],
+                    ['backtest-llm', 'Backtest LLM'],
                   ] as [Tab, string][]).map(([id, label]) => (
                     <button
                       key={id}
@@ -311,6 +313,11 @@ export const Dashboard: React.FC = () => {
                   {tab === 'positions' && <PositionsGrid positions={positions} />}
                   {tab === 'history' && <TradeHistoryGrid trades={history} />}
                   {tab === 'signals' && <SignalFeed signals={snap.signals} />}
+                  {tab === 'backtest-llm' && (
+                    <div className="h-full p-3">
+                      <StrategyAssistantChat stacked />
+                    </div>
+                  )}
                 </div>
               </div>
             </>

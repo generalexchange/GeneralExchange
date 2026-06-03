@@ -1,297 +1,188 @@
 /**
- * Backtest — the crown jewel. Full-page experience: strategy selection,
- * parameter configuration, run controls with a date-by-date progress
- * indicator, the complete results surface, and the trade replay viewer.
+ * BackSpace showcase page.
  *
- * Today the run is simulated against deterministic mock data. The config shape
- * is the exact payload for POST /v1/backtest/run; results map to backtest_runs
- * + backtest_trades in ClickHouse.
+ * This route is the product narrative + architecture surface for backtesting.
+ * The actual operator workflow is intentionally represented in Dashboard.
  */
-
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { Play, Square, Download, Share2, Save, GitFork } from 'lucide-react';
-import { ProfileMenu } from '../components/ProfileMenu';
-import {
-  MetricsTable,
-  RegimeBreakdown,
-  Distribution,
-  ReplayViewer,
-  Panel,
-} from '../components/backtest/panels';
-import { PnLCurve } from '../components/analytics/PnLCurve';
-import { MonthlyReturnHeatmap } from '../components/charts/MonthlyReturnHeatmap';
-import { BacktestTradesGrid } from '../components/grids/BacktestTradesGrid';
-import {
-  DEFAULT_CONFIG,
-  STRATEGIES,
-  generateRun,
-  type BacktestConfig,
-  type BacktestRun,
-  type PositionSizing,
-  type SlippageModel,
-} from '../components/backtest/backtestData';
+import { motion } from 'framer-motion';
+import { Navbar } from '@/components/Navbar';
+import { InstitutionalFooter } from '@/components/InstitutionalFooter';
+import { SectionShell } from '@/components/homepage/SectionShell';
+import { BacktestIllustration } from '@/components/homepage/HomepageProductIllustrations';
 
-type Status = 'idle' | 'running' | 'complete';
+const easeLux = [0.22, 1, 0.36, 1] as const;
+const panel = 'rounded-lg border border-white/[0.08] bg-charcoal/65';
+const btnPrimary =
+  'inline-flex min-h-11 w-full items-center justify-center rounded-md bg-tan px-6 py-3 text-sm font-semibold tracking-wide text-charcoal shadow-[0_12px_40px_-12px_rgba(210,180,140,0.35)] transition-all duration-300 hover:bg-tan-muted active:scale-[0.99] sm:w-auto sm:min-w-[10.5rem] sm:px-8 sm:py-3.5';
+const btnOutline =
+  'inline-flex min-h-11 w-full items-center justify-center rounded-md border border-brass/50 bg-transparent px-6 py-3 text-sm font-semibold tracking-wide text-zinc-200 transition-colors hover:border-brass hover:bg-brass/5 hover:text-tan active:scale-[0.99] sm:w-auto sm:min-w-[10.5rem] sm:px-8 sm:py-3.5';
 
-const field = 'w-full rounded border border-white/[0.1] bg-white/[0.03] px-2 py-1.5 text-[11px] text-neutral-100 outline-none focus:border-brass/40';
-const label = 'text-[9px] uppercase tracking-wider text-zinc-500';
-
-function Header() {
+function LlmHeroCard() {
   return (
-    <header className="sticky top-0 z-30 border-b border-tan/20 bg-charcoal/95 backdrop-blur-xl">
-      <div className="mx-auto flex h-12 max-w-[1800px] items-center justify-between px-3 sm:px-5">
-        <div className="flex items-center gap-4">
-          <Link href="/" className="font-display text-base tracking-tight text-neutral-100">general.exchange</Link>
-          <nav className="hidden items-center gap-1 md:flex">
-            {[['Dashboard', '/dashboard'], ['Backtest', '/backspace'], ['Options', '/options'], ['Risk', '/risk-management']].map(([l, h]) => (
-              <Link key={l} href={h} className={`rounded px-2.5 py-1 text-[12px] tracking-wide transition-colors ${l === 'Backtest' ? 'bg-white/[0.06] text-tan' : 'text-zinc-400 hover:text-zinc-100'}`}>{l}</Link>
-            ))}
-          </nav>
-        </div>
-        <ProfileMenu />
+    <div className={`${panel} overflow-hidden`}>
+      <div className="flex items-center justify-between border-b border-white/[0.08] bg-white/[0.04] px-4 py-2.5">
+        <span className="sc-serif text-[10px] text-zinc-400">BackSpace LLM · decision explanation layer</span>
+        <span className="rounded-full border border-moss/40 bg-moss/10 px-2 py-0.5 text-[9px] font-medium text-moss">
+          HUMAN-READABLE
+        </span>
       </div>
-    </header>
+      <div className="p-4 font-mono text-[12px] text-zinc-400">
+        <p>
+          {'>'} Why did this strategy degrade in elevated volatility during Q4?
+        </p>
+        <p className="mt-3 text-zinc-300">
+          The model identifies two drivers: spread expansion reduced fill quality, and entry timing drifted into low-liquidity windows.
+        </p>
+        <p className="mt-2 text-zinc-300">
+          Suggested review: tighten liquidity filter, constrain entry to high-participation intervals, rerun by regime segment.
+        </p>
+        <p className="mt-4 border-t border-white/[0.08] pt-3 text-[11px] text-zinc-500">
+          Decision support only. The assistant explains outcomes and tradeoffs; it does not auto-route trades.
+        </p>
+      </div>
+    </div>
   );
 }
 
 export const Backspace: React.FC = () => {
-  const [config, setConfig] = useState<BacktestConfig>(DEFAULT_CONFIG);
-  const [status, setStatus] = useState<Status>('idle');
-  const [progress, setProgress] = useState(0);
-  const [run, setRun] = useState<BacktestRun | null>(null);
-  const timer = useRef<number | null>(null);
-
-  const set = <K extends keyof BacktestConfig>(k: K, v: BacktestConfig[K]) => setConfig((c) => ({ ...c, [k]: v }));
-
-  const selectStrategy = (id: string) => {
-    const s = STRATEGIES.find((x) => x.id === id);
-    setConfig((c) => ({ ...c, strategyId: id, symbol: s?.symbol ?? c.symbol }));
-  };
-
-  const startRun = () => {
-    setStatus('running');
-    setProgress(0);
-    const startTs = Date.now();
-    const DURATION = 2400;
-    timer.current = window.setInterval(() => {
-      const p = Math.min(1, (Date.now() - startTs) / DURATION);
-      setProgress(p);
-      if (p >= 1) {
-        if (timer.current) window.clearInterval(timer.current);
-        setRun(generateRun(config));
-        setStatus('complete');
-      }
-    }, 60);
-  };
-
-  const cancelRun = () => {
-    if (timer.current) window.clearInterval(timer.current);
-    setStatus(run ? 'complete' : 'idle');
-    setProgress(0);
-  };
-
-  useEffect(() => () => { if (timer.current) window.clearInterval(timer.current); }, []);
-
-  const currentDate = (() => {
-    const s = new Date(config.startDate).getTime();
-    const e = new Date(config.endDate).getTime();
-    return new Date(s + (e - s) * progress).toISOString().slice(0, 10);
-  })();
-
   return (
-    <div className="min-h-screen bg-charcoal text-zinc-100">
-      <Header />
-      <main className="mx-auto max-w-[1800px] px-2 py-3 sm:px-3">
-        <div className="mb-3 rounded-md border border-white/[0.08] bg-black/25 px-3 py-2.5">
-          <p className="text-[11px] leading-relaxed text-zinc-400">
-            BackSpace includes a plain-English <span className="text-tan">LLM research assistant</span> that reads your
-            run outputs and explains, in human terms, what changed across environments. It is decision support — not an
-            auto-trader — and you stay in control of every parameter and trade.
-          </p>
-        </div>
-        <div className="flex flex-col gap-3 xl:flex-row">
-          {/* ---------------- config column ---------------- */}
-          <div className="flex w-full flex-col gap-3 xl:w-80 xl:shrink-0">
-            <Panel title="Strategy">
-              <div className="max-h-56 overflow-auto">
-                <ul className="divide-y divide-white/[0.05]">
-                  {STRATEGIES.map((s) => (
-                    <li key={s.id}>
-                      <button
-                        onClick={() => selectStrategy(s.id)}
-                        className={`flex w-full items-center justify-between px-3 py-2 text-left transition-colors hover:bg-white/[0.04] ${config.strategyId === s.id ? 'bg-brass/[0.08]' : ''}`}
-                      >
-                        <div className="min-w-0">
-                          <p className={`text-[12px] ${config.strategyId === s.id ? 'text-tan' : 'text-neutral-100'}`}>{s.name}</p>
-                          <p className="font-mono text-[9px] tabular text-zinc-500">{s.symbol} · {s.structure.replace('_', ' ').toLowerCase()} · {s.version}</p>
-                        </div>
-                        <span className="shrink-0 font-mono text-[10px] tabular text-moss">SR {s.sharpe}</span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+    <div className="min-h-screen bg-charcoal font-sans text-neutral-100 antialiased selection:bg-tan/20">
+      <Navbar showSearch={false} />
+      <div className="pt-[calc(3.5rem+env(safe-area-inset-top,0px))] sm:pt-[calc(3.75rem+env(safe-area-inset-top,0px))]">
+        <section className="relative overflow-hidden border-b border-white/[0.06] bg-dark-gray">
+          <div
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_70%_at_50%_-20%,rgba(46,90,58,0.11),transparent_56%)]"
+            aria-hidden
+          />
+          <div className="relative z-10 mx-auto w-full max-w-content layout-gutter py-16 sm:py-20 lg:py-28">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: easeLux }}
+            >
+              <p className="sc-serif mb-3 text-[11px] font-medium text-zinc-400 sm:text-xs">
+                <span className="font-display text-[14px] not-italic tracking-[0.2em] text-tan/90">BackSpace</span>
+                <span className="mx-2 text-zinc-600 sm:mx-3">/</span>
+                <span className="text-zinc-400">LLM backtesting showcase</span>
+              </p>
+              <h1 className="max-w-4xl text-pretty font-display text-[clamp(2rem,7vw,3.75rem)] font-normal leading-[1.05] tracking-[-0.02em] text-neutral-50">
+                The backtesting lab, interpreted in plain English by the LLM layer.
+              </h1>
+              <p className="mt-6 max-w-2xl text-pretty text-base font-normal leading-[1.75] text-zinc-400 sm:text-lg">
+                Before any deep analytics, users get a clear narrative of what changed, where performance held, and why a
+                strategy failed in specific environments. The LLM component translates quantitative backtest output into
+                operator-ready decision context.
+              </p>
+              <div className="mt-8 flex w-full flex-col gap-3 sm:flex-row">
+                <Link href="/dashboard" className={btnPrimary}>
+                  Open Dashboard
+                </Link>
+                <Link href="/trade-engine" className={btnOutline}>
+                  Trade Engine
+                </Link>
               </div>
-              <div className="border-t border-white/[0.08] p-2">
-                <button className="flex w-full items-center justify-center gap-1.5 rounded border border-white/10 py-1.5 text-[10px] text-zinc-400 hover:border-brass/40 hover:text-tan">
-                  <GitFork className="h-3 w-3" /> Build new strategy
-                </button>
+              <div className="mt-12">
+                <LlmHeroCard />
               </div>
-            </Panel>
-
-            <Panel title="Parameters">
-              <div className="grid grid-cols-2 gap-2 p-3">
-                <div className="col-span-2">
-                  <p className={label}>Symbol</p>
-                  <input className={field} value={config.symbol} onChange={(e) => set('symbol', e.target.value.toUpperCase())} />
-                </div>
-                <div>
-                  <p className={label}>Start</p>
-                  <input type="date" className={field} value={config.startDate} onChange={(e) => set('startDate', e.target.value)} />
-                </div>
-                <div>
-                  <p className={label}>End</p>
-                  <input type="date" className={field} value={config.endDate} onChange={(e) => set('endDate', e.target.value)} />
-                </div>
-                <div className="col-span-2">
-                  <p className={label}>Position sizing</p>
-                  <select className={field} value={config.sizing} onChange={(e) => set('sizing', e.target.value as PositionSizing)}>
-                    <option value="FIXED_DOLLAR">Fixed dollar</option>
-                    <option value="PERCENT_PORTFOLIO">% of portfolio</option>
-                    <option value="KELLY">Kelly fraction</option>
-                  </select>
-                </div>
-                <div>
-                  <p className={label}>{config.sizing === 'FIXED_DOLLAR' ? 'Dollars' : config.sizing === 'KELLY' ? 'Kelly ×' : 'Percent'}</p>
-                  <input type="number" className={field} value={config.sizingValue} onChange={(e) => set('sizingValue', +e.target.value)} />
-                </div>
-                <div>
-                  <p className={label}>Max loss / trade</p>
-                  <input type="number" className={field} value={config.maxLossPerTrade} onChange={(e) => set('maxLossPerTrade', +e.target.value)} />
-                </div>
-                <div>
-                  <p className={label}>Max open</p>
-                  <input type="number" className={field} value={config.maxOpenPositions} onChange={(e) => set('maxOpenPositions', +e.target.value)} />
-                </div>
-                <div>
-                  <p className={label}>Commission / ct</p>
-                  <input type="number" step="0.01" className={field} value={config.commissionPerContract} onChange={(e) => set('commissionPerContract', +e.target.value)} />
-                </div>
-                <div className="col-span-2">
-                  <p className={label}>Slippage model</p>
-                  <select className={field} value={config.slippage} onChange={(e) => set('slippage', e.target.value as SlippageModel)}>
-                    <option value="ZERO">Zero</option>
-                    <option value="SPREAD">Estimated from spread</option>
-                    <option value="CUSTOM_BPS">Custom basis points</option>
-                  </select>
-                </div>
-                {config.slippage === 'CUSTOM_BPS' && (
-                  <div className="col-span-2">
-                    <p className={label}>Slippage (bps)</p>
-                    <input type="number" className={field} value={config.slippageBps} onChange={(e) => set('slippageBps', +e.target.value)} />
-                  </div>
-                )}
-                <label className="col-span-2 flex cursor-pointer items-center justify-between rounded border border-white/[0.08] bg-white/[0.02] px-2 py-1.5">
-                  <span className="text-[10px] text-zinc-300">Walk-forward validation</span>
-                  <input type="checkbox" checked={config.walkForward} onChange={(e) => set('walkForward', e.target.checked)} className="accent-[#C9A96E]" />
-                </label>
-                <div className="col-span-2">
-                  <p className={label}>Random seed</p>
-                  <input type="number" className={field} value={config.seed} onChange={(e) => set('seed', +e.target.value)} />
-                </div>
-              </div>
-            </Panel>
-
-            {/* run controls */}
-            <div className="rounded-md border border-white/[0.08] bg-charcoal/70 p-3">
-              {status !== 'running' ? (
-                <button onClick={startRun} className="flex w-full items-center justify-center gap-2 rounded-md border border-brass bg-black py-2.5 text-[12px] font-semibold tracking-wide text-tan transition-colors hover:bg-neutral-950 hover:text-brass">
-                  <Play className="h-3.5 w-3.5" /> Run backtest
-                </button>
-              ) : (
-                <button onClick={cancelRun} className="flex w-full items-center justify-center gap-2 rounded-md border border-rose-400/60 bg-black py-2.5 text-[12px] font-semibold tracking-wide text-rose-400 transition-colors hover:bg-neutral-950">
-                  <Square className="h-3.5 w-3.5" /> Cancel
-                </button>
-              )}
-              {status === 'running' && (
-                <div className="mt-3">
-                  <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
-                    <div className="h-full rounded-full bg-tan transition-[width] duration-75" style={{ width: `${progress * 100}%` }} />
-                  </div>
-                  <p className="mt-1.5 flex items-center justify-between font-mono text-[9px] tabular text-zinc-500">
-                    <span>processing {currentDate}</span>
-                    <span>{(progress * 100).toFixed(0)}%</span>
-                  </p>
-                </div>
-              )}
-            </div>
+            </motion.div>
           </div>
+        </section>
 
-          {/* ---------------- results column ---------------- */}
-          <div className="flex min-w-0 flex-1 flex-col gap-3">
-            {status === 'idle' && !run && (
-              <div className="flex min-h-[60vh] flex-col items-center justify-center rounded-md border border-dashed border-white/[0.1] text-center">
-                <p className="font-display text-2xl text-neutral-200">The proving ground</p>
-                <p className="mt-2 max-w-md text-sm text-zinc-500">
-                  Configure a strategy and parameters, then run it against history. Every result is reproducible from its run id.
+        <SectionShell
+          tone="primary"
+          eyebrowNum="I"
+          eyebrowLabel="LLM interpretation layer"
+          ariaLabelledBy="backspace-llm-layer"
+          title={<span id="backspace-llm-layer">The first read is narrative, not raw tables.</span>}
+          lede="BackSpace runs deterministic calculations first, then the LLM layer explains outcomes in plain language: what improved, what degraded, and which conditions actually drove the result. This keeps the desk fast without hiding the underlying evidence."
+        >
+          <div className="mt-10 grid gap-6 lg:grid-cols-3">
+            {[
+              ['Regime-aware explanation', 'Summaries are segmented by trend, compression, and volatility expansion regimes.'],
+              ['Parameter sensitivity narrative', 'The assistant explains why sizing, slippage, or entry rules altered outcomes.'],
+              ['Audit-friendly output', 'Narratives tie back to run metadata so every statement is traceable to a result set.'],
+            ].map(([title, body]) => (
+              <div key={title} className="rounded-lg border border-white/[0.08] bg-dark-gray/55 p-5">
+                <h3 className="sc-serif text-[13px] text-neutral-100">{title}</h3>
+                <p className="mt-2 text-[13px] leading-[1.75] text-zinc-400">{body}</p>
+              </div>
+            ))}
+          </div>
+        </SectionShell>
+
+        <SectionShell
+          tone="secondary"
+          eyebrowNum="II"
+          eyebrowLabel="Backtest compute foundation"
+          ariaLabelledBy="backspace-compute"
+          title={<span id="backspace-compute">Deterministic computation still drives every run.</span>}
+          lede="The LLM does not replace the engine. It sits on top of reproducible calculations: historical replay, environment breakdowns, slippage modeling, and run-level metrics. Narrative quality only matters if the compute substrate is defensible."
+        >
+          <div className="mt-8">
+            <BacktestIllustration />
+          </div>
+          <div className="mt-8 grid gap-6 lg:grid-cols-3">
+            {[
+              ['Historical replay', 'Run the decision against the exact market context it originally faced.'],
+              ['Environment diagnostics', 'Break performance out by regime to identify where strategy edges collapse.'],
+              ['Lineage & reproducibility', 'Each run keeps its seed, params, and source revision for exact reruns.'],
+            ].map(([title, body]) => (
+              <div key={title} className="border-l-2 border-brass/40 pl-4">
+                <h3 className="sc-serif text-[13px] text-neutral-50">{title}</h3>
+                <p className="mt-1.5 text-[14px] leading-[1.7] text-zinc-400">{body}</p>
+              </div>
+            ))}
+          </div>
+        </SectionShell>
+
+        <SectionShell
+          tone="primary"
+          eyebrowNum="III"
+          eyebrowLabel="Dashboard direction"
+          ariaLabelledBy="backspace-dashboard-direction"
+          title={<span id="backspace-dashboard-direction">Backtesting in Dashboard is now LLM-first.</span>}
+          lede="The Dashboard backtesting component is aligned to this direction: an interactive LLM assistant that reads run context and helps users refine hypotheses. This keeps the workflow ready for a future fork to a specialized model stack."
+          verticalRhythm="lastOnPage"
+        >
+          <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr] lg:items-center">
+            <div className={panel}>
+              <div className="border-b border-white/[0.08] bg-white/[0.04] px-4 py-2.5">
+                <p className="sc-serif text-[10px] text-zinc-400">Dashboard component plan · LLM backtesting assistant</p>
+              </div>
+              <div className="space-y-3 p-4 text-[13px] leading-[1.75] text-zinc-400">
+                <p>
+                  The tab is positioned as an operator assistant: ask why drawdown clustered, compare two runs, and get
+                  suggested next experiments before re-running compute.
+                </p>
+                <p>
+                  It is built as a modular UI surface so you can fork the model provider later without redesigning the
+                  surrounding dashboard workflow.
+                </p>
+                <p className="border-t border-white/[0.08] pt-3 text-zinc-500">
+                  Current product stance: explain and prioritize decisions, never auto-execute positions.
                 </p>
               </div>
-            )}
-
-            {run && (
-              <>
-                <div className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-white/[0.08] bg-charcoal/70 px-3 py-2">
-                  <div className="min-w-0">
-                    <p className="text-[13px] text-neutral-100">{run.strategyName} <span className="text-zinc-500">·</span> {run.config.symbol}</p>
-                    <p className="font-mono text-[9px] tabular text-zinc-500">
-                      {run.config.startDate} → {run.config.endDate} · run {run.runId} · seed {run.config.seed}{run.config.walkForward ? ' · walk-forward' : ''}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    {[
-                      [Download, 'CSV'],
-                      [Save, 'Store'],
-                      [Share2, 'Share'],
-                    ].map(([Icon, txt], idx) => {
-                      const I = Icon as typeof Download;
-                      return (
-                        <button key={idx} className="flex items-center gap-1 rounded border border-white/10 px-2 py-1 text-[10px] text-zinc-400 hover:border-brass/40 hover:text-tan">
-                          <I className="h-3 w-3" /> {txt as string}
-                        </button>
-                      );
-                    })}
-                  </div>
+            </div>
+            <div className="space-y-5">
+              {[
+                ['Fork-ready interface', 'Prompt and response surface designed to be provider-agnostic.'],
+                ['Run-context aware', 'Assistant phrasing assumes run ids, environment slices, and model metadata.'],
+                ['Execution boundary', 'No direct trade routing from assistant output.'],
+              ].map(([title, body]) => (
+                <div key={title} className="border-l-2 border-brass/40 pl-4">
+                  <h3 className="sc-serif text-[13px] text-neutral-50">{title}</h3>
+                  <p className="mt-1.5 text-[14px] leading-[1.7] text-zinc-400">{body}</p>
                 </div>
-
-                <Panel title="EQUITY · CUMULATIVE PnL & DRAWDOWN (brush to zoom)" className="h-[300px]">
-                  <PnLCurve equity={run.equity} />
-                </Panel>
-                <MetricsTable metrics={run.metrics} />
-
-                <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
-                  <Panel title="MONTHLY RETURNS" className="h-[300px]">
-                    <MonthlyReturnHeatmap cells={run.monthly} />
-                  </Panel>
-                  <RegimeBreakdown regimePerf={run.regimePerf} />
-                </div>
-
-                <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
-                  <Distribution title="Trade return distribution" buckets={run.returnsDist} />
-                  <Distribution title="Holding period distribution" buckets={run.holdingDist} accent="#3f9d57" />
-                </div>
-
-                <Panel title={`ALL TRADES · ${run.trades.length}`} className="h-[360px]">
-                  <BacktestTradesGrid trades={run.trades} />
-                </Panel>
-
-                <ReplayViewer trades={run.trades} />
-              </>
-            )}
+              ))}
+            </div>
           </div>
-        </div>
-      </main>
+        </SectionShell>
+      </div>
+      <InstitutionalFooter />
     </div>
   );
 };

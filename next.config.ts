@@ -32,7 +32,7 @@ const nextConfig: NextConfig = {
             { source: '/sentiment', destination: '/fixed-income', permanent: true },
             { source: '/lecture-hall', destination: '/assembly', permanent: true },
             { source: '/money-bagg', destination: '/coffee', permanent: true },
-            { source: '/bridge-observer', destination: '/rockefeller', permanent: true },
+            { source: '/reconnaissance', destination: '/warehouse', permanent: true },
           ];
         },
       }),

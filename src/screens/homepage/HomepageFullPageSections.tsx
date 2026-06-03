@@ -206,7 +206,7 @@ export function HomepageFullPageSections() {
           <MarketIntelIllustration />
         </div>
         <SectionActions>
-          <Link href="/reconnaissance" className={btnSection}>
+          <Link href="/warehouse" className={btnSection}>
             The Warehouse
           </Link>
         </SectionActions>
