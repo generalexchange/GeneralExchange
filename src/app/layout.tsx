@@ -40,7 +40,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default: `${SITE_NAME} — Institutional Trading Terminal, Backtesting & Execution`,
-    template: `%s | ${SITE_NAME}`,
+    template: `${SITE_NAME} | %s`,
   },
   description: DEFAULT_DESCRIPTION,
   keywords: DEFAULT_KEYWORDS,
