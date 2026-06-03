@@ -3,7 +3,7 @@ import { buildPageMetadata } from '@/lib/seo';
 
 /** Legacy URL — same Trade Engine explanation page as /tradeengine. */
 export const metadata = buildPageMetadata({
-  title: 'TradeEngine',
+  title: 'Trade Engine',
   description:
     'How General Exchange uses Monte Carlo simulation to turn trading edge into win rate, risk parameters, and expected return.',
   path: '/tradeengine',

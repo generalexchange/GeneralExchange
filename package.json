@@ -12,7 +12,9 @@
     "test:watch": "vitest",
     "stack:up": "powershell -ExecutionPolicy Bypass -File scripts/setup-local-stack.ps1",
     "stack:down": "docker compose --profile app down",
-    "vercel:env": "node scripts/push-vercel-env.mjs"
+    "vercel:env": "node scripts/push-vercel-env.mjs",
+    "dev:ws": "tsx services/ws-server/index.ts",
+    "dev:all": "npm run dev:ws & npm run dev"
   },
   "dependencies": {
     "@finos/perspective": "^3.8.0",
@@ -57,6 +59,7 @@
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
     "@types/three": "^0.184.0",
+    "@types/ws": "^8.18.1",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
     "autoprefixer": "^10.4.16",
@@ -66,8 +69,10 @@
     "eslint-plugin-react-refresh": "^0.4.5",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.3.6",
+    "tsx": "^4.22.4",
     "typescript": "^5.2.2",
     "vercel": "^54.9.0",
-    "vitest": "^2.1.9"
+    "vitest": "^2.1.9",
+    "ws": "^8.21.0"
   }
 }

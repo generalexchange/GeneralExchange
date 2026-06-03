@@ -1,13 +1,10 @@
-/**
- * Server-side proxy to the Go data API with Polygon/Massive fallback.
- *
- * The browser calls /api/v1/* on the Next.js origin; this handler forwards to
- * the Go service when reachable. On Vercel (no hosted Go stack), set
- * POLYGON_API_KEY so read-only market routes still return live data.
- */
-
 import { NextRequest, NextResponse } from 'next/server';
 import { canUsePolygonDirect, tryPolygonDirect } from '@/lib/api/polygonDirect';
+import {
+  cacheControlHeader,
+  getCachedApiResponse,
+  setCachedApiResponse,
+} from '@/lib/api/responseCache';
 
 const GO_API_URL = (process.env.GO_API_URL ?? 'http://localhost:8080').replace(/\/$/, '');
 const API_KEY = process.env.GE_API_KEY ?? 'dev-api-key';
@@ -19,8 +16,29 @@ function isLocalGoUrl(url: string): boolean {
   return /localhost|127\.0\.0\.1|0\.0\.0\.0/.test(url);
 }
 
+function jsonResponse(body: string, status: number, cacheTtl?: number) {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+  if (cacheTtl != null && cacheTtl > 0) {
+    headers['Cache-Control'] = cacheControlHeader(cacheTtl);
+    headers['CDN-Cache-Control'] = cacheControlHeader(cacheTtl);
+    headers['Vercel-CDN-Cache-Control'] = cacheControlHeader(cacheTtl);
+  }
+  return new NextResponse(body, { status, headers });
+}
+
 async function forward(req: NextRequest, path: string[]) {
   const search = req.nextUrl.search;
+  const isGet = req.method === 'GET' || req.method === 'HEAD';
+
+  if (isGet) {
+    const cached = getCachedApiResponse(path, search);
+    if (cached) {
+      return jsonResponse(cached.body, 200, cached.ttl);
+    }
+  }
+
   const target = `${GO_API_URL}/v1/${path.join('/')}${search}`;
 
   const headers: Record<string, string> = {
@@ -40,29 +58,30 @@ async function forward(req: NextRequest, path: string[]) {
     init.body = await req.text();
   }
 
-  // Skip unreachable localhost Go targets in serverless production.
-  const skipGo =
-    process.env.VERCEL === '1' && isLocalGoUrl(GO_API_URL);
+  const skipGo = process.env.VERCEL === '1' && isLocalGoUrl(GO_API_URL);
 
   if (!skipGo) {
     try {
       const res = await fetch(target, init);
       if (res.ok || res.status < 500) {
         const body = await res.text();
-        return new NextResponse(body, {
-          status: res.status,
-          headers: { 'Content-Type': res.headers.get('content-type') ?? 'application/json' },
-        });
+        if (isGet && res.ok) {
+          const ttl = setCachedApiResponse(path, search, body);
+          return jsonResponse(body, res.status, ttl);
+        }
+        return jsonResponse(body, res.status);
       }
     } catch {
       // fall through to Polygon direct
     }
   }
 
-  if (req.method === 'GET' && canUsePolygonDirect()) {
+  if (isGet && canUsePolygonDirect()) {
     const direct = await tryPolygonDirect(path, req.nextUrl.searchParams);
     if (direct) {
-      return NextResponse.json(direct);
+      const body = JSON.stringify(direct);
+      const ttl = setCachedApiResponse(path, search, body);
+      return jsonResponse(body, 200, ttl);
     }
   }
 

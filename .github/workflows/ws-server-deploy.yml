@@ -1,0 +1,28 @@
+name: Deploy WS Server
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'services/ws-server/**'
+      - 'package.json'
+      - 'package-lock.json'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ secrets.FLY_API_TOKEN != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to Fly.io
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          flyctl deploy --remote-only --config services/ws-server/fly.toml
+          if [ -n "${{ secrets.POLYGON_API_KEY }}" ]; then
+            flyctl secrets set POLYGON_API_KEY="${{ secrets.POLYGON_API_KEY }}" --app general-exchange-ws
+          fi

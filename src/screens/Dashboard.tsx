@@ -30,6 +30,7 @@ import { CHART } from '../components/charts/chartTokens';
 import { OptionsChainGrid, applyChainTransaction, type ChainGridRow } from '../components/grids/OptionsChainGrid';
 import { PositionsGrid } from '../components/grids/PositionsGrid';
 import { useMarketStream } from '../services/marketStream';
+import { useMarketFeed } from '../hooks/useMarketFeed';
 import { TradeHistoryGrid } from '../components/grids/TradeHistoryGrid';
 import { WatchlistGrid } from '../components/grids/WatchlistGrid';
 import { RegimeSparklines, type SparkItem } from '../components/analytics/RegimeSparklines';
@@ -152,11 +153,15 @@ export const Dashboard: React.FC = () => {
   const positions = useMemo(() => getPositions(), []);
   const history = useMemo(() => getTradeHistory(), []);
   const snap = useMemo(() => getSnapshot(symbol), [symbol]);
+  const liveQuote = useMarketFeed(symbol);
+  const displayPrice = liveQuote?.price ?? snap.price;
+  const displayChange = liveQuote?.change ?? snap.change;
+  const displayChangePct = liveQuote?.changePct ?? snap.changePct;
   const chainRows = useMemo(() => toChainRows(snap.chain), [snap.chain]);
   const regime = useMemo(() => regimeItems(snap.regime), [snap.regime]);
 
   const [gexRef, gexInView] = useInViewport<HTMLDivElement>();
-  const up = snap.change >= 0;
+  const up = displayChange >= 0;
 
   // Live streaming handles. Dormant unless NEXT_PUBLIC_WS_URL is configured.
   const priceChartRef = useRef<PriceChartHandle | null>(null);
@@ -244,12 +249,17 @@ export const Dashboard: React.FC = () => {
                 ))}
               </select>
               <span className="hidden font-sans text-xs text-zinc-500 sm:block">{snap.name}</span>
-              <span className="font-mono text-lg tabular-nums text-zinc-100">{fmtMoney(snap.price)}</span>
+              <span className="font-mono text-lg tabular-nums text-zinc-100">{fmtMoney(displayPrice)}</span>
               <span className={`font-mono text-sm tabular-nums ${up ? 'text-moss' : 'text-rose-400'}`}>
                 {up ? '+' : ''}
-                {fmtMoney(snap.change)} ({up ? '+' : ''}
-                {snap.changePct.toFixed(2)}%)
+                {fmtMoney(displayChange)} ({up ? '+' : ''}
+                {displayChangePct.toFixed(2)}%)
               </span>
+              {liveQuote && (
+                <span className="hidden rounded bg-moss/10 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-moss sm:inline">
+                  live
+                </span>
+              )}
             </div>
             <button
               onClick={() => setAdvanced((v) => !v)}

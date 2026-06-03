@@ -2,7 +2,7 @@ import { TradeEngine } from '@/screens/TradeEngine';
 import { buildPageMetadata } from '@/lib/seo';
 
 export const metadata = buildPageMetadata({
-  title: 'TradeEngine',
+  title: 'Trade Engine',
   description:
     'How General Exchange uses Monte Carlo simulation to turn trading edge into win rate, risk parameters, and expected return — illustrated with live win-rate simulation, path fans, and options-chain modeling.',
   path: '/tradeengine',

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { MOCK_STOCKS_BY_KEY } from '@/data/mockStocksCatalog';
 
 /** Canonical public site URL — override with SITE_URL in production. */
-export const SITE_URL = (process.env.SITE_URL ?? 'https://generalexchange.com').replace(/\/$/, '');
+export const SITE_URL = (process.env.SITE_URL ?? 'https://general.exchange').replace(/\/$/, '');
 
 export const SITE_NAME = 'General Exchange';
 export const SITE_PUBLISHER = 'Old West Solutions';
@@ -100,9 +100,10 @@ export function buildPageMetadata({
   noIndex = false,
 }: PageMetadataOptions): Metadata {
   const canonical = path.startsWith('/') ? path : `/${path}`;
+  const fullTitle = `${SITE_NAME} | ${title}`;
 
   return {
-    title,
+    title: { absolute: fullTitle },
     description,
     keywords: keywords ?? DEFAULT_KEYWORDS,
     alternates: { canonical },
@@ -113,7 +114,7 @@ export function buildPageMetadata({
       type: 'website',
       locale: 'en_US',
       siteName: SITE_NAME,
-      title,
+      title: fullTitle,
       description,
       url: canonical,
       images: [OG_IMAGE],
@@ -122,7 +123,7 @@ export function buildPageMetadata({
       card: 'summary_large_image',
       site: '@generalexchange',
       creator: '@generalexchange',
-      title,
+      title: fullTitle,
       description,
       images: [OG_IMAGE.url],
     },
