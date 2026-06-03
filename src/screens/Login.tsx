@@ -1,196 +1,199 @@
-/**
- * Login page component with form validation
- * Features: simple login with any credentials
- */
-
 'use client';
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
-import { LoginFormData } from '../types';
+import Image from 'next/image';
+import { Eye, EyeOff } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+const easeLux = [0.22, 1, 0.36, 1] as const;
 
 export const Login: React.FC = () => {
   const router = useRouter();
-  const [formData, setFormData] = useState<LoginFormData>({
-    email: '',
-    password: '',
-    rememberMe: false
-  });
-
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Handle form submission - accepts any credentials
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Basic check - just need something entered
-    if (!formData.email.trim() || !formData.password.trim()) {
-      return;
-    }
-
+    if (!email.trim() || !password.trim()) return;
+    setError(null);
     setIsSubmitting(true);
-
-    // Simulate API call
     setTimeout(() => {
-      console.log('Login successful with:', formData);
-      
       setIsSubmitting(false);
-      
-      // Navigate to dashboard after successful login
       router.push('/dashboard');
     }, 800);
   };
 
-  // Handle input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  };
-
   return (
-    <div className="min-h-screen bg-[#0b0c0f] flex flex-col">
-      {/* Logo Header */}
-      <div className="py-6 px-4">
-        <Link href="/" className="inline-block">
-          <span className="text-2xl font-serif font-bold text-white transition-colors hover:text-blue-400">
-            General Exchange
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-charcoal">
+      {/* Ambient glow */}
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_55%_at_50%_-10%,rgba(46,90,58,0.13),transparent_55%)]"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_45%_40%_at_92%_90%,rgba(210,180,140,0.07),transparent_55%)]"
+        aria-hidden
+      />
+
+      {/* Header */}
+      <header className="relative z-10 flex items-center justify-between border-b border-white/[0.06] px-6 py-4 sm:px-10">
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="h-7 w-7 overflow-hidden rounded-md border border-[#8B7D6B]/45">
+            <Image
+              src="/images/generalexchangehorse.png"
+              alt="general.exchange"
+              width={28}
+              height={28}
+              className="h-full w-full object-cover brightness-[0.68] contrast-[1.25] saturate-[0.82] sepia-[0.12]"
+            />
+          </div>
+          <span className="font-display text-[15px] tracking-[-0.01em] text-neutral-200 transition-colors group-hover:text-tan">
+            general.exchange
           </span>
         </Link>
-      </div>
-
-      <div className="flex-1 flex items-center justify-center px-3 sm:px-4 lg:px-8 py-8">
-      <div className="max-w-md w-full">
-        {/* Card Container */}
-        <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg overflow-hidden">
-          {/* Header */}
-          <div className="px-6 sm:px-8 pt-6 sm:pt-8 pb-4 sm:pb-6 border-b border-[#2a2a2a]">
-            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-white mb-2">
-              Welcome Back
-            </h2>
-            <p className="text-sm sm:text-base text-gray-400">
-              Sign in to General Exchange
-            </p>
-          </div>
-
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="px-6 sm:px-8 py-6 sm:py-8 space-y-5 sm:space-y-6">
-            {/* Email Field */}
-            <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-gray-300 mb-2">
-                Email Address
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-500" />
-                </div>
-                <input
-                  id="email"
-                  name="email"
-                  type="text"
-                  autoComplete="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="block w-full pl-10 pr-3 py-3 border border-[#2a2a2a] rounded-lg bg-[#0f0f0f] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
-                  placeholder="you@example.com"
-                />
-              </div>
-            </div>
-
-            {/* Password Field */}
-            <div>
-              <label htmlFor="password" className="block text-sm font-semibold text-gray-300 mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-500" />
-                </div>
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? 'text' : 'password'}
-                  autoComplete="current-password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  className="block w-full pl-10 pr-10 py-3 border border-[#2a2a2a] rounded-lg bg-[#0f0f0f] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
-                  placeholder="••••••••"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-300 transition-colors"
-                >
-                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                </button>
-              </div>
-            </div>
-
-            {/* Remember Me & Forgot Password */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="rememberMe"
-                  name="rememberMe"
-                  type="checkbox"
-                  checked={formData.rememberMe}
-                  onChange={handleChange}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-600 rounded cursor-pointer bg-[#0f0f0f]"
-                />
-                <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-400 cursor-pointer">
-                  Remember me
-                </label>
-              </div>
-
-              <a href="#" className="text-sm font-semibold text-blue-500 hover:text-blue-400 transition-colors">
-                Forgot password?
-              </a>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg text-base font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSubmitting ? (
-                <span className="flex items-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Signing in...
-                </span>
-              ) : (
-                'Sign In'
-              )}
-            </button>
-          </form>
-        </div>
-
-        {/* Additional Info */}
-        <p className="mt-6 text-center text-sm text-gray-500">
-          Enter any email and password to sign in
+        <p className="hidden text-[11px] uppercase tracking-[0.2em] text-zinc-500 sm:block">
+          By: Old West Solutions
         </p>
-      </div>
-      </div>
+      </header>
 
-      {/* Minimal Footer */}
-      <footer className="border-t border-[#2a2a2a] bg-[#0b0c0f] py-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center text-gray-500 text-sm">
-            © {new Date().getFullYear()} General Exchange. All rights reserved.
+      {/* Main */}
+      <main className="relative z-10 flex flex-1 items-center justify-center px-4 py-12">
+        <motion.div
+          className="w-full max-w-[400px]"
+          initial={{ opacity: 0, y: 22 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, ease: easeLux }}
+        >
+          {/* Eyebrow */}
+          <p className="sc-serif mb-3 text-[11px] uppercase tracking-[0.22em] text-tan/75">
+            Terminal access
+          </p>
+
+          <h1 className="font-display text-[clamp(1.6rem,4vw,2.1rem)] font-normal leading-[1.08] tracking-[-0.02em] text-neutral-50">
+            Welcome back.
+          </h1>
+          <p className="mt-2.5 text-[14px] leading-[1.65] text-zinc-400">
+            Sign in to your general.exchange account.
+          </p>
+
+          {/* Card */}
+          <div className="mt-8 rounded-xl border border-white/[0.07] bg-dark-gray shadow-[0_32px_80px_-24px_rgba(0,0,0,0.7)]">
+            <form onSubmit={handleSubmit} className="space-y-4 p-7 sm:p-8">
+              {/* Email */}
+              <label className="block">
+                <span className="block text-[11px] uppercase tracking-wider text-zinc-500 mb-1.5">
+                  Email address
+                </span>
+                <input
+                  type="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  placeholder="you@example.com"
+                  className="h-11 w-full rounded-md border border-white/[0.09] bg-black/30 px-3.5 text-sm text-neutral-100 placeholder-zinc-600 outline-none transition-colors focus:border-brass/50 focus:ring-1 focus:ring-brass/20"
+                />
+              </label>
+
+              {/* Password */}
+              <label className="block">
+                <div className="mb-1.5 flex items-center justify-between">
+                  <span className="text-[11px] uppercase tracking-wider text-zinc-500">
+                    Password
+                  </span>
+                  <a
+                    href="#"
+                    className="text-[11px] text-zinc-500 transition-colors hover:text-tan"
+                  >
+                    Forgot password?
+                  </a>
+                </div>
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    placeholder="••••••••"
+                    className="h-11 w-full rounded-md border border-white/[0.09] bg-black/30 px-3.5 pr-10 text-sm text-neutral-100 placeholder-zinc-600 outline-none transition-colors focus:border-brass/50 focus:ring-1 focus:ring-brass/20"
+                  />
+                  <button
+                    type="button"
+                    tabIndex={-1}
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-zinc-500 transition-colors hover:text-zinc-300"
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </label>
+
+              {error && (
+                <p className="rounded-md border border-red-500/20 bg-red-500/10 px-3 py-2 text-[12px] text-red-400">
+                  {error}
+                </p>
+              )}
+
+              {/* Submit */}
+              <button
+                type="submit"
+                disabled={isSubmitting || !email || !password}
+                className="mt-2 inline-flex h-11 w-full items-center justify-center rounded-md bg-tan text-sm font-semibold tracking-wide text-charcoal shadow-[0_8px_24px_-8px_rgba(210,180,140,0.35)] transition-all hover:bg-tan-muted active:scale-[0.99] disabled:bg-white/10 disabled:text-zinc-500 disabled:shadow-none"
+              >
+                {isSubmitting ? (
+                  <span className="flex items-center gap-2">
+                    <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    Signing in…
+                  </span>
+                ) : (
+                  'Sign In'
+                )}
+              </button>
+            </form>
+
+            {/* Divider */}
+            <div className="border-t border-white/[0.06] px-7 py-5 sm:px-8">
+              <p className="text-center text-[13px] text-zinc-500">
+                No account?{' '}
+                <Link
+                  href="/request-access"
+                  className="font-semibold text-tan/90 transition-colors hover:text-tan"
+                >
+                  Request access
+                </Link>
+              </p>
+            </div>
           </div>
-        </div>
+
+          <p className="mt-6 text-center text-[12px] text-zinc-600">
+            By signing in you agree to our{' '}
+            <Link href="/terms-and-conditions" className="underline underline-offset-2 hover:text-zinc-400 transition-colors">
+              Terms
+            </Link>{' '}
+            and{' '}
+            <Link href="/privacy-policy" className="underline underline-offset-2 hover:text-zinc-400 transition-colors">
+              Privacy Policy
+            </Link>
+            .
+          </p>
+        </motion.div>
+      </main>
+
+      {/* Footer */}
+      <footer className="relative z-10 border-t border-white/[0.06] py-5 text-center">
+        <p className="text-[12px] text-zinc-600">
+          © {new Date().getFullYear()} Old West Solutions. All rights reserved.
+        </p>
       </footer>
     </div>
   );
 };
-

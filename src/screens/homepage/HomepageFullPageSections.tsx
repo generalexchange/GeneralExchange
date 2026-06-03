@@ -159,60 +159,72 @@ export function HomepageFullPageSections() {
     <div className="bg-charcoal text-neutral-100">
       <HeroSection />
 
-      {/* II — Backtesting */}
+      {/* II — Interactive Brokers execution */}
       <SectionShell
         tone="primary"
         eyebrowNum="II"
-        eyebrowLabel="The proving ground"
-        ariaLabelledBy="hp-bt-title"
-        title={<span id="hp-bt-title">Replay any trade against any environment that ever happened.</span>}
-        lede="Run the decision as if for the first time, against the market exactly as it was. See not only what happened, but why it worked in the conditions where it worked — and why it failed in the ones where it did not."
+        eyebrowLabel="Execution"
+        ariaLabelledBy="hp-exec-title"
+        title={<span id="hp-exec-title">Trade what you find, from the same terminal you found it in.</span>}
+        lede="The platform connects directly to Interactive Brokers. Send orders from the same screen where you ran the research — no copy-paste, no switching platforms, no gap between the decision and the desk. One connection from signal to fill."
       >
         <div className="mt-10">
           <BacktestIllustration />
         </div>
         <SectionActions>
-          <Link href="/backspace" className={btnSection}>
-            Open the proving ground
+          <Link href="/request-access" className={btnSection}>
+            Connect to Interactive Brokers
           </Link>
         </SectionActions>
       </SectionShell>
 
-      {/* III — Options intelligence */}
+      {/* III — Data warehouse */}
       <SectionShell
         tone="secondary"
         eyebrowNum="III"
-        eyebrowLabel="Position clarity"
-        ariaLabelledBy="hp-opt-title"
-        title={<span id="hp-opt-title">See every dimension of a position — before and after you enter it.</span>}
-        lede="Watch how a position bleeds time value, how it responds if the underlying moves two percent in the next hour, how it behaves when volatility expands, and exactly where it needs to be managed or closed. Nothing hidden, nothing assumed."
+        eyebrowLabel="The warehouse"
+        ariaLabelledBy="hp-wh-title"
+        title={<span id="hp-wh-title">Every piece of data the platform runs on, in one place.</span>}
+        lede="Tick-level market data, options analytics, aggregated flow signals, and historical fundamentals — structured, normalized, and updated continuously. The same warehouse powers every backtest, every chart, and every computed signal in the system."
       >
-        <div className="mt-10">
+        <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_1.2fr] lg:items-center">
+          <div className="space-y-5">
+            {[
+              ['Tick data', 'The raw record of every trade and quote — stored at full resolution and queryable across any time range.'],
+              ['Options surface', 'Implied vol, greeks, and open interest computed continuously across every expiry and strike.'],
+              ['Flow aggregates', 'Institutional order flow, dark pool prints, and sweep activity normalized into queryable signals.'],
+            ].map(([h, b]) => (
+              <div key={h} className="border-l-2 border-brass/40 pl-4">
+                <h3 className="sc-serif text-[13px] text-neutral-50">{h}</h3>
+                <p className="mt-1.5 text-[14px] leading-[1.7] text-zinc-400">{b}</p>
+              </div>
+            ))}
+          </div>
           <OptionsIllustration />
         </div>
         <SectionActions>
-          <Link href="/options" className={btnSection}>
-            Inspect the chain
+          <Link href="/reconnaissance" className={btnSection}>
+            The Warehouse
           </Link>
         </SectionActions>
       </SectionShell>
 
-      {/* IV — Market intelligence */}
+      {/* IV — Backtesting */}
       <SectionShell
         tone="primary"
         eyebrowNum="IV"
-        eyebrowLabel="Who, and why"
-        ariaLabelledBy="hp-mi-title"
-        title={<span id="hp-mi-title">Understand not just what the market is doing, but who is making it happen.</span>}
-        lede="The system models institutional positioning, hedging behavior, and the patterns underneath order flow to find the environments where the risk and reward on a strategy is most in your favor. It tells the difference between noise and conviction."
+        eyebrowLabel="Backtesting"
+        ariaLabelledBy="hp-bt-title"
+        title={<span id="hp-bt-title">Replay any decision against any environment that ever happened.</span>}
+        lede="Run the trade as if for the first time, against the market exactly as it was. See not only what happened, but why it worked in the conditions where it worked — and why it failed in the ones where it did not."
       >
         <div className="mt-10 grid gap-6 lg:grid-cols-[1.4fr_1fr] lg:items-center">
           <MarketIntelIllustration />
           <div className="space-y-5">
             {[
-              ['Positioning', 'Where the largest participants are leaning, and how heavily.'],
-              ['Hedging pressure', 'The flows that are forced, not chosen — and the levels they cluster around.'],
-              ['Conviction', 'Whether activity reflects information, or just movement.'],
+              ['Historical accuracy', 'Tested against the real record — actual prices, actual spreads, actual conditions on that day.'],
+              ['Environment breakdown', 'Results broken down by market regime so you know where a strategy earns and where it does not.'],
+              ['Reproducibility', 'Every run is saved and traceable. The result you see today is the same one you can defend tomorrow.'],
             ].map(([h, b]) => (
               <div key={h} className="border-l-2 border-brass/40 pl-4">
                 <h3 className="sc-serif text-[13px] text-neutral-50">{h}</h3>
@@ -221,6 +233,11 @@ export function HomepageFullPageSections() {
             ))}
           </div>
         </div>
+        <SectionActions>
+          <Link href="/backspace" className={btnSection}>
+            Open the proving ground
+          </Link>
+        </SectionActions>
       </SectionShell>
 
       {/* V — Strategy library */}
