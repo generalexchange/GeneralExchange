@@ -1,0 +1,22 @@
+slice_name: DQ — Status breakdown
+viz_type: pie
+params: |
+  {
+    "datasource": "7a2b1c00-0000-4000-8000-0000000000d2__table",
+    "viz_type": "pie",
+    "groupby": ["status"],
+    "metric": "count",
+    "row_limit": 100,
+    "adhoc_filters": [
+      {
+        "expressionType": "SQL",
+        "clause": "WHERE",
+        "sqlExpression": "checked_at > now() - INTERVAL 1 HOUR"
+      }
+    ]
+  }
+query_context: null
+cache_timeout: null
+uuid: 7a2b1c00-0000-4000-8000-0000000000e2
+version: 1.0.0
+dataset_uuid: 7a2b1c00-0000-4000-8000-0000000000d2

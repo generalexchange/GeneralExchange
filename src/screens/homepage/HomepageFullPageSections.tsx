@@ -1,110 +1,44 @@
 /**
- * Homepage-only full-viewport marketing sections (Risk, Library, Backspace) after Hero.
+ * Homepage — commercial narrative for sophisticated buyers.
+ *
+ * Seven sections, in order:
+ *   I    Hero ................. decisions made on evidence, not intuition
+ *   II   Backtesting ......... replay any trade against any environment
+ *   III  Options intelligence  see every dimension of a position
+ *   IV   Market intelligence . noise vs conviction
+ *   V    Strategy library .... versioned, portable strategies
+ *   VI   Data access ......... institutional access layer
+ *   VII  Trust & audit ....... traceable lineage for every number
+ *
+ * Rule: never name infrastructure. No Greek letters in copy. Show, don't tell.
  */
 
 'use client';
 
-import React, { useId } from 'react';
+import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
-import { Hero } from '@/components/Hero';
+import { motion } from 'framer-motion';
 import { SectionShell } from '@/components/homepage/SectionShell';
-import { HomepageTrustCtaRestored, HomepageRemainingPillars } from './HomepageLegacyRestored';
+import {
+  BacktestIllustration,
+  OptionsIllustration,
+  MarketIntelIllustration,
+  StrategyLibraryIllustration,
+  DataAccessIllustration,
+  LineageIllustration,
+} from '@/components/homepage/HomepageProductIllustrations';
 
-/** Rounded tile with erase mark — reads as “delete / rewind proof” without echoing third-party logos. */
-function BackspaceGlyph({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 22 22" fill="none" aria-hidden>
-      <rect x="2.25" y="2.75" width="17.5" height="16.5" rx="4" className="stroke-current" strokeWidth="1.35" opacity="0.9" />
-      <path
-        d="M8.35 8.6l5.3 5.3m0-5.3l-5.3 5.3"
-        className="stroke-current"
-        strokeWidth="1.45"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
+const easeLux = [0.22, 1, 0.36, 1] as const;
 
-/** Symmetrical file-tree panel (ingest lives in the left column preview). */
-function BackspaceWorkspaceIllustration() {
-  const moss = 'rgba(46,90,58,0.95)';
-  const mossFill = 'rgba(46,90,58,0.16)';
-  const brass = '#C9A96E';
-  const line = 'rgba(255,255,255,0.14)';
-  const dim = 'rgba(148,163,184,0.7)';
-  const paper = 'rgba(255,255,255,0.05)';
-  const text = '#e4e4e7';
-  const file = '#a1a1aa';
+const btnPrimary =
+  'inline-flex min-h-11 w-full items-center justify-center rounded-md bg-tan px-6 py-3 text-sm font-semibold tracking-wide text-charcoal shadow-[0_12px_40px_-12px_rgba(210,180,140,0.35)] transition-all duration-300 hover:bg-tan-muted active:scale-[0.99] sm:w-auto sm:min-w-[10.5rem] sm:px-8 sm:py-3.5';
 
-  return (
-    <div className="mt-3 rounded border border-white/[0.1] bg-white/[0.03] p-3 sm:p-4">
-      <p className="sr-only">
-        Illustration of a synced workspace file tree: root workspace, datasets and runs folders, and versioned artifacts.
-      </p>
-      <svg viewBox="0 0 300 218" className="mx-auto h-auto w-full max-w-[320px] max-h-[260px]" aria-hidden>
-        <rect x="10" y="10" width="280" height="198" rx="8" fill="none" stroke={line} strokeWidth="1" />
-        <rect x="10" y="10" width="280" height="30" rx="8" fill={paper} stroke="none" />
-        <line x1="10" y1="40" x2="290" y2="40" stroke={line} strokeWidth="1" />
-        <circle cx="24" cy="25" r="3.25" fill="rgba(248,113,113,0.45)" />
-        <circle cx="38" cy="25" r="3.25" fill="rgba(234,179,8,0.45)" />
-        <circle cx="52" cy="25" r="3.25" fill="rgba(74,222,128,0.45)" />
-        <text x="150" y="27.5" textAnchor="middle" fill={dim} fontSize="9" fontFamily="ui-monospace, ui-sans-serif, system-ui" letterSpacing="0.02em">
-          workspace · synced
-        </text>
-        <path d="M 268 25 h 6 M 271 22 v 6" stroke={brass} strokeWidth="1.15" strokeLinecap="round" />
+const btnOutline =
+  'inline-flex min-h-11 w-full items-center justify-center rounded-md border border-brass/50 bg-transparent px-6 py-3 text-sm font-semibold tracking-wide text-zinc-200 transition-colors hover:border-brass hover:bg-brass/5 hover:text-tan active:scale-[0.99] sm:w-auto sm:min-w-[10.5rem] sm:px-8 sm:py-3.5';
 
-        <g transform="translate(0, 4)">
-          <rect x="22" y="52" width="14" height="11" rx="2" fill={mossFill} stroke={moss} strokeWidth="0.85" />
-          <text x="42" y="61" fill={text} fontSize="10" fontFamily="ui-monospace, monospace" fontWeight="500">
-            workspace/
-          </text>
-
-          <line x1="29" y1="63" x2="29" y2="188" stroke={line} strokeWidth="1" />
-
-          <path d="M 29 74 H 44 V 88" fill="none" stroke={line} strokeWidth="1" />
-          <rect x="46" y="80" width="13" height="10" rx="2" fill={mossFill} stroke={moss} strokeWidth="0.8" />
-          <text x="64" y="89" fill={text} fontSize="9.5" fontFamily="ui-monospace, monospace">
-            datasets/
-          </text>
-
-          <path d="M 29 100 H 52 V 114" fill="none" stroke={line} strokeWidth="1" />
-          <path d="M 52 114 H 60" fill="none" stroke={line} strokeWidth="1" />
-          <rect x="62" y="106" width="176" height="10" rx="2" fill={paper} stroke={line} strokeWidth="0.75" />
-          <text x="68" y="114" fill={file} fontSize="8.5" fontFamily="ui-monospace, monospace">
-            prices_daily.parquet
-          </text>
-
-          <path d="M 29 126 H 44 V 140" fill="none" stroke={line} strokeWidth="1" />
-          <rect x="46" y="132" width="13" height="10" rx="2" fill={mossFill} stroke={moss} strokeWidth="0.8" />
-          <text x="64" y="141" fill={text} fontSize="9.5" fontFamily="ui-monospace, monospace">
-            runs/
-          </text>
-
-          <path d="M 29 152 H 52 V 166" fill="none" stroke={line} strokeWidth="1" />
-          <path d="M 52 166 H 60" fill="none" stroke={line} strokeWidth="1" />
-          <rect x="62" y="158" width="176" height="10" rx="2" fill={paper} stroke={line} strokeWidth="0.75" />
-          <text x="68" y="166" fill={file} fontSize="8.5" fontFamily="ui-monospace, monospace">
-            manifest.json
-          </text>
-
-          <path d="M 29 178 H 52 V 192" fill="none" stroke={line} strokeWidth="1" />
-          <path d="M 52 192 H 60" fill="none" stroke={line} strokeWidth="1" />
-          <rect x="62" y="184" width="176" height="10" rx="2" fill={paper} stroke={moss} strokeWidth="0.65" opacity="0.95" />
-          <text x="68" y="192" fill={brass} fontSize="8.5" fontFamily="ui-monospace, monospace">
-            predictions.parquet
-          </text>
-        </g>
-      </svg>
-    </div>
-  );
-}
-
-/** Black surface + brass outline — shared by Risk, Library, and Backspace CTAs. */
 const btnSection =
   'inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md border border-brass bg-black px-5 py-3 text-[13px] font-semibold tracking-wide text-tan transition-all duration-300 hover:border-brass-deep hover:bg-neutral-950 hover:text-brass focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass/40 active:scale-[0.99] sm:w-auto sm:min-w-[10.25rem] sm:px-7 sm:py-3.5';
-
-const btnSectionCompact =
-  'inline-flex min-h-11 w-full items-center justify-center gap-2 rounded border border-brass bg-black px-3 py-2.5 text-[10px] font-semibold uppercase leading-tight tracking-[0.14em] text-tan transition-all duration-300 hover:border-brass-deep hover:bg-neutral-950 hover:text-brass focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass/40 active:scale-[0.99] sm:w-auto sm:min-h-0 sm:min-w-[11rem] sm:py-1.5';
 
 function SectionActions({ children }: { children: React.ReactNode }) {
   return (
@@ -114,328 +48,233 @@ function SectionActions({ children }: { children: React.ReactNode }) {
   );
 }
 
-const RISK_CARDS = [
-  {
-    title: 'Profit & Loss',
-    body: 'Mark-to-market and scenario P&L in one surface: see how the book moves with price, volatility, and time before you add size or put on a hedge.',
-  },
-  {
-    title: 'Stress Test',
-    body: 'Shock the whole portfolio against tail moves, wider vol, and liquidity gaps—same book, faster answers than one-off spreadsheets.',
-  },
-  {
-    title: 'Greeks',
-    body: 'Delta, gamma, theta, and vega together so directional risk, convexity bleed, and vol sensitivity stay in one lens—not four different tabs.',
-  },
-] as const;
+/* ------------------------------------------------------------------ */
+/* Section I — Hero                                                    */
+/* ------------------------------------------------------------------ */
 
-const STRATEGY_ROWS = [
-  { name: 'Mean Reversion', sym: 'SPY', tf: '15min', ran: '2026-04-12' },
-  { name: 'Momentum Breakout', sym: 'QQQ', tf: '1hr', ran: '2026-04-11' },
-  { name: 'Iron Condor', sym: 'AAPL', tf: 'Weekly', ran: '2026-04-10' },
-  { name: 'VWAP Fade', sym: 'NQ', tf: '5min', ran: '2026-04-09' },
-] as const;
-
-const HISTORY_ROWS = [
-  { d: '2026-04-12', sym: 'QQQ', strat: 'Momentum Breakout', en: '412.08', ex: '418.40', pnl: '+1,842', res: 'WIN' as const },
-  { d: '2026-04-11', sym: 'SPY', strat: 'Mean Reversion', en: '481.20', ex: '479.55', pnl: '-412', res: 'LOSS' as const },
-  { d: '2026-04-10', sym: 'AAPL', strat: 'Iron Condor', en: '—', ex: '—', pnl: '+620', res: 'WIN' as const },
-  { d: '2026-04-09', sym: 'NQ', strat: 'VWAP Fade', en: '18,442', ex: '18,510', pnl: '+340', res: 'WIN' as const },
-  { d: '2026-04-08', sym: 'SPY', strat: 'Mean Reversion', en: '483.10', ex: '482.20', pnl: '-180', res: 'LOSS' as const },
-];
-
-function PayoffCurveSvg({ className = '' }: { className?: string }) {
-  const uid = useId().replace(/:/g, '');
-  const gid = `hp-pay-${uid}`;
-
+function HeroSection() {
   return (
-    <svg
-      viewBox="0 0 400 220"
-      className={`h-auto w-full min-h-[200px] max-w-none sm:min-h-[240px] lg:min-h-[260px] ${className}`}
-      aria-hidden
-    >
-      <defs>
-        <linearGradient id={`${gid}-fill`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="rgba(46,90,58,0.38)" />
-          <stop offset="100%" stopColor="rgba(46,90,58,0)" />
-        </linearGradient>
-      </defs>
-      <rect x="0" y="0" width="400" height="220" fill="transparent" />
-      <line x1="40" y1="20" x2="40" y2="200" stroke="#C9A96E" strokeOpacity="0.35" strokeWidth="1" />
-      <line x1="40" y1="200" x2="380" y2="200" stroke="#C9A96E" strokeOpacity="0.35" strokeWidth="1" />
-      <path
-        d="M 40 170 Q 120 80 200 115 T 380 90"
-        fill="none"
-        stroke="rgba(212,212,216,0.35)"
-        strokeWidth="1"
-        strokeDasharray="3 4"
+    <section className="relative flex min-h-[calc(100svh-3.5rem)] flex-col justify-center overflow-hidden border-b border-white/[0.06] bg-dark-gray sm:min-h-[calc(100svh-3.75rem)]">
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_85%_70%_at_50%_-15%,rgba(46,90,58,0.12),transparent_58%)]"
+        aria-hidden
       />
-      <path
-        d="M 40 165 Q 120 40 200 95 T 380 55"
-        fill="none"
-        stroke="#C9A96E"
-        strokeWidth="1.5"
-        strokeOpacity="0.95"
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_45%_at_85%_85%,rgba(210,180,140,0.07),transparent_55%)]"
+        aria-hidden
       />
-      <path
-        d="M 40 165 Q 120 40 200 95 T 380 55 L 380 200 L 40 200 Z"
-        fill={`url(#${gid}-fill)`}
-        opacity="0.9"
-      />
-    </svg>
-  );
-}
+      <div className="relative z-10 mx-auto w-full max-w-content layout-gutter py-20 sm:py-28">
+        <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+          <motion.div
+            className="max-w-2xl"
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: easeLux }}
+          >
+            <p className="sc-serif mb-5 text-[11px] text-zinc-400">
+              <span className="font-display text-[14px] tracking-[0.2em] text-tan/90">general.exchange</span>
+            </p>
+            <h1 className="text-pretty font-display text-[clamp(2rem,7vw,3.75rem)] font-normal leading-[1.05] tracking-[-0.02em] text-neutral-50">
+              Every decision, settled on evidence before it is made.
+            </h1>
+            <p className="mt-6 max-w-xl text-pretty text-base font-normal leading-[1.75] text-zinc-400 sm:text-lg">
+              A terminal for traders who would rather know than guess. Test what you are about to do against the
+              conditions that actually occurred — then act on what the record tells you, not on a feeling.
+            </p>
+            <div className="mt-8 flex w-full flex-col gap-3 sm:flex-row">
+              <Link href="/download" className={btnPrimary}>
+                Download App
+              </Link>
+              <Link href="/the-engine" className={btnOutline}>
+                Trade Engine
+              </Link>
+            </div>
+          </motion.div>
 
-function HistoryIllustration() {
-  return (
-    <>
-      <ul className="divide-y divide-white/[0.08] sm:hidden" role="list">
-        {HISTORY_ROWS.map((row) => {
-          const isWin = row.res === 'WIN';
-          return (
-            <li key={row.d + row.sym} className="flex items-center justify-between gap-4 px-3 py-4 sm:px-4">
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-neutral-50">
-                  {row.sym}
-                  <span className="ml-2 text-zinc-600">·</span>
-                  <span className="ml-2 text-zinc-400">{row.strat}</span>
-                </p>
-                <p className="mt-0.5 font-mono text-[10px] text-zinc-500 tabular">{row.d}</p>
-              </div>
-              <div className="flex shrink-0 items-center gap-3">
-                <span className={`font-mono text-sm tabular ${isWin ? 'text-moss' : 'text-rose-400'}`}>{row.pnl}</span>
-                <span
-                  className={`font-display text-base ${isWin ? 'text-moss' : 'text-zinc-500'}`}
-                  aria-label={row.res}
-                >
-                  {isWin ? '▲' : '▽'}
-                </span>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
-
-      <div className="hidden overflow-hidden rounded-lg border border-white/[0.08] bg-charcoal/70 shadow-[0_24px_48px_-28px_rgba(0,0,0,0.45)] sm:block">
-        <table className="w-full table-fixed border-collapse text-left text-xs">
-          <thead>
-            <tr className="border-b border-white/[0.08] bg-white/[0.04] sc-serif text-[10px] text-zinc-400">
-              <th className="w-[12%] px-3 py-3 font-medium">Date</th>
-              <th className="w-[9%] px-3 py-3 font-medium">Sym</th>
-              <th className="w-[32%] px-3 py-3 font-medium">Strategy</th>
-              <th className="w-[13%] px-3 py-3 font-medium">Entry</th>
-              <th className="w-[13%] px-3 py-3 font-medium">Exit</th>
-              <th className="w-[13%] px-3 py-3 font-medium">P&amp;L</th>
-              <th className="w-[8%] px-3 py-3 text-center font-medium">·</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-white/[0.06]">
-            {HISTORY_ROWS.map((row) => {
-              const isWin = row.res === 'WIN';
-              return (
-                <tr
-                  key={row.d + row.sym}
-                  className="text-zinc-200 transition-colors hover:bg-white/[0.04]"
-                >
-                  <td className="px-3 py-3 font-mono text-[11px] text-zinc-500 tabular">{row.d}</td>
-                  <td className="px-3 py-3 font-medium text-neutral-50">{row.sym}</td>
-                  <td className="px-3 py-3 text-zinc-400">{row.strat}</td>
-                  <td className="px-3 py-3 font-mono text-[11px] tabular text-zinc-300">{row.en}</td>
-                  <td className="px-3 py-3 font-mono text-[11px] tabular text-zinc-300">{row.ex}</td>
-                  <td className={`px-3 py-3 font-mono text-[11px] tabular ${isWin ? 'text-moss' : 'text-rose-400'}`}>
-                    {row.pnl}
-                  </td>
-                  <td
-                    className={`px-3 py-3 text-center font-display text-base ${isWin ? 'text-moss' : 'text-zinc-500'}`}
-                    aria-label={row.res}
-                  >
-                    {isWin ? '▲' : '▽'}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+          <motion.div
+            className="relative mx-auto w-full max-w-md lg:max-w-none"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.65, delay: 0.1, ease: easeLux }}
+          >
+            {/* Bezel — brass rounded frame, no black outline */}
+            <div className="overflow-hidden rounded-[1.75rem] border border-[#8B7D6B]/55 shadow-[0_48px_100px_-28px_rgba(0,0,0,0.75)]">
+              <Image
+                src="/images/generalexchangehorse.png"
+                alt="General Exchange — rider crossing the ford at dawn"
+                width={994}
+                height={1040}
+                priority
+                className="h-auto w-full object-cover contrast-[1.12] saturate-[1.1] brightness-[0.88]"
+              />
+            </div>
+          </motion.div>
+        </div>
       </div>
-    </>
+    </section>
   );
 }
+
+/* ------------------------------------------------------------------ */
+/* Page                                                                */
+/* ------------------------------------------------------------------ */
 
 export function HomepageFullPageSections() {
   return (
     <div className="bg-charcoal text-neutral-100">
-      <Hero />
+      <HeroSection />
 
+      {/* II — Backtesting */}
       <SectionShell
         tone="primary"
-        eyebrowNum="I"
-        eyebrowLabel="Risk"
-        ariaLabelledBy="hp-risk-title"
-        title={<span id="hp-risk-title">Real Time Payoff Simulation</span>}
-        lede="Exposure visualization is how you actually see the book: net and gross by name, Greeks and decay through the session, where theta is earned or spent, and how concentration stacks across sectors, expiries, and venues—ladders, heatmaps, and drill-downs in one surface so you are not reconciling three spreadsheets at midnight. The goal is a live, legible picture of risk and capital before you size anything, not a static report that was already stale when it left the queue."
-      >
-        <div className="mt-10 flex min-w-0 flex-col gap-10 sm:mt-12 lg:flex-row lg:items-start lg:gap-12">
-          <div className="min-w-0 flex-1">
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-1 lg:gap-7">
-              {RISK_CARDS.map((c) => (
-                <div key={c.title} className="min-w-0 border-l-2 border-brass/40 py-1 pl-4 sm:pl-5">
-                  <h3 className="sc-serif text-[13px] font-medium text-neutral-50">{c.title}</h3>
-                  <p className="mt-2 text-pretty text-[14px] font-normal leading-[1.7] text-zinc-400 break-words">{c.body}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="flex w-full flex-col gap-6 lg:max-w-xl xl:max-w-2xl lg:shrink-0">
-            <div className="rounded-lg border border-white/[0.08] bg-charcoal/60 p-5 sm:p-7">
-              <p className="mb-4 text-[10px] font-semibold uppercase tracking-wider text-zinc-500">Payoff preview</p>
-              <PayoffCurveSvg />
-            </div>
-            <div className="flex flex-col gap-3 sm:flex-row sm:gap-3 lg:flex-col xl:flex-row">
-              <Link href="/reconnaissance" className={`${btnSection} flex-1 sm:max-w-md lg:w-full xl:max-w-none`}>
-                Riskonometry
-              </Link>
-            </div>
-          </div>
-        </div>
-      </SectionShell>
-
-      <SectionShell
-        tone="secondary"
         eyebrowNum="II"
-        eyebrowLabel="Library"
-        ariaLabelledBy="hp-library-title"
-        title={<span id="hp-library-title">Library</span>}
-        lede={
-          'Reusable strategy templates, deployment into The Exchange and Backspace, and a full trade history—P&L, decisions, and performance by strategy, symbol, and session—in one place.'
-        }
+        eyebrowLabel="The proving ground"
+        ariaLabelledBy="hp-bt-title"
+        title={<span id="hp-bt-title">Replay any trade against any environment that ever happened.</span>}
+        lede="Run the decision as if for the first time, against the market exactly as it was. See not only what happened, but why it worked in the conditions where it worked — and why it failed in the ones where it did not."
       >
-        <div className="mt-10 grid grid-cols-1 items-start gap-10 lg:grid-cols-2 lg:gap-12">
-          <div className="min-w-0">
-            <h3 className="font-display text-xl font-normal tracking-tight text-neutral-50 sm:text-2xl">
-              Build once. Deploy anywhere.
-            </h3>
-            <p className="mt-3 text-sm font-normal leading-[1.75] text-zinc-400 sm:text-base">
-              Every strategy you save becomes a reusable template. Wire it into The Exchange, backtest it in Backspace, or share
-              it later.
-            </p>
-            <div className="mt-6 overflow-hidden rounded-lg border border-white/[0.08] bg-charcoal/60">
-              <div className="flex items-center justify-between border-b border-white/[0.08] bg-white/[0.04] px-4 py-3 sm:px-5">
-                <span className="sc-serif text-[11px] text-zinc-400">Strategy library</span>
-              </div>
-              <ul className="divide-y divide-white/[0.06]" role="list">
-                {STRATEGY_ROWS.map((r) => (
-                  <li key={r.name}>
-                    <div className="flex flex-col gap-3 px-3 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5 sm:py-3.5">
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium text-neutral-50 sm:truncate">
-                          {r.name} <span className="text-zinc-500">·</span> {r.sym}{' '}
-                          <span className="text-zinc-500">·</span> {r.tf}
-                        </p>
-                        <p className="mt-0.5 text-[11px] font-normal text-zinc-500">Last run {r.ran}</p>
-                      </div>
-                      <Link href="/dashboard" className={`${btnSectionCompact} shrink-0 self-stretch sm:self-center sm:shrink-0`}>
-                        Load into The Exchange
-                      </Link>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          <div className="min-w-0">
-            <h3 className="font-display text-xl font-normal tracking-tight text-neutral-50 sm:text-2xl">
-              There Is A Story In Every Trade
-            </h3>
-            <p className="mt-3 text-sm font-normal leading-[1.75] text-zinc-400 sm:text-base">
-              P&amp;L tracking. Decision review. Performance broken down by strategy, symbol, and session. This is what makes you
-              better.
-            </p>
-            <div className="mt-6 rounded-lg border border-white/[0.08] bg-charcoal/40 p-1 sm:p-0 sm:bg-transparent sm:border-0">
-              <HistoryIllustration />
-            </div>
-          </div>
+        <div className="mt-10">
+          <BacktestIllustration />
         </div>
-
         <SectionActions>
-          <Link href="/tokenomics" className={btnSection}>
-            Tokenomics
+          <Link href="/backspace" className={btnSection}>
+            Open the proving ground
           </Link>
         </SectionActions>
-
-        <HomepageRemainingPillars />
       </SectionShell>
 
+      {/* III — Options intelligence */}
+      <SectionShell
+        tone="secondary"
+        eyebrowNum="III"
+        eyebrowLabel="Position clarity"
+        ariaLabelledBy="hp-opt-title"
+        title={<span id="hp-opt-title">See every dimension of a position — before and after you enter it.</span>}
+        lede="Watch how a position bleeds time value, how it responds if the underlying moves two percent in the next hour, how it behaves when volatility expands, and exactly where it needs to be managed or closed. Nothing hidden, nothing assumed."
+      >
+        <div className="mt-10">
+          <OptionsIllustration />
+        </div>
+        <SectionActions>
+          <Link href="/options" className={btnSection}>
+            Inspect the chain
+          </Link>
+        </SectionActions>
+      </SectionShell>
+
+      {/* IV — Market intelligence */}
       <SectionShell
         tone="primary"
-        verticalRhythm="lastOnPage"
-        eyebrowNum="III"
-        eyebrowLabel="Backspace"
-        ariaLabelledBy="hp-backspace-title"
-        title={
-          <span
-            id="hp-backspace-title"
-            className="block text-pretty text-[clamp(1.85rem,8vw,3.5rem)] leading-[1.02] tracking-tight break-words"
-          >
-            Backspace
-          </span>
-        }
-        lede="Our proprietary backtesting engine."
+        eyebrowNum="IV"
+        eyebrowLabel="Who, and why"
+        ariaLabelledBy="hp-mi-title"
+        title={<span id="hp-mi-title">Understand not just what the market is doing, but who is making it happen.</span>}
+        lede="The system models institutional positioning, hedging behavior, and the patterns underneath order flow to find the environments where the risk and reward on a strategy is most in your favor. It tells the difference between noise and conviction."
       >
-        <blockquote className="mt-6 max-w-4xl border-l-2 border-brass pl-4 text-pretty text-[15px] font-normal leading-[1.75] text-zinc-300 break-words sm:mt-8 sm:pl-6 sm:text-base">
-          Backspace is where you prove a trading plan before you risk real money. Load your data, pick a model that
-          fits—XGBoost, LSTM, or reinforcement learning—and run it on real history so you see calm days and rough ones. You get
-          simple reports that stack predictions next to what actually happened and sketch how orders might have filled. It is
-          the step between a hunch and a position your desk can explain with confidence—not a toy, but the proof layer between
-          your idea and your book.
-        </blockquote>
-
-        <div className="mt-8 grid grid-cols-1 gap-6 pb-4 sm:mt-10 sm:gap-6 sm:pb-6 lg:grid-cols-2 lg:items-stretch lg:gap-8 lg:pb-7">
-          <div className="w-full min-w-0 rounded-lg border border-white/[0.08] bg-charcoal/60 p-5 sm:p-6">
-            <p className="sc-serif text-[11px] text-zinc-500">Backspace · preview</p>
-            <div className="mt-3 rounded border border-dashed border-white/[0.12] bg-white/[0.03] px-4 py-8 text-center">
-              <p className="text-xs text-zinc-300">Drop dataset or browse</p>
-              <p className="mt-1 text-[10px] text-zinc-500 tabular">.csv · .json · .parquet</p>
-            </div>
-            <div className="mt-4 h-28 rounded border border-white/[0.08] bg-white/[0.03] p-3">
-              <p className="sc-serif text-[10px] text-zinc-500">Prediction vs actual</p>
-              <svg viewBox="0 0 280 72" className="mt-2 h-full w-full" aria-hidden>
-                <path
-                  d="M 0 50 L 40 45 L 80 52 L 120 38 L 160 44 L 200 28 L 240 36 L 280 22"
-                  fill="none"
-                  stroke="rgba(46,90,58,0.85)"
-                  strokeWidth="1.25"
-                />
-                <path
-                  d="M 0 54 L 40 48 L 80 55 L 120 42 L 160 48 L 200 32 L 240 40 L 280 28"
-                  fill="none"
-                  stroke="#C9A96E"
-                  strokeWidth="1.25"
-                  strokeOpacity="0.95"
-                />
-              </svg>
-            </div>
+        <div className="mt-10 grid gap-6 lg:grid-cols-[1.4fr_1fr] lg:items-center">
+          <MarketIntelIllustration />
+          <div className="space-y-5">
+            {[
+              ['Positioning', 'Where the largest participants are leaning, and how heavily.'],
+              ['Hedging pressure', 'The flows that are forced, not chosen — and the levels they cluster around.'],
+              ['Conviction', 'Whether activity reflects information, or just movement.'],
+            ].map(([h, b]) => (
+              <div key={h} className="border-l-2 border-brass/40 pl-4">
+                <h3 className="sc-serif text-[13px] text-neutral-50">{h}</h3>
+                <p className="mt-1.5 text-[14px] leading-[1.7] text-zinc-400">{b}</p>
+              </div>
+            ))}
           </div>
+        </div>
+      </SectionShell>
 
-          <div className="flex min-h-0 w-full min-w-0 flex-col gap-5 rounded-lg border border-white/[0.08] bg-charcoal/60 p-5 sm:flex-row sm:items-stretch sm:gap-6 sm:p-6">
-            <div className="min-w-0 flex-1">
-              <p className="sc-serif text-[11px] text-zinc-500">Backspace · workspace</p>
-              <BackspaceWorkspaceIllustration />
-            </div>
-            <div className="flex shrink-0 flex-col justify-center border-t border-white/[0.08] pt-5 sm:w-auto sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0">
-              <Link href="/backspace" className={`${btnSection} w-full min-w-0 justify-center sm:w-auto sm:min-w-[10.25rem]`}>
-                <BackspaceGlyph className="h-[1.05rem] w-[1.05rem] shrink-0 opacity-90" />
-                Backspace
+      {/* V — Strategy library */}
+      <SectionShell
+        tone="secondary"
+        eyebrowNum="V"
+        eyebrowLabel="Versioned & portable"
+        ariaLabelledBy="hp-lib-title"
+        title={<span id="hp-lib-title">Build a strategy, test it, and keep every version of its results beside it.</span>}
+        lede="Each strategy is versioned and portable — stored alongside every backtest it ever produced. Start from your own work, or from a strategy someone else has already proven, and make it yours."
+      >
+        <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_1.2fr] lg:items-center">
+          <div className="space-y-5">
+            {[
+              ['Nothing is lost', 'Every revision and every result is preserved and reproducible.'],
+              ['Portable by design', 'Move a strategy between research, paper, and the desk without rewriting it.'],
+              ['Start from proven work', 'Fork a published strategy and run it against your own parameters.'],
+            ].map(([h, b]) => (
+              <div key={h} className="border-l-2 border-brass/40 pl-4">
+                <h3 className="sc-serif text-[13px] text-neutral-50">{h}</h3>
+                <p className="mt-1.5 text-[14px] leading-[1.7] text-zinc-400">{b}</p>
+              </div>
+            ))}
+          </div>
+          <StrategyLibraryIllustration />
+        </div>
+        <SectionActions>
+          <Link href="/dashboard" className={btnSection}>
+            Browse the library
+          </Link>
+        </SectionActions>
+      </SectionShell>
+
+      {/* VI — Institutional data access */}
+      <SectionShell
+        tone="primary"
+        eyebrowNum="VI"
+        eyebrowLabel="For institutions"
+        ariaLabelledBy="hp-data-title"
+        title={<span id="hp-data-title">The access layer you have been looking for.</span>}
+        lede="If you need institutional market data, options analytics, or computed signals to power your own systems, the platform's infrastructure is available to your firm directly. One access layer, built to be relied on."
+      >
+        <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-center">
+          <DataAccessIllustration />
+          <div className="space-y-5">
+            {[
+              ['Market data', 'The same record the platform itself runs on.'],
+              ['Options analytics', 'Every sensitivity, surface, and flow measure, computed and ready.'],
+              ['Computed signals', 'Delivered to your systems, with the timestamp of the data behind them.'],
+            ].map(([h, b]) => (
+              <div key={h} className="border-l-2 border-brass/40 pl-4">
+                <h3 className="sc-serif text-[13px] text-neutral-50">{h}</h3>
+                <p className="mt-1.5 text-[14px] leading-[1.7] text-zinc-400">{b}</p>
+              </div>
+            ))}
+            <Link href="/pricing" className={btnSection}>
+              Talk to us about access
+            </Link>
+          </div>
+        </div>
+      </SectionShell>
+
+      {/* VII — Trust & audit */}
+      <SectionShell
+        tone="secondary"
+        verticalRhythm="lastOnPage"
+        eyebrowNum="VII"
+        eyebrowLabel="Provenance"
+        ariaLabelledBy="hp-trust-title"
+        title={<span id="hp-trust-title">If a number is wrong, you can find out exactly why.</span>}
+        lede="Every signal, every backtest, and every computation traces back to the raw data that produced it. Nothing is a black box. When you need to defend a number, the whole chain is there."
+      >
+        <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_1.3fr] lg:items-center">
+          <LineageIllustration />
+          <div>
+            <blockquote className="border-l-2 border-brass pl-5 text-pretty text-[15px] leading-[1.75] text-zinc-300 sm:text-base">
+              The point of provenance is not bookkeeping. It is the difference between a result you can stand behind in
+              front of a risk committee and one you simply hope is right. Here, every figure is the end of a chain you
+              can walk, all the way back to the tick.
+            </blockquote>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link href="/request-access" className={btnPrimary}>
+                Request access
+              </Link>
+              <Link href="/our-story" className={btnOutline}>
+                Our story
               </Link>
             </div>
           </div>
-        </div>
-
-        <div className="mt-12 border-t border-white/[0.06] pt-10 sm:mt-14 sm:pt-12 lg:mt-16 lg:pt-14">
-          <div className="mx-auto max-w-content layout-gutter">
-            <div className="rule-brass my-6 sm:my-8 lg:my-10" aria-hidden />
-          </div>
-          <HomepageTrustCtaRestored />
         </div>
       </SectionShell>
     </div>

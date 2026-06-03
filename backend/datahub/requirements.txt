@@ -1,0 +1,2 @@
+# DataHub catalog tooling (run from a workstation / CI, not a long-running service).
+acryl-datahub[clickhouse]==0.13.3

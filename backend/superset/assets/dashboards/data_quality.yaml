@@ -1,0 +1,59 @@
+dashboard_title: Data Quality — general.exchange
+description: Freshness, integrity, and volume health across the warehouse.
+css: ""
+slug: data-quality
+certified_by: ""
+certification_details: ""
+published: true
+uuid: 7a2b1c00-0000-4000-8000-0000000000f1
+version: 1.0.0
+position:
+  DASHBOARD_VERSION_KEY: v2
+  ROOT_ID:
+    type: ROOT
+    id: ROOT_ID
+    children: [GRID_ID]
+  GRID_ID:
+    type: GRID
+    id: GRID_ID
+    children: [ROW-1, ROW-2]
+  ROW-1:
+    type: ROW
+    id: ROW-1
+    meta: { background: BACKGROUND_TRANSPARENT }
+    children: [CHART-health, CHART-status]
+  ROW-2:
+    type: ROW
+    id: ROW-2
+    meta: { background: BACKGROUND_TRANSPARENT }
+    children: [CHART-failing]
+  CHART-health:
+    type: CHART
+    id: CHART-health
+    meta:
+      uuid: 7a2b1c00-0000-4000-8000-0000000000e1
+      width: 8
+      height: 50
+      sliceName: "DQ — Pass % over time"
+    children: []
+  CHART-status:
+    type: CHART
+    id: CHART-status
+    meta:
+      uuid: 7a2b1c00-0000-4000-8000-0000000000e2
+      width: 4
+      height: 50
+      sliceName: "DQ — Status breakdown"
+    children: []
+  CHART-failing:
+    type: CHART
+    id: CHART-failing
+    meta:
+      uuid: 7a2b1c00-0000-4000-8000-0000000000e3
+      width: 12
+      height: 50
+      sliceName: "DQ — Failing & warning checks"
+    children: []
+metadata:
+  color_scheme: supersetColors
+  refresh_frequency: 60

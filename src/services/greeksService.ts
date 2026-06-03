@@ -12,6 +12,32 @@ export interface GreeksData {
   timestamp: number;
 }
 
+/**
+ * Full first- and second-order Greeks (Black-Scholes-Merton, dividend-free).
+ *
+ * Conventions:
+ *  - vega is per 1.00 (100%) change in volatility
+ *  - theta and charm are reported per calendar day
+ *  - color is per day; all others are per unit / per year as standard
+ */
+export interface FullGreeks {
+  delta: number;
+  gamma: number;
+  theta: number; // per day
+  vega: number;
+  rho: number;
+  lambda: number; // elasticity
+  epsilon: number; // dividend rho (psi), q = 0
+  charm: number; // dDelta/dTime, per day
+  vanna: number; // dDelta/dVol = dVega/dSpot
+  volga: number; // dVega/dVol (vomma)
+  speed: number; // dGamma/dSpot
+  zomma: number; // dGamma/dVol
+  color: number; // dGamma/dTime, per day
+  price: number; // theoretical option price
+  timestamp: number;
+}
+
 export interface OptionContract {
   symbol: string;
   strike: number;
@@ -70,6 +96,64 @@ class GreeksService {
       vega,
       rho,
       timestamp: Date.now()
+    };
+  }
+
+  /**
+   * Calculate the full first- and second-order Greek surface (BSM, q = 0).
+   * Used by the options chain panel and the GEX-by-strike computation.
+   */
+  calculateFullGreeks(option: OptionContract): FullGreeks {
+    const { underlyingPrice: S, strike: K, timeToExpiration: T, riskFreeRate: r, impliedVolatility: sigma, type } =
+      option;
+    const isCall = type === 'CALL';
+    const now = Date.now();
+
+    if (T <= 0 || sigma <= 0) {
+      const delta = isCall ? (S > K ? 1 : 0) : (S < K ? -1 : 0);
+      return {
+        delta, gamma: 0, theta: 0, vega: 0, rho: 0, lambda: 0, epsilon: 0,
+        charm: 0, vanna: 0, volga: 0, speed: 0, zomma: 0, color: 0,
+        price: Math.max(isCall ? S - K : K - S, 0), timestamp: now,
+      };
+    }
+
+    const sqrtT = Math.sqrt(T);
+    const d1 = (Math.log(S / K) + (r + 0.5 * sigma * sigma) * T) / (sigma * sqrtT);
+    const d2 = d1 - sigma * sqrtT;
+
+    const N = (x: number) => 0.5 * (1 + this.erf(x / Math.SQRT2));
+    const phi = (x: number) => Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI);
+    const disc = Math.exp(-r * T);
+    const YEAR = 365;
+
+    const delta = isCall ? N(d1) : N(d1) - 1;
+    const gamma = phi(d1) / (S * sigma * sqrtT);
+    const vega = (S * phi(d1) * sqrtT) / 100; // per 1% vol
+    const thetaYr = isCall
+      ? -(S * phi(d1) * sigma) / (2 * sqrtT) - r * K * disc * N(d2)
+      : -(S * phi(d1) * sigma) / (2 * sqrtT) + r * K * disc * N(-d2);
+    const theta = thetaYr / YEAR;
+    const rho = (isCall ? K * T * disc * N(d2) : -K * T * disc * N(-d2)) / 100;
+
+    const price = isCall ? S * N(d1) - K * disc * N(d2) : K * disc * N(-d2) - S * N(-d1);
+    const lambda = price !== 0 ? delta * (S / price) : 0;
+    const epsilon = isCall ? -S * T * N(d1) : S * T * N(-d1); // q = 0
+
+    const charmYr = -phi(d1) * ((2 * r * T - d2 * sigma * sqrtT) / (2 * T * sigma * sqrtT));
+    const charm = charmYr / YEAR;
+    const vanna = -phi(d1) * (d2 / sigma);
+    const volga = vega * ((d1 * d2) / sigma);
+    const speed = -(gamma / S) * (d1 / (sigma * sqrtT) + 1);
+    const zomma = gamma * ((d1 * d2 - 1) / sigma);
+    const colorYr =
+      -phi(d1) / (2 * S * T * sigma * sqrtT) *
+      (2 * r * T + 1 + (d1 * (2 * r * T - d2 * sigma * sqrtT)) / (sigma * sqrtT));
+    const color = colorYr / YEAR;
+
+    return {
+      delta, gamma, theta, vega, rho, lambda, epsilon,
+      charm, vanna, volga, speed, zomma, color, price, timestamp: now,
     };
   }
 

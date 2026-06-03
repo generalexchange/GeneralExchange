@@ -1,0 +1,26 @@
+# DataHub ingestion recipe — catalogs every ClickHouse table in the warehouse.
+#
+# Run with the DataHub CLI (see README):
+#   datahub ingest -c backend/datahub/recipe.yml
+#
+# This populates the catalog with table schemas, stats, and profiles. The
+# cross-system lineage edges (Polygon -> Redpanda -> ClickHouse -> dbt ->
+# signals/backtests) are emitted separately by lineage_emitter.py.
+
+source:
+  type: clickhouse
+  config:
+    host_port: ${CLICKHOUSE_HOST:-clickhouse}:${CLICKHOUSE_HTTP_PORT:-8123}
+    database: general_exchange
+    username: ${CLICKHOUSE_USER:-default}
+    password: ${CLICKHOUSE_PASSWORD:-}
+    include_views: true
+    include_table_lineage: true
+    profiling:
+      enabled: true
+      profile_table_level_only: false
+
+sink:
+  type: datahub-rest
+  config:
+    server: ${DATAHUB_GMS_URL:-http://datahub-gms:8080}

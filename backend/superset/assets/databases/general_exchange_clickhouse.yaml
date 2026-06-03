@@ -1,0 +1,16 @@
+database_name: general.exchange (ClickHouse)
+sqlalchemy_uri: clickhousedb+connect://default:@clickhouse:8123/general_exchange
+cache_timeout: null
+expose_in_sqllab: true
+allow_run_async: true
+allow_ctas: false
+allow_cvas: false
+allow_dml: false
+extra: |
+  {
+    "metadata_params": {},
+    "engine_params": {},
+    "schemas_allowed_for_file_upload": []
+  }
+uuid: 7a2b1c00-0000-4000-8000-0000000000d1
+version: 1.0.0

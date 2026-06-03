@@ -1,0 +1,17 @@
+slice_name: DQ — Pass % over time
+viz_type: echarts_timeseries_line
+params: |
+  {
+    "datasource": "7a2b1c00-0000-4000-8000-0000000000d2__table",
+    "viz_type": "echarts_timeseries_line",
+    "x_axis": "checked_at",
+    "time_grain_sqla": "PT1H",
+    "metrics": ["pass_pct"],
+    "groupby": [],
+    "row_limit": 1000
+  }
+query_context: null
+cache_timeout: null
+uuid: 7a2b1c00-0000-4000-8000-0000000000e1
+version: 1.0.0
+dataset_uuid: 7a2b1c00-0000-4000-8000-0000000000d2

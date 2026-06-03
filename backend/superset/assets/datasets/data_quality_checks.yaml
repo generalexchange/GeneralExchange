@@ -1,0 +1,56 @@
+table_name: data_quality_checks
+schema: general_exchange
+main_dttm_col: checked_at
+description: Automated data-quality check results (freshness, nulls, dupes, volume, range).
+default_endpoint: null
+offset: 0
+cache_timeout: null
+catalog: null
+sql: ""
+params: null
+template_params: null
+filter_select_enabled: true
+fetch_values_predicate: null
+extra: null
+normalize_columns: false
+always_filter_main_dttm: false
+uuid: 7a2b1c00-0000-4000-8000-0000000000d2
+version: 1.0.0
+database_uuid: 7a2b1c00-0000-4000-8000-0000000000d1
+columns:
+  - column_name: checked_at
+    is_dttm: true
+    type: DATETIME
+  - column_name: dataset
+    type: STRING
+    groupby: true
+  - column_name: check_name
+    type: STRING
+    groupby: true
+  - column_name: check_type
+    type: STRING
+    groupby: true
+  - column_name: status
+    type: STRING
+    groupby: true
+  - column_name: observed
+    type: FLOAT
+  - column_name: threshold
+    type: FLOAT
+  - column_name: rows_scanned
+    type: BIGINT
+  - column_name: detail
+    type: STRING
+metrics:
+  - metric_name: count
+    expression: count(*)
+    verbose_name: Checks
+  - metric_name: failing
+    expression: countIf(status = 'FAIL')
+    verbose_name: Failing
+  - metric_name: warning
+    expression: countIf(status = 'WARN')
+    verbose_name: Warning
+  - metric_name: pass_pct
+    expression: round(100 * countIf(status = 'PASS') / count(*), 1)
+    verbose_name: Pass %

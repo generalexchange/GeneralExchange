@@ -1,0 +1,30 @@
+slice_name: DQ — Failing & warning checks
+viz_type: table
+params: |
+  {
+    "datasource": "7a2b1c00-0000-4000-8000-0000000000d2__table",
+    "viz_type": "table",
+    "query_mode": "raw",
+    "all_columns": ["checked_at", "dataset", "check_name", "status", "observed", "threshold", "detail"],
+    "order_by_cols": ["[\"checked_at\", false]"],
+    "row_limit": 200,
+    "adhoc_filters": [
+      {
+        "expressionType": "SIMPLE",
+        "subject": "status",
+        "operator": "IN",
+        "comparator": ["FAIL", "WARN"],
+        "clause": "WHERE"
+      },
+      {
+        "expressionType": "SQL",
+        "clause": "WHERE",
+        "sqlExpression": "checked_at > now() - INTERVAL 1 HOUR"
+      }
+    ]
+  }
+query_context: null
+cache_timeout: null
+uuid: 7a2b1c00-0000-4000-8000-0000000000e3
+version: 1.0.0
+dataset_uuid: 7a2b1c00-0000-4000-8000-0000000000d2

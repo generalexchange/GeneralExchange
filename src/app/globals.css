@@ -189,3 +189,65 @@ img {
   max-width: 100%;
   height: auto;
 }
+
+/* =====================================================================
+ * AG Grid — general.exchange Quartz Dark overrides (.ge-grid)
+ * Applied on top of ag-theme-quartz-dark. Charcoal surface, brass hover /
+ * selection, monospace cells, hairline borders matching the dashboard.
+ * ===================================================================== */
+.ge-grid.ag-theme-quartz-dark {
+  --ag-background-color: #13141c;
+  --ag-foreground-color: #d4d4d8;
+  --ag-header-background-color: #1c1d26;
+  --ag-header-foreground-color: #a1a1aa;
+  --ag-odd-row-background-color: transparent;
+  --ag-row-hover-color: rgba(201, 169, 110, 0.04);
+  --ag-selected-row-background-color: rgba(201, 169, 110, 0.08);
+  --ag-border-color: rgba(255, 255, 255, 0.06);
+  --ag-row-border-color: rgba(255, 255, 255, 0.05);
+  --ag-header-column-separator-color: rgba(255, 255, 255, 0.06);
+  --ag-cell-horizontal-border: rgba(255, 255, 255, 0.04);
+  --ag-font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --ag-font-size: 11px;
+  --ag-grid-size: 4px;
+  --ag-borders: none;
+  --ag-borders-critical: solid 1px;
+  --ag-row-border-width: 1px;
+  --ag-range-selection-border-color: rgba(201, 169, 110, 0.4);
+  --ag-input-focus-border-color: rgba(201, 169, 110, 0.5);
+  --ag-accent-color: #C9A96E;
+  --ag-checkbox-checked-color: #C9A96E;
+}
+
+.ge-grid.ag-theme-quartz-dark .ag-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ge-grid.ag-theme-quartz-dark .ag-header-cell-text {
+  letter-spacing: 0.08em;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.ge-grid.ag-theme-quartz-dark .ag-row-group {
+  font-weight: 600;
+  color: #d2b48c;
+}
+
+.ge-grid.ag-theme-quartz-dark .ag-cell {
+  font-variant-numeric: tabular-nums;
+}
+
+/* =====================================================================
+ * Perspective viewer — general.exchange dark surface
+ * ===================================================================== */
+perspective-viewer {
+  --theme-name: 'Pro Dark';
+  background: #13141c;
+  color: #d4d4d8;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --plugin--background: #13141c;
+  --icon--color: #a1a1aa;
+  --active--color: #C9A96E;
+  --select--background: #1c1d26;
+}

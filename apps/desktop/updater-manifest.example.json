@@ -1,0 +1,19 @@
+{
+  "version": "0.1.0",
+  "notes": "General Exchange Terminal release.",
+  "pub_date": "2026-06-02T00:00:00Z",
+  "platforms": {
+    "darwin-universal": {
+      "signature": "<minisign signature of the .app.tar.gz>",
+      "url": "https://github.com/general-exchange/terminal/releases/download/v0.1.0/General-Exchange_universal.app.tar.gz"
+    },
+    "windows-x86_64": {
+      "signature": "<minisign signature of the nsis .zip>",
+      "url": "https://github.com/general-exchange/terminal/releases/download/v0.1.0/General-Exchange_x64-setup.nsis.zip"
+    },
+    "linux-x86_64": {
+      "signature": "<minisign signature of the AppImage .tar.gz>",
+      "url": "https://github.com/general-exchange/terminal/releases/download/v0.1.0/General-Exchange_amd64.AppImage.tar.gz"
+    }
+  }
+}
