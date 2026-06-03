@@ -23,6 +23,7 @@ import { motion } from 'framer-motion';
 import { SectionShell } from '@/components/homepage/SectionShell';
 import {
   ExecutionIntegrationIllustration,
+  BacktestLlmIllustration,
   MarketIntelIllustration,
   StrategyLibraryIllustration,
   WarehouseServiceIllustration,
@@ -166,9 +167,8 @@ export function HomepageFullPageSections() {
         eyebrowLabel="Execution"
         ariaLabelledBy="hp-exec-title"
         title={<span id="hp-exec-title">Interactive Brokers execution, embedded directly into the workflow.</span>}
-        lede="Route orders through Interactive Brokers from the same terminal where the strategy is researched and validated. Every submission carries pre-trade controls, policy checks, and an audit trail from decision to fill."
       >
-        <div className="mt-10">
+        <div className="mt-6 lg:mt-8">
           <ExecutionIntegrationIllustration />
         </div>
         <SectionActions>
@@ -185,7 +185,6 @@ export function HomepageFullPageSections() {
         eyebrowLabel="The warehouse"
         ariaLabelledBy="hp-wh-title"
         title={<span id="hp-wh-title">Warehouse service: one normalized source for every model, chart, and run.</span>}
-        lede="The warehouse service publishes strategy-ready parameters — regime, sentiment, liquidity state, volatility state, and flow structure — from a point-in-time governed record. Core snapshots are archived through floppydisk.cc and IPFS content-addressed layers so retrieval stays deterministic."
       >
         <div className="mt-10">
           <WarehouseServiceIllustration />
@@ -222,7 +221,7 @@ export function HomepageFullPageSections() {
         lede="Run path-dependent simulations with realistic fills, slippage modeling, spread-aware execution assumptions, and environment segmentation. A plain-English LLM research assistant summarizes what changed across regimes and highlights why a strategy held up or failed before risk goes live."
       >
         <div className="mt-10 grid gap-6 lg:grid-cols-[1.4fr_1fr] lg:items-center">
-          <MarketIntelIllustration />
+          <BacktestLlmIllustration />
           <div className="space-y-5">
             {[
               ['Historical accuracy', 'Tested against the real record — actual prices, actual spreads, actual conditions on that day.'],
@@ -250,21 +249,8 @@ export function HomepageFullPageSections() {
         eyebrowLabel="Research Library"
         ariaLabelledBy="hp-lib-title"
         title={<span id="hp-lib-title">Build, fork, and govern strategy research in one institutional library.</span>}
-        lede="The library keeps strategy logic, parameter sets, and every historical run versioned together. Teams can branch, review, and promote research to production without losing provenance or reproducibility."
       >
-        <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_1.2fr] lg:items-center">
-          <div className="space-y-5">
-            {[
-              ['Nothing is lost', 'Every revision and every result is preserved and reproducible.'],
-              ['Portable by design', 'Move a strategy between research, paper, and the desk without rewriting it.'],
-              ['Start from proven work', 'Fork a published strategy and run it against your own parameters.'],
-            ].map(([h, b]) => (
-              <div key={h} className="border-l-2 border-brass/40 pl-4">
-                <h3 className="sc-serif text-[13px] text-neutral-50">{h}</h3>
-                <p className="mt-1.5 text-[14px] leading-[1.7] text-zinc-400">{b}</p>
-              </div>
-            ))}
-          </div>
+        <div className="mt-6 lg:mt-8">
           <StrategyLibraryIllustration />
         </div>
         <SectionActions>

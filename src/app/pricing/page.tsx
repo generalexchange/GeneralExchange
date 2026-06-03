@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import { Pricing } from '@/screens/Pricing';
 
 export const metadata: Metadata = {
-  title: 'Compute tokens',
+  title: 'Pricing',
   description:
-    'Tokenized GPU tiers for training, inference, Monte Carlo, and risk grids—priced transparently per GPU-hour.',
+    'General Exchange pricing: workspace plans for platform entitlements plus tokenized GPU compute billed per hour — transparent two-layer structure.',
   alternates: { canonical: '/pricing' },
 };
 

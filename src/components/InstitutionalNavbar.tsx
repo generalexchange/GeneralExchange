@@ -12,12 +12,15 @@ export interface InstitutionalNavbarProps {
   searchQuery?: string;
   onSearchChange?: (query: string) => void;
   showSearch?: boolean;
+  /** Homepage-only: show Pricing link beside Sign in */
+  showPricingLink?: boolean;
 }
 
 export const InstitutionalNavbar: React.FC<InstitutionalNavbarProps> = ({
   searchQuery = '',
   onSearchChange,
   showSearch = false,
+  showPricingLink = false,
 }) => {
   const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(true);
@@ -75,6 +78,14 @@ export const InstitutionalNavbar: React.FC<InstitutionalNavbarProps> = ({
           )}
 
           <div className="flex shrink-0 flex-wrap items-center justify-end gap-x-2 gap-y-1 sm:gap-x-3">
+            {showPricingLink ? (
+              <Link
+                href="/pricing"
+                className="inline-flex min-h-11 items-center justify-center rounded-lg px-3 py-2 text-sm font-normal tracking-normal text-white transition-colors hover:text-zinc-200 sm:min-h-0 sm:px-4"
+              >
+                Pricing
+              </Link>
+            ) : null}
             <Link
               href="/login"
               className={`inline-flex min-h-11 items-center justify-center rounded-lg border px-4 py-2 text-[13px] font-semibold tracking-wide transition-all duration-300 sm:min-h-0 sm:px-5 ${

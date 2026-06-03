@@ -8,7 +8,7 @@
 
 'use client';
 
-import React, { useId } from 'react';
+import React, { useId, useEffect, useRef, useState } from 'react';
 
 const BRASS = '#C9A96E';
 const MOSS = 'rgba(46,90,58,0.95)';
@@ -147,67 +147,115 @@ export function BacktestIllustration() {
 /* ------------------------------------------------------------------ */
 
 export function ExecutionIntegrationIllustration() {
+  const chainRows = [
+    { strike: '470', bid: '12.10', ask: '12.45', last: '12.40', spread: '0.35', moneyness: 'ITM' },
+    { strike: '475', bid: '8.65', ask: '8.92', last: '8.85', spread: '0.27', moneyness: 'ITM' },
+    { strike: '480', bid: '5.46', ask: '5.72', last: '5.60', spread: '0.26', moneyness: 'ATM', active: true },
+    { strike: '485', bid: '3.04', ask: '3.22', last: '3.15', spread: '0.18', moneyness: 'OTM' },
+    { strike: '490', bid: '1.54', ask: '1.69', last: '1.62', spread: '0.15', moneyness: 'OTM' },
+  ];
+
   return (
     <div className={`${panel} overflow-hidden`}>
       <div className={panelHead}>
         <span className={eyebrow}>Execution layer · Interactive Brokers</span>
-        <span className="rounded-full border border-moss/40 bg-moss/10 px-2 py-0.5 text-[9px] font-medium text-moss">
-          LIVE QUOTES
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="hidden font-mono text-[9px] tabular text-zinc-500 sm:inline">U1234567 · paper</span>
+          <span className="rounded-full border border-moss/40 bg-moss/10 px-2 py-0.5 text-[9px] font-medium text-moss">
+            LIVE QUOTES
+          </span>
+        </div>
       </div>
-      <div className="grid gap-px bg-white/[0.06] lg:grid-cols-[0.9fr_1.1fr]">
-        <div className="bg-charcoal/80 p-4">
+
+      <div className="grid gap-px bg-white/[0.06] lg:grid-cols-[0.92fr_1.08fr]">
+        {/* Wallet */}
+        <div className="bg-charcoal/80 p-5">
           <p className="mb-3 text-[9px] uppercase tracking-wider text-zinc-500">Wallet view · account context</p>
-          <div className="rounded border border-white/[0.08] bg-black/25">
+          <div className="rounded-md border border-white/[0.08] bg-black/25">
             <div className="flex items-center justify-between border-b border-white/[0.08] px-3 py-2.5">
               <span className="text-[10px] uppercase tracking-wider text-zinc-500">Portfolio</span>
-              <span className="font-mono text-[11px] tabular text-moss">$1,284,220</span>
+              <span className="font-mono text-[13px] font-medium tabular text-moss">$1,284,220</span>
             </div>
-            <div className="space-y-2.5 px-3 py-3 text-[12px]">
+            <div className="space-y-3 px-3 py-3.5 text-[12px]">
               {[
-                ['Buying power', '$392,110'],
-                ['Available margin', '$188,440'],
-                ['Daily P&L', '+$12,842'],
-                ['Open risk', '$71,300'],
-              ].map(([k, v]) => (
+                ['Buying power', '$392,110', 'text-zinc-300'],
+                ['Available margin', '$188,440', 'text-zinc-300'],
+                ['Daily P&L', '+$12,842', 'text-moss'],
+                ['Open risk', '$71,300', 'text-zinc-300'],
+              ].map(([k, v, cls]) => (
                 <div key={k} className="flex items-center justify-between gap-4">
                   <span className="text-zinc-500">{k}</span>
-                  <span className="font-mono tabular text-zinc-300">{v}</span>
+                  <span className={`font-mono tabular ${cls}`}>{v}</span>
                 </div>
               ))}
             </div>
           </div>
+          <div className="mt-3 rounded border border-brass/25 bg-brass/[0.04] px-3 py-2">
+            <p className="text-[10px] text-zinc-400">
+              Margin and buying power refresh on every quote tick — execution sizing stays inside live account limits.
+            </p>
+          </div>
         </div>
-        <div className="bg-charcoal/80 p-4">
-          <p className="mb-3 text-[9px] uppercase tracking-wider text-zinc-500">Options chain · live contract pricing</p>
-          <table className="w-full table-fixed text-left text-xs">
-            <thead>
-              <tr className="bg-white/[0.03] text-[9px] uppercase tracking-wider text-zinc-500">
-                <th className="px-2.5 py-2 font-medium">Strike</th>
-                <th className="px-2.5 py-2 font-medium">Bid</th>
-                <th className="px-2.5 py-2 font-medium">Ask</th>
-                <th className="px-2.5 py-2 font-medium">Last</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/[0.05]">
-              {[
-                ['470', '12.10', '12.45', '12.40'],
-                ['475', '8.65', '8.92', '8.85'],
-                ['480', '5.46', '5.72', '5.60'],
-                ['485', '3.04', '3.22', '3.15'],
-                ['490', '1.54', '1.69', '1.62'],
-              ].map(([strike, bid, ask, last]) => (
-                <tr key={strike}>
-                  <td className="px-2.5 py-2.5 font-mono tabular text-neutral-100">{strike}</td>
-                  <td className="px-2.5 py-2.5 font-mono tabular text-zinc-300">{bid}</td>
-                  <td className="px-2.5 py-2.5 font-mono tabular text-zinc-300">{ask}</td>
-                  <td className="px-2.5 py-2.5 font-mono tabular text-tan">{last}</td>
+
+        {/* Options chain */}
+        <div className="bg-charcoal/80 p-5">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <p className="text-[9px] uppercase tracking-wider text-zinc-500">Options chain · live contract pricing</p>
+            <span className="font-mono text-[9px] tabular text-zinc-500">SPY · Apr 18 · 480.12 · +0.34%</span>
+          </div>
+          <div className="overflow-hidden rounded-md border border-white/[0.08]">
+            <table className="w-full table-fixed text-left text-xs">
+              <thead>
+                <tr className="bg-white/[0.03] text-[9px] uppercase tracking-wider text-zinc-500">
+                  <th className="px-2.5 py-2 font-medium">Strike</th>
+                  <th className="px-2.5 py-2 font-medium">Bid</th>
+                  <th className="px-2.5 py-2 font-medium">Ask</th>
+                  <th className="px-2.5 py-2 font-medium">Last</th>
+                  <th className="px-2.5 py-2 font-medium">Spr</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          <p className="mt-3 text-[10px] text-zinc-500">Quotes shown before order submission for price-aware execution.</p>
+              </thead>
+              <tbody className="divide-y divide-white/[0.05]">
+                {chainRows.map((row) => (
+                  <tr
+                    key={row.strike}
+                    className={
+                      row.active
+                        ? 'bg-brass/[0.08] ring-1 ring-inset ring-brass/25'
+                        : 'transition-colors hover:bg-white/[0.02]'
+                    }
+                  >
+                    <td className="px-2.5 py-3">
+                      <div className="flex items-center gap-2">
+                        <MoneynessDot kind={row.moneyness} />
+                        <span className="font-mono tabular text-neutral-100">{row.strike}</span>
+                      </div>
+                    </td>
+                    <td className="px-2.5 py-3 font-mono tabular text-zinc-300">{row.bid}</td>
+                    <td className="px-2.5 py-3 font-mono tabular text-zinc-300">{row.ask}</td>
+                    <td className="px-2.5 py-3 font-mono tabular text-tan">{row.last}</td>
+                    <td className="px-2.5 py-3 font-mono tabular text-zinc-500">{row.spread}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-3 text-[10px] leading-relaxed text-zinc-500">
+            Quotes shown before order submission for price-aware execution. ATM row pinned for the working strike.
+          </p>
         </div>
+      </div>
+
+      <div className="grid grid-cols-1 divide-y divide-white/[0.06] border-t border-white/[0.06] sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+        {[
+          ['Quote latency', '14 ms'],
+          ['Route', 'SMART'],
+          ['Pre-trade checks', 'passed'],
+        ].map(([k, v]) => (
+          <div key={k} className="px-4 py-3.5">
+            <p className="text-[9px] uppercase tracking-wider text-zinc-500">{k}</p>
+            <p className="mt-0.5 font-mono text-sm tabular text-neutral-100">{v}</p>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -323,18 +371,148 @@ export function WarehouseServiceIllustration() {
         <p className="mb-3 text-[9px] uppercase tracking-wider text-zinc-500">Service outputs</p>
         <ul className="space-y-3 text-[13px]">
           <li>
-            <p className="text-zinc-300">Point-in-time snapshots for deterministic replay</p>
-            <p className="text-[11px] text-zinc-500">no look-ahead leakage in research pipelines</p>
+            <p className="text-zinc-300">Historical run matrix for base-rate win probability</p>
+            <p className="text-[11px] text-zinc-500">each win-rate cohort is computed from point-in-time replayed sessions only</p>
           </li>
           <li>
-            <p className="text-zinc-300">Feature-ready marts for model and strategy training</p>
-            <p className="text-[11px] text-zinc-500">normalized joins across price, options, and flow</p>
+            <p className="text-zinc-300">Game-theory pressure states per decision window</p>
+            <p className="text-[11px] text-zinc-500">institutional positioning, hedging pressure, and flow intent feed win-rate weighting</p>
           </li>
           <li className="rounded border border-brass/30 bg-brass/[0.05] px-3 py-2">
-            <p className="text-zinc-200">Storage: floppydisk.cc + IPFS archival layers</p>
-            <p className="text-[11px] text-zinc-500">content-addressed snapshots with CID lineage for reproducible retrieval</p>
+            <p className="text-zinc-200">Real-time Monte Carlo risk overlays on every candidate path</p>
+            <p className="text-[11px] text-zinc-500">dynamic drawdown, slippage, and tail-risk parameters adjust projected win rate before execution</p>
           </li>
         </ul>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* ChatGPT-style streaming token animation                             */
+/* ------------------------------------------------------------------ */
+
+const LLM_EXCHANGES = [
+  {
+    prompt: 'Why did win rate drop from 61% to 47% in elevated volatility?',
+    response:
+      'Most losses clustered around late entries after liquidity thinned. Game-theory state had shifted to forced hedging — that widened spreads and degraded fill quality. In compressed-vol regimes the same strategy wins 64% of the time. The edge is real; the environment selection is the problem.',
+  },
+  {
+    prompt: 'What does Monte Carlo say about tail risk at current sizing?',
+    response:
+      'At current parameters, Monte Carlo shows tail risk rising from 6.1% to 11.3% under vol expansion. Reducing position size by 30% in high-pressure windows keeps projected win rate near 57% while cutting max drawdown exposure by roughly half.',
+  },
+];
+
+function StreamingResponse({ text, active }: { text: string; active: boolean }) {
+  const [displayed, setDisplayed] = useState('');
+  const [done, setDone] = useState(false);
+  const idxRef = useRef(0);
+
+  useEffect(() => {
+    if (!active) return;
+    setDisplayed('');
+    setDone(false);
+    idxRef.current = 0;
+    const id = window.setInterval(() => {
+      idxRef.current += 1;
+      setDisplayed(text.slice(0, idxRef.current));
+      if (idxRef.current >= text.length) {
+        window.clearInterval(id);
+        setDone(true);
+      }
+    }, 18);
+    return () => window.clearInterval(id);
+  }, [active, text]);
+
+  return (
+    <span>
+      {displayed}
+      {!done && active && (
+        <span className="ml-px inline-block h-3.5 w-0.5 translate-y-px animate-pulse bg-tan align-middle" />
+      )}
+    </span>
+  );
+}
+
+export function BacktestLlmIllustration() {
+  const [turn, setTurn] = useState(0);
+  const [phase, setPhase] = useState<'prompt' | 'response' | 'done'>('prompt');
+
+  useEffect(() => {
+    const ex = LLM_EXCHANGES[turn % LLM_EXCHANGES.length];
+    if (phase === 'prompt') {
+      const t = window.setTimeout(() => setPhase('response'), 900);
+      return () => window.clearTimeout(t);
+    }
+    if (phase === 'response') {
+      const t = window.setTimeout(
+        () => setPhase('done'),
+        ex.response.length * 18 + 800,
+      );
+      return () => window.clearTimeout(t);
+    }
+    if (phase === 'done') {
+      const t = window.setTimeout(() => {
+        setTurn((n) => n + 1);
+        setPhase('prompt');
+      }, 3200);
+      return () => window.clearTimeout(t);
+    }
+  }, [turn, phase]);
+
+  const ex = LLM_EXCHANGES[turn % LLM_EXCHANGES.length];
+
+  return (
+    <div className={`${panel} overflow-hidden`}>
+      <div className={panelHead}>
+        <span className={eyebrow}>BackSpace LLM · plain-English strategy review</span>
+        <span className="rounded-full border border-moss/40 bg-moss/10 px-2 py-0.5 text-[9px] font-medium text-moss">
+          DECISION SUPPORT
+        </span>
+      </div>
+      <div className="min-h-[200px] space-y-3 bg-charcoal/80 p-4">
+        {/* User prompt */}
+        <div className="flex justify-end">
+          <div className="max-w-[85%] rounded-2xl rounded-br-sm border border-brass/30 bg-brass/[0.08] px-3.5 py-2.5">
+            <p className="text-[12px] leading-relaxed text-zinc-200">{ex.prompt}</p>
+          </div>
+        </div>
+
+        {/* LLM response — streams in */}
+        {(phase === 'response' || phase === 'done') && (
+          <div className="flex justify-start">
+            <div className="max-w-[90%] rounded-2xl rounded-bl-sm border border-white/[0.08] bg-black/30 px-3.5 py-2.5">
+              <p className="mb-1.5 flex items-center gap-1.5 text-[9px] uppercase tracking-wider text-zinc-600">
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-moss" />
+                BackSpace LLM
+              </p>
+              <p className="text-[12px] leading-relaxed text-zinc-300">
+                <StreamingResponse
+                  key={`${turn}-${phase}`}
+                  text={ex.response}
+                  active={phase === 'response'}
+                />
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Thinking indicator */}
+        {phase === 'prompt' && (
+          <div className="flex justify-start">
+            <div className="flex items-center gap-2 rounded-2xl border border-white/[0.06] bg-black/20 px-4 py-2.5">
+              {[0, 1, 2].map((i) => (
+                <span
+                  key={i}
+                  className="inline-block h-1.5 w-1.5 rounded-full bg-zinc-500"
+                  style={{ animation: `pulse 1.2s ease-in-out ${i * 0.2}s infinite` }}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -409,35 +587,157 @@ export function MarketIntelIllustration() {
 /* Section V — Strategy library: versioned + portable                  */
 /* ------------------------------------------------------------------ */
 
-const LIB = [
-  { name: 'Gamma Squeeze Fade', sym: 'TSLA', ver: 'v4', sharpe: '1.62' },
-  { name: 'Premium Harvest', sym: 'SPY', ver: 'v11', sharpe: '2.04' },
-  { name: 'Earnings Straddle', sym: 'AAPL', ver: 'v2', sharpe: '1.18' },
+const FOLDERS = [
+  { name: 'Mean Reversion', count: 14, modified: '2h ago', pinned: true },
+  { name: 'Momentum Breakout', count: 9, modified: 'yesterday', pinned: true },
+  { name: 'Earnings Plays', count: 22, modified: '3 days ago', pinned: false },
 ];
+
+const FILES = [
+  { name: 'Gamma Squeeze Fade', sym: 'TSLA', ver: 'v4', sharpe: '1.62', status: 'live' },
+  { name: 'Premium Harvest', sym: 'SPY', ver: 'v11', sharpe: '2.04', status: 'live' },
+  { name: 'Earnings Straddle', sym: 'AAPL', ver: 'v2', sharpe: '1.18', status: 'review' },
+  { name: 'Vol Contraction Play', sym: 'QQQ', ver: 'v6', sharpe: '1.44', status: 'paper' },
+];
+
+function FolderIcon({ pinned }: { pinned: boolean }) {
+  return (
+    <svg viewBox="0 0 20 17" className="h-4 w-4 shrink-0" aria-hidden>
+      <path
+        d="M2 2.5h6l1.5 2H18a1 1 0 0 1 1 1V15a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3.5A1 1 0 0 1 2 2.5Z"
+        fill={pinned ? 'rgba(210,180,140,0.18)' : 'rgba(255,255,255,0.06)'}
+        stroke={pinned ? 'rgba(210,180,140,0.5)' : 'rgba(255,255,255,0.12)'}
+        strokeWidth="1"
+      />
+    </svg>
+  );
+}
+
+function StatusDot({ status }: { status: string }) {
+  const colors: Record<string, string> = {
+    live: 'bg-moss',
+    review: 'bg-[#C9A96E]',
+    paper: 'bg-zinc-500',
+  };
+  return <span className={`inline-block h-1.5 w-1.5 rounded-full ${colors[status] ?? 'bg-zinc-600'}`} />;
+}
 
 export function StrategyLibraryIllustration() {
   return (
     <div className={`${panel} overflow-hidden`}>
+      {/* Toolbar */}
       <div className={panelHead}>
-        <span className={eyebrow}>Library · published strategies</span>
-        <span className="font-mono text-[9px] text-zinc-500 tabular">3 of 1,284</span>
+        <span className={eyebrow}>Research Library · strategy workstation</span>
+        <div className="flex items-center gap-2">
+          <span className="font-mono text-[9px] tabular text-zinc-500">1,284 strategies</span>
+          <span className="rounded border border-brass/30 bg-brass/[0.06] px-2 py-0.5 text-[9px] text-tan">
+            + New
+          </span>
+        </div>
       </div>
-      <ul className="divide-y divide-white/[0.06]">
-        {LIB.map((s) => (
-          <li key={s.name} className="flex items-center justify-between gap-3 px-4 py-3.5">
-            <div className="min-w-0">
-              <p className="truncate text-sm text-neutral-100">{s.name}</p>
-              <p className="mt-0.5 font-mono text-[10px] tabular text-zinc-500">
-                {s.sym} · {s.ver} · every backtest preserved
-              </p>
+
+      <div className="grid gap-px bg-white/[0.06] lg:grid-cols-[200px_1fr]">
+        {/* Sidebar */}
+        <div className="bg-charcoal/90 p-3">
+          <p className="mb-2 text-[9px] uppercase tracking-wider text-zinc-600">Folders</p>
+          <div className="space-y-0.5">
+            {FOLDERS.map((f) => (
+              <div
+                key={f.name}
+                className={`flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 transition-colors ${
+                  f.name === 'Momentum Breakout'
+                    ? 'bg-brass/[0.1] text-tan'
+                    : 'text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200'
+                }`}
+              >
+                <FolderIcon pinned={f.pinned} />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-[11px]">{f.name}</p>
+                  <p className="font-mono text-[9px] tabular text-zinc-600">{f.count} strategies</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p className="mb-2 mt-4 text-[9px] uppercase tracking-wider text-zinc-600">Workstation</p>
+          {['Paper', 'Live', 'Archived'].map((label) => (
+            <div
+              key={label}
+              className="flex items-center gap-2 rounded px-2 py-1.5 text-[11px] text-zinc-500 hover:text-zinc-300"
+            >
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-zinc-600" />
+              {label}
             </div>
-            <div className="flex shrink-0 items-center gap-3">
-              <span className="font-mono text-[11px] tabular text-moss">SR {s.sharpe}</span>
-              <span className="rounded border border-brass/30 px-2 py-1 text-[10px] text-tan">Fork</span>
+          ))}
+        </div>
+
+        {/* File grid */}
+        <div className="bg-charcoal/80 p-4">
+          <div className="mb-3 flex items-center justify-between">
+            <p className="text-[9px] uppercase tracking-wider text-zinc-500">Momentum Breakout · 9 strategies</p>
+            <div className="flex gap-1">
+              {['Grid', 'List'].map((v, i) => (
+                <button
+                  key={v}
+                  className={`rounded px-2 py-0.5 text-[9px] transition-colors ${
+                    i === 1 ? 'bg-white/[0.06] text-zinc-200' : 'text-zinc-600 hover:text-zinc-400'
+                  }`}
+                >
+                  {v}
+                </button>
+              ))}
             </div>
-          </li>
-        ))}
-      </ul>
+          </div>
+
+          <div className="space-y-1">
+            {/* column headers */}
+            <div className="grid grid-cols-[1fr_56px_40px_52px_72px] gap-2 px-2 pb-1 text-[9px] uppercase tracking-wider text-zinc-600">
+              <span>Strategy</span>
+              <span className="text-right">Sharpe</span>
+              <span>Ver</span>
+              <span>Status</span>
+              <span className="text-right">Action</span>
+            </div>
+            {FILES.map((f) => (
+              <div
+                key={f.name}
+                className="grid grid-cols-[1fr_56px_40px_52px_72px] items-center gap-2 rounded-md border border-white/[0.05] bg-white/[0.02] px-2 py-2.5 transition-colors hover:border-brass/25 hover:bg-brass/[0.04]"
+              >
+                <div className="min-w-0">
+                  <p className="truncate text-[12px] text-neutral-100">{f.name}</p>
+                  <p className="font-mono text-[9px] tabular text-zinc-500">{f.sym}</p>
+                </div>
+                <span className="text-right font-mono text-[11px] tabular text-moss">
+                  {f.sharpe}
+                </span>
+                <span className="font-mono text-[10px] tabular text-zinc-500">{f.ver}</span>
+                <div className="flex items-center gap-1.5">
+                  <StatusDot status={f.status} />
+                  <span className="text-[10px] capitalize text-zinc-400">{f.status}</span>
+                </div>
+                <div className="flex justify-end gap-1">
+                  <span className="cursor-pointer rounded border border-white/[0.1] px-1.5 py-0.5 text-[9px] text-zinc-400 hover:border-brass/40 hover:text-tan">
+                    Fork
+                  </span>
+                  <span className="cursor-pointer rounded border border-moss/30 bg-moss/[0.08] px-1.5 py-0.5 text-[9px] text-moss hover:bg-moss/[0.14]">
+                    Load
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Status bar */}
+      <div className="flex items-center justify-between border-t border-white/[0.06] bg-white/[0.02] px-4 py-2">
+        <span className="font-mono text-[9px] tabular text-zinc-600">
+          Premium Harvest v11 · loaded to workstation
+        </span>
+        <span className="rounded border border-moss/30 bg-moss/[0.08] px-2 py-0.5 text-[9px] text-moss">
+          ● active session
+        </span>
+      </div>
     </div>
   );
 }
