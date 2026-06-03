@@ -15,7 +15,7 @@ import { Apple, Monitor, Download } from 'lucide-react';
 const easeLux = [0.22, 1, 0.36, 1] as const;
 
 const RELEASES_BASE =
-  'https://github.com/generalexchange/GeneralExchange/releases/download/v0.1.0';
+  'https://github.com/generalexchange/GeneralExchange/releases/download/v0.1.1';
 
 const DOWNLOADS = {
   mac: {
@@ -112,7 +112,7 @@ export const DownloadApp: React.FC = () => {
             </p>
           )}
 
-          <p className="mt-8 text-[12px] uppercase tracking-[0.18em] text-zinc-600">Latest · v0.1.0</p>
+          <p className="mt-8 text-[12px] uppercase tracking-[0.18em] text-zinc-600">Latest · v0.1.1</p>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
             {(['mac', 'windows'] as const).map((id) => {
