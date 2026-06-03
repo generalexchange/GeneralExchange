@@ -21,14 +21,16 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          # universal-apple-darwin is a Tauri CLI flag, NOT a rustup target.
+          # Install aarch64 + x86_64 via rustup, then let Tauri lipo them.
           - platform: macos-latest
-            target: aarch64-apple-darwin,x86_64-apple-darwin
+            rust-targets: ''
             args: '--target universal-apple-darwin'
           - platform: ubuntu-22.04
-            target: x86_64-unknown-linux-gnu
+            rust-targets: x86_64-unknown-linux-gnu
             args: ''
           - platform: windows-latest
-            target: x86_64-pc-windows-msvc
+            rust-targets: x86_64-pc-windows-msvc
             args: ''
 
     runs-on: ${{ matrix.platform }}
@@ -53,7 +55,11 @@ jobs:
 
       - uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.target }}
+          targets: ${{ matrix.rust-targets }}
+
+      - name: Add macOS Rust targets (universal build)
+        if: matrix.platform == 'macos-latest'
+        run: rustup target add aarch64-apple-darwin x86_64-apple-darwin
 
       - name: Cache cargo
         uses: swatinem/rust-cache@v2
@@ -70,17 +76,14 @@ jobs:
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Updater signing
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-          # macOS code signing + notarization
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
           APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
           APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          # Windows authenticode
           WINDOWS_CERTIFICATE: ${{ secrets.WINDOWS_CERTIFICATE }}
           WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
         with:
