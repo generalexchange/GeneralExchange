@@ -246,7 +246,7 @@ export const Warehouse: React.FC = () => {
                 <Link href="/dashboard" className={btnPrimary}>
                   Open the platform
                 </Link>
-                <Link href="/the-engine" className={btnOutline}>
+                <Link href="/tradeengine" className={btnOutline}>
                   Trade Engine
                 </Link>
               </div>

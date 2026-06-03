@@ -33,6 +33,8 @@ const nextConfig: NextConfig = {
             { source: '/lecture-hall', destination: '/assembly', permanent: true },
             { source: '/money-bagg', destination: '/coffee', permanent: true },
             { source: '/reconnaissance', destination: '/warehouse', permanent: true },
+            { source: '/the-engine', destination: '/tradeengine', permanent: true },
+            { source: '/trade-engine', destination: '/tradeengine', permanent: true },
           ];
         },
       }),

@@ -21,7 +21,7 @@ const HERO_EXPLORE_LINKS = [
   { href: '/features', label: 'Features' },
   { href: '/solutions', label: 'Solutions' },
   { href: '/risk-management', label: 'Risk' },
-  { href: '/trade-engine', label: 'Trade engine' },
+  { href: '/tradeengine', label: 'Trade engine' },
   { href: '/monte-carlo', label: 'Monte Carlo' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/request-access', label: 'Request access' },
@@ -66,7 +66,7 @@ export const Hero: React.FC = () => {
 
             <div className="flex w-full flex-col gap-3 pt-2 sm:flex-row sm:flex-wrap sm:justify-center lg:max-w-none lg:justify-start">
               <Link
-                href="/trade-engine"
+                href="/tradeengine"
                 className="inline-flex min-h-11 w-full items-center justify-center rounded-md bg-tan px-6 py-3 text-sm font-semibold tracking-wide text-charcoal shadow-[0_12px_40px_-12px_rgba(210,180,140,0.35)] transition-all duration-300 hover:bg-tan-muted sm:w-auto sm:min-w-[10.5rem] sm:px-8 sm:py-3.5 active:scale-[0.99]"
               >
                 The Exchange

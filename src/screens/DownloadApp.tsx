@@ -80,7 +80,7 @@ export const DownloadApp: React.FC = () => {
             general.exchange
           </Link>
           <Link
-            href="/the-engine"
+            href="/tradeengine"
             className="text-[12px] tracking-wide text-zinc-400 transition-colors hover:text-tan"
           >
             Trade Engine

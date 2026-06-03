@@ -40,13 +40,12 @@ export type SitemapEntry = {
 /** Public routes included in sitemap.xml (indexable marketing & product pages). */
 export const INDEXABLE_ROUTES: SitemapEntry[] = [
   { path: '/', changeFrequency: 'daily', priority: 1 },
-  { path: '/trade-engine', changeFrequency: 'weekly', priority: 0.95 },
+  { path: '/tradeengine', changeFrequency: 'weekly', priority: 0.95 },
   { path: '/warehouse', changeFrequency: 'weekly', priority: 0.95 },
   { path: '/backspace', changeFrequency: 'weekly', priority: 0.95 },
   { path: '/pricing', changeFrequency: 'weekly', priority: 0.9 },
   { path: '/download', changeFrequency: 'weekly', priority: 0.9 },
   { path: '/features', changeFrequency: 'weekly', priority: 0.9 },
-  { path: '/the-engine', changeFrequency: 'weekly', priority: 0.85 },
   { path: '/town-and-cattle', changeFrequency: 'weekly', priority: 0.85 },
   { path: '/options', changeFrequency: 'weekly', priority: 0.85 },
   { path: '/futures', changeFrequency: 'weekly', priority: 0.85 },

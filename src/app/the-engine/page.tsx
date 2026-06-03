@@ -1,13 +1,14 @@
-import type { Metadata } from 'next';
-import { TheEngine } from '@/screens/TheEngine';
+import { TradeEngine } from '@/screens/TradeEngine';
+import { buildPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Trade Engine',
+/** Legacy URL — same Trade Engine explanation page as /tradeengine. */
+export const metadata = buildPageMetadata({
+  title: 'TradeEngine',
   description:
-    'The evidence layer behind general.exchange — replay any trade against the conditions that actually occurred, and act on the record.',
-  alternates: { canonical: '/the-engine' },
-};
+    'How General Exchange uses Monte Carlo simulation to turn trading edge into win rate, risk parameters, and expected return.',
+  path: '/tradeengine',
+});
 
 export default function TheEnginePage() {
-  return <TheEngine />;
+  return <TradeEngine />;
 }

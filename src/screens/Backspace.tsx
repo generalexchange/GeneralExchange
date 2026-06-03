@@ -81,7 +81,7 @@ export const Backspace: React.FC = () => {
                 <Link href="/dashboard" className={btnPrimary}>
                   Open Dashboard
                 </Link>
-                <Link href="/trade-engine" className={btnOutline}>
+                <Link href="/tradeengine" className={btnOutline}>
                   Trade Engine
                 </Link>
               </div>

@@ -117,7 +117,7 @@ function HeroSection() {
               <Link href="/download" className={btnPrimary}>
                 Download App
               </Link>
-              <Link href="/the-engine" className={btnOutline}>
+              <Link href="/tradeengine" className={btnOutline}>
                 Trade Engine
               </Link>
             </div>
@@ -172,7 +172,7 @@ export function HomepageFullPageSections() {
           <ExecutionIntegrationIllustration />
         </div>
         <SectionActions>
-          <Link href="/trade-engine" className={btnSection}>
+          <Link href="/request-access" className={btnSection}>
             Interactive Brokers
           </Link>
         </SectionActions>

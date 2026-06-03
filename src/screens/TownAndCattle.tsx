@@ -36,7 +36,7 @@ export const TownAndCattle: React.FC = () => {
               <Link href="/futures" className={btnGhost}>
                 Futures
               </Link>
-              <Link href="/trade-engine" className={btnGhost}>
+              <Link href="/tradeengine" className={btnGhost}>
                 Trade Engine
               </Link>
               <Link href="/solutions" className={btnGhost}>
