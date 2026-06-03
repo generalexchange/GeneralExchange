@@ -14,8 +14,10 @@ import { Apple, Monitor, Download } from 'lucide-react';
 
 const easeLux = [0.22, 1, 0.36, 1] as const;
 
+// Always resolves to the newest published release. Asset names are kept stable
+// across versions by the CI assetNamePattern, so this never needs bumping.
 const RELEASES_BASE =
-  'https://github.com/generalexchange/GeneralExchange/releases/download/v0.1.1';
+  'https://github.com/generalexchange/GeneralExchange/releases/latest/download';
 
 const DOWNLOADS = {
   mac: {
@@ -112,7 +114,7 @@ export const DownloadApp: React.FC = () => {
             </p>
           )}
 
-          <p className="mt-8 text-[12px] uppercase tracking-[0.18em] text-zinc-600">Latest · v0.1.1</p>
+          <p className="mt-8 text-[12px] uppercase tracking-[0.18em] text-zinc-600">Latest release</p>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
             {(['mac', 'windows'] as const).map((id) => {
