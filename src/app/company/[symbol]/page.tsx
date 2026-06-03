@@ -1,6 +1,6 @@
-import type { Metadata } from 'next';
 import { CompanyDetails } from '@/screens/CompanyDetails';
 import { MOCK_STOCKS_BY_KEY } from '@/data/mockStocksCatalog';
+import { buildPageMetadata } from '@/lib/seo';
 
 type Props = {
   params: Promise<{ symbol: string }>;
@@ -14,14 +14,18 @@ export function generateStaticParams(): { symbol: string }[] {
   return Object.keys(MOCK_STOCKS_BY_KEY).map((symbol) => ({ symbol }));
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: Props) {
   const { symbol } = await params;
   const upper = symbol?.toUpperCase?.() ?? symbol;
-  return {
-    title: `${upper} — Company profile`,
-    description: `Institutional profile, context, and tools for ${upper} on General Exchange.`,
-    alternates: { canonical: `/company/${encodeURIComponent(symbol)}` },
-  };
+  const stock = MOCK_STOCKS_BY_KEY[upper];
+  const companyName = stock?.name ?? upper;
+
+  return buildPageMetadata({
+    title: `${upper} Stock Profile — ${companyName}`,
+    description: `Institutional company profile, market context, and research tools for ${companyName} (${upper}) on General Exchange.`,
+    path: `/company/${encodeURIComponent(symbol)}`,
+    keywords: [`${upper} stock`, `${companyName} analysis`, 'company profile trading'],
+  });
 }
 
 export default function CompanySymbolPage() {

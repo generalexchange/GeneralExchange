@@ -3,6 +3,14 @@ import { Cormorant_Garamond, Inter } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { Providers } from './providers';
 import { AgGridSetup } from '@/components/grids/AgGridSetup';
+import {
+  DEFAULT_DESCRIPTION,
+  DEFAULT_KEYWORDS,
+  OG_IMAGE,
+  SITE_NAME,
+  SITE_PUBLISHER,
+  SITE_URL,
+} from '@/lib/seo';
 import './globals.css';
 
 const inter = Inter({
@@ -29,29 +37,51 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://generalexchange.com'),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: 'General Exchange — Institutional Risk, Research, and Execution',
-    template: '%s | General Exchange',
+    default: `${SITE_NAME} — Institutional Trading Terminal, Backtesting & Execution`,
+    template: `%s | ${SITE_NAME}`,
   },
-  description:
-    'Institutional-grade risk, research, and execution on tokenized compute—with GPU-accelerated engines, reproducible manifests, and a risk-first execution loop.',
-  keywords: [
-    'General Exchange',
-    'tokenized compute',
-    'institutional trading',
-    'risk engine',
-    'deterministic backtesting',
-  ],
+  description: DEFAULT_DESCRIPTION,
+  keywords: DEFAULT_KEYWORDS,
+  authors: [{ name: SITE_PUBLISHER, url: SITE_URL }],
+  creator: SITE_PUBLISHER,
+  publisher: SITE_PUBLISHER,
+  category: 'finance',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    siteName: 'General Exchange',
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    title: `${SITE_NAME} — Institutional Trading Terminal, Backtesting & Execution`,
+    description: DEFAULT_DESCRIPTION,
+    images: [OG_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',
+    site: '@generalexchange',
     creator: '@generalexchange',
+    title: `${SITE_NAME} — Institutional Trading Terminal`,
+    description: DEFAULT_DESCRIPTION,
+    images: [OG_IMAGE.url],
   },
+  ...(process.env.GOOGLE_SITE_VERIFICATION
+    ? { verification: { google: process.env.GOOGLE_SITE_VERIFICATION } }
+    : {}),
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

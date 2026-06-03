@@ -1,12 +1,19 @@
-import type { Metadata } from 'next';
 import { TradeEngine } from '@/screens/TradeEngine';
+import { buildPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'The Exchange',
+export const metadata = buildPageMetadata({
+  title: 'Trade Engine — Interactive Brokers Execution Layer',
   description:
-    'General Exchange execution surface: tickets, routing, and policy-aware checks so intent becomes a controlled release before size hits the tape.',
-  alternates: { canonical: '/trade-engine' },
-};
+    'Route orders through Interactive Brokers from the same terminal where strategies are researched and validated. Live quotes, wallet context, pre-trade checks, and audit-ready execution.',
+  path: '/trade-engine',
+  keywords: [
+    'Interactive Brokers integration',
+    'trade execution software',
+    'institutional order routing',
+    'options execution terminal',
+    'pre-trade risk checks',
+  ],
+});
 
 export default function TradeEnginePage() {
   return <TradeEngine />;

@@ -1,12 +1,13 @@
-import type { Metadata } from 'next';
 import { Pricing } from '@/screens/Pricing';
+import { buildPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Pricing',
+export const metadata = buildPageMetadata({
+  title: 'Pricing — Workspace Plans & Compute Tokens',
   description:
-    'General Exchange pricing: workspace plans for platform entitlements plus tokenized GPU compute billed per hour — transparent two-layer structure.',
-  alternates: { canonical: '/pricing' },
-};
+    'Transparent General Exchange pricing: institutional workspace entitlements plus tokenized GPU compute billed per hour. Plans for research desks, execution teams, and enterprise deployments.',
+  path: '/pricing',
+  keywords: ['trading platform pricing', 'institutional trading software cost', 'compute token pricing'],
+});
 
 export default function PricingPage() {
   return <Pricing />;

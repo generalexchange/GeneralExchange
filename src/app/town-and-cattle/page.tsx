@@ -1,12 +1,18 @@
-import type { Metadata } from 'next';
 import { TownAndCattle } from '@/screens/TownAndCattle';
+import { buildPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Town & Cattle',
+export const metadata = buildPageMetadata({
+  title: 'Town & Cattle — Alternative Commodity Trading',
   description:
-    'Town & Cattle on General Exchange—livestock, grains, and basis risk with replayable agricultural futures simulation.',
-  alternates: { canonical: '/town-and-cattle' },
-};
+    'Trade and hedge beyond equities with commodity workflows built for real execution: energy, metals, agriculture, and basis structures with replayable context and margin-aware controls.',
+  path: '/town-and-cattle',
+  keywords: [
+    'commodity trading platform',
+    'agricultural futures trading',
+    'energy trading software',
+    'alternative commodities',
+  ],
+});
 
 export default function TownAndCattlePage() {
   return <TownAndCattle />;

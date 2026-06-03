@@ -46,8 +46,16 @@ const nextConfig: NextConfig = {
     '@finos/perspective-viewer-datagrid',
     '@finos/perspective-viewer-d3fc',
   ],
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, dev }) => {
     config.experiments = { ...config.experiments, asyncWebAssembly: true, topLevelAwait: true };
+    // OneDrive can miss native FS events; polling keeps dev HMR reliable on save.
+    if (dev) {
+      config.watchOptions = {
+        ...config.watchOptions,
+        poll: 1000,
+        aggregateTimeout: 300,
+      };
+    }
     // Perspective references Node built-ins that don't exist in the browser.
     if (!isServer) {
       config.resolve = config.resolve || {};

@@ -1,13 +1,13 @@
-import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { Dashboard } from '@/screens/Dashboard';
+import { buildPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: 'Dashboard',
   description: 'Institutional dashboard for paper session, library assets, and BackSpace scratch on General Exchange.',
-  alternates: { canonical: '/dashboard' },
-  robots: { index: false, follow: false },
-};
+  path: '/dashboard',
+  noIndex: true,
+});
 
 function DashboardFallback() {
   return (
