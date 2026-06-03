@@ -18,6 +18,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useTypewriter, Cursor } from 'react-simple-typewriter';
 import { motion } from 'framer-motion';
 import { SectionShell } from '@/components/homepage/SectionShell';
 import {
@@ -52,6 +53,36 @@ function SectionActions({ children }: { children: React.ReactNode }) {
 /* Section I — Hero                                                    */
 /* ------------------------------------------------------------------ */
 
+const HERO_TYPEWRITER_WORDS = ['Buy', 'Sell', 'Exchange'] as const;
+const HERO_TYPEWRITER_DELAY_MS = 2800;
+const HERO_TYPEWRITER_EXCHANGE_DELAY_MS = 5200;
+
+function HeroTypewriter() {
+  const [delaySpeed, setDelaySpeed] = React.useState(HERO_TYPEWRITER_DELAY_MS);
+
+  const [text] = useTypewriter({
+    words: [...HERO_TYPEWRITER_WORDS],
+    loop: 0,
+    typeSpeed: 70,
+    deleteSpeed: 50,
+    delaySpeed,
+    onType: (loopCount) => {
+      setDelaySpeed(
+        loopCount % HERO_TYPEWRITER_WORDS.length === HERO_TYPEWRITER_WORDS.length - 1
+          ? HERO_TYPEWRITER_EXCHANGE_DELAY_MS
+          : HERO_TYPEWRITER_DELAY_MS,
+      );
+    },
+  });
+
+  return (
+    <>
+      <span>{text}</span>
+      <Cursor cursorStyle="|" />
+    </>
+  );
+}
+
 function HeroSection() {
   return (
     <section className="relative flex min-h-[calc(100svh-3.5rem)] flex-col justify-start overflow-hidden border-b border-white/[0.06] bg-dark-gray sm:min-h-[calc(100svh-3.75rem)]">
@@ -75,7 +106,7 @@ function HeroSection() {
               <span className="font-display text-[14px] tracking-[0.2em] text-tan/90">general.exchange</span>
             </p>
             <h1 className="text-pretty font-display text-[clamp(2rem,7vw,3.75rem)] font-normal leading-[1.05] tracking-[-0.02em] text-neutral-50">
-              Every decision, settled on evidence before it is made.
+              <HeroTypewriter />
             </h1>
             <p className="mt-6 max-w-xl text-pretty text-base font-normal leading-[1.75] text-zinc-400 sm:text-lg">
               A terminal for traders who would rather know than guess. Test what you are about to do against the
