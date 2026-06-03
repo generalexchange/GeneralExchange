@@ -33,3 +33,6 @@ out
 # Local deploy keys (never commit private keys)
 .deploy-keys/
 
+# Local tooling (flyctl binary downloads)
+.tools/
+

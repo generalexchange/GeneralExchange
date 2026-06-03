@@ -5,14 +5,16 @@ on:
     branches: [main]
     paths:
       - 'services/ws-server/**'
+      - 'services/ws-server/fly.toml'
+      - 'render.yaml'
       - 'package.json'
       - 'package-lock.json'
+      - '.github/workflows/ws-server-deploy.yml'
   workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: ${{ secrets.FLY_API_TOKEN != '' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -21,8 +23,28 @@ jobs:
       - name: Deploy to Fly.io
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
         run: |
-          flyctl deploy --remote-only --config services/ws-server/fly.toml
-          if [ -n "${{ secrets.POLYGON_API_KEY }}" ]; then
-            flyctl secrets set POLYGON_API_KEY="${{ secrets.POLYGON_API_KEY }}" --app general-exchange-ws
+          set -e
+          if [ -z "$FLY_API_TOKEN" ]; then
+            echo "::warning::FLY_API_TOKEN GitHub secret is not set — add one at https://fly.io/user/personal_access_tokens"
+            exit 0
           fi
+          export FLYCTL_ACCESS_TOKEN="$FLY_API_TOKEN"
+          if ! flyctl apps list 2>/dev/null | grep -q 'general-exchange-ws'; then
+            flyctl apps create general-exchange-ws || true
+          fi
+          flyctl deploy --remote-only --config services/ws-server/fly.toml --app general-exchange-ws
+          if [ -n "$POLYGON_API_KEY" ]; then
+            flyctl secrets set POLYGON_API_KEY="$POLYGON_API_KEY" --app general-exchange-ws
+          fi
+          echo "WS health: https://general-exchange-ws.fly.dev/health"
+          echo "WS endpoint: wss://general-exchange-ws.fly.dev/ws"
+
+      - name: Smoke test
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          if [ -z "$FLY_API_TOKEN" ]; then exit 0; fi
+          sleep 15
+          curl -fsS "https://general-exchange-ws.fly.dev/health" && echo " OK"
