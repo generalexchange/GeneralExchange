@@ -63,8 +63,8 @@ function HeroSection() {
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_45%_at_85%_85%,rgba(210,180,140,0.07),transparent_55%)]"
         aria-hidden
       />
-      <div className="relative z-10 mx-auto w-full max-w-content layout-gutter pb-16 pt-10 sm:pb-20 sm:pt-14">
-        <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.72fr] lg:gap-14">
+      <div className="relative z-10 mx-auto w-full max-w-content layout-gutter pb-16 pt-20 sm:pb-20 sm:pt-24">
+        <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.88fr] lg:gap-14">
           <motion.div
             className="max-w-2xl"
             initial={{ opacity: 0, y: 18 }}
@@ -92,7 +92,7 @@ function HeroSection() {
           </motion.div>
 
           <motion.div
-            className="relative mx-auto w-full max-w-[15.5rem] sm:max-w-[17.5rem] lg:max-w-[19rem] lg:justify-self-end"
+            className="relative mx-auto w-full max-w-[18rem] sm:max-w-[22rem] lg:max-w-[26rem] lg:justify-self-end"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.1, ease: easeLux }}
