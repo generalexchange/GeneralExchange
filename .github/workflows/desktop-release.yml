@@ -92,4 +92,5 @@ jobs:
           releaseName: 'General Exchange Terminal ${{ github.ref_name }}'
           releaseDraft: true
           prerelease: false
+          releaseAssetNamePattern: 'General-Exchange_[arch][setup].[ext]'
           args: ${{ matrix.args }}
