@@ -14,11 +14,15 @@
     "jsx": "preserve",
     "incremental": true,
     "plugins": [{ "name": "next" }],
-    "paths": { "@/*": ["./src/*"] },
+    "paths": {
+      "@/*": ["./src/*"],
+      "@gx/analytics": ["./packages/analytics/src/index.ts"],
+      "@gx/analytics/*": ["./packages/analytics/src/*"]
+    },
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "apps/desktop"]
+  "exclude": ["node_modules", "apps/desktop", "packages/analytics/tests"]
 }

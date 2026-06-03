@@ -1,0 +1,32 @@
+{
+  "name": "@gx/analytics",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Quantitative analytics framework for General Exchange — Monte Carlo probability/risk core plus pricing, volatility, sizing, valuation, and scoring models. Shared by web + desktop.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./monte-carlo": "./src/monte-carlo/index.ts",
+    "./black-scholes": "./src/black-scholes/index.ts",
+    "./garch": "./src/garch/index.ts",
+    "./bayesian": "./src/bayesian/index.ts",
+    "./kelly": "./src/kelly/index.ts",
+    "./sharpe": "./src/sharpe/index.ts",
+    "./capm": "./src/capm/index.ts",
+    "./dcf": "./src/dcf/index.ts",
+    "./entropy": "./src/entropy/index.ts",
+    "./order-flow": "./src/order-flow/index.ts",
+    "./risk-of-ruin": "./src/risk-of-ruin/index.ts",
+    "./scoring": "./src/scoring/index.ts",
+    "./shared": "./src/shared/index.ts",
+    "./types": "./src/types/index.ts"
+  },
+  "sideEffects": false,
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  }
+}

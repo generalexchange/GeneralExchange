@@ -9,7 +9,10 @@ const host = process.env.TAURI_DEV_HOST;
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    alias: { '@': path.resolve(__dirname, 'src') },
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+      '@gx/analytics': path.resolve(__dirname, '../../packages/analytics/src'),
+    },
   },
   // Prevent Vite from obscuring Rust errors.
   clearScreen: false,

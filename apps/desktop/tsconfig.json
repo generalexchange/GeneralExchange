@@ -17,7 +17,9 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@gx/analytics": ["../../packages/analytics/src/index.ts"],
+      "@gx/analytics/*": ["../../packages/analytics/src/*"]
     }
   },
   "include": ["src"],
