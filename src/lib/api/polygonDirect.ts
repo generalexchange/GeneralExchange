@@ -28,20 +28,38 @@ async function polygonGet<T>(path: string, params: Record<string, string> = {}):
   return res.json() as Promise<T>;
 }
 
-const INTERVALS: Record<string, { mult: number; span: string }> = {
-  '1m': { mult: 1, span: 'minute' },
-  '5m': { mult: 5, span: 'minute' },
-  '15m': { mult: 15, span: 'minute' },
-  '1h': { mult: 1, span: 'hour' },
-  '1d': { mult: 1, span: 'day' },
+const INTERVALS: Record<string, { mult: number; span: string; lookbackDays: number }> = {
+  '1m': { mult: 1, span: 'minute', lookbackDays: 2 },
+  '5m': { mult: 5, span: 'minute', lookbackDays: 5 },
+  '15m': { mult: 15, span: 'minute', lookbackDays: 10 },
+  '1h': { mult: 1, span: 'hour', lookbackDays: 14 },
+  '1d': { mult: 1, span: 'day', lookbackDays: 400 },
 };
 
 export function canUsePolygonDirect(): boolean {
   return Boolean(apiKey());
 }
 
-/** GET ticks/{symbol} */
+type TickRow = {
+  symbol: string;
+  timestamp: string;
+  price: number;
+  size: number;
+  exchange: string;
+  conditions: string[];
+  tape: string;
+};
+
+function nsToIso(ns?: number): string {
+  if (!ns) return new Date().toISOString();
+  return new Date(ns / 1_000_000).toISOString();
+}
+
+/** GET ticks/{symbol} — falls back to prev-day bar when trade tape is not on plan. */
 export async function polygonTicks(symbol: string, limit: number) {
+  const sym = symbol.toUpperCase();
+  const cap = Math.min(limit, 500);
+
   type Trade = {
     sip_timestamp?: number;
     participant_timestamp?: number;
@@ -51,41 +69,78 @@ export async function polygonTicks(symbol: string, limit: number) {
     conditions?: number[];
     tape?: number;
   };
-  const json = await polygonGet<{ results?: Trade[] }>(`/v3/trades/${symbol.toUpperCase()}`, {
-    limit: String(Math.min(limit, 500)),
-    order: 'desc',
-  });
 
-  const data = (json.results ?? []).map((t) => ({
-    symbol: symbol.toUpperCase(),
-    timestamp: new Date(
-      (t.sip_timestamp ?? t.participant_timestamp ?? Date.now() * 1_000_000) / 1_000_000,
-    ).toISOString(),
-    price: t.price,
-    size: t.size,
-    exchange: String(t.exchange ?? 'XNAS'),
-    conditions: (t.conditions ?? []).map(String),
-    tape: String(t.tape ?? 'C'),
-  }));
+  try {
+    const json = await polygonGet<{ results?: Trade[] }>(`/v3/trades/${sym}`, {
+      limit: String(cap),
+      order: 'desc',
+    });
+    const data: TickRow[] = (json.results ?? []).map((t) => ({
+      symbol: sym,
+      timestamp: nsToIso(t.sip_timestamp ?? t.participant_timestamp),
+      price: t.price,
+      size: t.size,
+      exchange: String(t.exchange ?? 'XNAS'),
+      conditions: (t.conditions ?? []).map(String),
+      tape: String(t.tape ?? 'C'),
+    }));
+    if (data.length) return envelope(data, 'polygon');
+  } catch {
+    // Starter plans often omit the trade tape — synthesize from delayed bars.
+  }
 
-  return envelope(data, 'polygon');
+  type PrevBar = { T?: string; c?: number; v?: number; t?: number };
+  const prev = await polygonGet<{ results?: PrevBar[] }>(`/v2/aggs/ticker/${sym}/prev`, {});
+  const bar = prev.results?.[0];
+  if (!bar?.c) throw new Error('no tick or aggregate data available for symbol');
+
+  const data: TickRow[] = [{
+    symbol: sym,
+    timestamp: bar.t ? new Date(bar.t).toISOString() : new Date().toISOString(),
+    price: bar.c,
+    size: Math.max(1, Math.round((bar.v ?? 100) / 1000)),
+    exchange: 'XNAS',
+    conditions: ['@'],
+    tape: 'C',
+  }];
+
+  return envelope(data, 'polygon-delayed');
 }
 
-/** GET candles/{symbol}/{interval} */
+/** GET candles/{symbol}/{interval} — intraday intervals fall back to daily on limited plans. */
 export async function polygonCandles(symbol: string, interval: string, limit: number) {
-  const spec = INTERVALS[interval] ?? INTERVALS['5m'];
-  const to = new Date();
-  const from = new Date(to.getTime() - limit * spec.mult * 60_000 * (spec.span === 'hour' ? 60 : spec.span === 'day' ? 1440 : 1));
+  const sym = symbol.toUpperCase();
+  const cap = Math.min(limit, 500);
+  let spec = INTERVALS[interval] ?? INTERVALS['1d'];
+  let effectiveInterval = interval;
 
-  type Bar = { t: number; o: number; h: number; l: number; c: number; v: number; vw?: number; n?: number };
-  const json = await polygonGet<{ results?: Bar[] }>(
-    `/v2/aggs/ticker/${symbol.toUpperCase()}/range/${spec.mult}/${spec.span}/${from.toISOString().slice(0, 10)}/${to.toISOString().slice(0, 10)}`,
-    { limit: String(Math.min(limit, 500)), sort: 'asc' },
-  );
+  const fetchBars = async (s: typeof spec) => {
+    const to = new Date();
+    const from = new Date(to.getTime() - s.lookbackDays * 86_400_000);
+    type Bar = { t: number; o: number; h: number; l: number; c: number; v: number; vw?: number; n?: number };
+    return polygonGet<{ results?: Bar[] }>(
+      `/v2/aggs/ticker/${sym}/range/${s.mult}/${s.span}/${from.toISOString().slice(0, 10)}/${to.toISOString().slice(0, 10)}`,
+      { limit: String(cap), sort: 'asc' },
+    );
+  };
+
+  let json;
+  try {
+    json = await fetchBars(spec);
+    if (!(json.results?.length) && spec.span !== 'day') {
+      spec = INTERVALS['1d'];
+      effectiveInterval = '1d';
+      json = await fetchBars(spec);
+    }
+  } catch {
+    spec = INTERVALS['1d'];
+    effectiveInterval = '1d';
+    json = await fetchBars(spec);
+  }
 
   const data = (json.results ?? []).map((b) => ({
-    symbol: symbol.toUpperCase(),
-    interval,
+    symbol: sym,
+    interval: effectiveInterval,
     open_time: new Date(b.t).toISOString(),
     open: b.o,
     high: b.h,
@@ -96,7 +151,7 @@ export async function polygonCandles(symbol: string, interval: string, limit: nu
     transactions: b.n ?? 0,
   }));
 
-  return envelope(data, 'polygon');
+  return envelope(data, effectiveInterval === interval ? 'polygon' : 'polygon-delayed');
 }
 
 /** GET options/chain/{symbol} */
