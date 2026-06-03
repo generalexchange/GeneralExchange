@@ -54,7 +54,7 @@ function SectionActions({ children }: { children: React.ReactNode }) {
 
 function HeroSection() {
   return (
-    <section className="relative flex min-h-[calc(100svh-3.5rem)] flex-col justify-center overflow-hidden border-b border-white/[0.06] bg-dark-gray sm:min-h-[calc(100svh-3.75rem)]">
+    <section className="relative flex min-h-[calc(100svh-3.5rem)] flex-col justify-start overflow-hidden border-b border-white/[0.06] bg-dark-gray sm:min-h-[calc(100svh-3.75rem)]">
       <div
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_85%_70%_at_50%_-15%,rgba(46,90,58,0.12),transparent_58%)]"
         aria-hidden
@@ -63,8 +63,8 @@ function HeroSection() {
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_45%_at_85%_85%,rgba(210,180,140,0.07),transparent_55%)]"
         aria-hidden
       />
-      <div className="relative z-10 mx-auto w-full max-w-content layout-gutter py-20 sm:py-28">
-        <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+      <div className="relative z-10 mx-auto w-full max-w-content layout-gutter pb-16 pt-10 sm:pb-20 sm:pt-14">
+        <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.72fr] lg:gap-14">
           <motion.div
             className="max-w-2xl"
             initial={{ opacity: 0, y: 18 }}
@@ -92,20 +92,24 @@ function HeroSection() {
           </motion.div>
 
           <motion.div
-            className="relative mx-auto w-full max-w-md lg:max-w-none"
+            className="relative mx-auto w-full max-w-[15.5rem] sm:max-w-[17.5rem] lg:max-w-[19rem] lg:justify-self-end"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.1, ease: easeLux }}
           >
             {/* Bezel — brass rounded frame, no black outline */}
-            <div className="overflow-hidden rounded-[1.75rem] border border-[#8B7D6B]/55 shadow-[0_48px_100px_-28px_rgba(0,0,0,0.75)]">
+            <div className="relative overflow-hidden rounded-[1.75rem] border border-[#8B7D6B]/55 shadow-[0_48px_100px_-28px_rgba(0,0,0,0.75)]">
               <Image
                 src="/images/generalexchangehorse.png"
                 alt="General Exchange — rider crossing the ford at dawn"
                 width={994}
                 height={1040}
                 priority
-                className="h-auto w-full object-cover contrast-[1.12] saturate-[1.1] brightness-[0.88]"
+                className="h-auto w-full object-cover brightness-[0.66] contrast-[1.28] saturate-[0.82] sepia-[0.14]"
+              />
+              <div
+                className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_38%,rgba(0,0,0,0.42)_100%)]"
+                aria-hidden
               />
             </div>
           </motion.div>
