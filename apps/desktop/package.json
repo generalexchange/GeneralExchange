@@ -1,9 +1,9 @@
 {
   "name": "general-exchange-terminal",
   "private": true,
-  "version": "0.1.2",
+  "version": "0.2.0",
   "type": "module",
-  "description": "general.exchange desktop trading terminal",
+  "description": "general.exchange desktop app — the full platform, bundled and installable",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",

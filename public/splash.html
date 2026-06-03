@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>general.exchange</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #14151a;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      .stage {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100vw;
+        height: 100vh;
+        background:
+          radial-gradient(ellipse 80% 60% at 50% 8%, rgba(46, 90, 58, 0.18), transparent 60%),
+          radial-gradient(ellipse 60% 50% at 50% 100%, rgba(210, 180, 140, 0.1), transparent 60%),
+          #14151a;
+      }
+      .frame {
+        width: 168px;
+        height: 168px;
+        border-radius: 22px;
+        overflow: hidden;
+        border: 1px solid rgba(139, 125, 107, 0.55);
+        box-shadow: 0 30px 70px -20px rgba(0, 0, 0, 0.8);
+        animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+      }
+      .frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.7) contrast(1.25) saturate(0.85) sepia(0.12);
+      }
+      .wordmark {
+        margin-top: 26px;
+        font-size: 15px;
+        letter-spacing: 0.22em;
+        color: rgba(210, 180, 140, 0.92);
+        text-transform: lowercase;
+        animation: fade 0.9s ease 0.15s both;
+      }
+      .bar {
+        margin-top: 22px;
+        width: 140px;
+        height: 2px;
+        border-radius: 2px;
+        background: rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+        animation: fade 0.9s ease 0.25s both;
+      }
+      .bar::after {
+        content: '';
+        display: block;
+        width: 40%;
+        height: 100%;
+        border-radius: 2px;
+        background: linear-gradient(90deg, transparent, rgba(210, 180, 140, 0.9), transparent);
+        animation: slide 1.3s ease-in-out infinite;
+      }
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(14px) scale(0.96);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+      @keyframes fade {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes slide {
+        0% {
+          transform: translateX(-120%);
+        }
+        100% {
+          transform: translateX(360%);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stage">
+      <div class="frame">
+        <img src="splash.png" alt="general.exchange" />
+      </div>
+      <div class="wordmark">general.exchange</div>
+      <div class="bar"></div>
+    </div>
+  </body>
+</html>

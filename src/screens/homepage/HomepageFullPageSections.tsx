@@ -103,7 +103,7 @@ function HeroSection() {
             transition={{ duration: 0.6, ease: easeLux }}
           >
             <p className="sc-serif mb-5 text-[11px] text-zinc-400">
-              <span className="font-display text-[14px] tracking-[0.2em] text-tan/90">general.exchange</span>
+              <span className="font-display text-[14px] tracking-[0.2em] text-tan/90">By: Old West Solutions</span>
             </p>
             <h1 className="text-pretty font-display text-[clamp(2rem,7vw,3.75rem)] font-normal leading-[1.05] tracking-[-0.02em] text-neutral-50">
               <HeroTypewriter />

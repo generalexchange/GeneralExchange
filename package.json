@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev -p 3003",
     "build": "next build",
+    "build:desktop": "node scripts/build-desktop-frontend.mjs",
     "start": "next start -p 3003",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },

@@ -1,9 +1,11 @@
 name: Desktop — Build & Release
 
-# Builds the general.exchange desktop app (apps/desktop) for macOS, Windows,
-# and Linux. Produces downloadable installers, uploads them as GitHub Actions
-# artifacts, and (on a version tag or published release) attaches them to a
-# GitHub Release as a draft.
+# Builds the general.exchange desktop app for macOS, Windows, and Linux. The
+# Tauri shell (apps/desktop) bundles the FULL general.exchange site: the build
+# compiles the root Next.js app to a static export (scripts/build-desktop-frontend.mjs
+# -> out/) which ships inside the installer. Produces downloadable installers,
+# uploads them as GitHub Actions artifacts, and (on a version tag or published
+# release) attaches them to a GitHub Release as a draft.
 #
 # Triggers:
 #   - Git tags matching v*        -> build + draft release
@@ -15,7 +17,15 @@ on:
   push:
     branches: [main]
     tags: ['v*']
-    paths: ['apps/desktop/**', '.github/workflows/desktop-release.yml']
+    paths:
+      - 'apps/desktop/**'
+      - 'src/**'
+      - 'public/**'
+      - 'scripts/**'
+      - 'next.config.ts'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/desktop-release.yml'
   release:
     types: [published]
   workflow_dispatch:
@@ -81,11 +91,12 @@ jobs:
         with:
           workspaces: apps/desktop/src-tauri
 
-      - name: Install frontend dependencies
+      - name: Install desktop shell dependencies
         run: npm ci
 
-      - name: Typecheck
-        run: npm run typecheck
+      - name: Install web app dependencies (bundled UI)
+        working-directory: ${{ github.workspace }}
+        run: npm ci
 
       - name: Build & release with Tauri
         uses: tauri-apps/tauri-action@v0

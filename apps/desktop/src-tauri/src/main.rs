@@ -56,7 +56,7 @@ fn main() {
             TrayIconBuilder::with_id("main")
                 .icon(app.default_window_icon().unwrap().clone())
                 .menu(&menu)
-                .tooltip("General Exchange Terminal")
+                .tooltip("general.exchange")
                 .on_menu_event(move |app, event| match event.id().as_ref() {
                     "show" => {
                         if let Some(window) = app.get_webview_window("main") {
@@ -84,6 +84,21 @@ fn main() {
                     }
                 })
                 .build(app)?;
+
+            // Reveal the main window and dismiss the branded splash once the
+            // bundled UI has had a moment to boot. The splash window shows
+            // immediately on launch; the main window starts hidden.
+            let handle = app.handle().clone();
+            std::thread::spawn(move || {
+                std::thread::sleep(std::time::Duration::from_millis(1600));
+                if let Some(main) = handle.get_webview_window("main") {
+                    let _ = main.show();
+                    let _ = main.set_focus();
+                }
+                if let Some(splash) = handle.get_webview_window("splashscreen") {
+                    let _ = splash.close();
+                }
+            });
 
             Ok(())
         })
