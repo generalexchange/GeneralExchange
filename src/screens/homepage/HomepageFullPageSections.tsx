@@ -267,9 +267,8 @@ export function HomepageFullPageSections() {
         eyebrowLabel="Newspaper"
         ariaLabelledBy="hp-data-title"
         title={<span id="hp-data-title">The market newspaper for decision-makers.</span>}
-        lede="Bridge Observer distills the live market record into a readable intelligence layer for the desk: what changed, who moved size, where pressure is building, and which environments are strengthening or breaking down."
       >
-        <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-center">
+        <div className="mt-6 grid gap-8 lg:grid-cols-[1.25fr_1fr] lg:items-start">
           <DataAccessIllustration />
           <div className="space-y-5">
             {[
@@ -302,25 +301,17 @@ export function HomepageFullPageSections() {
         eyebrowLabel="Commodities"
         ariaLabelledBy="hp-trust-title"
         title={<span id="hp-trust-title">Alternative commodity markets, transactable with the same research standard.</span>}
-        lede="Trade and hedge beyond equities with commodity workflows built for real execution: energy, metals, agriculture, and related basis structures — all with replayable context, margin-aware controls, and decision-ready analytics."
       >
-        <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_1.3fr] lg:items-center">
+        <div className="mt-6">
           <CommoditiesIllustration />
-          <div>
-            <blockquote className="border-l-2 border-brass pl-5 text-pretty text-[15px] leading-[1.75] text-zinc-300 sm:text-base">
-              Commodities are not a side panel. They are a first-class risk lane with their own inventory cycles,
-              delivery constraints, and cross-market dependencies. Here, users can rehearse those dynamics before
-              committing capital, then execute with the same discipline used across the rest of the platform.
-            </blockquote>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/town-and-cattle" className={btnPrimary}>
-                Town & Cattle
-              </Link>
-              <Link href="/our-story" className={btnOutline}>
-                Our story
-              </Link>
-            </div>
-          </div>
+        </div>
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <Link href="/town-and-cattle" className={btnPrimary}>
+            Town & Cattle
+          </Link>
+          <Link href="/our-story" className={btnOutline}>
+            Our story
+          </Link>
         </div>
       </SectionShell>
     </div>

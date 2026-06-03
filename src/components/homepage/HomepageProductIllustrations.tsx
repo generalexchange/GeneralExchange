@@ -748,25 +748,54 @@ export function StrategyLibraryIllustration() {
 
 export function DataAccessIllustration() {
   return (
-    <div className={`${panel} p-5 font-mono text-[12px]`}>
-      <div className={`${panelHead} -mx-5 -mt-5 mb-4`}>
-        <span className={eyebrow}>Access layer</span>
-        <span className="text-[9px] text-moss">● operational</span>
+    <div className={`${panel} overflow-hidden`}>
+      <div className={panelHead}>
+        <span className={eyebrow}>Bridge Observer · morning briefing</span>
+        <span className="rounded-full border border-brass/40 bg-brass/[0.08] px-2 py-0.5 text-[9px] text-tan">
+          Morningstar-style layout
+        </span>
       </div>
-      <pre className="overflow-x-auto leading-relaxed text-zinc-400">
-        <span className="text-zinc-600">GET</span> <span className="text-tan">/v1/signals/SPY</span>
-        {'\n'}
-        <span className="text-zinc-600">{'{'}</span>
-        {'\n'}  <span className="text-zinc-300">{'"symbol"'}</span>: <span className="text-moss">{'"SPY"'}</span>,
-        {'\n'}  <span className="text-zinc-300">{'"as_of"'}</span>: <span className="text-moss">{'"2026-04-12T15:51:08Z"'}</span>,
-        {'\n'}  <span className="text-zinc-300">{'"regime"'}</span>: <span className="text-moss">{'"compressed_vol"'}</span>,
-        {'\n'}  <span className="text-zinc-300">{'"confidence"'}</span>: <span className="text-tan">0.82</span>
-        {'\n'}
-        <span className="text-zinc-600">{'}'}</span>
-      </pre>
-      <p className="mt-4 border-t border-white/[0.06] pt-3 text-[11px] text-zinc-500">
-        Institutional market data, options analytics, and computed signals — delivered to your systems.
-      </p>
+      <div className="grid gap-px bg-white/[0.06] lg:grid-cols-[1.2fr_0.8fr]">
+        <div className="bg-charcoal/80 p-5">
+          <p className="text-[9px] uppercase tracking-wider text-zinc-500">Today&apos;s lead story</p>
+          <h4 className="mt-2 text-pretty font-display text-[22px] leading-[1.15] text-neutral-100">
+            Futures hold gains as commodity curves tighten and macro liquidity rotates back into risk.
+          </h4>
+          <p className="mt-3 text-[12px] leading-[1.8] text-zinc-400">
+            Our morning desk read shows participation broadening across cyclicals while index downside hedging fades.
+            The notable change is concentrated in commodities-linked transport and energy proxies.
+          </p>
+          <div className="mt-4 grid gap-2 sm:grid-cols-3">
+            {[
+              ['US 10Y', '4.18%', '-4 bps'],
+              ['WTI', '$79.42', '+1.7%'],
+              ['DXY', '103.1', '-0.3%'],
+            ].map(([k, v, d]) => (
+              <div key={k} className="rounded border border-white/[0.08] bg-black/20 px-3 py-2.5">
+                <p className="text-[9px] uppercase tracking-wider text-zinc-600">{k}</p>
+                <p className="mt-1 font-mono text-[13px] tabular text-neutral-100">{v}</p>
+                <p className="font-mono text-[10px] tabular text-moss">{d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="bg-charcoal/80 p-5">
+          <p className="mb-3 text-[9px] uppercase tracking-wider text-zinc-500">Sections</p>
+          <div className="space-y-2.5">
+            {[
+              ['Market Pulse', 'Who added risk, who reduced.'],
+              ['Flows & Positioning', 'Institutional pressure map by sector.'],
+              ['Volatility Desk', 'Regime shift watchlist and catalysts.'],
+              ['Commodities Tape', 'Term structure and basis stress scan.'],
+            ].map(([h, b]) => (
+              <div key={h} className="rounded border border-white/[0.08] bg-black/20 px-3 py-2.5">
+                <p className="text-[12px] text-zinc-200">{h}</p>
+                <p className="text-[10px] text-zinc-500">{b}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -818,23 +847,23 @@ export function CommoditiesIllustration() {
         <span className="font-mono text-[9px] text-zinc-500 tabular">session mix · live</span>
       </div>
       <div className="grid gap-px bg-white/[0.06] sm:grid-cols-2">
-        <div className="bg-charcoal/80 p-4">
+        <div className="bg-charcoal/80 p-5">
           <p className="mb-3 text-[9px] uppercase tracking-wider text-zinc-500">Tradable groups</p>
-          <div className="space-y-2.5 text-[12px]">
+          <div className="space-y-3 text-[13px]">
             {[
               ['Energy', 'Crude, nat gas, power spreads'],
               ['Metals', 'Gold, silver, copper curves'],
               ['Agriculture', 'Cattle, grains, softs'],
               ['Freight / inputs', 'shipping and industrial input proxies'],
             ].map(([h, b]) => (
-              <div key={h} className="rounded border border-white/[0.08] bg-black/25 px-3 py-2.5">
+              <div key={h} className="rounded border border-white/[0.08] bg-black/25 px-3.5 py-3">
                 <p className="text-zinc-200">{h}</p>
-                <p className="text-[10px] text-zinc-500">{b}</p>
+                <p className="text-[11px] text-zinc-500">{b}</p>
               </div>
             ))}
           </div>
         </div>
-        <div className="bg-charcoal/80 p-4">
+        <div className="bg-charcoal/80 p-5">
           <p className="mb-3 text-[9px] uppercase tracking-wider text-zinc-500">Risk context</p>
           <table className="w-full table-fixed text-left text-xs">
             <thead>
@@ -859,7 +888,9 @@ export function CommoditiesIllustration() {
               ))}
             </tbody>
           </table>
-          <p className="mt-3 text-[10px] text-zinc-500">Designed for transactable, margin-aware commodities workflows.</p>
+          <p className="mt-4 text-[11px] text-zinc-500">
+            Designed for transactable, margin-aware commodities workflows.
+          </p>
         </div>
       </div>
     </div>
