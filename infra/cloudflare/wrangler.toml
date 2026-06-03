@@ -1,0 +1,13 @@
+name = "general-exchange-ws-proxy"
+main = "ws-proxy.js"
+compatibility_date = "2024-01-01"
+
+# Attach route in Cloudflare dashboard or via:
+#   wrangler deploy --routes "general.exchange/ws*"
+#
+# Set secret:
+#   wrangler secret put WS_ORIGIN
+#   (value: https://general-exchange-ws.fly.dev)
+
+[vars]
+# WS_ORIGIN is set as a secret in production
