@@ -1,0 +1,32 @@
+# Go REST API on DigitalOcean
+name: general-exchange-go-api
+region: nyc
+
+services:
+  - name: go-api
+    source_dir: backend/go
+    dockerfile_path: backend/go/cmd/api/Dockerfile
+    github:
+      repo: generalexchange/GeneralExchange
+      branch: main
+      deploy_on_push: true
+    http_port: 8080
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    health_check:
+      http_path: /healthz
+      initial_delay_seconds: 25
+      period_seconds: 30
+      timeout_seconds: 5
+      success_threshold: 1
+      failure_threshold: 3
+    envs:
+      - key: HTTP_ADDR
+        value: ":8080"
+        scope: RUN_TIME
+      - key: API_KEY_ENFORCE
+        value: "false"
+        scope: RUN_TIME
+      - key: POLYGON_API_KEY
+        scope: RUN_TIME
+        type: SECRET

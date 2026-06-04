@@ -1,17 +1,11 @@
-# DigitalOcean App Platform — Monte Carlo compute (Docker).
-# Build context is repo root; Dockerfile lives in services/monte-carlo-api/.
-#
-# After deploy, set on Vercel:
-#   MONTE_CARLO_API_URL=https://YOUR-APP.ondigitalocean.app
-#   NEXT_PUBLIC_MONTE_CARLO_API_URL=/api/v1/monte-carlo
-
+# Python Monte Carlo on DigitalOcean
 name: general-exchange-monte-carlo
 region: nyc
 
 services:
   - name: monte-carlo
-    dockerfile_path: Dockerfile
-    source_dir: /
+    source_dir: backend/python
+    dockerfile_path: backend/python/services/monte_carlo/Dockerfile
     github:
       repo: generalexchange/GeneralExchange
       branch: main
@@ -19,22 +13,20 @@ services:
     http_port: 8092
     instance_count: 1
     instance_size_slug: basic-xs
-    routes:
-      - path: /
     health_check:
       http_path: /health
-      initial_delay_seconds: 30
+      initial_delay_seconds: 35
       period_seconds: 30
       timeout_seconds: 10
       success_threshold: 1
       failure_threshold: 3
     envs:
-      - key: NODE_ENV
-        value: production
-        scope: RUN_AND_BUILD_TIME
       - key: MC_PORT
         value: "8092"
         scope: RUN_TIME
+      - key: POLYGON_API_KEY
+        scope: RUN_TIME
+        type: SECRET
       - key: MC_API_KEY
         scope: RUN_TIME
         type: SECRET

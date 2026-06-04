@@ -1,13 +1,11 @@
-# DigitalOcean — WebSocket server (optional; WS is on Fly.io: general-exchange-ws).
-# Import this spec only if you want WS on DO instead of Fly.
-
+# WebSocket server on DigitalOcean (replaces Fly.io)
 name: general-exchange-ws
 region: nyc
 
 services:
   - name: ws
     source_dir: services/ws-server
-    dockerfile_path: Dockerfile
+    dockerfile_path: services/ws-server/Dockerfile
     github:
       repo: generalexchange/GeneralExchange
       branch: main
@@ -15,8 +13,6 @@ services:
     http_port: 3001
     instance_count: 1
     instance_size_slug: basic-xxs
-    routes:
-      - path: /
     health_check:
       http_path: /health
       initial_delay_seconds: 20
@@ -32,7 +28,7 @@ services:
         value: "3001"
         scope: RUN_TIME
       - key: WS_SYMBOLS
-        value: SPY,QQQ,NVDA,AAPL,TSLA,AMD
+        value: SPY,QQQ,NVDA,AAPL,TSLA,AMD,MSFT,AMZN,META
         scope: RUN_TIME
       - key: POLYGON_API_KEY
         scope: RUN_TIME
