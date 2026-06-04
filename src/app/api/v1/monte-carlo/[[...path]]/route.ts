@@ -39,10 +39,9 @@ async function forwardUpstream(route: RouteName, body: string) {
   });
 }
 
-export async function POST(
-  req: NextRequest,
-  ctx: { params: Promise<{ path: string[] }> },
-) {
+type RouteCtx = { params: Promise<{ path?: string[] }> };
+
+export async function POST(req: NextRequest, ctx: RouteCtx) {
   const { path } = await ctx.params;
   const route = path?.[0] as RouteName | undefined;
   if (!route || !(route in LOCAL)) {
@@ -62,10 +61,7 @@ export async function POST(
   }
 }
 
-export async function GET(
-  _req: NextRequest,
-  ctx: { params: Promise<{ path: string[] }> },
-) {
+export async function GET(_req: NextRequest, ctx: RouteCtx) {
   const { path } = await ctx.params;
   if (path?.length) {
     return NextResponse.json({ error: 'not_found' }, { status: 404 });
