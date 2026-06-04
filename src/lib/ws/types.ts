@@ -1,1 +1,1 @@
-export type { MarketUpdate, CandleUpdate, WsOutbound } from '../../services/ws-server/types';
+export type { MarketUpdate, CandleUpdate, WsOutbound } from '../../../shared/ws-types';
