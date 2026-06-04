@@ -19,4 +19,13 @@ export {
   TradeQualitySimulation,
   simulateTradeQuality,
 } from './simulations';
+export {
+  DEFAULT_MONTE_CARLO_PUBLIC_PATH,
+  evaluateTradeIO,
+  getMonteCarloClientUrl,
+  isMonteCarloRemoteEnabled,
+  simulatePricePathsIO,
+  simulateStrategyOutcomeIO,
+  simulateTradeQualityIO,
+} from './client';
 export * from './providers';

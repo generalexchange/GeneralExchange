@@ -2,6 +2,9 @@
   "name": "general-exchange",
   "private": true,
   "version": "0.1.0",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "dev": "next dev -p 3003",
     "build": "next build",
@@ -14,6 +17,7 @@
     "stack:down": "docker compose --profile app down",
     "vercel:env": "node scripts/push-vercel-env.mjs",
     "dev:ws": "tsx services/ws-server/index.ts",
+    "dev:mc": "tsx services/monte-carlo-api/index.ts",
     "dev:all": "npm run dev:ws & npm run dev"
   },
   "dependencies": {
