@@ -1,42 +1,43 @@
-# DigitalOcean App Platform — WebSocket server only.
-# Next.js stays on Vercel. Do NOT deploy the repo root with Node buildpacks.
+# DigitalOcean — Monte Carlo compute (DOCKER). Default app spec for this repo.
+# Next.js stays on Vercel. Do NOT use Node buildpack on repo root.
 #
-# In DO dashboard: App → Settings → set "Source directory" to services/ws-server
-# or import this spec. Component type must be Docker (not Node buildpack).
+# Create app: GitHub → Import App Spec → select THIS file (.do/app.yaml)
+# You should see "Dockerfile" / Docker — NOT "Node.js build detected".
+#
+# After deploy, on Vercel set:
+#   MONTE_CARLO_API_URL=https://YOUR-APP.ondigitalocean.app
+#   MC_API_KEY=<same secret as below>
 
-name: general-exchange-ws
+name: general-exchange-monte-carlo
 region: nyc
 
 services:
-  - name: ws
-    source_dir: services/ws-server
+  - name: monte-carlo
     dockerfile_path: Dockerfile
+    source_dir: /
     github:
       repo: generalexchange/GeneralExchange
       branch: main
       deploy_on_push: true
-    http_port: 3001
+    http_port: 8092
     instance_count: 1
-    instance_size_slug: basic-xxs
+    instance_size_slug: basic-xs
     routes:
       - path: /
     health_check:
       http_path: /health
-      initial_delay_seconds: 20
+      initial_delay_seconds: 30
       period_seconds: 30
-      timeout_seconds: 5
+      timeout_seconds: 10
       success_threshold: 1
       failure_threshold: 3
     envs:
       - key: NODE_ENV
         value: production
         scope: RUN_AND_BUILD_TIME
-      - key: WS_PORT
-        value: "3001"
+      - key: MC_PORT
+        value: "8092"
         scope: RUN_TIME
-      - key: WS_SYMBOLS
-        value: SPY,QQQ,NVDA,AAPL,TSLA,AMD
-        scope: RUN_TIME
-      - key: POLYGON_API_KEY
+      - key: MC_API_KEY
         scope: RUN_TIME
         type: SECRET

@@ -10,7 +10,7 @@ region: nyc
 
 services:
   - name: monte-carlo
-    dockerfile_path: services/monte-carlo-api/Dockerfile
+    dockerfile_path: Dockerfile
     source_dir: /
     github:
       repo: generalexchange/GeneralExchange

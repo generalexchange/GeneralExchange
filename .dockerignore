@@ -1,0 +1,15 @@
+node_modules
+.next
+out
+.git
+.github
+.cursor
+agent-transcripts
+*.md
+.env*
+backend
+src
+public
+services/ws-server
+scripts
+docs
