@@ -6,7 +6,7 @@ app = 'general-exchange-ws'
 primary_region = 'iad'
 
 [build]
-  dockerfile = "services/ws-server/Dockerfile"
+  dockerfile = "Dockerfile"
 
 [http_service]
   internal_port = 3001

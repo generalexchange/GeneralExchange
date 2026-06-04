@@ -28,6 +28,11 @@ if (-not $FlyToken) {
   exit 1
 }
 
+Write-Host ""
+Write-Host "Deploy WS server (NOT the Next.js app — that stays on Vercel):"
+Write-Host "  cd services/ws-server"
+Write-Host "  flyctl deploy --app general-exchange-ws"
+Write-Host ""
 Write-Host "Setting FLY_API_TOKEN on $Repo ..."
 $FlyToken | gh secret set FLY_API_TOKEN --repo $Repo
 

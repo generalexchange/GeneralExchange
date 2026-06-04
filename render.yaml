@@ -3,7 +3,7 @@ services:
     name: general-exchange-ws
     runtime: docker
     dockerfilePath: services/ws-server/Dockerfile
-    dockerContext: .
+    dockerContext: services/ws-server
     plan: free
     healthCheckPath: /health
     envVars:

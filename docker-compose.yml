@@ -199,7 +199,7 @@ services:
   # Unified Node WebSocket server — same image dev + prod (port 3001, path /ws)
   ws-server:
     profiles: ["app", "all"]
-    build: { context: ., dockerfile: services/ws-server/Dockerfile }
+    build: { context: ./services/ws-server, dockerfile: Dockerfile }
     environment:
       WS_PORT: "3001"
       POLYGON_API_KEY: ${POLYGON_API_KEY:-}
