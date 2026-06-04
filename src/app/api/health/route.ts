@@ -2,33 +2,31 @@ import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
+async function probe(url: string, path: string, ms = 5000): Promise<'reachable' | 'unavailable'> {
+  try {
+    const res = await fetch(`${url.replace(/\/$/, '')}${path}`, {
+      cache: 'no-store',
+      signal: AbortSignal.timeout(ms),
+    });
+    return res.ok ? 'reachable' : 'unavailable';
+  } catch {
+    return 'unavailable';
+  }
+}
+
 export async function GET() {
   const goUrl = (process.env.GO_API_URL ?? 'http://localhost:8080').replace(/\/$/, '');
-  let goStatus: 'reachable' | 'unavailable' = 'unavailable';
+  const goStatus = await probe(goUrl, '/healthz', 4000);
 
-  try {
-    const res = await fetch(`${goUrl}/healthz`, {
-      cache: 'no-store',
-      signal: AbortSignal.timeout(4000),
-    });
-    goStatus = res.ok ? 'reachable' : 'unavailable';
-  } catch {
-    goStatus = 'unavailable';
-  }
-
-  let mcStatus: 'reachable' | 'unavailable' | 'local' = 'local';
   const mcUrl = (process.env.MONTE_CARLO_API_URL ?? '').replace(/\/$/, '');
-  if (mcUrl) {
-    mcStatus = 'unavailable';
-    try {
-      const res = await fetch(`${mcUrl}/health`, {
-        cache: 'no-store',
-        signal: AbortSignal.timeout(5000),
-      });
-      mcStatus = res.ok ? 'reachable' : 'unavailable';
-    } catch {
-      mcStatus = 'unavailable';
-    }
+  let mcStatus: 'reachable' | 'unavailable' | 'local' = mcUrl ? 'unavailable' : 'local';
+  if (mcUrl) mcStatus = await probe(mcUrl, '/health', 5000);
+
+  const wsPublic = process.env.NEXT_PUBLIC_WS_URL?.trim() || '';
+  let wsStatus: 'reachable' | 'unavailable' | 'unset' = wsPublic ? 'unavailable' : 'unset';
+  if (wsPublic) {
+    const httpUrl = wsPublic.replace(/^wss:/i, 'https:').replace(/^ws:/i, 'http:').replace(/\/ws\/?$/i, '');
+    wsStatus = await probe(httpUrl, '/health', 5000);
   }
 
   return NextResponse.json({
@@ -36,10 +34,12 @@ export async function GET() {
     go_api: goStatus,
     go_api_url: goUrl,
     polygon_configured: Boolean(process.env.POLYGON_API_KEY?.trim()),
-    ws_url: process.env.NEXT_PUBLIC_WS_URL?.trim() || null,
+    ws_url: wsPublic || null,
+    ws_api: wsStatus,
     monte_carlo_api: mcStatus,
     monte_carlo_api_url: mcUrl || null,
     monte_carlo_public: process.env.NEXT_PUBLIC_MONTE_CARLO_API_URL?.trim() || '/api/v1/monte-carlo',
+    compute_host: 'digitalocean',
     as_of: new Date().toISOString(),
   });
 }
