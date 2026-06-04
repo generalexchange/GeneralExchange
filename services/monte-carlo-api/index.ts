@@ -3,16 +3,18 @@
  * Deploy to DigitalOcean (Docker) for heavy simulation I/O.
  */
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
-import { evaluateTrade } from '../../packages/analytics/src/scoring/TradeEvaluationEngine.ts';
+import { evaluateTrade } from '../../packages/analytics/src/scoring/TradeEvaluationEngine';
 import {
   simulatePricePaths,
   simulateStrategyOutcome,
   simulateTradeQuality,
-} from '../../packages/analytics/src/monte-carlo/simulations.ts';
-import type { PricePathInput } from '../../packages/analytics/src/monte-carlo/types.ts';
-import type { StrategySimulationInput } from '../../packages/analytics/src/monte-carlo/types.ts';
-import type { TradeQualityInput } from '../../packages/analytics/src/monte-carlo/types.ts';
-import type { TradeEvaluationInput } from '../../packages/analytics/src/types/dashboard.ts';
+} from '../../packages/analytics/src/monte-carlo/simulations';
+import type {
+  PricePathInput,
+  StrategySimulationInput,
+  TradeQualityInput,
+} from '../../packages/analytics/src/monte-carlo/types';
+import type { TradeEvaluationInput } from '../../packages/analytics/src/types/dashboard';
 
 const PORT = Number(process.env.PORT || process.env.MC_PORT || 8092);
 const API_KEY = process.env.MC_API_KEY?.trim() || process.env.GE_API_KEY?.trim() || '';
