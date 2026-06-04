@@ -1,52 +1,69 @@
-# Configure Vercel production env to point at DigitalOcean backend (Option A).
-# Requires: doctl auth + Vercel CLI login (or VERCEL_TOKEN).
-
-param(
-  [string]$DoToken = $env:DIGITALOCEAN_ACCESS_TOKEN,
-  [string]$AppName = "general-exchange-backend"
-)
-
+# Set Vercel env from DigitalOcean app URLs (Option A)
 $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent $PSScriptRoot
 Set-Location $Root
 
-if (-not $DoToken) { throw "Set DIGITALOCEAN_ACCESS_TOKEN" }
-$env:DIGITALOCEAN_ACCESS_TOKEN = $DoToken
+if (-not $env:DIGITALOCEAN_ACCESS_TOKEN) { throw "Set DIGITALOCEAN_ACCESS_TOKEN" }
 
-$appId = (doctl apps list --format ID,Spec.Name --no-header | Where-Object { $_ -match "\s$AppName$" } | ForEach-Object { ($_ -split '\s+')[0] } | Select-Object -First 1)
-if (-not $appId) { throw "DO app '$AppName' not found. Run scripts/deploy-backend-do.ps1 first." }
-
-Write-Host "App ID: $appId"
-$specYaml = doctl apps spec get $appId -o yaml
-# Default ingress is on the app; per-service URLs from deployment
-$ingress = (doctl apps get $appId --format DefaultIngress --no-header).Trim()
-Write-Host "App ingress: $ingress"
-
-# DO multi-service apps expose component URLs in the dashboard; fetch via API
-$json = doctl apps get $appId -o json | ConvertFrom-Json
-$urls = @{}
-foreach ($svc in $json.spec.services) {
-  $name = $svc.name
-  $live = $json.live_url
-  if ($name -eq 'ws') { $urls.WS = "wss://$($live -replace '^https://','')/ws" }
-}
-# Fallback: use app-level ingress for MC until component URLs are wired
-$mcUrl = $ingress
-$goUrl = $ingress
-$wsUrl = if ($urls.WS) { $urls.WS } else { "wss://$($ingress -replace '^https://','')/ws" }
-
-Write-Host "Setting Vercel env..."
-Write-Host "  GO_API_URL=$goUrl"
-Write-Host "  MONTE_CARLO_API_URL=$mcUrl"
-Write-Host "  NEXT_PUBLIC_WS_URL=$wsUrl"
-Write-Host "  NEXT_PUBLIC_MONTE_CARLO_API_URL=/api/v1/monte-carlo"
-
-foreach ($envName in @('production', 'preview')) {
-  npx vercel@latest env add GO_API_URL $envName --value $goUrl --yes --force 2>$null
-  npx vercel@latest env add MONTE_CARLO_API_URL $envName --value $mcUrl --yes --force 2>$null
-  npx vercel@latest env add NEXT_PUBLIC_WS_URL $envName --value $wsUrl --yes --force 2>$null
-  npx vercel@latest env add NEXT_PUBLIC_MONTE_CARLO_API_URL $envName --value "/api/v1/monte-carlo" --yes --force 2>$null
+$rows = doctl apps list --format Spec.Name,DefaultIngress --no-header
+$map = @{}
+foreach ($row in $rows) {
+  if ($row -match '^\S+\s+(\S+)\s+(.+)$') { } 
+  $parts = $row -split '\s+', 3
+  if ($parts.Count -ge 2) {
+    $name = $parts[0]
+    $url = ($parts[1..($parts.Count-1)] -join ' ').Trim()
+    if ($url -and $url -ne '<nil>') { $map[$name] = $url }
+  }
 }
 
-Write-Host "Redeploying Vercel production..."
-npx vercel@latest --prod --yes
+# Parse doctl table properly
+$map = @{}
+doctl apps list --format Spec.Name,DefaultIngress --no-header | ForEach-Object {
+  $line = $_.Trim()
+  if ($line -match '^(general-exchange-\S+)\s+(https://\S+)') {
+    $map[$Matches[1]] = $Matches[2]
+  }
+}
+
+$ws = $map['general-exchange-ws']
+$go = $map['general-exchange-go-api']
+$mc = $map['general-exchange-monte-carlo']
+if (-not $ws) { Write-Warning "general-exchange-ws not deployed yet" }
+if (-not $go) { Write-Warning "general-exchange-go-api not deployed yet" }
+if (-not $mc) { Write-Warning "general-exchange-monte-carlo not deployed yet" }
+
+$wsUrl = if ($ws) { ($ws -replace '^https://', 'wss://') + '/ws' } else { '' }
+Write-Host "WS:  $wsUrl"
+Write-Host "Go:  $go"
+Write-Host "MC:  $mc"
+
+$token = (Get-Content "$env:APPDATA\xdg.data\com.vercel.cli\auth.json" | ConvertFrom-Json).token
+$projectId = "prj_L2zhHk96gykMj9AU9O4W1WCa14ln"
+$h = @{ Authorization = "Bearer $token"; "Content-Type" = "application/json" }
+
+function Set-VercelEnv($key, $value) {
+  if (-not $value) { Write-Host "skip $key"; return }
+  $existing = Invoke-RestMethod "https://api.vercel.com/v9/projects/$projectId/env" -Headers $h
+  $prev = $existing.envs | Where-Object { $_.key -eq $key } | Select-Object -First 1
+  if ($prev) {
+    Invoke-RestMethod -Method DELETE "https://api.vercel.com/v9/projects/$projectId/env/$($prev.id)" -Headers $h | Out-Null
+  }
+  $body = @{ key = $key; value = $value; type = "encrypted"; target = @("production", "preview") } | ConvertTo-Json
+  Invoke-RestMethod -Method POST "https://api.vercel.com/v10/projects/$projectId/env" -Headers $h -Body $body | Out-Null
+  Write-Host "set $key"
+}
+
+Set-VercelEnv "NEXT_PUBLIC_WS_URL" $wsUrl
+Set-VercelEnv "GO_API_URL" $go
+Set-VercelEnv "MONTE_CARLO_API_URL" $mc
+Set-VercelEnv "NEXT_PUBLIC_MONTE_CARLO_API_URL" "/api/v1/monte-carlo"
+
+$deployBody = @{
+  name = "generalexchange"
+  project = $projectId
+  target = "production"
+  gitSource = @{ type = "github"; org = "generalexchange"; repo = "GeneralExchange"; ref = "main" }
+} | ConvertTo-Json -Depth 5
+$dep = Invoke-RestMethod -Method POST "https://api.vercel.com/v13/deployments" -Headers $h -Body $deployBody
+Write-Host "Vercel deploy: $($dep.url)"

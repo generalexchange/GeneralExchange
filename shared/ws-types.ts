@@ -7,10 +7,10 @@ export type MarketUpdate = {
   source: 'polygon' | 'synthetic';
 };
 
-/** Minute bar pushed when Polygon sends an aggregate (AM) event. */
+/** Bar pushed when Polygon sends an aggregate (AM) event. */
 export type CandleUpdate = {
   symbol: string;
-  interval: '1m';
+  interval: string;
   open_time: number;
   open: number;
   high: number;

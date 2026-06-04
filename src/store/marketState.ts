@@ -1,13 +1,19 @@
 /**
- * Central in-memory market state — updated only via WebSocket messages.
- * UI components subscribe through hooks; never mutate from outside wsClient.
+ * Central in-memory market state — updated via WebSocket + REST snapshots.
  */
 'use client';
 
 import { useSyncExternalStore } from 'react';
 import type { CandleUpdate, MarketUpdate } from '@/lib/ws/types';
+import type { Candle } from '@/components/dashboard/terminal/terminalData';
 
-export type SymbolQuote = MarketUpdate & { change?: number; changePct?: number };
+export type SymbolQuote = MarketUpdate & {
+  prevClose?: number;
+  change?: number;
+  changePct?: number;
+  afterHoursChange?: number;
+  afterHoursChangePct?: number;
+};
 
 type MarketState = {
   quotes: Record<string, SymbolQuote>;
@@ -15,6 +21,7 @@ type MarketState = {
 };
 
 const MAX_CANDLES = 500;
+const EMPTY_CANDLES: CandleUpdate[] = [];
 
 let state: MarketState = { quotes: {}, candles: {} };
 const listeners = new Set<() => void>();
@@ -33,14 +40,22 @@ export function getMarketState(): MarketState {
 }
 
 export function applyMarketUpdate(update: MarketUpdate) {
-  const prev = state.quotes[update.symbol]?.price;
-  const change = prev != null ? update.price - prev : 0;
-  const changePct = prev != null && prev !== 0 ? (change / prev) * 100 : 0;
+  const existing = state.quotes[update.symbol];
+  const prevClose = existing?.prevClose ?? update.price;
+  const change = update.price - prevClose;
+  const changePct = prevClose ? (change / prevClose) * 100 : 0;
+
   state = {
     ...state,
     quotes: {
       ...state.quotes,
-      [update.symbol]: { ...update, change, changePct },
+      [update.symbol]: {
+        ...existing,
+        ...update,
+        prevClose,
+        change,
+        changePct,
+      },
     },
   };
   emit();
@@ -61,15 +76,55 @@ export function applyCandleUpdate(candle: CandleUpdate, replaceLast = true) {
   emit();
 }
 
-/** Hydrate initial quote from REST snapshot (once per symbol, before WS overrides). */
-export function seedQuoteFromRest(symbol: string, price: number, timestamp?: number) {
-  if (state.quotes[symbol]) return;
-  applyMarketUpdate({
+/** Hydrate quote from Polygon REST (day change vs prev close). */
+export function seedQuoteFromRest(
+  symbol: string,
+  payload: {
+    price: number;
+    prevClose: number;
+    change: number;
+    changePct: number;
+    afterHoursChange?: number;
+    afterHoursChangePct?: number;
+    timestamp?: number;
+  },
+) {
+  state = {
+    ...state,
+    quotes: {
+      ...state.quotes,
+      [symbol]: {
+        symbol,
+        price: payload.price,
+        prevClose: payload.prevClose,
+        change: payload.change,
+        changePct: payload.changePct,
+        afterHoursChange: payload.afterHoursChange,
+        afterHoursChangePct: payload.afterHoursChangePct,
+        timestamp: payload.timestamp ?? Date.now(),
+        source: 'polygon',
+      },
+    },
+  };
+  emit();
+}
+
+/** Hydrate intraday candles for the Robinhood chart. */
+export function seedCandlesFromRest(symbol: string, interval: string, rows: Candle[]) {
+  const key = `${symbol}:${interval}`;
+  const mapped: CandleUpdate[] = rows.map((c) => ({
     symbol,
-    price,
-    timestamp: timestamp ?? Date.now(),
-    source: 'polygon',
-  });
+    interval,
+    open_time: c.t,
+    open: c.o,
+    high: c.h,
+    low: c.l,
+    close: c.c,
+    volume: c.v,
+    vwap: c.vwap,
+  }));
+  state = { ...state, candles: { ...state.candles, [key]: mapped } };
+  emit();
 }
 
 export function useSymbolQuote(symbol: string): SymbolQuote | null {
@@ -84,8 +139,8 @@ export function useSymbolCandles(symbol: string, interval: string): CandleUpdate
   const key = `${symbol}:${interval}`;
   return useSyncExternalStore(
     subscribeMarketState,
-    () => getMarketState().candles[key] ?? [],
-    () => [],
+    () => getMarketState().candles[key] ?? EMPTY_CANDLES,
+    () => EMPTY_CANDLES,
   );
 }
 

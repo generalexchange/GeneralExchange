@@ -16,17 +16,12 @@ import { marketApi } from '@/api/market';
 import { portfolioApi } from '@/api/portfolio';
 import { tradingApi } from '@/api/trading';
 import { authApi } from '@/api/auth';
-import { Topics, WATCHLIST_DEFAULT } from '@/lib/constants';
+import { Topics } from '@/lib/constants';
 import { clearStoredAuth, isTourCompleted } from '@/lib/tauri';
-import type { WatchRow } from '@/components/grids/WatchlistGrid';
 import type { TradeRecord, TradeLifecycleEvent } from '@/types/trading';
 
 interface Props {
   version: string;
-}
-
-function seedWatchlist(): WatchRow[] {
-  return WATCHLIST_DEFAULT.map((symbol) => ({ symbol, last: 0, changePct: 0, spark: [] }));
 }
 
 export const Terminal: React.FC<Props> = ({ version }) => {
@@ -37,7 +32,6 @@ export const Terminal: React.FC<Props> = ({ version }) => {
   const clearSession = useAuthStore((s) => s.clearSession);
   const { toast } = useToast();
 
-  const [watchlist] = useState<WatchRow[]>(seedWatchlist);
   const [trades, setTrades] = useState<TradeRecord[]>([]);
   const [helpToken, setHelpToken] = useState(0);
   const [autoRunTour] = useState(() => !isTourCompleted());
@@ -97,7 +91,7 @@ export const Terminal: React.FC<Props> = ({ version }) => {
     <div className="flex h-full min-h-0 flex-col">
       <Header version={version} userEmail={userEmail} onHelp={onHelp} onLogout={onLogout} />
       <UpdateBanner />
-      <TerminalLayout watchlist={watchlist} trades={trades} activeSymbol={symbol} onSelectSymbol={setSymbol} />
+      <TerminalLayout trades={trades} onSelectSymbol={setSymbol} />
       <OnboardingTour runToken={helpToken} autoRun={autoRunTour} />
       <Toaster />
     </div>

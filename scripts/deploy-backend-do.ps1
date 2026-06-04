@@ -1,4 +1,4 @@
-# Deploy full DigitalOcean backend: ws-server + go-api + Python monte-carlo
+# Deploy all DigitalOcean backend apps (Option A)
 param([string]$DoToken = $env:DIGITALOCEAN_ACCESS_TOKEN)
 
 $ErrorActionPreference = "Stop"
@@ -10,7 +10,19 @@ if (-not (Get-Command doctl -ErrorAction SilentlyContinue)) {
 }
 if (-not $DoToken) { throw "Set DIGITALOCEAN_ACCESS_TOKEN" }
 $env:DIGITALOCEAN_ACCESS_TOKEN = $DoToken
-
 doctl auth init --access-token $DoToken
-doctl apps create --spec .do/app.yaml --upsert --wait
-Write-Host "Done. Run scripts/configure-vercel-from-do.ps1 to wire Vercel."
+
+$specs = @(
+  ".do\ws-app.yaml",
+  ".do\go-api-app.yaml",
+  ".do\monte-carlo-app.yaml"
+)
+
+foreach ($spec in $specs) {
+  Write-Host "`n=== Deploying $spec ===" -ForegroundColor Cyan
+  doctl apps create --spec $spec --upsert --wait
+}
+
+Write-Host "`n=== DO apps ===" -ForegroundColor Green
+doctl apps list --format Spec.Name,DefaultIngress
+Write-Host "`nRun scripts/configure-vercel-from-do.ps1 to wire Vercel."

@@ -16,6 +16,18 @@ function isLocalGoUrl(url: string): boolean {
   return /localhost|127\.0\.0\.1|0\.0\.0\.0/.test(url);
 }
 
+const POLYGON_MARKET_PATHS = new Set(['ticks', 'candles', 'quote', 'news']);
+
+function isPolygonMarketPath(path: string[]): boolean {
+  if (POLYGON_MARKET_PATHS.has(path[0] ?? '')) return true;
+  return path[0] === 'options' && path[1] === 'chain';
+}
+
+async function tryPolygonFallback(path: string[], searchParams: URLSearchParams) {
+  if (!canUsePolygonDirect() || !isPolygonMarketPath(path)) return null;
+  return tryPolygonDirect(path, searchParams);
+}
+
 function jsonResponse(body: string, status: number, cacheTtl?: number) {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -65,9 +77,31 @@ async function forward(req: NextRequest, path: string[]) {
       const res = await fetch(target, init);
       if (res.ok || res.status < 500) {
         const body = await res.text();
-        if (isGet && res.ok) {
-          const ttl = setCachedApiResponse(path, search, body);
-          return jsonResponse(body, res.status, ttl);
+        if (isGet) {
+          let useBody = body;
+          let status = res.status;
+          let source = 'go';
+          if (res.ok) {
+            try {
+              const parsed = JSON.parse(body) as { source?: string };
+              source = parsed.source ?? source;
+            } catch {
+              /* keep go body */
+            }
+          }
+          if (!res.ok || source === 'mock') {
+            const direct = await tryPolygonFallback(path, req.nextUrl.searchParams);
+            if (direct) {
+              useBody = JSON.stringify(direct);
+              status = 200;
+              const ttl = setCachedApiResponse(path, search, useBody);
+              return jsonResponse(useBody, status, ttl);
+            }
+          }
+          if (res.ok) {
+            const ttl = setCachedApiResponse(path, search, useBody);
+            return jsonResponse(useBody, status, ttl);
+          }
         }
         return jsonResponse(body, res.status);
       }
@@ -77,7 +111,7 @@ async function forward(req: NextRequest, path: string[]) {
   }
 
   if (isGet && canUsePolygonDirect()) {
-    const direct = await tryPolygonDirect(path, req.nextUrl.searchParams);
+    const direct = await tryPolygonFallback(path, req.nextUrl.searchParams);
     if (direct) {
       const body = JSON.stringify(direct);
       const ttl = setCachedApiResponse(path, search, body);

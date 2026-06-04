@@ -77,14 +77,14 @@ export const TOUR_STEPS: TourStepDef[] = [
     attachToSelector: '[data-tour="symbol-search"]',
     on: 'right',
     title: 'Your Universe',
-    text: 'Search for any equity symbol here. The entire terminal — chart, chain, signals, and order ticket — updates to show live data for that symbol.',
+    text: 'Search for any symbol at the top. Toggle Advanced to open the full chart, gamma exposure, and analytics workspace.',
   },
   {
     id: 'price-flow',
     attachToSelector: '[data-tour="price-chart"]',
     on: 'left',
     title: 'Price and Flow',
-    text: 'The chart shows live price action. Below it, dealer gamma exposure by strike reveals where natural support and resistance emerge from options market structure.',
+    text: 'Advanced view shows the 5M chart with VWAP/EMA overlays and dealer gamma by strike. Standard view is a clean live quote like Robinhood.',
   },
   {
     id: 'the-chain',

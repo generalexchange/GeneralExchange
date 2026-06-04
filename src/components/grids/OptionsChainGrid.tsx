@@ -2,9 +2,7 @@
  * Options chain — AG Grid.
  *
  * The full per-contract chain with first- and second-order Greeks. Strike is
- * pinned left; rows are grouped by expiration (the nearest two expand on load).
- * Live updates arrive as transactions via applyChainTransaction (never
- * setRowData on a live grid); a dataset swap on symbol change uses setGridOption.
+ * Strike pinned; rows sorted by expiration. Live updates via applyChainTransaction.
  */
 
 'use client';
@@ -32,7 +30,7 @@ export function applyChainTransaction(
   api: GridApi<ChainGridRow>,
   delta: { add?: ChainGridRow[]; update?: ChainGridRow[]; remove?: ChainGridRow[] },
 ): void {
-  api.applyTransactionAsync(delta);
+  api.applyTransaction(delta);
 }
 
 export function OptionsChainGrid({
@@ -48,14 +46,22 @@ export function OptionsChainGrid({
 }) {
   const apiRef = useRef<GridApi<ChainGridRow> | null>(null);
 
-  const rowData = useMemo<ChainGridRow[]>(
-    () => chain.map((r) => ({ ...r, expiration })),
-    [chain, expiration],
-  );
+  const rowData = useMemo<ChainGridRow[]>(() => {
+    const rows = chain.map((r) => {
+      const expMatch = r.id.match(/(\d{4}-\d{2}-\d{2})/);
+      return { ...r, expiration: expMatch?.[1] ?? expiration };
+    });
+    return rows.sort((a, b) => {
+      const exp = a.expiration.localeCompare(b.expiration);
+      if (exp !== 0) return exp;
+      if (a.strike !== b.strike) return a.strike - b.strike;
+      return a.type.localeCompare(b.type);
+    });
+  }, [chain, expiration]);
 
   const columnDefs = useMemo<ColDef<ChainGridRow>[]>(
     () => [
-      { field: 'expiration', headerName: 'Expiration', rowGroup: true, hide: true },
+      { field: 'expiration', headerName: 'Exp', width: 100, pinned: 'left', sort: 'asc' },
       { field: 'type', headerName: 'C/P', width: 64, cellRenderer: SideCell, filter: true },
       {
         field: 'strike',
@@ -110,17 +116,6 @@ export function OptionsChainGrid({
     [onSelectRow],
   );
 
-  // Group by expiration; open the nearest two expirations by default.
-  const autoGroupColumnDef = useMemo<ColDef>(
-    () => ({ headerName: 'Expiration', minWidth: 150, pinned: 'left', cellRendererParams: { suppressCount: false } }),
-    [],
-  );
-  const expirationOrder = useMemo(() => Array.from(new Set(rowData.map((r) => r.expiration))), [rowData]);
-  const isGroupOpenByDefault = useCallback(
-    (params: { key: string }) => expirationOrder.indexOf(params.key) < 2,
-    [expirationOrder],
-  );
-
   return (
     <div className={`${GE_GRID_CLASS} h-full w-full`}>
       <AgGridReact<ChainGridRow>
@@ -131,10 +126,6 @@ export function OptionsChainGrid({
         getRowId={getRowId}
         onGridReady={onGridReady}
         onRowClicked={onRowClicked}
-        rowGroupPanelShow="never"
-        groupDisplayType="groupRows"
-        isGroupOpenByDefault={isGroupOpenByDefault}
-        autoGroupColumnDef={autoGroupColumnDef}
       />
     </div>
   );

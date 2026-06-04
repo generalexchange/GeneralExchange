@@ -254,6 +254,85 @@ export async function polygonNews(symbol: string) {
   return envelope(data, 'polygon');
 }
 
+/** Daily bars for quote when snapshot is unavailable on plan. */
+async function polygonQuoteFromDailyBars(sym: string) {
+  type Bar = { t: number; o: number; c: number };
+  const to = new Date();
+  const from = new Date(to.getTime() - 14 * 86_400_000);
+  const json = await polygonGet<{ results?: Bar[] }>(
+    `/v2/aggs/ticker/${sym}/range/1/day/${from.toISOString().slice(0, 10)}/${to.toISOString().slice(0, 10)}`,
+    { sort: 'desc', limit: '5' },
+  );
+  const bars = json.results ?? [];
+  if (!bars.length) throw new Error('no daily bars');
+
+  const latest = bars[0];
+  const prior = bars[1];
+  const price = latest.c;
+  const prevClose = prior?.c ?? latest.o;
+  const dayClose = latest.c;
+  const change = price - prevClose;
+  const changePct = prevClose ? (change / prevClose) * 100 : 0;
+  const afterHoursChange = price - dayClose;
+  const afterHoursChangePct = dayClose ? (afterHoursChange / dayClose) * 100 : 0;
+
+  return envelope(
+    {
+      symbol: sym,
+      price,
+      prevClose,
+      change,
+      changePct,
+      afterHoursChange,
+      afterHoursChangePct,
+      timestamp: latest.t ?? Date.now(),
+    },
+    'polygon-delayed',
+  );
+}
+
+/** GET quote/{symbol} — live snapshot with prev close and day change. */
+export async function polygonQuote(symbol: string) {
+  const sym = symbol.toUpperCase();
+  type Snap = {
+    ticker?: {
+      day?: { c?: number; o?: number };
+      prevDay?: { c?: number };
+      lastTrade?: { p?: number; t?: number };
+      min?: { c?: number; av?: number };
+      updated?: number;
+    };
+  };
+
+  try {
+    const json = await polygonGet<Snap>(`/v2/snapshot/locale/us/markets/stocks/tickers/${sym}`);
+    const t = json.ticker;
+    const prevClose = t?.prevDay?.c ?? 0;
+    const price = t?.lastTrade?.p ?? t?.min?.c ?? t?.day?.c ?? prevClose;
+    const change = price - prevClose;
+    const changePct = prevClose ? (change / prevClose) * 100 : 0;
+    const dayClose = t?.day?.c ?? price;
+    const afterHoursChange = price - dayClose;
+    const afterHoursChangePct = dayClose ? (afterHoursChange / dayClose) * 100 : 0;
+
+    return envelope(
+      {
+        symbol: sym,
+        price,
+        prevClose,
+        change,
+        changePct,
+        afterHoursChange,
+        afterHoursChangePct,
+        timestamp: t?.lastTrade?.t ?? t?.updated ?? Date.now(),
+      },
+      'polygon',
+    );
+  } catch {
+    return polygonQuoteFromDailyBars(sym);
+  }
+}
+
 /** Route a GET path to a Polygon handler when supported. */
 export async function tryPolygonDirect(path: string[], searchParams: URLSearchParams) {
   if (!canUsePolygonDirect() || path.length < 2) return null;
@@ -261,6 +340,9 @@ export async function tryPolygonDirect(path: string[], searchParams: URLSearchPa
   const limit = Math.min(Number(searchParams.get('limit') ?? '200') || 200, 500);
 
   try {
+    if (path[0] === 'quote' && path.length === 2) {
+      return polygonQuote(path[1]);
+    }
     if (path[0] === 'ticks' && path.length === 2) {
       return polygonTicks(path[1], limit);
     }

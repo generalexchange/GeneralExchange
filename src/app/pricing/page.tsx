@@ -2,11 +2,11 @@ import { Pricing } from '@/screens/Pricing';
 import { buildPageMetadata } from '@/lib/seo';
 
 export const metadata = buildPageMetadata({
-  title: 'Pricing — Workspace Plans & Compute Tokens',
+  title: 'Purchase General Exchange Tokens',
   description:
-    'Transparent General Exchange pricing: institutional workspace entitlements plus tokenized GPU compute billed per hour. Plans for research desks, execution teams, and enterprise deployments.',
+    'Buy General Exchange tokens for platform services: research access, Filecoin storage credits, API consumption, and future marketplace features. Solana wallet integration.',
   path: '/pricing',
-  keywords: ['trading platform pricing', 'institutional trading software cost', 'compute token pricing'],
+  keywords: ['General Exchange tokens', 'GEX token', 'Solana wallet', 'Filecoin storage credits', 'platform tokens'],
 });
 
 export default function PricingPage() {

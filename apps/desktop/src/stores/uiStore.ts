@@ -12,6 +12,7 @@ interface UiState {
   connectionState: ConnectionState;
   tourCompleted: boolean;
   modalOpen: boolean;
+  advancedView: boolean;
 
   updateAvailable: boolean;
   updateVersion: string | null;
@@ -22,6 +23,7 @@ interface UiState {
   setConnectionState: (state: ConnectionState) => void;
   setTourCompleted: (done: boolean) => void;
   setModalOpen: (open: boolean) => void;
+  setAdvancedView: (advancedView: boolean) => void;
   setUpdate: (available: boolean, version: string | null) => void;
 }
 
@@ -32,6 +34,7 @@ export const useUiStore = create<UiState>((set) => ({
   connectionState: 'disconnected',
   tourCompleted: false,
   modalOpen: false,
+  advancedView: false,
   updateAvailable: false,
   updateVersion: null,
 
@@ -41,5 +44,6 @@ export const useUiStore = create<UiState>((set) => ({
   setConnectionState: (connectionState) => set({ connectionState }),
   setTourCompleted: (tourCompleted) => set({ tourCompleted }),
   setModalOpen: (modalOpen) => set({ modalOpen }),
+  setAdvancedView: (advancedView) => set({ advancedView }),
   setUpdate: (updateAvailable, updateVersion) => set({ updateAvailable, updateVersion }),
 }));

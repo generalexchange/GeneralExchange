@@ -1,105 +1,13 @@
-# DigitalOcean — General Exchange backend (Option A)
-# Vercel hosts Next.js UI only. All compute / feeds live here.
+# Option A — three DO apps (one service each; avoids ingress conflicts)
+# Deploy all: .\scripts\deploy-backend-do.ps1
 #
-# Components:
-#   ws          — Polygon WebSocket → browser (replaces Fly.io)
-#   go-api      — REST market API (port 8080)
-#   monte-carlo — Python options Monte Carlo (port 8092)
+#   .do/ws-app.yaml           → NEXT_PUBLIC_WS_URL=wss://<url>/ws
+#   .do/go-api-app.yaml       → GO_API_URL=https://<url>
+#   .do/monte-carlo-app.yaml  → MONTE_CARLO_API_URL=https://<url>
 #
-# After deploy, set on Vercel:
-#   NEXT_PUBLIC_WS_URL=wss://<ws-host>/ws
-#   GO_API_URL=https://<go-api-host>
-#   MONTE_CARLO_API_URL=https://<monte-carlo-host>
-#   NEXT_PUBLIC_MONTE_CARLO_API_URL=/api/v1/monte-carlo
-#   POLYGON_API_KEY (same as DO)
+# Vercel hosts Next.js only.
 
-name: general-exchange-backend
+name: general-exchange-ws
 region: nyc
 
-services:
-  - name: ws
-    source_dir: services/ws-server
-    dockerfile_path: Dockerfile
-    github:
-      repo: generalexchange/GeneralExchange
-      branch: main
-      deploy_on_push: true
-    http_port: 3001
-    instance_count: 1
-    instance_size_slug: basic-xxs
-    health_check:
-      http_path: /health
-      initial_delay_seconds: 20
-      period_seconds: 30
-      timeout_seconds: 5
-      success_threshold: 1
-      failure_threshold: 3
-    envs:
-      - key: NODE_ENV
-        value: production
-        scope: RUN_AND_BUILD_TIME
-      - key: WS_PORT
-        value: "3001"
-        scope: RUN_TIME
-      - key: WS_SYMBOLS
-        value: SPY,QQQ,NVDA,AAPL,TSLA,AMD,MSFT,AMZN,META
-        scope: RUN_TIME
-      - key: POLYGON_API_KEY
-        scope: RUN_TIME
-        type: SECRET
-
-  - name: go-api
-    source_dir: backend/go
-    dockerfile_path: cmd/api/Dockerfile
-    github:
-      repo: generalexchange/GeneralExchange
-      branch: main
-      deploy_on_push: true
-    http_port: 8080
-    instance_count: 1
-    instance_size_slug: basic-xxs
-    health_check:
-      http_path: /healthz
-      initial_delay_seconds: 25
-      period_seconds: 30
-      timeout_seconds: 5
-      success_threshold: 1
-      failure_threshold: 3
-    envs:
-      - key: HTTP_ADDR
-        value: ":8080"
-        scope: RUN_TIME
-      - key: API_KEY_ENFORCE
-        value: "false"
-        scope: RUN_TIME
-      - key: POLYGON_API_KEY
-        scope: RUN_TIME
-        type: SECRET
-
-  - name: monte-carlo
-    source_dir: backend/python
-    dockerfile_path: services/monte_carlo/Dockerfile
-    github:
-      repo: generalexchange/GeneralExchange
-      branch: main
-      deploy_on_push: true
-    http_port: 8092
-    instance_count: 1
-    instance_size_slug: basic-xs
-    health_check:
-      http_path: /health
-      initial_delay_seconds: 35
-      period_seconds: 30
-      timeout_seconds: 10
-      success_threshold: 1
-      failure_threshold: 3
-    envs:
-      - key: MC_PORT
-        value: "8092"
-        scope: RUN_TIME
-      - key: POLYGON_API_KEY
-        scope: RUN_TIME
-        type: SECRET
-      - key: MC_API_KEY
-        scope: RUN_TIME
-        type: SECRET
+# See ws-app.yaml, go-api-app.yaml, monte-carlo-app.yaml — deploy separately.
