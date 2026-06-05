@@ -6,7 +6,8 @@ import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { URL } from 'node:url';
 import { WebSocketServer, WebSocket } from 'ws';
-import { getFeedStats, startPolygonFeed } from './polygonFeed';
+import { getFeedStats, setFeedMode, startPolygonFeed } from './polygonFeed';
+import { getRestFeedStats, startRestFeed } from './restFeed';
 import type { WsOutbound } from './types';
 
 function loadDotEnv() {
@@ -44,6 +45,7 @@ function broadcast(msg: WsOutbound) {
 const httpServer = createServer((req, res) => {
   if (req.url === '/health' || req.url === '/healthz') {
     const feed = getFeedStats();
+    const rest = feed.mode === 'rest' ? getRestFeedStats() : null;
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(
       JSON.stringify({
@@ -52,7 +54,9 @@ const httpServer = createServer((req, res) => {
         symbols: SYMBOLS,
         polygon: Boolean(POLYGON_KEY),
         feed: process.env.MASSIVE_WS_FEED ?? 'realtime',
+        mode: feed.mode === 'rest' ? 'rest' : feed.planBlocked ? 'rest-pending' : 'ws',
         upstream: feed,
+        rest,
         env: IS_PROD ? 'production' : 'development',
       }),
     );
@@ -85,8 +89,19 @@ httpServer.listen(PORT, () => {
   console.log(`[ws-server] listening on :${PORT}  path=/ws  prod=${IS_PROD}`);
 });
 
+let stopRest: (() => void) | null = null;
+
+function startRestFallback(reason: string) {
+  if (stopRest || !POLYGON_KEY) return;
+  console.warn(`[ws-server] WebSocket blocked (${reason}) — starting REST trade poll`);
+  setFeedMode('rest');
+  stopRest = startRestFeed(SYMBOLS, POLYGON_KEY, broadcast);
+}
+
 const stopFeed = POLYGON_KEY
-  ? startPolygonFeed(SYMBOLS, POLYGON_KEY, broadcast)
+  ? startPolygonFeed(SYMBOLS, POLYGON_KEY, broadcast, {
+      onPlanBlocked: startRestFallback,
+    })
   : (() => {
       console.warn('[ws-server] no POLYGON_API_KEY — live feed disabled');
       return () => {};
@@ -94,6 +109,7 @@ const stopFeed = POLYGON_KEY
 
 function shutdown() {
   stopFeed();
+  stopRest?.();
   for (const c of clients) c.close();
   httpServer.close();
   process.exit(0);

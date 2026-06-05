@@ -8,6 +8,7 @@ const ENDPOINTS: Record<string, string[]> = {
 };
 
 export type FeedStats = {
+  mode: 'ws' | 'rest' | 'off';
   upstreamConnected: boolean;
   upstreamEndpoint: string | null;
   authOk: boolean;
@@ -15,9 +16,11 @@ export type FeedStats = {
   candlesBroadcast: number;
   lastEventAt: string | null;
   lastError: string | null;
+  planBlocked: boolean;
 };
 
 const stats: FeedStats = {
+  mode: 'ws',
   upstreamConnected: false,
   upstreamEndpoint: null,
   authOk: false,
@@ -25,10 +28,15 @@ const stats: FeedStats = {
   candlesBroadcast: 0,
   lastEventAt: null,
   lastError: null,
+  planBlocked: false,
 };
 
 export function getFeedStats(): FeedStats {
   return { ...stats };
+}
+
+export function setFeedMode(mode: FeedStats['mode']) {
+  stats.mode = mode;
 }
 
 function feedMode(): string {
@@ -52,13 +60,29 @@ function normalizeTs(t: unknown): number {
 
 export type BroadcastFn = (msg: WsOutbound) => void;
 
+export type PolygonFeedOptions = {
+  /** Called when every WS endpoint rejects auth (plan lacks websocket). */
+  onPlanBlocked?: (reason: string) => void;
+};
+
+function isPlanBlockedMessage(msg: string): boolean {
+  const m = msg.toLowerCase();
+  return m.includes("doesn't include websocket") || m.includes('does not include websocket');
+}
+
 /** Connect to Massive/Polygon stocks WS — auth first, then subscribe (required by protocol). */
-export function startPolygonFeed(symbols: string[], apiKey: string, broadcast: BroadcastFn): () => void {
+export function startPolygonFeed(
+  symbols: string[],
+  apiKey: string,
+  broadcast: BroadcastFn,
+  options: PolygonFeedOptions = {},
+): () => void {
   let ws: WebSocket | null = null;
   let timer: ReturnType<typeof setTimeout> | null = null;
   let closed = false;
   let endpointIdx = 0;
   let subscribed = false;
+  let planBlockedHits = 0;
   const endpoints = endpointList();
   const subs = symbols.flatMap((s) => [`T.${s}`, `A.${s}`, `AM.${s}`]).join(',');
 
@@ -105,6 +129,17 @@ export function startPolygonFeed(symbols: string[], apiKey: string, broadcast: B
             stats.authOk = false;
             stats.lastError = String(row.message ?? 'auth_failed');
             console.error('[ws-server] auth_failed', stats.lastError);
+            if (isPlanBlockedMessage(stats.lastError)) {
+              planBlockedHits += 1;
+              stats.planBlocked = true;
+              if (planBlockedHits >= endpoints.length) {
+                closed = true;
+                if (timer) clearTimeout(timer);
+                options.onPlanBlocked?.(stats.lastError);
+                ws?.close();
+                return;
+              }
+            }
             ws?.close();
           }
           continue;
