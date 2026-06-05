@@ -23,7 +23,7 @@ services:
         value: "8092"
         scope: RUN_TIME
       - key: IBKR_API_URL
-        value: "https://general-exchange-ibkr.ondigitalocean.app"
+        value: "https://general-exchange-ibkr-7ed3d.ondigitalocean.app"
         scope: RUN_TIME
       - key: IBKR_API_KEY
         value: "gx_ibkr_dev_key"
