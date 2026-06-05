@@ -4,7 +4,7 @@ export type MarketUpdate = {
   price: number;
   volume?: number;
   timestamp: number;
-  source: 'polygon' | 'synthetic';
+  source: 'polygon' | 'massive';
 };
 
 /** Minute bar pushed when Polygon sends an aggregate (AM) event. */

@@ -203,6 +203,7 @@ services:
     environment:
       WS_PORT: "3001"
       POLYGON_API_KEY: ${POLYGON_API_KEY:-}
+      MASSIVE_WS_FEED: ${MASSIVE_WS_FEED:-delayed}
       WS_SYMBOLS: ${WS_SYMBOLS:-SPY,QQQ,NVDA,AAPL,TSLA,AMD}
       NODE_ENV: production
     ports:

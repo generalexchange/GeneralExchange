@@ -1,25 +1,33 @@
 import WebSocket from 'ws';
 import type { CandleUpdate, MarketUpdate, WsOutbound } from './types';
 
-const POLYGON_WS = 'wss://socket.polygon.io/stocks';
+/** Massive/Polygon stocks WebSocket — delayed feed works on starter plans. */
+function wsEndpoint(): string {
+  const feed = (process.env.MASSIVE_WS_FEED ?? 'delayed').toLowerCase();
+  if (feed === 'realtime' || feed === 'real-time' || feed === 'live') {
+    return 'wss://socket.polygon.io/stocks';
+  }
+  return 'wss://delayed.polygon.io/stocks';
+}
 
 export type BroadcastFn = (msg: WsOutbound) => void;
 
-/** Connect to Polygon stocks WS and broadcast normalized updates. */
+/** Connect to Massive stocks WS and broadcast normalized updates. */
 export function startPolygonFeed(symbols: string[], apiKey: string, broadcast: BroadcastFn): () => void {
   let ws: WebSocket | null = null;
   let timer: ReturnType<typeof setTimeout> | null = null;
   let closed = false;
+  const endpoint = wsEndpoint();
 
   const connect = () => {
     if (closed) return;
-    ws = new WebSocket(POLYGON_WS);
+    ws = new WebSocket(endpoint);
 
     ws.on('open', () => {
       ws!.send(JSON.stringify({ action: 'auth', params: apiKey }));
       const subs = symbols.flatMap((s) => [`T.${s}`, `AM.${s}`]).join(',');
       ws!.send(JSON.stringify({ action: 'subscribe', params: subs }));
-      console.log(`[ws-server] polygon connected (${symbols.join(', ')})`);
+      console.log(`[ws-server] massive ws connected endpoint=${endpoint} symbols=${symbols.join(',')}`);
     });
 
     ws.on('message', (raw) => {
@@ -31,7 +39,7 @@ export function startPolygonFeed(symbols: string[], apiKey: string, broadcast: B
         return;
       }
       for (const ev of events) {
-        const msg = normalizePolygonEvent(ev as Record<string, unknown>);
+        const msg = normalizeEvent(ev as Record<string, unknown>);
         if (msg) broadcast(msg);
       }
     });
@@ -42,7 +50,7 @@ export function startPolygonFeed(symbols: string[], apiKey: string, broadcast: B
 
   const scheduleReconnect = () => {
     if (closed) return;
-    console.warn('[ws-server] polygon disconnected; reconnecting in 3s');
+    console.warn('[ws-server] massive ws disconnected; reconnecting in 3s');
     timer = setTimeout(connect, 3000);
   };
 
@@ -55,7 +63,7 @@ export function startPolygonFeed(symbols: string[], apiKey: string, broadcast: B
   };
 }
 
-function normalizePolygonEvent(ev: Record<string, unknown>): WsOutbound | null {
+function normalizeEvent(ev: Record<string, unknown>): WsOutbound | null {
   const kind = ev.ev;
   if (kind === 'T' && typeof ev.sym === 'string' && typeof ev.p === 'number') {
     const update: MarketUpdate = {
@@ -63,7 +71,7 @@ function normalizePolygonEvent(ev: Record<string, unknown>): WsOutbound | null {
       price: ev.p,
       volume: typeof ev.s === 'number' ? ev.s : undefined,
       timestamp: typeof ev.t === 'number' ? ev.t : Date.now(),
-      source: 'polygon',
+      source: 'massive',
     };
     return { type: 'market', data: update };
   }

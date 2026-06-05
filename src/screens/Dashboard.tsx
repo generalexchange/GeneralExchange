@@ -16,6 +16,7 @@ import { GEXBarChart } from '../components/charts/GEXBarChart';
 import { useInViewport } from '../components/charts/useInViewport';
 import { useMarketStream } from '../services/marketStream';
 import { useLiveDashboard, type ChartRange } from '../hooks/useLiveDashboard';
+import { isMarketWsConfigured } from '../services/wsClient';
 import { TRADEABLE_SYMBOLS, symbolDisplayName } from '../data/symbols';
 import { WalletButton } from '../components/dashboard/WalletButton';
 import { MarketTemperature } from '../components/dashboard/MarketTemperature';
@@ -87,7 +88,8 @@ export const Dashboard: React.FC = () => {
 
         {feed.error && !feed.quote?.price && (
           <div className="mb-3 rounded-md border border-rose-500/30 bg-rose-500/10 px-3 py-2 font-mono text-[11px] text-rose-300">
-            Market feed: {feed.error}. Retrying every few seconds…
+            {feed.error}
+            {feed.wsConnected === false && isMarketWsConfigured() ? ' (WebSocket reconnecting…)' : ''}
           </div>
         )}
 
