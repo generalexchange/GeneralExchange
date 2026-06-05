@@ -15,7 +15,7 @@ from fastapi.responses import JSONResponse
 
 from services.monte_carlo.engine import simulate_price_paths, simulate_strategy_outcome, simulate_trade_quality
 from services.monte_carlo.options_mc import after_hours_bsm, simulate_option_contract, simulate_options_surface_mc
-from services.monte_carlo import polygon_client
+from services.monte_carlo import ibkr_client
 from services.monte_carlo import opportunity as opportunity_engine
 
 API_KEY = os.environ.get("MC_API_KEY", "").strip() or os.environ.get("GE_API_KEY", "").strip()
@@ -37,7 +37,7 @@ async def health() -> dict[str, Any]:
         "service": "monte-carlo-api",
         "engine": "python",
         "language": "python",
-        "polygon_configured": bool(polygon_client.API_KEY),
+        "ibkr_configured": ibkr_client.has_ibkr(),
         "routes": [
             "price-path",
             "strategy",
@@ -62,13 +62,13 @@ async def _handle(route: str, body: dict[str, Any]) -> Any:
     if route == "trade-quality":
         return simulate_trade_quality(body)
     if route == "options/contract-probability":
-        body = await polygon_client.enrich_spot(body)
+        body = await ibkr_client.enrich_spot(body)
         return simulate_option_contract(body)
     if route == "options/after-hours-price":
-        body = await polygon_client.enrich_spot(body)
+        body = await ibkr_client.enrich_spot(body)
         return after_hours_bsm(body)
     if route == "options/surface":
-        body = await polygon_client.enrich_spot(body)
+        body = await ibkr_client.enrich_spot(body)
         return simulate_options_surface_mc(body)
     if route == "evaluate":
         # Lightweight trade grade from trade-quality + option context when present
@@ -106,7 +106,7 @@ async def v1_post(
 async def market_prev_close(symbol: str, x_api_key: str | None = Header(default=None, alias="X-API-Key")):
     _auth(x_api_key)
     try:
-        return await polygon_client.prev_close(symbol)
+        return await ibkr_client.prev_close(symbol)
     except Exception as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
 
@@ -115,6 +115,6 @@ async def market_prev_close(symbol: str, x_api_key: str | None = Header(default=
 async def market_snapshot(symbol: str, x_api_key: str | None = Header(default=None, alias="X-API-Key")):
     _auth(x_api_key)
     try:
-        return await polygon_client.snapshot_equity(symbol)
+        return await ibkr_client.snapshot_equity(symbol)
     except Exception as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc

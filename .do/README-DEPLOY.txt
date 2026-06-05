@@ -1,37 +1,19 @@
-DIGITALOCEAN OPTION A — Vercel UI + DO backend
+DIGITALOCEAN — IBKR stack
 
-Architecture
-  Vercel     → Next.js (pages people see)
-  DO ws      → Polygon live feed → dashboard WebSocket
-  DO go-api  → REST /v1/* (market data; Polygon key on DO)
-  DO monte-carlo → Python GBM + options probabilities + after-hours BSM
+Apps (deploy: .\scripts\deploy-ibkr-do.ps1  OR  GitHub Actions do-ibkr-deploy.yml)
+  general-exchange-ibkr         FastAPI + PostgreSQL (historical bars)
+  general-exchange-monte-carlo  Monte Carlo + opportunity engine
 
-Deploy backend (all three services)
-  1. GitHub secret: DIGITALOCEAN_ACCESS_TOKEN
-  2. Push main OR run: .\scripts\deploy-backend-do.ps1
-  3. App spec: .do/app.yaml (name: general-exchange-backend)
+IB Gateway (required for live data)
+  Run on a DO Droplet: infra/digitalocean/gateway-compose.yml
+  Set IB_HOST on ibkr-api to the droplet public IP (App Platform → Settings → Secrets)
 
-Secrets on DO (each component)
-  POLYGON_API_KEY  — ws, go-api, monte-carlo
-  MC_API_KEY       — monte-carlo (optional)
+Secrets (DO App Platform)
+  ibkr-api:      IB_HOST, IB_ACCOUNT (optional), IBKR_API_KEY
+  monte-carlo:   IBKR_API_URL (https URL of ibkr app), IBKR_API_KEY, MC_API_KEY
 
-Wire Vercel after DO is live
-  NEXT_PUBLIC_WS_URL=wss://<ws-component-url>/ws
-  GO_API_URL=https://<go-api-component-url>
-  MONTE_CARLO_API_URL=https://<monte-carlo-component-url>
-  NEXT_PUBLIC_MONTE_CARLO_API_URL=/api/v1/monte-carlo
-  POLYGON_API_KEY  — still on Vercel for /api/v1 fallback when Go unreachable
-
+Vercel (Next.js UI only)
+  IBKR_API_URL, NEXT_PUBLIC_WS_URL, MONTE_CARLO_API_URL
   Run: .\scripts\configure-vercel-from-do.ps1
 
-Python Monte Carlo routes (POST /v1/...)
-  price-path, strategy, trade-quality, evaluate
-  options/contract-probability  — P(ITM), P(profit), P(underlying up/down)
-  options/after-hours-price     — Black-Scholes with Polygon spot
-  options/surface               — batch contracts
-
-Fly.io is removed. Do not use services/ws-server/fly.toml.
-
-Local dev
-  docker compose --profile app up ws-server monte-carlo-api go-api-server
-  npm run dev  (Next on :3003)
+Full guide: docs/IBKR_SETUP.md

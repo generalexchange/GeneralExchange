@@ -1,6 +1,6 @@
 /**
  * Short-lived server-side cache for read-only /api/v1 GET responses.
- * Reduces Polygon/Massive API calls and improves Vercel response times.
+ * Reduces IBKR API calls and improves Vercel response times.
  */
 
 type CacheEntry = { body: string; expiresAt: number; ttl: number };
@@ -9,7 +9,7 @@ const store = new Map<string, CacheEntry>();
 
 /** TTL in seconds per route prefix (first path segment(s)). */
 const TTL_SECONDS: Record<string, number> = {
-  quote: 5,
+  quote: 30,
   ticks: 15,
   candles: 60,
   'options/chain': 30,
@@ -38,10 +38,20 @@ export function getCachedApiResponse(
   const key = cacheKey(path, search);
   const hit = store.get(key);
   if (!hit) return null;
-  if (Date.now() > hit.expiresAt) {
-    store.delete(key);
-    return null;
-  }
+  if (Date.now() > hit.expiresAt) return null;
+  return { body: hit.body, ttl: hit.ttl };
+}
+
+/** Return recently expired cache entries when upstream is rate-limited or down. */
+export function getStaleCachedApiResponse(
+  path: string[],
+  search: string,
+  maxAgeMs = 300_000,
+): { body: string; ttl: number } | null {
+  const key = cacheKey(path, search);
+  const hit = store.get(key);
+  if (!hit) return null;
+  if (Date.now() - hit.expiresAt > maxAgeMs) return null;
   return { body: hit.body, ttl: hit.ttl };
 }
 

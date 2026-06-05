@@ -1,23 +1,10 @@
-# Set Vercel env from DigitalOcean app URLs (Option A)
+# Wire Vercel env from DigitalOcean IBKR + Monte Carlo URLs
 $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent $PSScriptRoot
 Set-Location $Root
 
 if (-not $env:DIGITALOCEAN_ACCESS_TOKEN) { throw "Set DIGITALOCEAN_ACCESS_TOKEN" }
 
-$rows = doctl apps list --format Spec.Name,DefaultIngress --no-header
-$map = @{}
-foreach ($row in $rows) {
-  if ($row -match '^\S+\s+(\S+)\s+(.+)$') { } 
-  $parts = $row -split '\s+', 3
-  if ($parts.Count -ge 2) {
-    $name = $parts[0]
-    $url = ($parts[1..($parts.Count-1)] -join ' ').Trim()
-    if ($url -and $url -ne '<nil>') { $map[$name] = $url }
-  }
-}
-
-# Parse doctl table properly
 $map = @{}
 doctl apps list --format Spec.Name,DefaultIngress --no-header | ForEach-Object {
   $line = $_.Trim()
@@ -26,17 +13,18 @@ doctl apps list --format Spec.Name,DefaultIngress --no-header | ForEach-Object {
   }
 }
 
-$ws = $map['general-exchange-ws']
-$go = $map['general-exchange-go-api']
+$ibkr = $map['general-exchange-ibkr']
 $mc = $map['general-exchange-monte-carlo']
-if (-not $ws) { Write-Warning "general-exchange-ws not deployed yet" }
-if (-not $go) { Write-Warning "general-exchange-go-api not deployed yet" }
+if (-not $ibkr) { Write-Warning "general-exchange-ibkr not deployed yet" }
 if (-not $mc) { Write-Warning "general-exchange-monte-carlo not deployed yet" }
 
-$wsUrl = if ($ws) { ($ws -replace '^https://', 'wss://') + '/ws' } else { '' }
-Write-Host "WS:  $wsUrl"
-Write-Host "Go:  $go"
-Write-Host "MC:  $mc"
+$wsUrl = if ($ibkr) {
+  ($ibkr -replace '^https://', 'wss://') + '/ws/stocks?symbols=SPY,QQQ,NVDA,AAPL,TSLA'
+} else { '' }
+
+Write-Host "IBKR: $ibkr"
+Write-Host "WS:   $wsUrl"
+Write-Host "MC:   $mc"
 
 $token = (Get-Content "$env:APPDATA\xdg.data\com.vercel.cli\auth.json" | ConvertFrom-Json).token
 $projectId = "prj_L2zhHk96gykMj9AU9O4W1WCa14ln"
@@ -54,8 +42,8 @@ function Set-VercelEnv($key, $value) {
   Write-Host "set $key"
 }
 
+Set-VercelEnv "IBKR_API_URL" $ibkr
 Set-VercelEnv "NEXT_PUBLIC_WS_URL" $wsUrl
-Set-VercelEnv "GO_API_URL" $go
 Set-VercelEnv "MONTE_CARLO_API_URL" $mc
 Set-VercelEnv "NEXT_PUBLIC_MONTE_CARLO_API_URL" "/api/v1/monte-carlo"
 

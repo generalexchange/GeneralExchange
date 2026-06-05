@@ -18,7 +18,8 @@ const root = resolve(__dirname, '..');
 const envPath = resolve(root, '.env');
 
 const VERCEL_KEYS = [
-  'GO_API_URL',
+  'IBKR_API_URL',
+  'IBKR_API_KEY',
   'GE_API_KEY',
   'JWT_SIGNING_SECRET',
   'SITE_URL',
@@ -28,9 +29,7 @@ const VERCEL_KEYS = [
   'NEXT_PUBLIC_MONTE_CARLO_API_URL',
   'MONTE_CARLO_API_URL',
   'MC_API_KEY',
-  'WS_PORT',
   'GOOGLE_SITE_VERIFICATION',
-  'POLYGON_API_KEY',
 ];
 
 function parseEnv(text) {

@@ -1,0 +1,10 @@
+fastapi==0.114.2
+uvicorn[standard]==0.30.6
+ib-insync==0.9.86
+sqlalchemy==2.0.35
+asyncpg==0.29.0
+psycopg2-binary==2.9.9
+pydantic==2.9.2
+pydantic-settings==2.5.2
+httpx==0.27.2
+python-dateutil==2.9.0

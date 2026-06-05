@@ -1,0 +1,54 @@
+# IBKR market data + account API (FastAPI / ib_insync)
+# Requires IB Gateway reachable at IB_HOST (see infra/digitalocean/gateway-compose.yml)
+name: general-exchange-ibkr
+region: nyc
+
+databases:
+  - name: ibkr-db
+    engine: PG
+    version: "16"
+    production: false
+
+services:
+  - name: ibkr-api
+    source_dir: backend/python
+    dockerfile_path: services/ibkr/Dockerfile
+    github:
+      repo: generalexchange/GeneralExchange
+      branch: main
+      deploy_on_push: true
+    http_port: 8093
+    instance_count: 1
+    instance_size_slug: basic-xs
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 45
+      period_seconds: 30
+      timeout_seconds: 10
+      success_threshold: 1
+      failure_threshold: 5
+    envs:
+      - key: IB_HOST
+        scope: RUN_TIME
+        type: SECRET
+      - key: IB_PORT
+        value: "4002"
+        scope: RUN_TIME
+      - key: IB_CLIENT_ID
+        value: "1"
+        scope: RUN_TIME
+      - key: IB_PAPER
+        value: "true"
+        scope: RUN_TIME
+      - key: IB_ACCOUNT
+        scope: RUN_TIME
+        type: SECRET
+      - key: DATABASE_URL
+        value: ${ibkr-db.DATABASE_URL}
+        scope: RUN_TIME
+      - key: IBKR_API_KEY
+        scope: RUN_TIME
+        type: SECRET
+      - key: WS_SYMBOLS
+        value: SPY,QQQ,NVDA,AAPL,TSLA,AMD,MSFT,AMZN,META
+        scope: RUN_TIME

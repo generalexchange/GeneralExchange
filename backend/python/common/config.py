@@ -21,7 +21,8 @@ class Config:
     minio_endpoint: str = os.getenv("MINIO_ENDPOINT", "localhost:9002")
     minio_access_key: str = os.getenv("MINIO_ACCESS_KEY", "minioadmin")
     minio_secret_key: str = os.getenv("MINIO_SECRET_KEY", "minioadmin")
-    polygon_api_key: str = os.getenv("POLYGON_API_KEY", "")
+    ibkr_api_url: str = os.getenv("IBKR_API_URL", "http://localhost:8093")
+    ibkr_api_key: str = os.getenv("IBKR_API_KEY", "")
     openobserve_url: str = os.getenv("OPENOBSERVE_URL", "")
     # FloppyDisk (floppydisk.cc) is a separate, external strategy-storage
     # service. Until it ships, the MinIO-backed client is used. When the
@@ -31,8 +32,8 @@ class Config:
     symbols: list[str] = field(default_factory=_symbols)
 
     @property
-    def has_polygon(self) -> bool:
-        return bool(self.polygon_api_key)
+    def has_ibkr(self) -> bool:
+        return bool(self.ibkr_api_url)
 
     @property
     def has_floppydisk(self) -> bool:

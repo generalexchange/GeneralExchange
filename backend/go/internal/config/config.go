@@ -11,9 +11,8 @@ type Config struct {
 	ClickHousePort string
 	ClickHouseDB   string
 	RedisURL           string
-	PolygonAPIKey      string
+	IBKRApiURL         string
 	WSSymbols          []string
-	MassiveWSFeed      string
 	RedpandaBroker     string
 	BacktestAPIURL     string
 	ClickHouseHTTPPort string
@@ -38,9 +37,8 @@ func Load() Config {
 		ClickHousePort: getenv("CLICKHOUSE_PORT", "9000"),
 		ClickHouseDB:   getenv("CLICKHOUSE_DB", "general_exchange"),
 		RedisURL:       getenv("REDIS_URL", "redis://localhost:6379/0"),
-		PolygonAPIKey:  firstNonEmpty(getenv("POLYGON_API_KEY", ""), getenv("MASSIVE_API_KEY", "")),
+		IBKRApiURL:     getenv("IBKR_API_URL", "http://localhost:8093"),
 		WSSymbols:      parseSymbolList(getenv("WS_SYMBOLS", "SPY,QQQ,NVDA,AAPL,TSLA,AMD,MSFT,AMZN,META")),
-		MassiveWSFeed:  getenv("MASSIVE_WS_FEED", "realtime"),
 		RedpandaBroker:     getenv("REDPANDA_BROKERS", "localhost:19092"),
 		BacktestAPIURL:     getenv("BACKTEST_API_URL", ""),
 		ClickHouseHTTPPort: getenv("CLICKHOUSE_HTTP_PORT", "8123"),

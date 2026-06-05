@@ -1,5 +1,5 @@
 import { mapPolygonChain } from '@/lib/api/mapLiveData';
-import { polygonOptionsChain, polygonQuote } from '@/lib/api/polygonDirect';
+import { ibkrOptionsChain, ibkrQuote } from '@/lib/api/ibkrDirect';
 import type { OptionRow } from '@/components/dashboard/terminal/terminalData';
 import type { DiscoverResponse, RankedContract } from './types';
 
@@ -129,8 +129,8 @@ export async function discoverOpportunitiesLocal(
   for (const symbol of symbols) {
     try {
       const [chainRes, quoteRes] = await Promise.all([
-        polygonOptionsChain(symbol),
-        polygonQuote(symbol),
+        ibkrOptionsChain(symbol),
+        ibkrQuote(symbol),
       ]);
       const spot =
         (quoteRes.data as { price?: number } | undefined)?.price ??

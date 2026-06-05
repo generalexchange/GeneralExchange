@@ -1,0 +1,33 @@
+# Deploy IBKR + Monte Carlo to DigitalOcean on push to main
+
+name: Deploy IBKR stack to DigitalOcean
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/python/**'
+      - '.do/**'
+      - 'infra/digitalocean/**'
+      - '.github/workflows/do-ibkr-deploy.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Deploy IBKR API + Postgres
+        run: doctl apps create --spec .do/ibkr-app.yaml --upsert --wait
+
+      - name: Deploy Monte Carlo API
+        run: doctl apps create --spec .do/monte-carlo-app.yaml --upsert --wait
+
+      - name: List app URLs
+        run: doctl apps list --format Spec.Name,DefaultIngress

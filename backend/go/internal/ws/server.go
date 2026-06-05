@@ -1,7 +1,4 @@
-// Package ws implements the browser-facing WebSocket server with Massive upstream.
-//
-// Upstream: github.com/massive-com/client-go (Massive / Polygon.io)
-// Browser path: /ws — same JSON envelope as shared/ws-types.ts
+// Package ws implements a browser-facing WebSocket hub (upstream moved to IBKR service).
 package ws
 
 import (
@@ -53,8 +50,7 @@ func (s *Server) handleHealth(w http.ResponseWriter, _ *http.Request) {
 		"ok":       true,
 		"clients":  s.hub.Count(),
 		"symbols":  s.cfg.WSSymbols,
-		"massive":  s.cfg.PolygonAPIKey != "",
-		"feed":     s.cfg.MassiveWSFeed,
+		"upstream": "ibkr",
 	})
 }
 

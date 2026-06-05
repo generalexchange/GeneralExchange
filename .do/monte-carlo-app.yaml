@@ -1,11 +1,11 @@
-# Python Monte Carlo on DigitalOcean
+# Monte Carlo + opportunity engine (feeds from IBKR API)
 name: general-exchange-monte-carlo
 region: nyc
 
 services:
   - name: monte-carlo
     source_dir: backend/python
-    dockerfile_path: backend/python/services/monte_carlo/Dockerfile
+    dockerfile_path: services/monte_carlo/Dockerfile
     github:
       repo: generalexchange/GeneralExchange
       branch: main
@@ -15,21 +15,22 @@ services:
     instance_size_slug: basic-xs
     health_check:
       http_path: /health
-      initial_delay_seconds: 35
+      initial_delay_seconds: 40
       period_seconds: 30
       timeout_seconds: 10
-      success_threshold: 1
-      failure_threshold: 3
     envs:
       - key: MC_PORT
         value: "8092"
         scope: RUN_TIME
-      - key: SIGNAL_STORE_PATH
-        value: /tmp/opportunity_signals.json
+      - key: IBKR_API_URL
         scope: RUN_TIME
-      - key: POLYGON_API_KEY
+        type: SECRET
+      - key: IBKR_API_KEY
         scope: RUN_TIME
         type: SECRET
       - key: MC_API_KEY
         scope: RUN_TIME
         type: SECRET
+      - key: SIGNAL_STORE_PATH
+        value: /tmp/opportunity_signals.json
+        scope: RUN_TIME

@@ -1,0 +1,24 @@
+# Run IB Gateway on a DigitalOcean Droplet (Ubuntu 22.04, 1GB+ RAM).
+# After login to Gateway, set IB_HOST on the App Platform ibkr-api service to this droplet's IP.
+#
+#   docker compose -f gateway-compose.yml up -d
+#
+# Default ports: 4002 (paper API), 5900 (VNC for 2FA if needed)
+
+services:
+  ib-gateway:
+    image: gnzsnz/ib-gateway:stable
+    restart: unless-stopped
+    environment:
+      TWS_USERID: ${TWS_USERID}
+      TWS_PASSWORD: ${TWS_PASSWORD}
+      TRADING_MODE: paper
+      READ_ONLY_API: "no"
+      VNC_SERVER_PASSWORD: ${VNC_PASSWORD:-changeme}
+    ports:
+      - "4002:4002"
+      - "5900:5900"
+    ulimits:
+      nofile:
+        soft: 10000
+        hard: 10000

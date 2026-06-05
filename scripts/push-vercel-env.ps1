@@ -27,14 +27,14 @@ if (-not $local["NEXT_PUBLIC_LEGEND_URL"]) { $local["NEXT_PUBLIC_LEGEND_URL"] = 
 if (-not $local["MC_API_KEY"]) { $local["MC_API_KEY"] = $local["GE_API_KEY"] }
 
 $keys = @(
-  "POLYGON_API_KEY",
+  "IBKR_API_URL",
+  "IBKR_API_KEY",
   "NEXT_PUBLIC_LEGEND_URL",
   "NEXT_PUBLIC_ROOT_DOMAIN",
   "NEXT_PUBLIC_WS_URL",
   "NEXT_PUBLIC_MONTE_CARLO_API_URL",
   "MONTE_CARLO_API_URL",
   "MC_API_KEY",
-  "GO_API_URL",
   "GE_API_KEY",
   "JWT_SIGNING_SECRET",
   "SITE_URL"

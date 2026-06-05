@@ -36,6 +36,7 @@ const RANGE_FETCH: Record<ChartRange, { interval: string; limit: number }> = {
 };
 
 const WS_WAIT_MS = 4_000;
+const QUOTE_POLL_MS = 30_000;
 
 function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
@@ -131,6 +132,26 @@ export function useLiveDashboard(symbol: string, chartRange: ChartRange = '1D') 
     });
     return q;
   }, [symbol]);
+
+  // Keep equity quote fresh via REST (works on delayed Polygon plans without WebSocket).
+  useEffect(() => {
+    let cancelled = false;
+    const refreshQuote = async () => {
+      try {
+        await fetchQuoteRest();
+      } catch {
+        /* WS or stale cache may still have a price */
+      }
+    };
+    void refreshQuote();
+    const id = window.setInterval(() => {
+      if (!cancelled) void refreshQuote();
+    }, QUOTE_POLL_MS);
+    return () => {
+      cancelled = true;
+      window.clearInterval(id);
+    };
+  }, [fetchQuoteRest]);
 
   const fetchCandles = useCallback(async () => {
     const spec = RANGE_FETCH[chartRange];
@@ -252,7 +273,7 @@ export function useLiveDashboard(symbol: string, chartRange: ChartRange = '1D') 
   const gex = useMemo(() => (chain.length ? computeGexFromChain(chain, spot) : []), [chain, spot]);
   const expirations = useMemo(() => chainExpirations(chain), [chain]);
 
-  const wsLive = quote?.source === 'massive' || quote?.source === 'polygon';
+  const wsLive = quote?.source === 'ibkr';
 
   return {
     quote,
@@ -271,9 +292,8 @@ export function useLiveDashboard(symbol: string, chartRange: ChartRange = '1D') 
       quote?.price &&
         (wsLive ||
           isWsConnected() ||
-          quote.source?.includes('polygon') ||
-          quote.source?.includes('massive') ||
-          source?.includes('polygon') ||
+          quote.source?.includes('ibkr') ||
+          source?.includes('ibkr') ||
           source === 'redis'),
     ),
   };

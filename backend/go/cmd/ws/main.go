@@ -22,8 +22,8 @@ func main() {
 	}
 
 	go func() {
-		log.Printf("level=info msg=\"go-websocket-server listening\" addr=%s feed=%s symbols=%v",
-			cfg.WSAddr, cfg.MassiveWSFeed, cfg.WSSymbols)
+		log.Printf("level=info msg=\"go-websocket-server listening\" addr=%s upstream=ibkr symbols=%v",
+			cfg.WSAddr, cfg.WSSymbols)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("level=error msg=\"ws server stopped\" err=%v", err)
 		}

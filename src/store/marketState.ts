@@ -81,7 +81,7 @@ export function applyMarketUpdate(update: MarketUpdate) {
         changePct,
         afterHoursChange: existing?.afterHoursChange,
         afterHoursChangePct: existing?.afterHoursChangePct,
-        source: update.source ?? existing?.source ?? 'massive',
+        source: update.source ?? existing?.source ?? 'ibkr',
       },
     },
     tape: { ...state.tape, [update.symbol]: nextTape },
@@ -130,7 +130,7 @@ export function seedQuoteFromRest(
         afterHoursChange: payload.afterHoursChange,
         afterHoursChangePct: payload.afterHoursChangePct,
         timestamp: payload.timestamp ?? Date.now(),
-        source: 'polygon',
+        source: 'ibkr',
       },
     },
   };

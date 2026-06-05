@@ -7,7 +7,7 @@ from datetime import date, datetime
 from typing import Any
 
 from services.monte_carlo.options_mc import simulate_option_contract
-from services.monte_carlo import polygon_client
+from services.monte_carlo import ibkr_client
 from services.monte_carlo.signal_learning import get_weights, register_signal, settle_expired
 
 DISCOVERY_SYMBOLS = ["SPY", "QQQ", "AAPL", "MSFT", "NVDA", "TSLA"]
@@ -26,6 +26,37 @@ def _dte(expiration: str) -> int:
 
 
 def _parse_chain_row(r: dict[str, Any], symbol: str) -> dict[str, Any] | None:
+    # IBKR contract shape
+    if "expiry" in r or "right" in r:
+        strike = float(r.get("strike") or 0)
+        if strike <= 0:
+            return None
+        bid = float(r.get("bid") or 0)
+        ask = float(r.get("ask") or 0)
+        mid = (bid + ask) / 2 if bid or ask else float(r.get("last") or 0)
+        exp = str(r.get("expiry") or "")
+        opt = "CALL" if str(r.get("right") or "C").upper().startswith("C") else "PUT"
+        iv = float(r.get("implied_volatility") or 0.25)
+        if iv < 3:
+            iv *= 100
+        return {
+            "symbol": symbol.upper(),
+            "expiration": exp,
+            "strike": strike,
+            "optionType": opt,
+            "bid": bid,
+            "ask": ask,
+            "mid": round(mid, 4),
+            "volume": int(r.get("volume") or 0),
+            "openInterest": int(r.get("open_interest") or 0),
+            "iv": iv,
+            "delta": float(r.get("delta") or 0),
+            "gamma": float(r.get("gamma") or 0),
+            "theta": float(r.get("theta") or 0),
+            "vega": float(r.get("vega") or 0),
+            "dte": _dte(exp),
+        }
+
     det = r.get("details") or {}
     quote = r.get("last_quote") or {}
     day = r.get("day") or {}
@@ -160,13 +191,13 @@ async def discover(body: dict[str, Any]) -> dict[str, Any]:
 
     for symbol in symbols:
         try:
-            snap = await polygon_client.snapshot_equity(symbol)
+            snap = await ibkr_client.snapshot_equity(symbol)
             spot = float(snap.get("price") or snap.get("prevClose") or 0)
             if spot <= 0:
                 continue
             settle_expired(spot)
-            raw = await polygon_client.options_chain_snapshot(symbol)
-            parsed = [_parse_chain_row(r, symbol) for r in raw]
+            raw = await ibkr_client.options_chain_snapshot_raw(symbol)
+            parsed = [_parse_chain_row(r, symbol) for r in (raw.get("contracts") or [])]
             contracts = _filter_contracts([p for p in parsed if p])
             if not contracts:
                 continue
@@ -206,7 +237,7 @@ async def outcomes(body: dict[str, Any]) -> dict[str, Any]:
 
     symbol = str(body.get("symbol") or "SPY").upper()
     try:
-        snap = await polygon_client.snapshot_equity(symbol)
+        snap = await ibkr_client.snapshot_equity(symbol)
         spot = float(snap.get("price") or snap.get("prevClose") or 0)
         if spot > 0:
             settle_expired(spot)

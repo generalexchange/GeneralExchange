@@ -1,13 +1,11 @@
-/** Normalized tick from Polygon (or synthetic fallback). */
+/** Normalized tick from IBKR live stream. */
 export type MarketUpdate = {
   symbol: string;
   price: number;
   volume?: number;
   timestamp: number;
-  source: 'polygon' | 'massive';
+  source: 'ibkr';
 };
-
-/** Bar pushed when Polygon sends an aggregate (AM) event. */
 export type CandleUpdate = {
   symbol: string;
   interval: string;

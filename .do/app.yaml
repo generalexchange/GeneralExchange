@@ -1,13 +1,11 @@
-# Option A — three DO apps (one service each; avoids ingress conflicts)
-# Deploy all: .\scripts\deploy-backend-do.ps1
+# DigitalOcean — IBKR stack (deploy via scripts/deploy-ibkr-do.ps1 or GitHub Actions)
 #
-#   .do/ws-app.yaml           → NEXT_PUBLIC_WS_URL=wss://<url>/ws
-#   .do/go-api-app.yaml       → GO_API_URL=https://<url>
-#   .do/monte-carlo-app.yaml  → MONTE_CARLO_API_URL=https://<url>
+#   .do/ibkr-app.yaml         → IBKR_API_URL + WebSocket base
+#   .do/monte-carlo-app.yaml  → MONTE_CARLO_API_URL
 #
-# Vercel hosts Next.js only.
+# Vercel hosts Next.js only. IB Gateway runs on a DO Droplet (see infra/digitalocean/).
 
-name: general-exchange-ws
+name: general-exchange-ibkr
 region: nyc
 
-# See ws-app.yaml, go-api-app.yaml, monte-carlo-app.yaml — deploy separately.
+# Deploy components separately — see ibkr-app.yaml and monte-carlo-app.yaml

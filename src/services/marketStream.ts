@@ -1,7 +1,7 @@
 /**
  * Live market WebSocket wiring (unified server).
  *
- * Connects to NEXT_PUBLIC_WS_URL — Go ws-server backed by Massive client-go.
+ * Connects to NEXT_PUBLIC_WS_URL — IBKR WebSocket stock stream.
  *   ws://localhost:3001/ws          (local)
  *   wss://general.exchange/ws       (production)
  *
