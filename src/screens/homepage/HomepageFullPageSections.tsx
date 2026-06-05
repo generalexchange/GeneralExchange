@@ -98,7 +98,7 @@ function HeroSection() {
       <div className="relative z-10 mx-auto w-full max-w-content layout-gutter pb-16 pt-[5.5rem] sm:pb-20 sm:pt-[6.5rem]">
         <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.96fr] lg:gap-14">
           <motion.div
-            className="max-w-2xl"
+            className="order-2 max-w-2xl lg:order-1"
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: easeLux }}
@@ -124,7 +124,7 @@ function HeroSection() {
           </motion.div>
 
           <motion.div
-            className="relative mx-auto w-full max-w-[21rem] sm:max-w-[25rem] lg:max-w-[30rem] lg:justify-self-end"
+            className="relative order-1 mx-auto w-full max-w-[21rem] sm:max-w-[25rem] lg:order-2 lg:max-w-[30rem] lg:justify-self-end"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.1, ease: easeLux }}
