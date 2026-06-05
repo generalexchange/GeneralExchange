@@ -7,7 +7,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { User, LogOut, Settings, LayoutDashboard } from 'lucide-react';
-import { getLegendOrigin, legendDashboardUrl } from '@/lib/legendUrl';
+import { getLegendOrigin } from '@/lib/legendUrl';
 
 export const ProfileMenu: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
