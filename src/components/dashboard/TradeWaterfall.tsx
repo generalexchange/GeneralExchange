@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { useSymbolTape } from '@/store/marketState';
+import { applyMarketUpdate, useSymbolTape } from '@/store/marketState';
 import { subscribeMarketWs, subscribeWsStatus } from '@/services/wsClient';
 
 function fmtTime(ts: number) {
@@ -26,6 +26,35 @@ export function TradeWaterfall({ symbol, className = '' }: TradeWaterfallProps) 
   useEffect(() => subscribeMarketWs(), []);
   useEffect(() => subscribeWsStatus(setConnected), []);
 
+  // Seed tape from REST minute bars so the waterfall fills immediately on delayed plans.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`/api/v1/candles/${symbol}/1m?limit=40`, { cache: 'no-store' });
+        if (!res.ok || cancelled) return;
+        const json = (await res.json()) as {
+          data?: Array<{ open_time: string; close: number; volume?: number }>;
+        };
+        for (const bar of json.data ?? []) {
+          if (!bar.close || !bar.open_time) continue;
+          applyMarketUpdate({
+            symbol,
+            price: bar.close,
+            volume: bar.volume,
+            timestamp: Date.parse(bar.open_time),
+            source: 'polygon',
+          });
+        }
+      } catch {
+        /* REST seed optional */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [symbol]);
+
   const rows = useMemo(() => [...tape].reverse().slice(0, 40), [tape]);
 
   return (
@@ -40,7 +69,7 @@ export function TradeWaterfall({ symbol, className = '' }: TradeWaterfallProps) 
           <span
             className={`h-1.5 w-1.5 rounded-full ${connected ? 'animate-pulse-live bg-moss' : 'bg-zinc-600'}`}
           />
-          {connected ? 'WS live' : 'WS offline'}
+          {connected ? 'Live feed' : 'Connecting…'}
         </span>
       </header>
 

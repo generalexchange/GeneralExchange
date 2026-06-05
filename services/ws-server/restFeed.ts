@@ -2,7 +2,7 @@ import type { BroadcastFn } from './polygonFeed';
 import type { CandleUpdate, WsOutbound } from './types';
 
 const POLYGON_BASE = 'https://api.polygon.io';
-const POLL_MS = Number(process.env.REST_FEED_POLL_MS ?? 12_000);
+const POLL_MS = Number(process.env.REST_FEED_POLL_MS ?? 30_000);
 
 export type RestFeedStats = {
   mode: 'rest';
@@ -98,6 +98,7 @@ export function startRestFeed(symbols: string[], apiKey: string, broadcast: Broa
   let timer: ReturnType<typeof setInterval> | null = null;
   let symbolIdx = 0;
   let usePrevOnly = false;
+  let cooldownUntil = 0;
 
   const pollMinuteAggs = async (sym: string) => {
     const day = todayUtc();
@@ -135,6 +136,7 @@ export function startRestFeed(symbols: string[], apiKey: string, broadcast: Broa
 
   const poll = async () => {
     if (closed || !symbols.length) return;
+    if (Date.now() < cooldownUntil) return;
     const sym = symbols[symbolIdx % symbols.length];
     symbolIdx += 1;
     stats.polls += 1;
@@ -150,7 +152,7 @@ export function startRestFeed(symbols: string[], apiKey: string, broadcast: Broa
       const msg = err instanceof Error ? err.message : 'rest poll failed';
       stats.lastError = msg;
       if (msg.includes('429')) {
-        // Back off — prev bar is a lighter fallback.
+        cooldownUntil = Date.now() + 90_000;
         usePrevOnly = true;
         return;
       }
