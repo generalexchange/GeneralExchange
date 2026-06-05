@@ -18,6 +18,8 @@ import { useMarketStream } from '../services/marketStream';
 import { useLiveDashboard, type ChartRange } from '../hooks/useLiveDashboard';
 import { TRADEABLE_SYMBOLS, symbolDisplayName } from '../data/symbols';
 import { WalletButton } from '../components/dashboard/WalletButton';
+import { MarketTemperature } from '../components/dashboard/MarketTemperature';
+import { OpportunityDiscoveryFeed } from '../components/dashboard/OpportunityDiscoveryFeed';
 
 function EmptyState({ message }: { message: string }) {
   return (
@@ -33,6 +35,7 @@ export const Dashboard: React.FC = () => {
   const [chartRange, setChartRange] = useState<ChartRange>('1D');
 
   const feed = useLiveDashboard(symbol, chartRange);
+  const spyFeed = useLiveDashboard('SPY', '1D');
 
   const spot = feed.quote?.price ?? 0;
   const [gexRef, gexInView] = useInViewport<HTMLDivElement>();
@@ -56,7 +59,8 @@ export const Dashboard: React.FC = () => {
         </div>
       </header>
 
-      <main className="mx-auto max-w-[1920px] p-2 lg:p-3">
+      <main className="mx-auto flex max-w-[1920px] flex-col gap-3 p-2 lg:flex-row lg:gap-4 lg:p-3">
+        <section className="min-w-0 flex-1">
         <div className="mb-3 flex items-center justify-between rounded-md border border-white/[0.08] bg-charcoal/70 px-3 py-2">
           <select
             value={symbol}
@@ -125,6 +129,18 @@ export const Dashboard: React.FC = () => {
             onOpenAdvanced={() => setAdvanced(true)}
           />
         )}
+        </section>
+
+        <aside className="flex w-full shrink-0 flex-col gap-3 lg:w-80 lg:max-w-[320px]">
+          <MarketTemperature
+            selectedSymbol={symbol}
+            spyCandles={spyFeed.candles}
+            spyLive={spyFeed.live}
+          />
+          <div className="flex min-h-[420px] flex-1 flex-col lg:min-h-[calc(100vh-8rem)]">
+            <OpportunityDiscoveryFeed />
+          </div>
+        </aside>
       </main>
     </div>
   );
