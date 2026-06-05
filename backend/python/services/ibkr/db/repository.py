@@ -26,20 +26,38 @@ def _sync_db_url() -> str:
 
 
 def _sync_engine():
-    return create_engine(_sync_db_url(), pool_pre_ping=True)
+    url = _sync_db_url()
+    connect_args: dict = {}
+    if "sslmode=require" in url:
+        connect_args["sslmode"] = "require"
+    return create_engine(url, pool_pre_ping=True, connect_args=connect_args)
 
 
-engine = _sync_engine()
-SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
+_engine = None
+_SessionLocal = None
+
+
+def get_engine():
+    global _engine
+    if _engine is None:
+        _engine = _sync_engine()
+    return _engine
+
+
+def _session_factory():
+    global _SessionLocal
+    if _SessionLocal is None:
+        _SessionLocal = sessionmaker(bind=get_engine(), autoflush=False, autocommit=False)
+    return _SessionLocal
 
 
 def init_db() -> None:
-    Base.metadata.create_all(bind=engine)
+    Base.metadata.create_all(bind=get_engine())
 
 
 @contextmanager
 def get_session() -> Iterator[Session]:
-    session = SessionLocal()
+    session = _session_factory()()
     try:
         yield session
         session.commit()

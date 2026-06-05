@@ -47,10 +47,6 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
         init_db()
     except Exception as exc:
         logger.warning("PostgreSQL init skipped or failed: %s", exc)
-    try:
-        await IBKRClient.get()
-    except Exception as exc:
-        logger.warning("IBKR not connected at startup (set IB_HOST to Gateway IP): %s", exc)
     yield
     client = IBKRClient._instance
     if client:
@@ -69,14 +65,9 @@ app.add_middleware(
 
 @app.get("/health", response_model=HealthResponse)
 async def health() -> HealthResponse:
-    connected = False
-    account = None
-    try:
-        client = await IBKRClient.get()
-        connected = client.is_connected()
-        account = client.account_id() or None
-    except Exception:
-        connected = False
+    client = IBKRClient._instance
+    connected = bool(client and client.is_connected())
+    account = client.account_id() if connected and client else None
     return HealthResponse(
         ok=True,
         connected=connected,

@@ -12,8 +12,11 @@ from services.ibkr.config import settings
 
 logger = logging.getLogger(__name__)
 
-# Allow ib_insync to share FastAPI's asyncio loop
-util.patchAsyncio()
+# Allow ib_insync to share FastAPI's asyncio loop (skip if already patched)
+try:
+    util.patchAsyncio()
+except Exception:
+    pass
 
 
 class IBKRClient:
@@ -55,12 +58,19 @@ class IBKRClient:
             settings.ib_client_id,
             settings.ib_paper,
         )
-        await self._ib.connectAsync(
-            settings.ib_host,
-            settings.ib_port,
-            clientId=settings.ib_client_id,
-            readonly=False,
-        )
+        try:
+            await asyncio.wait_for(
+                self._ib.connectAsync(
+                    settings.ib_host,
+                    settings.ib_port,
+                    clientId=settings.ib_client_id,
+                    readonly=False,
+                ),
+                timeout=10.0,
+            )
+        except TimeoutError:
+            logger.warning("IBKR connect timed out host=%s port=%s", settings.ib_host, settings.ib_port)
+            raise
         self._connected = True
         accounts = self._ib.managedAccounts()
         if settings.ib_account and settings.ib_account in accounts:

@@ -12,7 +12,7 @@ databases:
 services:
   - name: ibkr-api
     source_dir: backend/python
-    dockerfile_path: services/ibkr/Dockerfile
+    dockerfile_path: backend/python/services/ibkr/Dockerfile
     github:
       repo: generalexchange/GeneralExchange
       branch: main
@@ -29,8 +29,8 @@ services:
       failure_threshold: 5
     envs:
       - key: IB_HOST
+        value: "162.243.46.81"
         scope: RUN_TIME
-        type: SECRET
       - key: IB_PORT
         value: "4002"
         scope: RUN_TIME
@@ -40,15 +40,12 @@ services:
       - key: IB_PAPER
         value: "true"
         scope: RUN_TIME
-      - key: IB_ACCOUNT
-        scope: RUN_TIME
-        type: SECRET
       - key: DATABASE_URL
         value: ${ibkr-db.DATABASE_URL}
         scope: RUN_TIME
       - key: IBKR_API_KEY
+        value: "gx_ibkr_dev_key"
         scope: RUN_TIME
-        type: SECRET
       - key: WS_SYMBOLS
         value: SPY,QQQ,NVDA,AAPL,TSLA,AMD,MSFT,AMZN,META
         scope: RUN_TIME
