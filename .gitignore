@@ -37,3 +37,6 @@ out
 # Local tooling (flyctl binary downloads)
 .tools/
 
+
+# Local-only DO spec with IBKR credentials
+.do/ibkr-app.local.yaml

@@ -36,7 +36,15 @@ async def _accept_loop(ws: WebSocket, producer):
 
 
 async def stream_stock_prices(ws: WebSocket, symbols: list[str]) -> None:
-    client = await IBKRClient.get()
+    await ws.accept()
+    try:
+        client = await IBKRClient.get()
+    except Exception as exc:
+        logger.warning("ws stocks: IBKR not connected: %s", exc)
+        await ws.send_text(json.dumps({"type": "error", "message": "IBKR not connected"}))
+        await ws.close(code=1011)
+        return
+
     ib = client.ib
     tickers = []
     contracts = []

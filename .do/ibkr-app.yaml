@@ -19,15 +19,16 @@ services:
       deploy_on_push: true
     http_port: 8093
     instance_count: 1
-    instance_size_slug: basic-xs
+    instance_size_slug: basic-s
     health_check:
       http_path: /health
-      initial_delay_seconds: 15
-      period_seconds: 20
-      timeout_seconds: 5
+      initial_delay_seconds: 120
+      period_seconds: 30
+      timeout_seconds: 10
+      failure_threshold: 6
     envs:
       - key: IB_HOST
-        value: "162.243.46.81"
+        value: "127.0.0.1"
         scope: RUN_TIME
       - key: IB_PORT
         value: "4002"
@@ -46,4 +47,22 @@ services:
         scope: RUN_TIME
       - key: WS_SYMBOLS
         value: SPY,QQQ,NVDA,AAPL,TSLA,AMD,MSFT,AMZN,META
+        scope: RUN_TIME
+      - key: TRADING_MODE
+        value: paper
+        scope: RUN_TIME
+      - key: READ_ONLY_API
+        value: "no"
+        scope: RUN_TIME
+      - key: TWS_ACCEPT_INCOMING
+        value: accept
+        scope: RUN_TIME
+      - key: EXISTING_SESSION_DETECTED_ACTION
+        value: primary
+        scope: RUN_TIME
+      - key: TWOFA_TIMEOUT_ACTION
+        value: restart
+        scope: RUN_TIME
+      - key: RELOGIN_AFTER_TWOFA_TIMEOUT
+        value: "yes"
         scope: RUN_TIME
