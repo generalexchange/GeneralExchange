@@ -85,9 +85,9 @@ export const Dashboard: React.FC = () => {
           </button>
         </div>
 
-        {feed.error && (
+        {feed.error && !feed.quote?.price && (
           <div className="mb-3 rounded-md border border-rose-500/30 bg-rose-500/10 px-3 py-2 font-mono text-[11px] text-rose-300">
-            Market feed: {feed.error}. Check POLYGON_API_KEY and network.
+            Market feed: {feed.error}. Retrying every few seconds…
           </div>
         )}
 

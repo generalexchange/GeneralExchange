@@ -7,8 +7,8 @@ import {
 } from '@/lib/api/responseCache';
 
 const GO_API_URL = (process.env.GO_API_URL ?? 'http://localhost:8080').replace(/\/$/, '');
-const API_KEY = process.env.GE_API_KEY ?? 'dev-api-key';
-const UPSTREAM_TIMEOUT_MS = 15_000;
+const API_KEY = process.env.GE_API_KEY ?? 'gx_live_dev_demo_key';
+const GO_TIMEOUT_MS = 5_000;
 
 export const dynamic = 'force-dynamic';
 
@@ -24,12 +24,12 @@ function isPolygonMarketPath(path: string[]): boolean {
 }
 
 function isLiveSource(source: string): boolean {
-  return source !== 'mock' && source !== 'unavailable' && source !== 'unconfigured';
-}
-
-async function tryPolygonFallback(path: string[], searchParams: URLSearchParams) {
-  if (!canUsePolygonDirect() || !isPolygonMarketPath(path)) return null;
-  return tryPolygonDirect(path, searchParams);
+  return (
+    source !== 'mock' &&
+    source !== 'unavailable' &&
+    source !== 'unconfigured' &&
+    source !== 'go'
+  );
 }
 
 function jsonResponse(body: string, status: number, cacheTtl?: number) {
@@ -44,19 +44,20 @@ function jsonResponse(body: string, status: number, cacheTtl?: number) {
   return new NextResponse(body, { status, headers });
 }
 
-async function forward(req: NextRequest, path: string[]) {
-  const search = req.nextUrl.search;
-  const isGet = req.method === 'GET' || req.method === 'HEAD';
+async function polygonDirectResponse(path: string[], search: string, searchParams: URLSearchParams) {
+  const direct = await tryPolygonDirect(path, searchParams);
+  if (!direct) return null;
+  const body = JSON.stringify(direct);
+  const ttl = setCachedApiResponse(path, search, body);
+  return jsonResponse(body, 200, ttl);
+}
 
-  if (isGet) {
-    const cached = getCachedApiResponse(path, search);
-    if (cached) {
-      return jsonResponse(cached.body, 200, cached.ttl);
-    }
-  }
-
+async function fetchGo(
+  req: NextRequest,
+  path: string[],
+  search: string,
+): Promise<{ ok: boolean; status: number; body: string; source: string } | null> {
   const target = `${GO_API_URL}/v1/${path.join('/')}${search}`;
-
   const headers: Record<string, string> = {
     'X-API-Key': API_KEY,
     'Content-Type': req.headers.get('content-type') ?? 'application/json',
@@ -68,70 +69,82 @@ async function forward(req: NextRequest, path: string[]) {
     method: req.method,
     headers,
     cache: 'no-store',
-    signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
+    signal: AbortSignal.timeout(GO_TIMEOUT_MS),
   };
-  if (req.method !== 'GET' && req.method !== 'HEAD') {
-    init.body = await req.text();
-  }
 
+  try {
+    const res = await fetch(target, init);
+    const body = await res.text();
+    let source = 'go';
+    if (res.ok) {
+      try {
+        const parsed = JSON.parse(body) as { source?: string };
+        source = parsed.source ?? source;
+      } catch {
+        /* keep go */
+      }
+    }
+    return { ok: res.ok, status: res.status, body, source };
+  } catch {
+    return null;
+  }
+}
+
+async function forward(req: NextRequest, path: string[]) {
+  const search = req.nextUrl.search;
+  const isGet = req.method === 'GET' || req.method === 'HEAD';
   const skipGo = process.env.VERCEL === '1' && isLocalGoUrl(GO_API_URL);
 
-  if (!skipGo) {
-    try {
-      const res = await fetch(target, init);
-      if (res.ok || res.status < 500) {
-        const body = await res.text();
-        if (isGet) {
-          let useBody = body;
-          let status = res.status;
-          let source = 'go';
-          if (res.ok) {
-            try {
-              const parsed = JSON.parse(body) as { source?: string };
-              source = parsed.source ?? source;
-            } catch {
-              /* keep go body */
-            }
-          }
-          if (!res.ok || !isLiveSource(source)) {
-            const direct = await tryPolygonFallback(path, req.nextUrl.searchParams);
-            if (direct) {
-              useBody = JSON.stringify(direct);
-              status = 200;
-              const ttl = setCachedApiResponse(path, search, useBody);
-              return jsonResponse(useBody, status, ttl);
-            }
-          }
-          if (res.ok && isLiveSource(source)) {
-            const ttl = setCachedApiResponse(path, search, useBody);
-            return jsonResponse(useBody, status, ttl);
-          }
-          if (!res.ok) {
-            return jsonResponse(useBody, status);
-          }
-        }
-        return jsonResponse(body, res.status);
-      }
-    } catch {
-      // fall through to Polygon direct
+  if (isGet) {
+    const cached = getCachedApiResponse(path, search);
+    if (cached) {
+      return jsonResponse(cached.body, 200, cached.ttl);
     }
   }
 
-  if (isGet && canUsePolygonDirect()) {
-    const direct = await tryPolygonFallback(path, req.nextUrl.searchParams);
-    if (direct) {
-      const body = JSON.stringify(direct);
-      const ttl = setCachedApiResponse(path, search, body);
-      return jsonResponse(body, 200, ttl);
+  if (isGet && isPolygonMarketPath(path) && canUsePolygonDirect()) {
+    try {
+      const direct = await polygonDirectResponse(path, search, req.nextUrl.searchParams);
+      if (direct) return direct;
+    } catch (err) {
+      console.error('[api/v1] polygon direct failed', path.join('/'), err);
+    }
+  }
+
+  if (!skipGo) {
+    const go = await fetchGo(req, path, search);
+    if (go?.ok && isLiveSource(go.source)) {
+      const ttl = setCachedApiResponse(path, search, go.body);
+      return jsonResponse(go.body, go.status, ttl);
+    }
+
+    if (isGet && isPolygonMarketPath(path) && canUsePolygonDirect()) {
+      try {
+        const direct = await polygonDirectResponse(path, search, req.nextUrl.searchParams);
+        if (direct) return direct;
+      } catch (err) {
+        console.error('[api/v1] polygon fallback failed', path.join('/'), err);
+      }
+    }
+
+    if (go && !go.ok) {
+      return jsonResponse(go.body, go.status);
+    }
+  }
+
+  if (isGet && canUsePolygonDirect() && isPolygonMarketPath(path)) {
+    try {
+      const direct = await polygonDirectResponse(path, search, req.nextUrl.searchParams);
+      if (direct) return direct;
+    } catch {
+      /* handled below */
     }
   }
 
   return NextResponse.json(
     {
       error: 'data unavailable',
-      hint: skipGo
-        ? 'Set GO_API_URL to a public Go API host, or POLYGON_API_KEY for direct market data on Vercel.'
-        : 'Configure POLYGON_API_KEY on the Go API (Redis cache) or Vercel.',
+      hint: 'Configure POLYGON_API_KEY on Vercel or ensure the Go API is reachable.',
       as_of: new Date().toISOString(),
     },
     { status: 502 },

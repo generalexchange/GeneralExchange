@@ -13,6 +13,7 @@ import (
 )
 
 const keyPrefix = "ge:market:"
+const redisOpTimeout = 800 * time.Millisecond
 
 type Service struct {
 	redis   *redis.Client
@@ -26,7 +27,17 @@ func New(redisURL, polygonKey string) *Service {
 		if err != nil {
 			log.Printf("level=warn msg=\"invalid REDIS_URL\" err=%v", err)
 		} else {
-			s.redis = redis.NewClient(opts)
+			client := redis.NewClient(opts)
+			pingCtx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+			err := client.Ping(pingCtx).Err()
+			cancel()
+			if err != nil {
+				log.Printf("level=warn msg=\"redis unavailable, cache disabled\" err=%v", err)
+				_ = client.Close()
+			} else {
+				s.redis = client
+				log.Printf("level=info msg=\"redis cache enabled\"")
+			}
 		}
 	}
 	return s
@@ -37,7 +48,16 @@ func (s *Service) Ready(ctx context.Context) (redisOK, polygonOK bool) {
 	if s.redis == nil {
 		return false, polygonOK
 	}
-	return s.redis.Ping(ctx).Err() == nil, polygonOK
+	pingCtx, cancel := context.WithTimeout(ctx, redisOpTimeout)
+	defer cancel()
+	return s.redis.Ping(pingCtx).Err() == nil, polygonOK
+}
+
+func (s *Service) withRedisTimeout(ctx context.Context) (context.Context, context.CancelFunc) {
+	if deadline, ok := ctx.Deadline(); ok {
+		return context.WithDeadline(ctx, deadline)
+	}
+	return context.WithTimeout(ctx, redisOpTimeout)
 }
 
 func (s *Service) cacheKey(parts ...string) string {
@@ -60,7 +80,9 @@ func (s *Service) getCached(ctx context.Context, key string) (json.RawMessage, s
 	if s.redis == nil {
 		return nil, "", false
 	}
-	raw, err := s.redis.Get(ctx, key).Bytes()
+	rctx, cancel := s.withRedisTimeout(ctx)
+	defer cancel()
+	raw, err := s.redis.Get(rctx, key).Bytes()
 	if err != nil {
 		return nil, "", false
 	}
@@ -80,7 +102,9 @@ func (s *Service) setCached(ctx context.Context, key string, data any, source st
 		return
 	}
 	payload, _ := json.Marshal(cachedPayload{Data: body, Source: source})
-	if err := s.redis.Set(ctx, key, payload, ttl).Err(); err != nil {
+	rctx, cancel := s.withRedisTimeout(ctx)
+	defer cancel()
+	if err := s.redis.Set(rctx, key, payload, ttl).Err(); err != nil {
 		log.Printf("level=warn msg=\"redis set failed\" key=%s err=%v", key, err)
 	}
 }

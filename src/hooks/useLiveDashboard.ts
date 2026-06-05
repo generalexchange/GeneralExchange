@@ -86,10 +86,16 @@ export function useLiveDashboard(symbol: string, chartRange: ChartRange = '1D') 
 
   const fetchQuote = useCallback(async () => {
     const res = await fetch(`/api/v1/quote/${symbol}`, { cache: 'no-store' });
-    if (!res.ok) throw new Error('quote unavailable');
-    const json = (await res.json()) as { data: QuotePayload; source?: string };
+    const json = (await res.json()) as { data?: QuotePayload; source?: string; error?: string };
+    if (!res.ok || json.error) {
+      throw new Error(json.error ?? 'quote unavailable');
+    }
     const q = json.data;
+    if (!q?.price || q.price <= 0) {
+      throw new Error('quote unavailable');
+    }
     setSource(json.source ?? null);
+    setError(null);
     seedQuoteFromRest(symbol, {
       price: q.price,
       prevClose: q.prevClose,
@@ -97,7 +103,7 @@ export function useLiveDashboard(symbol: string, chartRange: ChartRange = '1D') 
       changePct: q.changePct,
       afterHoursChange: q.afterHoursChange,
       afterHoursChangePct: q.afterHoursChangePct,
-      timestamp: q.timestamp ? Date.parse(String(q.timestamp)) : Date.now(),
+      timestamp: q.timestamp ? Number(q.timestamp) : Date.now(),
     });
     return q;
   }, [symbol]);
@@ -133,6 +139,12 @@ export function useLiveDashboard(symbol: string, chartRange: ChartRange = '1D') 
     setNews(rows);
     return rows;
   }, [symbol]);
+
+  useEffect(() => {
+    if (quote?.price && quote.price > 0 && error) {
+      setError(null);
+    }
+  }, [quote?.price, error]);
 
   useEffect(() => {
     let cancelled = false;

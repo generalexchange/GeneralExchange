@@ -20,7 +20,7 @@ type Client struct {
 func NewClient(apiKey string) *Client {
 	return &Client{
 		apiKey: apiKey,
-		http:   &http.Client{Timeout: 12 * time.Second},
+		http:   &http.Client{Timeout: 8 * time.Second},
 	}
 }
 
