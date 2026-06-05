@@ -41,7 +41,7 @@ export function getMarketState(): MarketState {
 
 export function applyMarketUpdate(update: MarketUpdate) {
   const existing = state.quotes[update.symbol];
-  const prevClose = existing?.prevClose ?? update.price;
+  const prevClose = existing?.prevClose ?? existing?.price ?? update.price;
   const change = update.price - prevClose;
   const changePct = prevClose ? (change / prevClose) * 100 : 0;
 
@@ -55,6 +55,9 @@ export function applyMarketUpdate(update: MarketUpdate) {
         prevClose,
         change,
         changePct,
+        afterHoursChange: existing?.afterHoursChange,
+        afterHoursChangePct: existing?.afterHoursChangePct,
+        source: update.source ?? existing?.source ?? 'ws',
       },
     },
   };

@@ -44,7 +44,7 @@ export function useMarketStream(symbol: string, interval: string, handlers: Mark
       const q = quotes[symbol];
       if (q) handlers.onPrice?.(symbol, q.price);
 
-      const key = `${symbol}:${interval === '5m' ? '1m' : interval}`;
+      const key = `${symbol}:${interval}`;
       const bars = candles[key];
       const last = bars?.[bars.length - 1];
       if (last) {

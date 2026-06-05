@@ -107,40 +107,23 @@ export async function polygonTicks(symbol: string, limit: number) {
   return envelope(data, 'polygon-delayed');
 }
 
-/** GET candles/{symbol}/{interval} — intraday intervals fall back to daily on limited plans. */
-export async function polygonCandles(symbol: string, interval: string, limit: number) {
-  const sym = symbol.toUpperCase();
-  const cap = Math.min(limit, 500);
-  let spec = INTERVALS[interval] ?? INTERVALS['1d'];
-  let effectiveInterval = interval;
+function normalizePolygonMs(t?: number): number {
+  if (!t) return Date.now();
+  if (t > 1e15) return Math.floor(t / 1_000_000);
+  if (t < 1e12) return t * 1000;
+  return t;
+}
 
-  const fetchBars = async (s: typeof spec) => {
-    const to = new Date();
-    const from = new Date(to.getTime() - s.lookbackDays * 86_400_000);
-    type Bar = { t: number; o: number; h: number; l: number; c: number; v: number; vw?: number; n?: number };
-    return polygonGet<{ results?: Bar[] }>(
-      `/v2/aggs/ticker/${sym}/range/${s.mult}/${s.span}/${from.toISOString().slice(0, 10)}/${to.toISOString().slice(0, 10)}`,
-      { limit: String(cap), sort: 'asc' },
-    );
-  };
-
-  let json;
-  try {
-    json = await fetchBars(spec);
-    if (!(json.results?.length) && spec.span !== 'day') {
-      spec = INTERVALS['1d'];
-      effectiveInterval = '1d';
-      json = await fetchBars(spec);
-    }
-  } catch {
-    spec = INTERVALS['1d'];
-    effectiveInterval = '1d';
-    json = await fetchBars(spec);
-  }
-
-  const data = (json.results ?? []).map((b) => ({
+/** Map aggregate bars to API candle rows. */
+function mapAggBars(
+  bars: { t: number; o: number; h: number; l: number; c: number; v: number; vw?: number; n?: number }[],
+  sym: string,
+  interval: string,
+  source: string,
+) {
+  const data = bars.map((b) => ({
     symbol: sym,
-    interval: effectiveInterval,
+    interval,
     open_time: new Date(b.t).toISOString(),
     open: b.o,
     high: b.h,
@@ -150,8 +133,63 @@ export async function polygonCandles(symbol: string, interval: string, limit: nu
     vwap: b.vw ?? (b.o + b.c) / 2,
     transactions: b.n ?? 0,
   }));
+  return envelope(data, source);
+}
 
-  return envelope(data, effectiveInterval === interval ? 'polygon' : 'polygon-delayed');
+/** GET candles/{symbol}/{interval} — intraday intervals fall back to daily on limited plans. */
+export async function polygonCandles(symbol: string, interval: string, limit: number) {
+  const sym = symbol.toUpperCase();
+  const cap = Math.min(limit, 500);
+  let spec = INTERVALS[interval] ?? INTERVALS['1d'];
+  let effectiveInterval = interval;
+
+  type Bar = { t: number; o: number; h: number; l: number; c: number; v: number; vw?: number; n?: number };
+
+  const fetchRange = async (from: string, to: string, s: typeof spec) => {
+    return polygonGet<{ results?: Bar[] }>(
+      `/v2/aggs/ticker/${sym}/range/${s.mult}/${s.span}/${from}/${to}`,
+      { limit: String(cap), sort: 'asc' },
+    );
+  };
+
+  const toDate = new Date();
+  const todayStr = toDate.toISOString().slice(0, 10);
+
+  // Minute/hour bars: try today first, then multi-day window.
+  if (spec.span === 'minute' || spec.span === 'hour') {
+    try {
+      const todayJson = await fetchRange(todayStr, todayStr, spec);
+      if (todayJson.results?.length) {
+        return mapAggBars(todayJson.results, sym, effectiveInterval, 'polygon');
+      }
+    } catch {
+      /* plan may omit same-day minute aggs — fall through */
+    }
+  }
+
+  const fromDate = new Date(toDate.getTime() - spec.lookbackDays * 86_400_000);
+  const fromStr = fromDate.toISOString().slice(0, 10);
+
+  let json: { results?: Bar[] };
+  try {
+    json = await fetchRange(fromStr, todayStr, spec);
+    if (!(json.results?.length) && spec.span !== 'day') {
+      spec = INTERVALS['1d'];
+      effectiveInterval = '1d';
+      json = await fetchRange(fromStr, todayStr, spec);
+    }
+  } catch {
+    spec = INTERVALS['1d'];
+    effectiveInterval = '1d';
+    json = await fetchRange(fromStr, todayStr, spec);
+  }
+
+  const bars = json.results ?? [];
+  if (!bars.length) throw new Error(`no aggregate bars for ${sym}`);
+
+  // Keep the most recent `cap` bars when Polygon returns a long history.
+  const slice = bars.length > cap ? bars.slice(-cap) : bars;
+  return mapAggBars(slice, sym, effectiveInterval, effectiveInterval === interval ? 'polygon' : 'polygon-delayed');
 }
 
 /** GET options/chain/{symbol} */
@@ -285,7 +323,7 @@ async function polygonQuoteFromDailyBars(sym: string) {
       changePct,
       afterHoursChange,
       afterHoursChangePct,
-      timestamp: latest.t ?? Date.now(),
+      timestamp: latest.t ? normalizePolygonMs(latest.t) : Date.now(),
     },
     'polygon-delayed',
   );
@@ -324,7 +362,7 @@ export async function polygonQuote(symbol: string) {
         changePct,
         afterHoursChange,
         afterHoursChangePct,
-        timestamp: t?.lastTrade?.t ?? t?.updated ?? Date.now(),
+        timestamp: normalizePolygonMs(t?.lastTrade?.t ?? t?.updated),
       },
       'polygon',
     );

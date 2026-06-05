@@ -41,7 +41,7 @@ export const Dashboard: React.FC = () => {
   const [gexRef, gexInView] = useInViewport<HTMLDivElement>();
   const priceChartRef = useRef<PriceChartHandle | null>(null);
 
-  useMarketStream(symbol, '5m', {
+  useMarketStream(symbol, chartRange === '1D' ? '1m' : '5m', {
     onCandle: (candle, replaceLast) => priceChartRef.current?.pushCandle(candle, replaceLast),
   });
 

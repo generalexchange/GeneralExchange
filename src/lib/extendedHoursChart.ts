@@ -71,7 +71,12 @@ export function filterExtendedDayCandles(candles: Candle[], now = Date.now()): C
   }
 
   const cutoff = Math.min(startMs, now - 30 * 3_600_000);
-  return sorted.filter((c) => c.t >= cutoff && c.t <= now);
+  const filtered = sorted.filter((c) => c.t >= cutoff && c.t <= now + 60_000);
+  if (filtered.length) return filtered;
+
+  // Delayed/partial feeds — show the most recent session day rather than an empty chart.
+  const lastDay = etDateKey(new Date(sorted[sorted.length - 1].t));
+  return sorted.filter((c) => etDateKey(new Date(c.t)) === lastDay);
 }
 
 export function toExtendedChartPoints(candles: Candle[], now = Date.now()): ChartPoint[] {

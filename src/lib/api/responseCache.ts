@@ -9,6 +9,7 @@ const store = new Map<string, CacheEntry>();
 
 /** TTL in seconds per route prefix (first path segment(s)). */
 const TTL_SECONDS: Record<string, number> = {
+  quote: 5,
   ticks: 15,
   candles: 60,
   'options/chain': 30,

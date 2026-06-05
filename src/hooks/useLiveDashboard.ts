@@ -19,7 +19,7 @@ import type { NewsRow, OptionRow } from '@/components/dashboard/terminal/termina
 export type ChartRange = '1D' | '1W' | '1M' | '3M' | 'YTD' | '1Y' | '5Y' | 'MAX';
 
 const RANGE_FETCH: Record<ChartRange, { interval: string; limit: number }> = {
-  '1D': { interval: '5m', limit: 400 },
+  '1D': { interval: '1m', limit: 400 },
   '1W': { interval: '15m', limit: 67 },
   '1M': { interval: '1h', limit: 120 },
   '3M': { interval: '1d', limit: 65 },
@@ -43,7 +43,8 @@ type QuotePayload = {
 /** REST + WS live dashboard data — no mock fallbacks. */
 export function useLiveDashboard(symbol: string, chartRange: ChartRange = '1D') {
   const quote = useSymbolQuote(symbol);
-  const wsCandles = useSymbolCandles(symbol, RANGE_FETCH[chartRange].interval);
+  const wsInterval = RANGE_FETCH[chartRange].interval;
+  const wsCandles = useSymbolCandles(symbol, wsInterval);
   const [candles, setCandles] = useState<Candle[]>([]);
   const [chain, setChain] = useState<OptionRow[]>([]);
   const [news, setNews] = useState<NewsRow[]>([]);
@@ -127,7 +128,7 @@ export function useLiveDashboard(symbol: string, chartRange: ChartRange = '1D') 
     }
 
     load();
-    const pollMs = chartRange === '1D' ? 15_000 : 60_000;
+    const pollMs = chartRange === '1D' ? 5_000 : 60_000;
     const id = window.setInterval(load, pollMs);
     return () => {
       cancelled = true;
@@ -149,10 +150,17 @@ export function useLiveDashboard(symbol: string, chartRange: ChartRange = '1D') 
 
     if (chartRange === '1D') {
       const source = wsCandles.length ? mapWs(wsCandles) : candles;
-      return filterExtendedDayCandles(source);
+      const filtered = filterExtendedDayCandles(source);
+      if (filtered.length) return filtered;
+      if (quote?.price) {
+        const p = quote.price;
+        const t = quote.timestamp ? Number(quote.timestamp) : Date.now();
+        return [{ t, o: p, h: p, l: p, c: p, v: 0, vwap: p }];
+      }
+      return filtered;
     }
     return candles;
-  }, [chartRange, wsCandles, candles]);
+  }, [chartRange, wsCandles, candles, quote]);
 
   const spot = quote?.price ?? 0;
   const gex = useMemo(() => (chain.length ? computeGexFromChain(chain, spot) : []), [chain, spot]);
@@ -170,7 +178,12 @@ export function useLiveDashboard(symbol: string, chartRange: ChartRange = '1D') 
     loading,
     error,
     source: quote?.source ?? source,
-    live: Boolean(quote && (isMarketWsConfigured() || source?.includes('polygon'))),
+    live: Boolean(
+      quote?.price &&
+        (isMarketWsConfigured() ||
+          quote.source?.includes('polygon') ||
+          source?.includes('polygon')),
+    ),
   };
 }
 

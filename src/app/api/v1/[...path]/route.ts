@@ -8,7 +8,11 @@ import {
 
 const GO_API_URL = (process.env.GO_API_URL ?? 'http://localhost:8080').replace(/\/$/, '');
 const API_KEY = process.env.GE_API_KEY ?? 'dev-api-key';
-const UPSTREAM_TIMEOUT_MS = 5000;
+const UPSTREAM_TIMEOUT_MS = 15_000;
+
+function preferPolygonDirect(): boolean {
+  return process.env.VERCEL === '1' && canUsePolygonDirect();
+}
 
 export const dynamic = 'force-dynamic';
 
@@ -43,6 +47,16 @@ function jsonResponse(body: string, status: number, cacheTtl?: number) {
 async function forward(req: NextRequest, path: string[]) {
   const search = req.nextUrl.search;
   const isGet = req.method === 'GET' || req.method === 'HEAD';
+
+  // Vercel + Polygon: skip Go mock API for market routes — use live Polygon directly.
+  if (isGet && preferPolygonDirect() && isPolygonMarketPath(path)) {
+    const direct = await tryPolygonFallback(path, req.nextUrl.searchParams);
+    if (direct) {
+      const body = JSON.stringify(direct);
+      const ttl = setCachedApiResponse(path, search, body);
+      return jsonResponse(body, 200, ttl);
+    }
+  }
 
   if (isGet) {
     const cached = getCachedApiResponse(path, search);
