@@ -6,6 +6,7 @@ const ROOT_DOMAIN = (process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? 'general.exchange').
 const SUBDOMAIN_TO_PATH: Record<string, string> = {
   company: '/company',
   university: '/university',
+  legend: '/dashboard',
 };
 
 function subdomainFromHost(host: string): string | null {
@@ -32,12 +33,22 @@ function subdomainFromHost(host: string): string | null {
 export function middleware(request: NextRequest) {
   const host = request.headers.get('host') ?? '';
   const sub = subdomainFromHost(host);
+  const { pathname } = request.nextUrl;
+
+  // Apex / www: send /dashboard traffic to legend subdomain
+  if (pathname.startsWith('/dashboard') && sub !== 'legend') {
+    const port = host.includes(':') ? host.slice(host.indexOf(':')) : '';
+    if (host.includes('localhost')) {
+      return NextResponse.redirect(new URL(`http://legend.localhost${port}${pathname}${request.nextUrl.search}`));
+    }
+    return NextResponse.redirect(new URL(`https://legend.${ROOT_DOMAIN}${pathname}${request.nextUrl.search}`));
+  }
+
   if (!sub) return NextResponse.next();
 
   const pathPrefix = SUBDOMAIN_TO_PATH[sub];
   if (!pathPrefix) return NextResponse.next();
 
-  const { pathname } = request.nextUrl;
   if (pathname !== '/' && pathname !== '') return NextResponse.next();
 
   const url = request.nextUrl.clone();

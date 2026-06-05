@@ -1,16 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { legendDashboardUrl } from '@/lib/legendUrl';
 
 const easeLux = [0.22, 1, 0.36, 1] as const;
 
 export const Login: React.FC = () => {
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -24,7 +23,7 @@ export const Login: React.FC = () => {
     setIsSubmitting(true);
     setTimeout(() => {
       setIsSubmitting(false);
-      router.push('/dashboard');
+      window.location.href = legendDashboardUrl('/');
     }, 800);
   };
 

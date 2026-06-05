@@ -7,6 +7,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { User, LogOut, Settings, LayoutDashboard } from 'lucide-react';
+import { legendDashboardUrl } from '@/lib/legendUrl';
 
 export const ProfileMenu: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -52,7 +53,7 @@ export const ProfileMenu: React.FC = () => {
             <button
               onClick={() => {
                 setIsOpen(false);
-                router.push('/dashboard');
+                window.location.href = legendDashboardUrl('/');
               }}
               className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-gray-300 hover:bg-[#2a2a2a] hover:text-white transition-colors"
             >

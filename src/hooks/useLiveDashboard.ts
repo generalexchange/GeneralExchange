@@ -12,13 +12,14 @@ import {
   type CandleRow,
 } from '@/lib/api/mapLiveData';
 import { getMarketSession, quoteCardTheme, type MarketSession } from '@/lib/marketSession';
+import { filterExtendedDayCandles } from '@/lib/extendedHoursChart';
 import type { Candle } from '@/components/dashboard/terminal/terminalData';
 import type { NewsRow, OptionRow } from '@/components/dashboard/terminal/terminalData';
 
 export type ChartRange = '1D' | '1W' | '1M' | '3M' | 'YTD' | '1Y' | '5Y' | 'MAX';
 
 const RANGE_FETCH: Record<ChartRange, { interval: string; limit: number }> = {
-  '1D': { interval: '5m', limit: 78 },
+  '1D': { interval: '5m', limit: 400 },
   '1W': { interval: '15m', limit: 67 },
   '1M': { interval: '1h', limit: 120 },
   '3M': { interval: '1d', limit: 65 },
@@ -135,8 +136,8 @@ export function useLiveDashboard(symbol: string, chartRange: ChartRange = '1D') 
   }, [symbol, chartRange, fetchQuote, fetchCandles, fetchChain, fetchNews]);
 
   const displayCandles = useMemo(() => {
-    if (chartRange === '1D' && wsCandles.length) {
-      return wsCandles.map((c) => ({
+    const mapWs = (rows: typeof wsCandles) =>
+      rows.map((c) => ({
         t: typeof c.open_time === 'number' ? c.open_time : Date.parse(String(c.open_time)),
         o: c.open,
         h: c.high,
@@ -145,6 +146,10 @@ export function useLiveDashboard(symbol: string, chartRange: ChartRange = '1D') 
         v: c.volume,
         vwap: c.vwap ?? (c.open + c.close) / 2,
       }));
+
+    if (chartRange === '1D') {
+      const source = wsCandles.length ? mapWs(wsCandles) : candles;
+      return filterExtendedDayCandles(source);
     }
     return candles;
   }, [chartRange, wsCandles, candles]);

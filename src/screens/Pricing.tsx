@@ -7,7 +7,6 @@
 import React from 'react';
 import { Navbar } from '@/components/Navbar';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
-import { SolanaWalletProvider } from '@/providers/SolanaWalletProvider';
 import { TokenHero } from '@/components/pricing/TokenHero';
 import { TokenUtilityCards } from '@/components/pricing/TokenUtilityCards';
 import { InfrastructureSection } from '@/components/pricing/InfrastructureSection';
@@ -34,8 +33,4 @@ function PricingContent() {
   );
 }
 
-export const Pricing: React.FC = () => (
-  <SolanaWalletProvider>
-    <PricingContent />
-  </SolanaWalletProvider>
-);
+export const Pricing: React.FC = () => <PricingContent />;

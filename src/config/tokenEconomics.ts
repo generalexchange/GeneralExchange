@@ -18,9 +18,9 @@ export const TOKEN_ECONOMICS = {
   treasuryBalance: Number(process.env.NEXT_PUBLIC_GE_TREASURY_BALANCE ?? '87500000'),
   tokensBurned: Number(process.env.NEXT_PUBLIC_GE_TOKENS_BURNED ?? '250000'),
   /** Solana cluster */
-  cluster: (process.env.NEXT_PUBLIC_SOLANA_CLUSTER ?? 'devnet') as 'devnet' | 'mainnet-beta' | 'testnet',
+  cluster: (process.env.NEXT_PUBLIC_SOLANA_CLUSTER ?? 'mainnet-beta') as 'devnet' | 'mainnet-beta' | 'testnet',
   /** RPC — no hardcoded addresses; set in env for production */
-  rpcUrl: process.env.NEXT_PUBLIC_SOLANA_RPC_URL ?? 'https://api.devnet.solana.com',
+  rpcUrl: process.env.NEXT_PUBLIC_SOLANA_RPC_URL ?? 'https://api.mainnet-beta.solana.com',
   /** Token mint — set when SPL mint is deployed */
   tokenMintAddress: process.env.NEXT_PUBLIC_GE_TOKEN_MINT ?? '',
   /** Treasury wallet for purchases */
