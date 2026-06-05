@@ -14,9 +14,24 @@ async function probe(url: string, path: string, ms = 5000): Promise<'reachable' 
   }
 }
 
+async function probeIbkrConnected(url: string, ms = 5000): Promise<boolean> {
+  try {
+    const res = await fetch(`${url.replace(/\/$/, '')}/health`, {
+      cache: 'no-store',
+      signal: AbortSignal.timeout(ms),
+    });
+    if (!res.ok) return false;
+    const json = (await res.json()) as { connected?: boolean };
+    return json.connected === true;
+  } catch {
+    return false;
+  }
+}
+
 export async function GET() {
   const ibkrUrl = (process.env.IBKR_API_URL ?? 'http://localhost:8093').replace(/\/$/, '');
   const ibkrStatus = await probe(ibkrUrl, '/health', 5000);
+  const ibkrGatewayConnected = ibkrStatus === 'reachable' ? await probeIbkrConnected(ibkrUrl, 5000) : false;
 
   const mcUrl = (process.env.MONTE_CARLO_API_URL ?? '').replace(/\/$/, '');
   let mcStatus: 'reachable' | 'unavailable' | 'local' = mcUrl ? 'unavailable' : 'local';
@@ -37,7 +52,8 @@ export async function GET() {
     status: 'ok',
     ibkr_api: ibkrStatus,
     ibkr_api_url: ibkrUrl,
-    ibkr_connected: ibkrStatus === 'reachable',
+    ibkr_connected: ibkrGatewayConnected,
+    ibkr_api_reachable: ibkrStatus === 'reachable',
     ws_url: wsPublic || null,
     ws_api: wsStatus,
     monte_carlo_api: mcStatus,

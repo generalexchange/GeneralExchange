@@ -3,7 +3,8 @@ $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent $PSScriptRoot
 Set-Location $Root
 
-$ibkr = "https://general-exchange-ibkr-7ed3d.ondigitalocean.app"
+# Co-located with IB Gateway on droplet (localhost:4002); App Platform cannot reach Gateway TrustedIPs.
+$ibkr = "https://137-184-106-143.sslip.io"
 $mc = "https://general-exchange-monte-carlo-jgltm.ondigitalocean.app"
 $wsUrl = ($ibkr -replace '^https://', 'wss://') + '/ws/stocks?symbols=SPY,QQQ,NVDA,AAPL,TSLA,AMD,MSFT,AMZN,META'
 

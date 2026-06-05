@@ -40,3 +40,8 @@ out
 
 # Local-only DO spec with IBKR credentials
 .do/ibkr-app.local.yaml
+infra/digitalocean/droplet-bootstrap.local.sh
+
+# Python
+__pycache__/
+*.py[cod]

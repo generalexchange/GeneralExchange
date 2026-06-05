@@ -7,18 +7,20 @@
 
 services:
   ib-gateway:
-    image: gnzsnz/ib-gateway:stable
+    image: ghcr.io/gnzsnz/ib-gateway:stable
     restart: unless-stopped
-    environment:
-      TWS_USERID: ${TWS_USERID}
-      TWS_PASSWORD: ${TWS_PASSWORD}
-      TRADING_MODE: paper
-      READ_ONLY_API: "no"
-      VNC_SERVER_PASSWORD: ${VNC_PASSWORD:-changeme}
+    env_file: .env
     ports:
       - "4002:4002"
       - "5900:5900"
+    volumes:
+      - jts-data:/home/ibgateway/Jts
+      # Prefer TWS_PASSWORD_FILE in .env so special chars (e.g. !) are not mangled.
+      - ./secrets/tws_password:/run/secrets/tws_password:ro
     ulimits:
       nofile:
         soft: 10000
         hard: 10000
+
+volumes:
+  jts-data:
