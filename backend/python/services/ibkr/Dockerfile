@@ -1,4 +1,4 @@
-# IB Gateway + FastAPI on one container (App Platform / Docker)
+# IB Gateway + FastAPI on one container (App Platform)
 FROM ghcr.io/gnzsnz/ib-gateway:stable
 
 USER root
