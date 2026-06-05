@@ -8,9 +8,10 @@ import {
 
 const GO_API_URL = (process.env.GO_API_URL ?? 'http://localhost:8080').replace(/\/$/, '');
 const API_KEY = process.env.GE_API_KEY ?? 'gx_live_dev_demo_key';
-const GO_TIMEOUT_MS = 5_000;
+const GO_TIMEOUT_MS = 4_000;
 
 export const dynamic = 'force-dynamic';
+export const maxDuration = 10;
 
 function isLocalGoUrl(url: string): boolean {
   return /localhost|127\.0\.0\.1|0\.0\.0\.0/.test(url);
@@ -44,6 +45,17 @@ function jsonResponse(body: string, status: number, cacheTtl?: number) {
   return new NextResponse(body, { status, headers });
 }
 
+function unavailableJson(status = 502) {
+  return NextResponse.json(
+    {
+      error: 'data unavailable',
+      hint: 'Configure POLYGON_API_KEY on Vercel or ensure the Go API is reachable.',
+      as_of: new Date().toISOString(),
+    },
+    { status },
+  );
+}
+
 async function polygonDirectResponse(path: string[], search: string, searchParams: URLSearchParams) {
   const direct = await tryPolygonDirect(path, searchParams);
   if (!direct) return null;
@@ -57,7 +69,6 @@ async function fetchGo(
   path: string[],
   search: string,
 ): Promise<{ ok: boolean; status: number; body: string; source: string } | null> {
-  const target = `${GO_API_URL}/v1/${path.join('/')}${search}`;
   const headers: Record<string, string> = {
     'X-API-Key': API_KEY,
     'Content-Type': req.headers.get('content-type') ?? 'application/json',
@@ -65,15 +76,13 @@ async function fetchGo(
   const auth = req.headers.get('authorization');
   if (auth) headers['Authorization'] = auth;
 
-  const init: RequestInit = {
-    method: req.method,
-    headers,
-    cache: 'no-store',
-    signal: AbortSignal.timeout(GO_TIMEOUT_MS),
-  };
-
   try {
-    const res = await fetch(target, init);
+    const res = await fetch(`${GO_API_URL}/v1/${path.join('/')}${search}`, {
+      method: req.method,
+      headers,
+      cache: 'no-store',
+      signal: AbortSignal.timeout(GO_TIMEOUT_MS),
+    });
     const body = await res.text();
     let source = 'go';
     if (res.ok) {
@@ -93,7 +102,9 @@ async function fetchGo(
 async function forward(req: NextRequest, path: string[]) {
   const search = req.nextUrl.search;
   const isGet = req.method === 'GET' || req.method === 'HEAD';
-  const skipGo = process.env.VERCEL === '1' && isLocalGoUrl(GO_API_URL);
+  const marketGet = isGet && isPolygonMarketPath(path);
+  const vercelMarket = process.env.VERCEL === '1' && marketGet;
+  const skipGo = (process.env.VERCEL === '1' && isLocalGoUrl(GO_API_URL)) || vercelMarket;
 
   if (isGet) {
     const cached = getCachedApiResponse(path, search);
@@ -102,12 +113,15 @@ async function forward(req: NextRequest, path: string[]) {
     }
   }
 
-  if (isGet && isPolygonMarketPath(path) && canUsePolygonDirect()) {
+  if (marketGet && canUsePolygonDirect()) {
     try {
       const direct = await polygonDirectResponse(path, search, req.nextUrl.searchParams);
       if (direct) return direct;
     } catch (err) {
       console.error('[api/v1] polygon direct failed', path.join('/'), err);
+    }
+    if (vercelMarket) {
+      return unavailableJson();
     }
   }
 
@@ -118,7 +132,7 @@ async function forward(req: NextRequest, path: string[]) {
       return jsonResponse(go.body, go.status, ttl);
     }
 
-    if (isGet && isPolygonMarketPath(path) && canUsePolygonDirect()) {
+    if (marketGet && canUsePolygonDirect()) {
       try {
         const direct = await polygonDirectResponse(path, search, req.nextUrl.searchParams);
         if (direct) return direct;
@@ -128,27 +142,15 @@ async function forward(req: NextRequest, path: string[]) {
     }
 
     if (go && !go.ok) {
+      const ct = go.body.trimStart();
+      if (go.status >= 500 || ct.startsWith('<')) {
+        return unavailableJson(502);
+      }
       return jsonResponse(go.body, go.status);
     }
   }
 
-  if (isGet && canUsePolygonDirect() && isPolygonMarketPath(path)) {
-    try {
-      const direct = await polygonDirectResponse(path, search, req.nextUrl.searchParams);
-      if (direct) return direct;
-    } catch {
-      /* handled below */
-    }
-  }
-
-  return NextResponse.json(
-    {
-      error: 'data unavailable',
-      hint: 'Configure POLYGON_API_KEY on Vercel or ensure the Go API is reachable.',
-      as_of: new Date().toISOString(),
-    },
-    { status: 502 },
-  );
+  return unavailableJson();
 }
 
 type Ctx = { params: Promise<{ path: string[] }> };

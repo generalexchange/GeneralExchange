@@ -11,6 +11,7 @@ import {
   mapPolygonNews,
   type CandleRow,
 } from '@/lib/api/mapLiveData';
+import { readJsonResponse } from '@/lib/api/readJsonResponse';
 import { getMarketSession, quoteCardTheme, type MarketSession } from '@/lib/marketSession';
 import { filterExtendedDayCandles } from '@/lib/extendedHoursChart';
 import type { Candle } from '@/components/dashboard/terminal/terminalData';
@@ -86,7 +87,7 @@ export function useLiveDashboard(symbol: string, chartRange: ChartRange = '1D') 
 
   const fetchQuote = useCallback(async () => {
     const res = await fetch(`/api/v1/quote/${symbol}`, { cache: 'no-store' });
-    const json = (await res.json()) as { data?: QuotePayload; source?: string; error?: string };
+    const json = await readJsonResponse<{ data?: QuotePayload; source?: string; error?: string }>(res);
     if (!res.ok || json.error) {
       throw new Error(json.error ?? 'quote unavailable');
     }
@@ -114,7 +115,7 @@ export function useLiveDashboard(symbol: string, chartRange: ChartRange = '1D') 
       cache: 'no-store',
     });
     if (!res.ok) return [];
-    const json = (await res.json()) as { data: CandleRow[]; source?: string };
+    const json = await readJsonResponse<{ data: CandleRow[]; source?: string }>(res);
     const mapped = mapCandleRows(json.data ?? []);
     setCandles(mapped);
     if (mapped.length) seedCandlesFromRest(symbol, spec.interval, mapped);
