@@ -1,6 +1,12 @@
-# Go REST API on DigitalOcean
+# Go REST API on DigitalOcean — Polygon via Redis-backed cache
 name: general-exchange-go-api
 region: nyc
+
+databases:
+  - name: market-cache
+    engine: REDIS
+    version: "7"
+    production: false
 
 services:
   - name: go-api
@@ -27,6 +33,12 @@ services:
       - key: API_KEY_ENFORCE
         value: "false"
         scope: RUN_TIME
+      - key: REDIS_URL
+        value: ${market-cache.REDIS_URL}
+        scope: RUN_TIME
       - key: POLYGON_API_KEY
         scope: RUN_TIME
         type: SECRET
+      - key: DEV_API_KEY
+        value: gx_live_dev_demo_key
+        scope: RUN_TIME

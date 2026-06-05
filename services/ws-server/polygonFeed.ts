@@ -2,14 +2,6 @@ import WebSocket from 'ws';
 import type { CandleUpdate, MarketUpdate, WsOutbound } from './types';
 
 const POLYGON_WS = 'wss://socket.polygon.io/stocks';
-const BASE_PRICES: Record<string, number> = {
-  SPY: 512.4,
-  QQQ: 438.9,
-  NVDA: 121.3,
-  AAPL: 224.8,
-  TSLA: 248.5,
-  AMD: 158.2,
-};
 
 export type BroadcastFn = (msg: WsOutbound) => void;
 
@@ -90,31 +82,4 @@ function normalizePolygonEvent(ev: Record<string, unknown>): WsOutbound | null {
     return { type: 'candle', data: candle, replaceLast: true };
   }
   return null;
-}
-
-/** Deterministic synthetic ticks when no Polygon key (local dev). */
-export function startSyntheticFeed(symbols: string[], broadcast: BroadcastFn): () => void {
-  console.log('[ws-server] no POLYGON_API_KEY — synthetic feed');
-  const prices = Object.fromEntries(symbols.map((s) => [s, BASE_PRICES[s] ?? 100]));
-  let seed = 7;
-
-  const tick = () => {
-    for (const sym of symbols) {
-      seed = (seed + 0x6d2b79f5) | 0;
-      const r = ((seed >>> 0) % 1000) / 1000;
-      prices[sym] = Math.max(1, prices[sym] + (r - 0.5) * prices[sym] * 0.0006);
-      const update: MarketUpdate = {
-        symbol: sym,
-        price: Math.round(prices[sym] * 100) / 100,
-        volume: 100 + (seed % 900),
-        timestamp: Date.now(),
-        source: 'synthetic',
-      };
-      broadcast({ type: 'market', data: update });
-    }
-  };
-
-  const id = setInterval(tick, 900);
-  tick();
-  return () => clearInterval(id);
 }

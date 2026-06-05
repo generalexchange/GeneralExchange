@@ -9,7 +9,6 @@ import (
 
 	"github.com/general-exchange/backend/internal/httpx"
 	"github.com/general-exchange/backend/internal/middleware"
-	"github.com/general-exchange/backend/internal/mock"
 )
 
 func queryInt(r *http.Request, key string, fallback int) int {
@@ -19,51 +18,6 @@ func queryInt(r *http.Request, key string, fallback int) int {
 		}
 	}
 	return fallback
-}
-
-// GET /v1/ticks/{symbol}
-func handleTicks(w http.ResponseWriter, r *http.Request) {
-	symbol := r.PathValue("symbol")
-	limit := queryInt(r, "limit", 200)
-	httpx.OK(w, mock.Ticks(symbol, limit), time.Now().UTC(), "mock")
-}
-
-// GET /v1/candles/{symbol}/{interval}
-func handleCandles(w http.ResponseWriter, r *http.Request) {
-	symbol := r.PathValue("symbol")
-	interval := r.PathValue("interval")
-	limit := queryInt(r, "limit", 78)
-	httpx.OK(w, mock.Candles(symbol, interval, limit), time.Now().UTC(), "mock")
-}
-
-// GET /v1/options/chain/{symbol}  — Redis first, falls back to ClickHouse
-func handleOptionsChain(w http.ResponseWriter, r *http.Request) {
-	symbol := r.PathValue("symbol")
-	httpx.OK(w, mock.OptionsChain(symbol), time.Now().UTC(), "mock")
-}
-
-// GET /v1/options/surface/{symbol}
-func handleOptionsSurface(w http.ResponseWriter, r *http.Request) {
-	symbol := r.PathValue("symbol")
-	httpx.OK(w, mock.Surface(symbol), time.Now().UTC(), "mock")
-}
-
-// GET /v1/signals/{symbol}
-func handleSignals(w http.ResponseWriter, r *http.Request) {
-	symbol := r.PathValue("symbol")
-	httpx.OK(w, mock.Signals(symbol), time.Now().UTC(), "mock")
-}
-
-// GET /v1/regime/{symbol}
-func handleRegime(w http.ResponseWriter, r *http.Request) {
-	symbol := r.PathValue("symbol")
-	httpx.OK(w, mock.RegimeState(symbol), time.Now().UTC(), "mock")
-}
-
-// GET /v1/news/{symbol}
-func handleNews(w http.ResponseWriter, r *http.Request) {
-	symbol := r.PathValue("symbol")
-	httpx.OK(w, mock.News(symbol), time.Now().UTC(), "mock")
 }
 
 // POST /v1/backtest/run  (auth) — returns run summary (run_id + metrics)
@@ -87,13 +41,7 @@ func handleBacktestRun(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var req mock.BacktestRunRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		httpx.Error(w, http.StatusBadRequest, "invalid backtest request body")
-		return
-	}
-	runID := mock.SubmitBacktest(req)
-	httpx.OK(w, map[string]string{"run_id": runID, "status": "complete"}, time.Now().UTC(), "mock")
+	httpx.Error(w, http.StatusServiceUnavailable, "backtesting engine not configured")
 }
 
 // GET /v1/backtest/results/{run_id}  (auth)
@@ -109,12 +57,7 @@ func handleBacktestResults(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res, ok := mock.BacktestResult(runID)
-	if !ok {
-		httpx.Error(w, http.StatusNotFound, "run_id not found")
-		return
-	}
-	httpx.OK(w, res, res.CreatedAt, "mock")
+	httpx.Error(w, http.StatusServiceUnavailable, "backtesting engine not configured")
 }
 
 // GET /v1/backtest/results/{run_id}/export?format=csv|parquet|json  (auth)
@@ -165,7 +108,7 @@ func handleStrategyPublish(w http.ResponseWriter, r *http.Request) {
 // GET /v1/strategies  (auth) — list published strategies from FloppyDisk
 func handleStrategyList(w http.ResponseWriter, r *http.Request) {
 	if !backtestEnabled() {
-		httpx.OK(w, map[string]any{"strategies": []any{}}, time.Now().UTC(), "mock")
+		httpx.OK(w, map[string]any{"strategies": []any{}}, time.Now().UTC(), "unavailable")
 		return
 	}
 	status, data, err := forwardBacktest(http.MethodGet, "/v1/strategies", nil)
@@ -192,23 +135,11 @@ func handleStrategyGet(w http.ResponseWriter, r *http.Request) {
 
 // GET /v1/portfolio  (auth)
 func handlePortfolio(w http.ResponseWriter, r *http.Request) {
-	httpx.OK(w, mock.PortfolioFor(middleware.UserID(r)), time.Now().UTC(), "mock")
+	httpx.Error(w, http.StatusServiceUnavailable, "portfolio unavailable")
 }
 
 // POST /v1/trade/paper  (auth)
 func handlePaperTrade(w http.ResponseWriter, r *http.Request) {
-	var order map[string]any
-	if err := json.NewDecoder(r.Body).Decode(&order); err != nil {
-		httpx.Error(w, http.StatusBadRequest, "invalid order body")
-		return
-	}
-	// Real path: publish to the paper-trade-events Redpanda topic.
-	order["status"] = "submitted"
-	order["user_id"] = middleware.UserID(r)
-	order["received_at"] = time.Now().UTC()
-	httpx.OK(w, order, time.Now().UTC(), "mock")
+	httpx.Error(w, http.StatusServiceUnavailable, "paper trading unavailable")
 }
 
-func handleHealth(w http.ResponseWriter, _ *http.Request) {
-	httpx.OK(w, map[string]string{"status": "ok"}, time.Now().UTC(), "mock")
-}

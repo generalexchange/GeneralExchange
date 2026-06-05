@@ -120,9 +120,13 @@ export function StockQuoteHero({
           {name && name !== symbol && (
             <p className={`mt-0.5 text-[13px] font-medium ${muted}`}>{symbol}</p>
           )}
-          {loading && !price && (
+          {loading && !price ? (
             <Loader2 className={`mt-2 h-5 w-5 animate-spin ${muted}`} />
-          )}
+          ) : !price ? (
+            <p className={`mt-3 text-[14px] ${muted}`}>No quote data available</p>
+          ) : null}
+          {price > 0 && (
+            <>
           <p className={`mt-3 text-[34px] font-normal leading-none tabular-nums tracking-tight sm:text-[40px] ${priceColor}`}>
             ${fmtPrice(price)}
           </p>
@@ -135,6 +139,8 @@ export function StockQuoteHero({
               <span className={muted}>After-hours</span>
             </p>
           )}
+            </>
+          )}
         </div>
       </div>
 
@@ -142,6 +148,10 @@ export function StockQuoteHero({
         {candles.length === 0 && loading ? (
           <div className="flex items-center justify-center" style={{ height: chartH }}>
             <Loader2 className={`h-6 w-6 animate-spin opacity-40 ${muted}`} />
+          </div>
+        ) : candles.length === 0 ? (
+          <div className={`flex items-center justify-center font-mono text-[12px] ${muted}`} style={{ height: chartH }}>
+            No chart data available
           </div>
         ) : (
           <QuotePriceChart

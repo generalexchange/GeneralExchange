@@ -9,7 +9,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { URL } from 'node:url';
 import { WebSocketServer, WebSocket } from 'ws';
-import { startPolygonFeed, startSyntheticFeed } from './polygonFeed';
+import { startPolygonFeed } from './polygonFeed';
 import type { WsOutbound } from './types';
 
 /** Load repo-root .env when running via `npm run dev:ws` (Node does not auto-load it). */
@@ -88,7 +88,10 @@ httpServer.listen(PORT, () => {
 
 const stopFeed = POLYGON_KEY
   ? startPolygonFeed(SYMBOLS, POLYGON_KEY, broadcast)
-  : startSyntheticFeed(SYMBOLS, broadcast);
+  : (() => {
+      console.warn('[ws-server] no POLYGON_API_KEY — live feed disabled');
+      return () => {};
+    })();
 
 function shutdown() {
   stopFeed();

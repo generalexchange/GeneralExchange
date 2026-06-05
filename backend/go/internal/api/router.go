@@ -18,6 +18,7 @@ func NewRouter(cfg config.Config) http.Handler {
 	mux := http.NewServeMux()
 	limit := middleware.NewLimiter(100)
 	backtestAPIURL = cfg.BacktestAPIURL
+	initMarket(cfg)
 
 	// API-key store + usage meter, shared with middleware + handlers.
 	keyStore = keys.NewStore(cfg.APIKeyEnforce)
@@ -37,6 +38,7 @@ func NewRouter(cfg config.Config) http.Handler {
 		mux.HandleFunc(pattern, limit.Wrap(middleware.RequireJWT(cfg.JWTSecret, h)))
 	}
 
+	pub("GET /v1/quote/{symbol}", handleQuote)
 	pub("GET /v1/ticks/{symbol}", handleTicks)
 	pub("GET /v1/candles/{symbol}/{interval}", handleCandles)
 	pub("GET /v1/options/chain/{symbol}", handleOptionsChain)

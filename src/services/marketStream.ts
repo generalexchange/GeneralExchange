@@ -5,7 +5,7 @@
  *   ws://localhost:3001/ws          (local)
  *   wss://general.exchange/ws       (production)
  *
- * When unset the hook stays dormant and mock data drives the UI.
+ * When unset the hook stays dormant; REST polling drives the UI.
  */
 
 'use client';

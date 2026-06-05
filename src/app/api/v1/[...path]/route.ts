@@ -10,10 +10,6 @@ const GO_API_URL = (process.env.GO_API_URL ?? 'http://localhost:8080').replace(/
 const API_KEY = process.env.GE_API_KEY ?? 'dev-api-key';
 const UPSTREAM_TIMEOUT_MS = 15_000;
 
-function preferPolygonDirect(): boolean {
-  return process.env.VERCEL === '1' && canUsePolygonDirect();
-}
-
 export const dynamic = 'force-dynamic';
 
 function isLocalGoUrl(url: string): boolean {
@@ -25,6 +21,10 @@ const POLYGON_MARKET_PATHS = new Set(['ticks', 'candles', 'quote', 'news']);
 function isPolygonMarketPath(path: string[]): boolean {
   if (POLYGON_MARKET_PATHS.has(path[0] ?? '')) return true;
   return path[0] === 'options' && path[1] === 'chain';
+}
+
+function isLiveSource(source: string): boolean {
+  return source !== 'mock' && source !== 'unavailable' && source !== 'unconfigured';
 }
 
 async function tryPolygonFallback(path: string[], searchParams: URLSearchParams) {
@@ -47,24 +47,6 @@ function jsonResponse(body: string, status: number, cacheTtl?: number) {
 async function forward(req: NextRequest, path: string[]) {
   const search = req.nextUrl.search;
   const isGet = req.method === 'GET' || req.method === 'HEAD';
-
-  // Vercel + Polygon: skip Go mock API for market routes — use live Polygon directly.
-  if (isGet && preferPolygonDirect() && isPolygonMarketPath(path)) {
-    try {
-      const direct = await tryPolygonFallback(path, req.nextUrl.searchParams);
-      if (direct) {
-        const body = JSON.stringify(direct);
-        const ttl = setCachedApiResponse(path, search, body);
-        return jsonResponse(body, 200, ttl);
-      }
-    } catch (err) {
-      console.error('[api/v1] polygon direct failed', path.join('/'), err);
-    }
-    if (path[0] === 'candles') {
-      const body = JSON.stringify({ data: [], as_of: new Date().toISOString(), source: 'polygon-unavailable' });
-      return jsonResponse(body, 200);
-    }
-  }
 
   if (isGet) {
     const cached = getCachedApiResponse(path, search);
@@ -111,7 +93,7 @@ async function forward(req: NextRequest, path: string[]) {
               /* keep go body */
             }
           }
-          if (!res.ok || source === 'mock') {
+          if (!res.ok || !isLiveSource(source)) {
             const direct = await tryPolygonFallback(path, req.nextUrl.searchParams);
             if (direct) {
               useBody = JSON.stringify(direct);
@@ -120,9 +102,12 @@ async function forward(req: NextRequest, path: string[]) {
               return jsonResponse(useBody, status, ttl);
             }
           }
-          if (res.ok) {
+          if (res.ok && isLiveSource(source)) {
             const ttl = setCachedApiResponse(path, search, useBody);
             return jsonResponse(useBody, status, ttl);
+          }
+          if (!res.ok) {
+            return jsonResponse(useBody, status);
           }
         }
         return jsonResponse(body, res.status);
@@ -143,10 +128,10 @@ async function forward(req: NextRequest, path: string[]) {
 
   return NextResponse.json(
     {
-      error: 'upstream data API unavailable',
+      error: 'data unavailable',
       hint: skipGo
         ? 'Set GO_API_URL to a public Go API host, or POLYGON_API_KEY for direct market data on Vercel.'
-        : 'Start the docker stack (docker compose --profile app up -d) or configure POLYGON_API_KEY.',
+        : 'Configure POLYGON_API_KEY on the Go API (Redis cache) or Vercel.',
       as_of: new Date().toISOString(),
     },
     { status: 502 },

@@ -11,6 +11,7 @@ type Config struct {
 	ClickHousePort string
 	ClickHouseDB   string
 	RedisURL           string
+	PolygonAPIKey      string
 	RedpandaBroker     string
 	BacktestAPIURL     string
 	ClickHouseHTTPPort string
@@ -35,6 +36,7 @@ func Load() Config {
 		ClickHousePort: getenv("CLICKHOUSE_PORT", "9000"),
 		ClickHouseDB:   getenv("CLICKHOUSE_DB", "general_exchange"),
 		RedisURL:       getenv("REDIS_URL", "redis://localhost:6379/0"),
+		PolygonAPIKey:  getenv("POLYGON_API_KEY", ""),
 		RedpandaBroker:     getenv("REDPANDA_BROKERS", "localhost:19092"),
 		BacktestAPIURL:     getenv("BACKTEST_API_URL", ""),
 		ClickHouseHTTPPort: getenv("CLICKHOUSE_HTTP_PORT", "8123"),

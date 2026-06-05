@@ -10,9 +10,10 @@ type MarketTemperatureProps = {
   selectedSymbol: string;
   spyCandles: Candle[];
   spyLive: boolean;
+  spyLoading?: boolean;
 };
 
-export function MarketTemperature({ selectedSymbol, spyCandles, spyLive }: MarketTemperatureProps) {
+export function MarketTemperature({ selectedSymbol, spyCandles, spyLive, spyLoading }: MarketTemperatureProps) {
   const { quote, loading } = useSpyMarketFeed(1000);
   const price = quote?.price ?? 0;
   const change = quote?.change ?? 0;
@@ -33,7 +34,11 @@ export function MarketTemperature({ selectedSymbol, spyCandles, spyLive }: Marke
       <p className="mt-3 font-display text-2xl font-semibold tracking-tight text-tan">SPY</p>
 
       <p className="mt-1 font-mono text-3xl tabular-nums tracking-tight text-zinc-50">
-        {loading && !price ? '—' : `$${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+        {loading && !price
+          ? '—'
+          : price > 0
+            ? `$${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+            : 'No data'}
       </p>
 
       <p className={`mt-1 font-mono text-sm tabular-nums ${up ? 'text-moss' : 'text-rose-400'}`}>
@@ -59,7 +64,9 @@ export function MarketTemperature({ selectedSymbol, spyCandles, spyLive }: Marke
             showTooltip={false}
           />
         ) : (
-          <div className="flex h-full items-center justify-center font-mono text-[10px] text-zinc-600">Loading SPY tape…</div>
+          <div className="flex h-full items-center justify-center font-mono text-[10px] text-zinc-600">
+            {loading || spyLoading ? 'Loading SPY tape…' : 'No SPY data available'}
+          </div>
         )}
       </div>
     </section>

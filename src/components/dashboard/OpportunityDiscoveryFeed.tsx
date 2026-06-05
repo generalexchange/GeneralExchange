@@ -209,6 +209,8 @@ export function OpportunityDiscoveryFeed() {
           </div>
         ) : error ? (
           <p className="py-6 text-center font-mono text-[10px] text-rose-400">{error}</p>
+        ) : sorted.length === 0 ? (
+          <p className="py-6 text-center font-mono text-[10px] text-zinc-500">No opportunities available right now.</p>
         ) : (
           sorted.map((opp) => (
             <OpportunityCard

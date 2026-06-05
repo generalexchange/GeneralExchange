@@ -136,6 +136,7 @@ export const Dashboard: React.FC = () => {
             selectedSymbol={symbol}
             spyCandles={spyFeed.candles}
             spyLive={spyFeed.live}
+            spyLoading={spyFeed.loading}
           />
           <div className="flex min-h-[420px] flex-1 flex-col lg:min-h-[calc(100vh-8rem)]">
             <OpportunityDiscoveryFeed />
