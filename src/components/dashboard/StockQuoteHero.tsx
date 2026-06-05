@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Bell, Loader2, Maximize2, Settings } from 'lucide-react';
+import { Loader2, Settings } from 'lucide-react';
 import type { Candle } from '@/components/dashboard/terminal/terminalData';
 import type { ChartRange } from '@/hooks/useLiveDashboard';
 import { QuotePriceChart, CHART_HEIGHT_EXTENDED, QUOTE_CHART_HEIGHT, type QuoteCardTheme } from '@/components/dashboard/QuotePriceChart';
@@ -98,21 +98,6 @@ export function StockQuoteHero({
   return (
     <div className={`overflow-hidden rounded-xl shadow-sm ${cardBg} ${className}`}>
       <div className="flex items-center justify-end gap-2 px-4 pt-4">
-        <button
-          type="button"
-          className={`flex h-9 w-9 items-center justify-center rounded-full border transition-colors hover:opacity-90 ${border}`}
-          aria-label="Alerts"
-        >
-          <Bell className="h-[18px] w-[18px]" strokeWidth={1.75} />
-        </button>
-        <button
-          type="button"
-          onClick={onOpenAdvanced}
-          className={`flex h-9 w-9 items-center justify-center rounded-full border transition-colors hover:opacity-90 ${border}`}
-          aria-label="Expand chart"
-        >
-          <Maximize2 className="h-[18px] w-[18px]" strokeWidth={1.75} />
-        </button>
         <Link
           href={legendDashboardUrl('/')}
           onClick={(e) => {
