@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
@@ -44,7 +45,7 @@ def verify_api_key(x_api_key: str | None = Header(default=None, alias="X-API-Key
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
     try:
-        init_db()
+        await asyncio.wait_for(asyncio.to_thread(init_db), timeout=8.0)
     except Exception as exc:
         logger.warning("PostgreSQL init skipped or failed: %s", exc)
     yield

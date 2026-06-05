@@ -27,7 +27,7 @@ def _sync_db_url() -> str:
 
 def _sync_engine():
     url = _sync_db_url()
-    connect_args: dict = {}
+    connect_args: dict = {"connect_timeout": 5}
     if "sslmode=require" in url:
         connect_args["sslmode"] = "require"
     return create_engine(url, pool_pre_ping=True, connect_args=connect_args)

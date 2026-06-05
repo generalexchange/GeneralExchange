@@ -22,11 +22,9 @@ services:
     instance_size_slug: basic-xs
     health_check:
       http_path: /health
-      initial_delay_seconds: 45
-      period_seconds: 30
-      timeout_seconds: 10
-      success_threshold: 1
-      failure_threshold: 5
+      initial_delay_seconds: 15
+      period_seconds: 20
+      timeout_seconds: 5
     envs:
       - key: IB_HOST
         value: "162.243.46.81"
