@@ -30,4 +30,4 @@ class HistoricalBarRow(Base):
     volume: Mapped[float] = mapped_column(Float, nullable=False, default=0)
     vwap: Mapped[float | None] = mapped_column(Float, nullable=True)
     source: Mapped[str] = mapped_column(String(16), nullable=False, default="ibkr")
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
