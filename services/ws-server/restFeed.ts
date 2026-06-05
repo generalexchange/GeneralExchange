@@ -2,26 +2,28 @@ import type { BroadcastFn } from './polygonFeed';
 import type { CandleUpdate, WsOutbound } from './types';
 
 const POLYGON_BASE = 'https://api.polygon.io';
-const POLL_MS = Number(process.env.REST_FEED_POLL_MS ?? 20_000);
+const POLL_MS = Number(process.env.REST_FEED_POLL_MS ?? 12_000);
 
 export type RestFeedStats = {
   mode: 'rest';
-  source: 'trades' | 'snapshot' | 'none';
+  source: 'minute-aggs' | 'prev' | 'none';
   polls: number;
   ticksBroadcast: number;
   candlesBroadcast: number;
   lastEventAt: string | null;
   lastError: string | null;
+  lastSymbol: string | null;
 };
 
 const stats: RestFeedStats = {
   mode: 'rest',
-  source: 'snapshot',
+  source: 'minute-aggs',
   polls: 0,
   ticksBroadcast: 0,
   candlesBroadcast: 0,
   lastEventAt: null,
   lastError: null,
+  lastSymbol: null,
 };
 
 export function getRestFeedStats(): RestFeedStats {
@@ -36,6 +38,10 @@ function normalizeTs(t: unknown): number {
   return Math.floor(n);
 }
 
+function todayUtc(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
 function broadcastTick(broadcast: BroadcastFn, sym: string, price: number, volume: number, ts: number) {
   if (!price || price <= 0) return;
   stats.ticksBroadcast += 1;
@@ -46,7 +52,11 @@ function broadcastTick(broadcast: BroadcastFn, sym: string, price: number, volum
   });
 }
 
-function broadcastBar(broadcast: BroadcastFn, sym: string, bar: { t?: number; o?: number; h?: number; l?: number; c?: number; v?: number; vw?: number }) {
+function broadcastBar(
+  broadcast: BroadcastFn,
+  sym: string,
+  bar: { t?: number; o?: number; h?: number; l?: number; c?: number; v?: number; vw?: number },
+) {
   const close = bar.c ?? 0;
   if (close <= 0) return;
   const ts = normalizeTs(bar.t);
@@ -67,13 +77,7 @@ function broadcastBar(broadcast: BroadcastFn, sym: string, bar: { t?: number; o?
   broadcastTick(broadcast, sym, close, bar.v ?? 0, ts);
 }
 
-type SnapshotTicker = {
-  ticker?: string;
-  min?: { t?: number; o?: number; h?: number; l?: number; c?: number; v?: number; vw?: number };
-  day?: { c?: number; v?: number; t?: number };
-  prevDay?: { c?: number; v?: number; t?: number };
-  lastTrade?: { p?: number; s?: number; t?: number };
-};
+type AggBar = { t?: number; o?: number; h?: number; l?: number; c?: number; v?: number; vw?: number };
 
 async function polygonGet<T>(path: string, apiKey: string, params: Record<string, string> = {}): Promise<T> {
   const url = new URL(`${POLYGON_BASE}${path}`);
@@ -87,69 +91,85 @@ async function polygonGet<T>(path: string, apiKey: string, params: Record<string
   return res.json() as Promise<T>;
 }
 
-/** Poll Polygon REST when WebSocket is not on the API plan (one snapshot request per cycle). */
+/** One Polygon request per poll — rotates symbols to stay under rate limits. */
 export function startRestFeed(symbols: string[], apiKey: string, broadcast: BroadcastFn): () => void {
   const lastMinTs = new Map<string, number>();
-  const seenTrades = new Set<string>();
   let closed = false;
   let timer: ReturnType<typeof setInterval> | null = null;
+  let symbolIdx = 0;
+  let usePrevOnly = false;
 
-  const pollSnapshot = async () => {
-    const tickers = symbols.join(',');
-    const json = await polygonGet<{ tickers?: SnapshotTicker[] }>(
-      '/v2/snapshot/locale/us/markets/stocks/tickers',
+  const pollMinuteAggs = async (sym: string) => {
+    const day = todayUtc();
+    const json = await polygonGet<{ results?: AggBar[] }>(
+      `/v2/aggs/ticker/${sym}/range/1/minute/${day}/${day}`,
       apiKey,
-      { tickers },
+      { adjusted: 'true', sort: 'desc', limit: '8' },
     );
-    stats.source = 'snapshot';
-    for (const row of json.tickers ?? []) {
-      const sym = row.ticker?.toUpperCase();
-      if (!sym) continue;
+    stats.source = 'minute-aggs';
+    const bars = [...(json.results ?? [])].reverse();
+    for (const bar of bars) {
+      const ts = normalizeTs(bar.t);
+      const prev = lastMinTs.get(sym) ?? 0;
+      if (ts <= prev) continue;
+      lastMinTs.set(sym, ts);
+      broadcastBar(broadcast, sym, bar);
+    }
+    if (!bars.length) await pollPrev(sym);
+  };
 
-      if (row.lastTrade?.p) {
-        const ts = normalizeTs(row.lastTrade.t);
-        const key = `${sym}-${ts}-${row.lastTrade.p}-${row.lastTrade.s ?? 0}`;
-        if (!seenTrades.has(key)) {
-          seenTrades.add(key);
-          broadcastTick(broadcast, sym, row.lastTrade.p, row.lastTrade.s ?? 0, ts);
-        }
-        continue;
-      }
-
-      if (row.min?.c) {
-        const ts = normalizeTs(row.min.t);
-        const prev = lastMinTs.get(sym) ?? 0;
-        if (ts > prev) {
-          lastMinTs.set(sym, ts);
-          broadcastBar(broadcast, sym, row.min);
-        } else if (prev === 0) {
-          // First poll: seed waterfall with current minute bar.
-          lastMinTs.set(sym, ts);
-          broadcastBar(broadcast, sym, row.min);
-        }
-        continue;
-      }
-
-      const day = row.day ?? row.prevDay;
-      if (day?.c) {
-        broadcastTick(broadcast, sym, day.c, day.v ?? 0, normalizeTs(day.t));
-      }
+  const pollPrev = async (sym: string) => {
+    const json = await polygonGet<{ results?: AggBar[] }>(`/v2/aggs/ticker/${sym}/prev`, apiKey, {});
+    stats.source = 'prev';
+    const bar = json.results?.[0];
+    if (!bar?.c) return;
+    const ts = normalizeTs(bar.t);
+    const prev = lastMinTs.get(sym) ?? 0;
+    if (ts !== prev) {
+      lastMinTs.set(sym, ts);
+      broadcastBar(broadcast, sym, bar);
+    } else {
+      broadcastTick(broadcast, sym, bar.c, bar.v ?? 0, Date.now());
     }
   };
 
   const poll = async () => {
-    if (closed) return;
+    if (closed || !symbols.length) return;
+    const sym = symbols[symbolIdx % symbols.length];
+    symbolIdx += 1;
     stats.polls += 1;
+    stats.lastSymbol = sym;
     try {
-      await pollSnapshot();
+      if (usePrevOnly) {
+        await pollPrev(sym);
+      } else {
+        await pollMinuteAggs(sym);
+      }
       stats.lastError = null;
     } catch (err) {
-      stats.lastError = err instanceof Error ? err.message : 'rest poll failed';
+      const msg = err instanceof Error ? err.message : 'rest poll failed';
+      stats.lastError = msg;
+      if (msg.includes('429')) {
+        // Back off — prev bar is a lighter fallback.
+        usePrevOnly = true;
+        return;
+      }
+      if (msg.includes('403') || msg.includes('NOT_AUTHORIZED')) {
+        usePrevOnly = true;
+        try {
+          await pollPrev(sym);
+          stats.lastError = null;
+        } catch (inner) {
+          stats.lastError = inner instanceof Error ? inner.message : msg;
+          stats.source = 'none';
+        }
+        return;
+      }
       stats.source = 'none';
     }
   };
 
-  console.log(`[ws-server] REST snapshot poll every ${POLL_MS}ms for ${symbols.length} symbols`);
+  console.log(`[ws-server] REST poll every ${POLL_MS}ms (one symbol per tick) — ${symbols.length} symbols`);
   void poll();
   timer = setInterval(() => void poll(), POLL_MS);
 
