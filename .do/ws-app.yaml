@@ -1,31 +1,34 @@
-# Go WebSocket server — Massive client-go live feed
+# Node WebSocket server — Massive/Polygon live trade fan-out
 name: general-exchange-ws
 region: nyc
 
 services:
   - name: ws
-    source_dir: backend/go
-    dockerfile_path: backend/go/cmd/ws/Dockerfile
+    source_dir: services/ws-server
+    dockerfile_path: services/ws-server/Dockerfile
     github:
       repo: generalexchange/GeneralExchange
       branch: main
       deploy_on_push: true
-    http_port: 8081
+    http_port: 3001
     instance_count: 1
     instance_size_slug: basic-xxs
     health_check:
       http_path: /health
-      initial_delay_seconds: 25
+      initial_delay_seconds: 20
       period_seconds: 30
       timeout_seconds: 5
       success_threshold: 1
       failure_threshold: 3
     envs:
-      - key: WS_ADDR
-        value: ":8081"
+      - key: NODE_ENV
+        value: production
+        scope: RUN_AND_BUILD_TIME
+      - key: WS_PORT
+        value: "3001"
         scope: RUN_TIME
       - key: MASSIVE_WS_FEED
-        value: Delayed
+        value: realtime
         scope: RUN_TIME
       - key: WS_SYMBOLS
         value: SPY,QQQ,NVDA,AAPL,TSLA,AMD,MSFT,AMZN,META

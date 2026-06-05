@@ -49,13 +49,13 @@ func parseMassiveFeed(raw string) massivews.Feed {
 	switch strings.ToLower(strings.TrimSpace(raw)) {
 	case "realtime", "real-time", "live":
 		return massivews.RealTime
-	case "delayed", "delay", "":
+	case "delayed", "delay":
 		return massivews.Delayed
 	default:
 		if strings.HasPrefix(raw, "wss://") {
 			return massivews.Feed(raw)
 		}
-		return massivews.Delayed
+		return massivews.RealTime
 	}
 }
 
@@ -83,10 +83,13 @@ func StartMassiveFeed(cfg config.Config, hub *Hub) func() {
 		return func() {}
 	}
 
-	if err := client.Subscribe(massivews.StocksMinAggs, symbols...); err != nil {
-		log.Printf("level=error msg=\"massive subscribe min aggs failed\" err=%v", err)
+	if err := client.Subscribe(massivews.StocksSecAggs, symbols...); err != nil {
+		log.Printf("level=error msg=\"massive subscribe sec aggs failed\" err=%v", err)
 		client.Close()
 		return func() {}
+	}
+	if err := client.Subscribe(massivews.StocksMinAggs, symbols...); err != nil {
+		log.Printf("level=warn msg=\"massive subscribe min aggs failed\" err=%v", err)
 	}
 	if err := client.Subscribe(massivews.StocksTrades, symbols...); err != nil {
 		log.Printf("level=error msg=\"massive subscribe trades failed\" err=%v", err)
@@ -119,7 +122,7 @@ func StartMassiveFeed(cfg config.Config, hub *Hub) func() {
 				if !ok {
 					return
 				}
-				if raw := encodeMassiveEvent(out); raw != nil {
+				for _, raw := range encodeMassiveEvents(out) {
 					hub.Broadcast(raw)
 				}
 			}
@@ -134,7 +137,7 @@ func StartMassiveFeed(cfg config.Config, hub *Hub) func() {
 	}
 }
 
-func encodeMassiveEvent(out any) []byte {
+func encodeMassiveEvents(out any) [][]byte {
 	switch ev := out.(type) {
 	case models.EquityTrade:
 		if ev.Symbol == "" || ev.Price <= 0 {
@@ -154,7 +157,7 @@ func encodeMassiveEvent(out any) []byte {
 				Source:    sourceMassive,
 			},
 		})
-		return raw
+		return [][]byte{raw}
 	case models.EquityAgg:
 		if ev.Symbol == "" {
 			return nil
@@ -170,12 +173,13 @@ func encodeMassiveEvent(out any) []byte {
 		if vwap == 0 {
 			vwap = ev.Close
 		}
-		raw, _ := json.Marshal(candleFrame{
+		var out [][]byte
+		candleRaw, _ := json.Marshal(candleFrame{
 			Type:        "candle",
 			ReplaceLast: true,
 			Data: candleTick{
 				Symbol:   ev.Symbol,
-				Interval: "1m",
+				Interval: "1s",
 				OpenTime: openTime,
 				Open:     ev.Open,
 				High:     ev.High,
@@ -185,7 +189,21 @@ func encodeMassiveEvent(out any) []byte {
 				VWAP:     vwap,
 			},
 		})
-		return raw
+		out = append(out, candleRaw)
+		if ev.Close > 0 {
+			marketRaw, _ := json.Marshal(marketFrame{
+				Type: "market",
+				Data: marketTick{
+					Symbol:    ev.Symbol,
+					Price:     ev.Close,
+					Volume:    ev.Volume,
+					Timestamp: openTime,
+					Source:    sourceMassive,
+				},
+			})
+			out = append(out, marketRaw)
+		}
+		return out
 	default:
 		return nil
 	}

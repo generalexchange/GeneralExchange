@@ -21,6 +21,7 @@ import { TRADEABLE_SYMBOLS, symbolDisplayName } from '../data/symbols';
 import { WalletButton } from '../components/dashboard/WalletButton';
 import { MarketTemperature } from '../components/dashboard/MarketTemperature';
 import { OpportunityDiscoveryFeed } from '../components/dashboard/OpportunityDiscoveryFeed';
+import { TradeWaterfall } from '../components/dashboard/TradeWaterfall';
 
 function EmptyState({ message }: { message: string }) {
   return (
@@ -113,6 +114,7 @@ export const Dashboard: React.FC = () => {
             </Panel>
           </div>
         ) : (
+          <>
           <StockQuoteHero
             symbol={symbol}
             name={symbolDisplayName(symbol)}
@@ -130,6 +132,8 @@ export const Dashboard: React.FC = () => {
             onChartRangeChange={setChartRange}
             onOpenAdvanced={() => setAdvanced(true)}
           />
+          <TradeWaterfall symbol={symbol} className="mt-3" />
+          </>
         )}
         </section>
 

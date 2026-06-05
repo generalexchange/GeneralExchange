@@ -15,15 +15,26 @@ export type SymbolQuote = MarketUpdate & {
   afterHoursChangePct?: number;
 };
 
+export type TapePrint = {
+  id: string;
+  symbol: string;
+  price: number;
+  size?: number;
+  timestamp: number;
+};
+
 type MarketState = {
   quotes: Record<string, SymbolQuote>;
   candles: Record<string, CandleUpdate[]>;
+  tape: Record<string, TapePrint[]>;
 };
 
 const MAX_CANDLES = 500;
+const MAX_TAPE = 120;
 const EMPTY_CANDLES: CandleUpdate[] = [];
+const EMPTY_TAPE: TapePrint[] = [];
 
-let state: MarketState = { quotes: {}, candles: {} };
+let state: MarketState = { quotes: {}, candles: {}, tape: {} };
 const listeners = new Set<() => void>();
 
 function emit() {
@@ -48,6 +59,16 @@ export function applyMarketUpdate(update: MarketUpdate) {
   const change = update.price - prevClose;
   const changePct = prevClose ? (change / prevClose) * 100 : 0;
 
+  const print: TapePrint = {
+    id: `${update.symbol}-${update.timestamp}-${update.price}`,
+    symbol: update.symbol,
+    price: update.price,
+    size: update.volume,
+    timestamp: update.timestamp,
+  };
+  const prevTape = state.tape[update.symbol] ?? [];
+  const nextTape = [...prevTape, print].slice(-MAX_TAPE);
+
   state = {
     ...state,
     quotes: {
@@ -63,6 +84,7 @@ export function applyMarketUpdate(update: MarketUpdate) {
         source: update.source ?? existing?.source ?? 'massive',
       },
     },
+    tape: { ...state.tape, [update.symbol]: nextTape },
   };
   emit();
 }
@@ -150,7 +172,15 @@ export function useSymbolCandles(symbol: string, interval: string): CandleUpdate
   );
 }
 
+export function useSymbolTape(symbol: string): TapePrint[] {
+  return useSyncExternalStore(
+    subscribeMarketState,
+    () => getMarketState().tape[symbol] ?? EMPTY_TAPE,
+    () => EMPTY_TAPE,
+  );
+}
+
 export function resetMarketState() {
-  state = { quotes: {}, candles: {} };
+  state = { quotes: {}, candles: {}, tape: {} };
   emit();
 }

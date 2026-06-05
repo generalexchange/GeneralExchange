@@ -1,18 +1,14 @@
 /**
- * Unified market WebSocket server — same code in dev and production.
- *
- *   Dev:  ws://localhost:3001/ws
- *   Prod: wss://general.exchange/ws  (reverse-proxy to this process)
+ * Unified market WebSocket server — Massive/Polygon upstream, browser fan-out.
  */
 import { createServer } from 'node:http';
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { URL } from 'node:url';
 import { WebSocketServer, WebSocket } from 'ws';
-import { startPolygonFeed } from './polygonFeed';
+import { getFeedStats, startPolygonFeed } from './polygonFeed';
 import type { WsOutbound } from './types';
 
-/** Load repo-root .env when running via `npm run dev:ws` (Node does not auto-load it). */
 function loadDotEnv() {
   const path = resolve(process.cwd(), '.env');
   if (!existsSync(path)) return;
@@ -30,8 +26,8 @@ loadDotEnv();
 
 const PORT = Number(process.env.WS_PORT || 3001);
 const IS_PROD = process.env.NODE_ENV === 'production';
-const POLYGON_KEY = process.env.POLYGON_API_KEY?.trim() ?? '';
-const SYMBOLS = (process.env.WS_SYMBOLS ?? 'SPY,QQQ,NVDA,AAPL,TSLA,AMD')
+const POLYGON_KEY = (process.env.POLYGON_API_KEY ?? process.env.MASSIVE_API_KEY ?? '').trim();
+const SYMBOLS = (process.env.WS_SYMBOLS ?? 'SPY,QQQ,NVDA,AAPL,TSLA,AMD,MSFT,AMZN,META')
   .split(',')
   .map((s) => s.trim().toUpperCase())
   .filter(Boolean);
@@ -47,6 +43,7 @@ function broadcast(msg: WsOutbound) {
 
 const httpServer = createServer((req, res) => {
   if (req.url === '/health' || req.url === '/healthz') {
+    const feed = getFeedStats();
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(
       JSON.stringify({
@@ -54,6 +51,8 @@ const httpServer = createServer((req, res) => {
         clients: clients.size,
         symbols: SYMBOLS,
         polygon: Boolean(POLYGON_KEY),
+        feed: process.env.MASSIVE_WS_FEED ?? 'realtime',
+        upstream: feed,
         env: IS_PROD ? 'production' : 'development',
       }),
     );

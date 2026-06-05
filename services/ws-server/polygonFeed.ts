@@ -1,33 +1,82 @@
 import WebSocket from 'ws';
 import type { CandleUpdate, MarketUpdate, WsOutbound } from './types';
 
-/** Massive/Polygon stocks WebSocket — delayed feed works on starter plans. */
-function wsEndpoint(): string {
-  const feed = (process.env.MASSIVE_WS_FEED ?? 'delayed').toLowerCase();
-  if (feed === 'realtime' || feed === 'real-time' || feed === 'live') {
-    return 'wss://socket.polygon.io/stocks';
-  }
-  return 'wss://delayed.polygon.io/stocks';
+const ENDPOINTS: Record<string, string[]> = {
+  realtime: ['wss://socket.polygon.io/stocks', 'wss://socket.massive.com/stocks'],
+  delayed: ['wss://delayed.polygon.io/stocks', 'wss://delayed.massive.com/stocks'],
+  starter: ['wss://starterfeed.polygon.io/stocks'],
+};
+
+export type FeedStats = {
+  upstreamConnected: boolean;
+  upstreamEndpoint: string | null;
+  authOk: boolean;
+  ticksBroadcast: number;
+  candlesBroadcast: number;
+  lastEventAt: string | null;
+  lastError: string | null;
+};
+
+const stats: FeedStats = {
+  upstreamConnected: false,
+  upstreamEndpoint: null,
+  authOk: false,
+  ticksBroadcast: 0,
+  candlesBroadcast: 0,
+  lastEventAt: null,
+  lastError: null,
+};
+
+export function getFeedStats(): FeedStats {
+  return { ...stats };
+}
+
+function feedMode(): string {
+  return (process.env.MASSIVE_WS_FEED ?? 'realtime').toLowerCase();
+}
+
+function endpointList(): string[] {
+  const mode = feedMode();
+  if (mode === 'delayed' || mode === 'delay') return ENDPOINTS.delayed;
+  if (mode === 'starter') return ENDPOINTS.starter;
+  return [...ENDPOINTS.realtime, ...ENDPOINTS.delayed];
+}
+
+function normalizeTs(t: unknown): number {
+  const n = Number(t);
+  if (!Number.isFinite(n) || n <= 0) return Date.now();
+  if (n > 1e15) return Math.floor(n / 1e6);
+  if (n < 1e12) return Math.floor(n * 1000);
+  return Math.floor(n);
 }
 
 export type BroadcastFn = (msg: WsOutbound) => void;
 
-/** Connect to Massive stocks WS and broadcast normalized updates. */
+/** Connect to Massive/Polygon stocks WS — auth first, then subscribe (required by protocol). */
 export function startPolygonFeed(symbols: string[], apiKey: string, broadcast: BroadcastFn): () => void {
   let ws: WebSocket | null = null;
   let timer: ReturnType<typeof setTimeout> | null = null;
   let closed = false;
-  const endpoint = wsEndpoint();
+  let endpointIdx = 0;
+  let subscribed = false;
+  const endpoints = endpointList();
+  const subs = symbols.flatMap((s) => [`T.${s}`, `A.${s}`, `AM.${s}`]).join(',');
 
   const connect = () => {
     if (closed) return;
+    subscribed = false;
+    stats.authOk = false;
+    stats.upstreamConnected = false;
+
+    const endpoint = endpoints[endpointIdx % endpoints.length];
+    stats.upstreamEndpoint = endpoint;
+    console.log(`[ws-server] connecting ${endpoint} mode=${feedMode()}`);
+
     ws = new WebSocket(endpoint);
 
     ws.on('open', () => {
+      stats.upstreamConnected = true;
       ws!.send(JSON.stringify({ action: 'auth', params: apiKey }));
-      const subs = symbols.flatMap((s) => [`T.${s}`, `AM.${s}`]).join(',');
-      ws!.send(JSON.stringify({ action: 'subscribe', params: subs }));
-      console.log(`[ws-server] massive ws connected endpoint=${endpoint} symbols=${symbols.join(',')}`);
     });
 
     ws.on('message', (raw) => {
@@ -38,19 +87,56 @@ export function startPolygonFeed(symbols: string[], apiKey: string, broadcast: B
       } catch {
         return;
       }
+
       for (const ev of events) {
-        const msg = normalizeEvent(ev as Record<string, unknown>);
-        if (msg) broadcast(msg);
+        const row = ev as Record<string, unknown>;
+
+        if (row.ev === 'status') {
+          const status = String(row.status ?? '');
+          if (status === 'auth_success') {
+            stats.authOk = true;
+            stats.lastError = null;
+            if (!subscribed) {
+              subscribed = true;
+              ws!.send(JSON.stringify({ action: 'subscribe', params: subs }));
+              console.log(`[ws-server] subscribed ${subs}`);
+            }
+          } else if (status === 'auth_failed') {
+            stats.authOk = false;
+            stats.lastError = String(row.message ?? 'auth_failed');
+            console.error('[ws-server] auth_failed', stats.lastError);
+            ws?.close();
+          }
+          continue;
+        }
+
+        const msgs = normalizeEvent(row);
+        for (const msg of msgs) {
+          if (msg.type === 'market') stats.ticksBroadcast += 1;
+          if (msg.type === 'candle') stats.candlesBroadcast += 1;
+          stats.lastEventAt = new Date().toISOString();
+          broadcast(msg);
+        }
       }
     });
 
-    ws.on('close', () => scheduleReconnect());
-    ws.on('error', () => ws?.close());
+    ws.on('close', () => {
+      stats.upstreamConnected = false;
+      stats.authOk = false;
+      subscribed = false;
+      scheduleReconnect(true);
+    });
+
+    ws.on('error', (err) => {
+      stats.lastError = err instanceof Error ? err.message : 'ws error';
+      ws?.close();
+    });
   };
 
-  const scheduleReconnect = () => {
+  const scheduleReconnect = (rotateEndpoint: boolean) => {
     if (closed) return;
-    console.warn('[ws-server] massive ws disconnected; reconnecting in 3s');
+    if (rotateEndpoint) endpointIdx += 1;
+    console.warn(`[ws-server] reconnect in 3s (endpoint idx ${endpointIdx})`);
     timer = setTimeout(connect, 3000);
   };
 
@@ -63,31 +149,50 @@ export function startPolygonFeed(symbols: string[], apiKey: string, broadcast: B
   };
 }
 
-function normalizeEvent(ev: Record<string, unknown>): WsOutbound | null {
+function normalizeEvent(ev: Record<string, unknown>): WsOutbound[] {
   const kind = ev.ev;
-  if (kind === 'T' && typeof ev.sym === 'string' && typeof ev.p === 'number') {
+  const sym = typeof ev.sym === 'string' ? ev.sym : '';
+
+  if (kind === 'T' && sym && typeof ev.p === 'number') {
     const update: MarketUpdate = {
-      symbol: ev.sym,
+      symbol: sym,
       price: ev.p,
       volume: typeof ev.s === 'number' ? ev.s : undefined,
-      timestamp: typeof ev.t === 'number' ? ev.t : Date.now(),
+      timestamp: normalizeTs(ev.t),
       source: 'massive',
     };
-    return { type: 'market', data: update };
+    return [{ type: 'market', data: update }];
   }
-  if (kind === 'AM' && typeof ev.sym === 'string') {
+
+  if ((kind === 'A' || kind === 'AM') && sym) {
+    const interval = kind === 'A' ? '1s' : '1m';
+    const close = Number(ev.c) || 0;
     const candle: CandleUpdate = {
-      symbol: ev.sym,
-      interval: '1m',
-      open_time: Number(ev.s) || Date.now(),
-      open: Number(ev.o) || 0,
-      high: Number(ev.h) || 0,
-      low: Number(ev.l) || 0,
-      close: Number(ev.c) || 0,
+      symbol: sym,
+      interval,
+      open_time: normalizeTs(ev.s ?? ev.e),
+      open: Number(ev.o) || close,
+      high: Number(ev.h) || close,
+      low: Number(ev.l) || close,
+      close,
       volume: Number(ev.v) || 0,
-      vwap: Number(ev.vw) || Number(ev.c) || 0,
+      vwap: Number(ev.vw) || close,
     };
-    return { type: 'candle', data: candle, replaceLast: true };
+    const out: WsOutbound[] = [{ type: 'candle', data: candle, replaceLast: true }];
+    if (close > 0) {
+      out.push({
+        type: 'market',
+        data: {
+          symbol: sym,
+          price: close,
+          volume: Number(ev.v) || undefined,
+          timestamp: normalizeTs(ev.e ?? ev.s),
+          source: 'massive',
+        },
+      });
+    }
+    return out;
   }
-  return null;
+
+  return [];
 }

@@ -40,7 +40,7 @@ func Load() Config {
 		RedisURL:       getenv("REDIS_URL", "redis://localhost:6379/0"),
 		PolygonAPIKey:  firstNonEmpty(getenv("POLYGON_API_KEY", ""), getenv("MASSIVE_API_KEY", "")),
 		WSSymbols:      parseSymbolList(getenv("WS_SYMBOLS", "SPY,QQQ,NVDA,AAPL,TSLA,AMD,MSFT,AMZN,META")),
-		MassiveWSFeed:  getenv("MASSIVE_WS_FEED", "delayed"),
+		MassiveWSFeed:  getenv("MASSIVE_WS_FEED", "realtime"),
 		RedpandaBroker:     getenv("REDPANDA_BROKERS", "localhost:19092"),
 		BacktestAPIURL:     getenv("BACKTEST_API_URL", ""),
 		ClickHouseHTTPPort: getenv("CLICKHOUSE_HTTP_PORT", "8123"),
