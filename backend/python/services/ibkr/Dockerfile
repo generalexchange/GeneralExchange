@@ -1,5 +1,5 @@
 # IB Gateway + FastAPI on one container (App Platform / Docker)
-FROM gnzsnz/ib-gateway:stable
+FROM ghcr.io/gnzsnz/ib-gateway:stable
 
 USER root
 WORKDIR /app
