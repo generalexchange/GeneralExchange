@@ -21,27 +21,42 @@ function subdomainFromHost(host: string): string | null {
     return null;
   }
 
-  // Local dev: e.g. university.localhost:3000
   if (h.endsWith('.localhost')) {
     const sub = h.replace(/\.localhost$/, '');
     if (sub && sub !== 'localhost') return sub;
   }
 
+  if (h === 'legend.localhost') return 'legend';
+
   return null;
+}
+
+function legendOrigin(host: string): string {
+  const port = host.includes(':') ? host.slice(host.indexOf(':')) : '';
+  if (host.includes('localhost') || host.includes('127.0.0.1')) {
+    return `http://legend.localhost${port || ':3003'}`;
+  }
+  const envLegend = process.env.NEXT_PUBLIC_LEGEND_URL?.trim().replace(/\/$/, '');
+  if (envLegend) return envLegend;
+  return `https://legend.${ROOT_DOMAIN}`;
 }
 
 export function middleware(request: NextRequest) {
   const host = request.headers.get('host') ?? '';
   const sub = subdomainFromHost(host);
-  const { pathname } = request.nextUrl;
+  const { pathname, search } = request.nextUrl;
 
-  // Apex / www: send /dashboard traffic to legend subdomain
+  // Apex / www / Vercel: never keep /dashboard on non-legend hosts — go to legend subdomain root
   if (pathname.startsWith('/dashboard') && sub !== 'legend') {
-    const port = host.includes(':') ? host.slice(host.indexOf(':')) : '';
-    if (host.includes('localhost')) {
-      return NextResponse.redirect(new URL(`http://legend.localhost${port}${pathname}${request.nextUrl.search}`));
-    }
-    return NextResponse.redirect(new URL(`https://legend.${ROOT_DOMAIN}${pathname}${request.nextUrl.search}`));
+    const target = new URL(`${legendOrigin(host)}/${search}`);
+    return NextResponse.redirect(target, 307);
+  }
+
+  // legend.* with /dashboard in the bar → canonical subdomain root (still serves dashboard via rewrite)
+  if (sub === 'legend' && pathname.startsWith('/dashboard')) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/';
+    return NextResponse.redirect(url, 308);
   }
 
   if (!sub) return NextResponse.next();

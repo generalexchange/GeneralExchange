@@ -7,6 +7,7 @@ import type { Candle } from '@/components/dashboard/terminal/terminalData';
 import type { ChartRange } from '@/hooks/useLiveDashboard';
 import { QuotePriceChart, CHART_HEIGHT_EXTENDED, QUOTE_CHART_HEIGHT, type QuoteCardTheme } from '@/components/dashboard/QuotePriceChart';
 import { LivePulseIndicator } from '@/components/dashboard/LivePulseIndicator';
+import { legendDashboardUrl } from '@/lib/legendUrl';
 
 export type { QuoteCardTheme };
 
@@ -113,7 +114,7 @@ export function StockQuoteHero({
           <Maximize2 className="h-[18px] w-[18px]" strokeWidth={1.75} />
         </button>
         <Link
-          href="/dashboard"
+          href={legendDashboardUrl('/')}
           onClick={(e) => {
             if (onOpenAdvanced) {
               e.preventDefault();

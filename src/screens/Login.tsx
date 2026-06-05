@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { legendDashboardUrl } from '@/lib/legendUrl';
+import { getLegendOrigin } from '@/lib/legendUrl';
 
 const easeLux = [0.22, 1, 0.36, 1] as const;
 
@@ -23,7 +23,7 @@ export const Login: React.FC = () => {
     setIsSubmitting(true);
     setTimeout(() => {
       setIsSubmitting(false);
-      window.location.href = legendDashboardUrl('/');
+      window.location.replace(getLegendOrigin());
     }, 800);
   };
 
