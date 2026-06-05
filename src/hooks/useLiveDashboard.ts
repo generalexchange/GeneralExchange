@@ -19,7 +19,7 @@ import type { NewsRow, OptionRow } from '@/components/dashboard/terminal/termina
 export type ChartRange = '1D' | '1W' | '1M' | '3M' | 'YTD' | '1Y' | '5Y' | 'MAX';
 
 const RANGE_FETCH: Record<ChartRange, { interval: string; limit: number }> = {
-  '1D': { interval: '1m', limit: 400 },
+  '1D': { interval: '1m', limit: 200 },
   '1W': { interval: '15m', limit: 67 },
   '1M': { interval: '1h', limit: 120 },
   '3M': { interval: '1d', limit: 65 },
@@ -107,11 +107,11 @@ export function useLiveDashboard(symbol: string, chartRange: ChartRange = '1D') 
     const res = await fetch(`/api/v1/candles/${symbol}/${spec.interval}?limit=${spec.limit}`, {
       cache: 'no-store',
     });
-    if (!res.ok) throw new Error('candles unavailable');
+    if (!res.ok) return [];
     const json = (await res.json()) as { data: CandleRow[]; source?: string };
     const mapped = mapCandleRows(json.data ?? []);
     setCandles(mapped);
-    seedCandlesFromRest(symbol, spec.interval, mapped);
+    if (mapped.length) seedCandlesFromRest(symbol, spec.interval, mapped);
     if (json.source) setSource(json.source);
     return mapped;
   }, [symbol, chartRange]);
@@ -140,15 +140,18 @@ export function useLiveDashboard(symbol: string, chartRange: ChartRange = '1D') 
     async function load() {
       setLoading(true);
       setError(null);
+      let spot = 0;
       try {
         const q = await fetchQuote();
-        if (cancelled) return;
-        await Promise.all([fetchCandles(), fetchChain(q.price), fetchNews()]);
+        spot = q.price;
       } catch (e) {
-        if (!cancelled) setError(e instanceof Error ? e.message : 'feed unavailable');
-      } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) {
+          setError(e instanceof Error ? e.message : 'quote unavailable');
+        }
       }
+      if (cancelled) return;
+      await Promise.allSettled([fetchCandles(), fetchChain(spot), fetchNews()]);
+      if (!cancelled) setLoading(false);
     }
 
     load();

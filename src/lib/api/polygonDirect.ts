@@ -136,7 +136,7 @@ function mapAggBars(
   return envelope(data, source);
 }
 
-/** GET candles/{symbol}/{interval} — intraday intervals fall back to daily on limited plans. */
+/** GET candles/{symbol}/{interval} — never throws; falls back through daily → prev bar. */
 export async function polygonCandles(symbol: string, interval: string, limit: number) {
   const sym = symbol.toUpperCase();
   const cap = Math.min(limit, 500);
@@ -154,42 +154,43 @@ export async function polygonCandles(symbol: string, interval: string, limit: nu
 
   const toDate = new Date();
   const todayStr = toDate.toISOString().slice(0, 10);
-
-  // Minute/hour bars: try today first, then multi-day window.
-  if (spec.span === 'minute' || spec.span === 'hour') {
-    try {
-      const todayJson = await fetchRange(todayStr, todayStr, spec);
-      if (todayJson.results?.length) {
-        return mapAggBars(todayJson.results, sym, effectiveInterval, 'polygon');
-      }
-    } catch {
-      /* plan may omit same-day minute aggs — fall through */
-    }
-  }
-
   const fromDate = new Date(toDate.getTime() - spec.lookbackDays * 86_400_000);
   const fromStr = fromDate.toISOString().slice(0, 10);
 
-  let json: { results?: Bar[] };
   try {
-    json = await fetchRange(fromStr, todayStr, spec);
+    let json = await fetchRange(fromStr, todayStr, spec);
+
     if (!(json.results?.length) && spec.span !== 'day') {
       spec = INTERVALS['1d'];
       effectiveInterval = '1d';
       json = await fetchRange(fromStr, todayStr, spec);
     }
+
+    const bars = json.results ?? [];
+    if (bars.length) {
+      const slice = bars.length > cap ? bars.slice(-cap) : bars;
+      return mapAggBars(
+        slice,
+        sym,
+        effectiveInterval,
+        effectiveInterval === interval ? 'polygon' : 'polygon-delayed',
+      );
+    }
   } catch {
-    spec = INTERVALS['1d'];
-    effectiveInterval = '1d';
-    json = await fetchRange(fromStr, todayStr, spec);
+    /* rate limit or plan restriction — try prev bar */
   }
 
-  const bars = json.results ?? [];
-  if (!bars.length) throw new Error(`no aggregate bars for ${sym}`);
+  try {
+    const prev = await polygonGet<{ results?: Bar[] }>(`/v2/aggs/ticker/${sym}/prev`);
+    const bar = prev.results?.[0];
+    if (bar) {
+      return mapAggBars([bar], sym, '1d', 'polygon-delayed');
+    }
+  } catch {
+    /* last resort below */
+  }
 
-  // Keep the most recent `cap` bars when Polygon returns a long history.
-  const slice = bars.length > cap ? bars.slice(-cap) : bars;
-  return mapAggBars(slice, sym, effectiveInterval, effectiveInterval === interval ? 'polygon' : 'polygon-delayed');
+  return envelope([], 'polygon-unavailable');
 }
 
 /** GET options/chain/{symbol} */

@@ -50,11 +50,19 @@ async function forward(req: NextRequest, path: string[]) {
 
   // Vercel + Polygon: skip Go mock API for market routes — use live Polygon directly.
   if (isGet && preferPolygonDirect() && isPolygonMarketPath(path)) {
-    const direct = await tryPolygonFallback(path, req.nextUrl.searchParams);
-    if (direct) {
-      const body = JSON.stringify(direct);
-      const ttl = setCachedApiResponse(path, search, body);
-      return jsonResponse(body, 200, ttl);
+    try {
+      const direct = await tryPolygonFallback(path, req.nextUrl.searchParams);
+      if (direct) {
+        const body = JSON.stringify(direct);
+        const ttl = setCachedApiResponse(path, search, body);
+        return jsonResponse(body, 200, ttl);
+      }
+    } catch (err) {
+      console.error('[api/v1] polygon direct failed', path.join('/'), err);
+    }
+    if (path[0] === 'candles') {
+      const body = JSON.stringify({ data: [], as_of: new Date().toISOString(), source: 'polygon-unavailable' });
+      return jsonResponse(body, 200);
     }
   }
 
