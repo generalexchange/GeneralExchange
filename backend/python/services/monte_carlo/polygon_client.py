@@ -57,6 +57,11 @@ async def snapshot_equity(symbol: str) -> dict[str, Any]:
     }
 
 
+async def options_chain_snapshot(symbol: str, limit: int = 250) -> list[dict[str, Any]]:
+    data = await _get(f"/v3/snapshot/options/{symbol.upper()}", {"limit": str(limit)})
+    return list(data.get("results") or [])
+
+
 async def enrich_spot(body: dict[str, Any]) -> dict[str, Any]:
     """Fill spot from Polygon when symbol given and spot missing."""
     out = dict(body)

@@ -16,6 +16,7 @@ from fastapi.responses import JSONResponse
 from services.monte_carlo.engine import simulate_price_paths, simulate_strategy_outcome, simulate_trade_quality
 from services.monte_carlo.options_mc import after_hours_bsm, simulate_option_contract, simulate_options_surface_mc
 from services.monte_carlo import polygon_client
+from services.monte_carlo import opportunity as opportunity_engine
 
 API_KEY = os.environ.get("MC_API_KEY", "").strip() or os.environ.get("GE_API_KEY", "").strip()
 PORT = int(os.environ.get("MC_PORT") or os.environ.get("PORT") or 8092)
@@ -46,6 +47,9 @@ async def health() -> dict[str, Any]:
             "options/surface",
             "market/prev-close",
             "market/snapshot",
+            "opportunity/discover",
+            "opportunity/analyze",
+            "opportunity/outcomes",
         ],
     }
 
@@ -75,6 +79,12 @@ async def _handle(route: str, body: dict[str, Any]) -> Any:
             tq["optionProbabilityProfitable"] = opt["probabilityProfitable"]
             tq["blackScholesPrice"] = opt["blackScholesPrice"]
         return tq
+    if route == "opportunity/discover":
+        return await opportunity_engine.discover(body)
+    if route == "opportunity/analyze":
+        return await opportunity_engine.analyze(body)
+    if route == "opportunity/outcomes":
+        return await opportunity_engine.outcomes(body)
     raise HTTPException(status_code=404, detail=f"unknown route: {route}")
 
 

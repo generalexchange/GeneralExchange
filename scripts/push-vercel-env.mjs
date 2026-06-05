@@ -31,6 +31,8 @@ const VERCEL_KEYS = [
   'WS_PORT',
   'GOOGLE_SITE_VERIFICATION',
   'POLYGON_API_KEY',
+  'MONTE_CARLO_API_URL',
+  'MC_API_KEY',
 ];
 
 function parseEnv(text) {

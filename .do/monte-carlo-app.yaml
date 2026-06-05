@@ -20,9 +20,15 @@ services:
       timeout_seconds: 10
       success_threshold: 1
       failure_threshold: 3
+    volumes:
+      - name: opportunity-signals
+        mount_path: /data
     envs:
       - key: MC_PORT
         value: "8092"
+        scope: RUN_TIME
+      - key: SIGNAL_STORE_PATH
+        value: /data/opportunity_signals.json
         scope: RUN_TIME
       - key: POLYGON_API_KEY
         scope: RUN_TIME
