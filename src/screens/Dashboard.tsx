@@ -50,7 +50,7 @@ export const Dashboard: React.FC = () => {
       <header className="sticky top-0 z-30 h-12 border-b border-tan/20 bg-charcoal/95 backdrop-blur-xl">
         <div className="mx-auto flex h-12 max-w-[1920px] items-center justify-between px-3 sm:px-5">
           <Link href={legendDashboardUrl('/')} className="font-display text-base tracking-tight text-neutral-100">
-            legend.general.exchange
+            General Exchange
           </Link>
           <div className="flex items-center gap-2">
             <WalletButton />
