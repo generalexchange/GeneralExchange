@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import { isLegendHost, isNonCanonicalLegendHost, LEGEND_ORIGIN } from '@/lib/legendUrl';
 
 const ROOT_DOMAIN = (process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? 'general.exchange').toLowerCase();
 
@@ -12,6 +13,9 @@ const SUBDOMAIN_TO_PATH: Record<string, string> = {
 function subdomainFromHost(host: string): string | null {
   const h = host.split(':')[0]?.toLowerCase() ?? '';
   if (!h) return null;
+
+  // Legend terminal — any apex (legend.general.exchange, legend.generalexchange.com, etc.)
+  if (isLegendHost(h)) return 'legend';
 
   if (h === `www.${ROOT_DOMAIN}` || h === ROOT_DOMAIN) return null;
 
@@ -26,19 +30,15 @@ function subdomainFromHost(host: string): string | null {
     if (sub && sub !== 'localhost') return sub;
   }
 
-  if (h === 'legend.localhost') return 'legend';
-
   return null;
 }
 
-function legendOrigin(host: string): string {
-  const port = host.includes(':') ? host.slice(host.indexOf(':')) : '';
+function legendRedirectOrigin(host: string): string {
   if (host.includes('localhost') || host.includes('127.0.0.1')) {
+    const port = host.includes(':') ? host.slice(host.indexOf(':')) : '';
     return `http://legend.localhost${port || ':3003'}`;
   }
-  const envLegend = process.env.NEXT_PUBLIC_LEGEND_URL?.trim().replace(/\/$/, '');
-  if (envLegend) return envLegend;
-  return `https://legend.${ROOT_DOMAIN}`;
+  return LEGEND_ORIGIN;
 }
 
 export function middleware(request: NextRequest) {
@@ -46,9 +46,15 @@ export function middleware(request: NextRequest) {
   const sub = subdomainFromHost(host);
   const { pathname, search } = request.nextUrl;
 
+  // Legacy legend hosts (e.g. legend.generalexchange.com) → canonical legend.general.exchange
+  if (isNonCanonicalLegendHost(host)) {
+    const target = new URL(`${LEGEND_ORIGIN}${pathname}${search}`);
+    return NextResponse.redirect(target, 308);
+  }
+
   // Apex / www / Vercel: never keep /dashboard on non-legend hosts — go to legend subdomain root
   if (pathname.startsWith('/dashboard') && sub !== 'legend') {
-    const target = new URL(`${legendOrigin(host)}/${search}`);
+    const target = new URL(`${legendRedirectOrigin(host)}/${search}`);
     return NextResponse.redirect(target, 307);
   }
 
