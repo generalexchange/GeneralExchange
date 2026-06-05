@@ -29,6 +29,30 @@ const RANGE_FETCH: Record<ChartRange, { interval: string; limit: number }> = {
   MAX: { interval: '1d', limit: 500 },
 };
 
+/** Pin the chart to the latest REST/WS quote when bar data is delayed. */
+function mergeLiveQuote(candles: Candle[], quote: { price: number; timestamp?: number | string } | null): Candle[] {
+  if (!quote?.price) return candles;
+  const price = quote.price;
+  const qt = quote.timestamp ? Number(quote.timestamp) : Date.now();
+  if (!candles.length) {
+    return [{ t: qt, o: price, h: price, l: price, c: price, v: 0, vwap: price }];
+  }
+  const last = candles[candles.length - 1];
+  if (qt - last.t < 120_000) {
+    return [
+      ...candles.slice(0, -1),
+      {
+        ...last,
+        c: price,
+        h: Math.max(last.h, price),
+        l: Math.min(last.l, price),
+        vwap: price,
+      },
+    ];
+  }
+  return [...candles, { t: qt, o: price, h: price, l: price, c: price, v: 0, vwap: price }];
+}
+
 type QuotePayload = {
   symbol: string;
   price: number;
@@ -151,13 +175,7 @@ export function useLiveDashboard(symbol: string, chartRange: ChartRange = '1D') 
     if (chartRange === '1D') {
       const source = wsCandles.length ? mapWs(wsCandles) : candles;
       const filtered = filterExtendedDayCandles(source);
-      if (filtered.length) return filtered;
-      if (quote?.price) {
-        const p = quote.price;
-        const t = quote.timestamp ? Number(quote.timestamp) : Date.now();
-        return [{ t, o: p, h: p, l: p, c: p, v: 0, vwap: p }];
-      }
-      return filtered;
+      return mergeLiveQuote(filtered.length ? filtered : source, quote);
     }
     return candles;
   }, [chartRange, wsCandles, candles, quote]);
