@@ -1,7 +1,7 @@
-// Package ws implements the real-time WebSocket server (port 8081).
+// Package ws implements the browser-facing WebSocket server with Massive upstream.
 //
-// Streams are disabled until wired to Redis/Polygon — connections receive
-// an error frame instead of synthetic mock data.
+// Upstream: github.com/massive-com/client-go (Massive / Polygon.io)
+// Browser path: /ws — same JSON envelope as shared/ws-types.ts
 package ws
 
 import (
@@ -11,11 +11,8 @@ import (
 	"time"
 
 	"github.com/general-exchange/backend/internal/config"
-	"github.com/general-exchange/backend/internal/middleware"
 	"github.com/gorilla/websocket"
 )
-
-func verifyToken(token, secret string) (string, bool) { return middleware.VerifyJWT(token, secret) }
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
@@ -23,51 +20,64 @@ var upgrader = websocket.Upgrader{
 	CheckOrigin:     func(_ *http.Request) bool { return true },
 }
 
-type frame struct {
-	Stream string    `json:"stream"`
-	Symbol string    `json:"symbol,omitempty"`
-	AsOf   time.Time `json:"as_of"`
-	Error  string    `json:"error,omitempty"`
+func deadline() time.Time {
+	return time.Now().Add(5 * time.Second)
 }
 
-// NewServer builds the WebSocket mux.
+// Server wraps the client hub and optional Massive feed lifecycle.
+type Server struct {
+	cfg    config.Config
+	hub    *Hub
+	stopFeed func()
+}
+
+// NewServer builds the HTTP mux and starts the Massive upstream feed.
 func NewServer(cfg config.Config) http.Handler {
-	mux := http.NewServeMux()
-
-	unavailable := func(w http.ResponseWriter, r *http.Request) {
-		conn, err := upgrader.Upgrade(w, r, nil)
-		if err != nil {
-			return
-		}
-		defer conn.Close()
-		f := frame{
-			Stream: r.URL.Path,
-			Symbol: r.PathValue("symbol"),
-			AsOf:   time.Now().UTC(),
-			Error:  "stream unavailable — use REST /v1 endpoints",
-		}
-		b, _ := json.Marshal(f)
-		_ = conn.WriteMessage(websocket.TextMessage, b)
+	s := &Server{
+		cfg: cfg,
+		hub: NewHub(),
 	}
+	s.stopFeed = StartMassiveFeed(cfg, s.hub)
 
-	mux.HandleFunc("/v1/stream/ticks/{symbol}", unavailable)
-	mux.HandleFunc("/v1/stream/candles/{symbol}/{interval}", unavailable)
-	mux.HandleFunc("/v1/stream/options/{symbol}", unavailable)
-	mux.HandleFunc("/v1/stream/signals/{symbol}", unavailable)
-	mux.HandleFunc("/v1/stream/regime/{symbol}", unavailable)
-	mux.HandleFunc("/v1/stream/portfolio", func(w http.ResponseWriter, r *http.Request) {
-		if _, ok := verifyToken(r.URL.Query().Get("token"), cfg.JWTSecret); !ok {
-			http.Error(w, "unauthorized", http.StatusUnauthorized)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/ws", s.handleWS)
+	mux.HandleFunc("/", s.handleWS)
+	mux.HandleFunc("/health", s.handleHealth)
+	mux.HandleFunc("/healthz", s.handleHealth)
+	return mux
+}
+
+func (s *Server) handleHealth(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(map[string]any{
+		"ok":       true,
+		"clients":  s.hub.Count(),
+		"symbols":  s.cfg.WSSymbols,
+		"massive":  s.cfg.PolygonAPIKey != "",
+		"feed":     s.cfg.MassiveWSFeed,
+	})
+}
+
+func (s *Server) handleWS(w http.ResponseWriter, r *http.Request) {
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		return
+	}
+	s.hub.Add(conn)
+	go s.readPump(conn)
+}
+
+func (s *Server) readPump(conn *websocket.Conn) {
+	defer func() {
+		s.hub.Remove(conn)
+		_ = conn.Close()
+	}()
+	conn.SetReadLimit(512)
+	for {
+		if _, _, err := conn.ReadMessage(); err != nil {
 			return
 		}
-		unavailable(w, r)
-	})
-
-	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{"status":"ok","streams":"disabled"}`))
-	})
-	return mux
+	}
 }
 
 func init() { log.SetFlags(0) }

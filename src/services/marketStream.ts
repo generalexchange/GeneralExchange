@@ -1,7 +1,7 @@
 /**
  * Live market WebSocket wiring (unified server).
  *
- * Connects to NEXT_PUBLIC_WS_URL (same server in dev + prod):
+ * Connects to NEXT_PUBLIC_WS_URL — Go ws-server backed by Massive client-go.
  *   ws://localhost:3001/ws          (local)
  *   wss://general.exchange/ws       (production)
  *

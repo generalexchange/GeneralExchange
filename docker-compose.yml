@@ -299,9 +299,11 @@ services:
     environment:
       <<: *app-env
       WS_ADDR: ":8081"
+      MASSIVE_WS_FEED: ${MASSIVE_WS_FEED:-delayed}
+      WS_SYMBOLS: ${WS_SYMBOLS:-SPY,QQQ,NVDA,AAPL,TSLA,AMD,MSFT,AMZN,META}
+      POLYGON_API_KEY: ${POLYGON_API_KEY:-}
     ports:
       - "8081:8081"
-    depends_on: [redpanda, redis]
     restart: unless-stopped
 
   frontend:

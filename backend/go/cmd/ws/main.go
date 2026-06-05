@@ -1,9 +1,13 @@
-// Command ws is the real-time WebSocket server (port 8081).
+// Command ws is the real-time WebSocket server (port 8081, path /ws).
 package main
 
 import (
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/general-exchange/backend/internal/config"
 	"github.com/general-exchange/backend/internal/ws"
@@ -11,8 +15,22 @@ import (
 
 func main() {
 	cfg := config.Load()
-	log.Printf("level=info msg=\"go-websocket-server listening\" addr=%s", cfg.WSAddr)
-	if err := http.ListenAndServe(cfg.WSAddr, ws.NewServer(cfg)); err != nil {
-		log.Fatalf("level=error msg=\"ws server stopped\" err=%v", err)
+	srv := &http.Server{
+		Addr:              cfg.WSAddr,
+		Handler:           ws.NewServer(cfg),
+		ReadHeaderTimeout: 5 * time.Second,
 	}
+
+	go func() {
+		log.Printf("level=info msg=\"go-websocket-server listening\" addr=%s feed=%s symbols=%v",
+			cfg.WSAddr, cfg.MassiveWSFeed, cfg.WSSymbols)
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("level=error msg=\"ws server stopped\" err=%v", err)
+		}
+	}()
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
+	<-sig
+	_ = srv.Close()
 }

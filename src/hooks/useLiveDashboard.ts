@@ -203,8 +203,9 @@ export function useLiveDashboard(symbol: string, chartRange: ChartRange = '1D') 
       quote?.price &&
         (isMarketWsConfigured() ||
           quote.source?.includes('polygon') ||
-          quote.source?.includes('redis') ||
+          quote.source?.includes('massive') ||
           source?.includes('polygon') ||
+          source?.includes('massive') ||
           source === 'redis'),
     ),
   };
