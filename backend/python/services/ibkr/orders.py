@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from datetime import datetime, timezone
 
 from ib_insync import LimitOrder, MarketOrder, Option, Order, Stock, StopOrder
@@ -68,7 +69,7 @@ async def place_order(req: OrderRequest) -> OrderResponse:
         raise ValueError(f"Could not qualify order contract for {req.symbol}")
     order = _build_order(req)
     trade = ib.placeOrder(qualified[0], order)
-    await ib.sleep(1.0)
+    await asyncio.sleep(0.8)
     return _order_to_response(trade)
 
 
@@ -77,7 +78,7 @@ async def cancel_order(order_id: int) -> OrderResponse:
     for trade in ib.openTrades():
         if int(trade.order.orderId or 0) == order_id:
             ib.cancelOrder(trade.order)
-            await ib.sleep(0.5)
+            await asyncio.sleep(0.4)
             return _order_to_response(trade)
     raise ValueError(f"Open order {order_id} not found")
 

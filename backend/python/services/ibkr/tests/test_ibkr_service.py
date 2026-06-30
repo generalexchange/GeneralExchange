@@ -40,6 +40,22 @@ def test_historical_bar_schema():
     assert bar.symbol == "SPY"
 
 
+def test_daily_bar_timestamp_and_nan_sanitization():
+    from datetime import date
+    import math
+
+    from services.ibkr import historical as hist
+
+    ts = hist._bar_timestamp(date(2026, 1, 2))
+    assert ts.year == 2026 and ts.month == 1 and ts.day == 2
+    assert ts.tzinfo is not None
+
+    assert hist._finite_float(float("nan")) == 0.0
+    assert hist._finite_float(42.5) == 42.5
+    assert hist._optional_finite_float(float("nan")) is None
+    assert math.isfinite(hist._finite_float(float("inf")))
+
+
 @pytest.mark.asyncio
 async def test_get_quote_qualifies_contract():
     from services.ibkr import market_data

@@ -48,35 +48,58 @@ export function sessionBandForTimestamp(t: number, now = Date.now()): SessionBan
   return 'overnight';
 }
 
-/** Keep candles from previous-day 4pm ET through now (extended 1D window). */
+/** Keep candles from previous-day 4pm ET through the latest bar (Robinhood 1D window). */
 export function filterExtendedDayCandles(candles: Candle[], now = Date.now()): Candle[] {
   const sorted = [...candles].sort((a, b) => a.t - b.t);
   if (!sorted.length) return sorted;
 
   const today = etDateKey(new Date(now));
+  const lastTs = sorted[sorted.length - 1].t;
   let startMs = sorted[0].t;
 
-  for (let daysBack = 0; daysBack <= 4; daysBack++) {
+  for (let daysBack = 1; daysBack <= 5; daysBack++) {
     const probe = new Date(now - daysBack * 86_400_000);
     const { isWeekend } = etMinutes(probe);
     if (isWeekend) continue;
     const key = etDateKey(probe);
     if (key >= today) continue;
-    const dayCandles = sorted.filter((c) => etDateKey(new Date(c.t)) === key && etMinutes(new Date(c.t)).mins >= 960);
+    const dayCandles = sorted.filter(
+      (c) => etDateKey(new Date(c.t)) === key && etMinutes(new Date(c.t)).mins >= 960,
+    );
     if (dayCandles.length) {
       startMs = dayCandles[0].t;
       break;
     }
-    startMs = probe.getTime();
   }
 
-  const cutoff = Math.min(startMs, now - 30 * 3_600_000);
-  const filtered = sorted.filter((c) => c.t >= cutoff && c.t <= now + 60_000);
+  const todayPre = sorted.filter(
+    (c) => etDateKey(new Date(c.t)) === today && etMinutes(new Date(c.t)).mins >= 240,
+  );
+  if (todayPre.length) {
+    startMs = Math.min(startMs, todayPre[0].t);
+  }
+
+  const filtered = sorted.filter((c) => c.t >= startMs && c.t <= lastTs + 60_000);
   if (filtered.length) return filtered;
 
-  // Delayed/partial feeds — show the most recent session day rather than an empty chart.
-  const lastDay = etDateKey(new Date(sorted[sorted.length - 1].t));
+  const lastDay = etDateKey(new Date(lastTs));
   return sorted.filter((c) => etDateKey(new Date(c.t)) === lastDay);
+}
+
+/** First regular-session (9:30 ET) open from minute bars. */
+export function sessionOpenFromCandles(candles: Candle[], now = Date.now()): number | null {
+  const sorted = [...candles].sort((a, b) => a.t - b.t);
+  const today = etDateKey(new Date(now));
+  for (const c of sorted) {
+    if (etDateKey(new Date(c.t)) !== today) continue;
+    const { mins } = etMinutes(new Date(c.t));
+    if (mins >= 570 && mins < 580) return c.o;
+  }
+  for (const c of sorted) {
+    const { mins } = etMinutes(new Date(c.t));
+    if (mins >= 570 && mins < 960) return c.o;
+  }
+  return sorted.length ? sorted[0].o : null;
 }
 
 export function toExtendedChartPoints(candles: Candle[], now = Date.now()): ChartPoint[] {
@@ -113,9 +136,9 @@ export function sessionZones(points: ChartPoint[]): SessionZone[] {
 export type TimeMarker = { index: number; label: string };
 
 /** X-axis markers for 4am, 9:30 open, 4pm close, after-hours. */
-export function timeMarkers(points: ChartPoint[], now = Date.now()): TimeMarker[] {
+export function timeMarkers(points: ChartPoint[]): TimeMarker[] {
   if (!points.length) return [];
-  const today = etDateKey(new Date(now));
+  const sessionDay = etDateKey(new Date(points[points.length - 1].t));
   const targets = [
     { mins: 240, label: '4am' },
     { mins: 570, label: '9:30am' },
@@ -125,7 +148,7 @@ export function timeMarkers(points: ChartPoint[], now = Date.now()): TimeMarker[
 
   const markers: TimeMarker[] = [];
   for (const pt of points) {
-    if (etDateKey(new Date(pt.t)) !== today) continue;
+    if (etDateKey(new Date(pt.t)) !== sessionDay) continue;
     const { mins } = etMinutes(new Date(pt.t));
     for (const target of targets) {
       if (Math.abs(mins - target.mins) <= 5 && !markers.some((m) => m.label === target.label)) {

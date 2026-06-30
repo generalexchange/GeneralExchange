@@ -9,6 +9,7 @@ import {
   useOpportunityDiscovery,
 } from '@/hooks/useOpportunityDiscovery';
 import type { RankedContract } from '@/lib/opportunity/types';
+import { OpportunityContractVisuals } from '@/components/dashboard/OpportunityContractVisuals';
 
 const FACTOR_LABELS: Record<string, string> = {
   expected_return: 'Expected return',
@@ -28,18 +29,23 @@ function glowClass(confidence: number): string {
 function OpportunityCard({
   opp,
   selected,
+  highlighted,
   onSelect,
 }: {
   opp: RankedContract;
   selected: boolean;
+  highlighted: boolean;
   onSelect: () => void;
 }) {
   return (
-    <button
+    <motion.button
       type="button"
       onClick={onSelect}
+      layout
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
       className={`mb-2 w-full rounded-md border p-2.5 text-left transition-colors ${glowClass(opp.confidence)} ${
-        selected ? 'ring-1 ring-tan/50' : 'hover:border-tan/30'
+        selected ? 'ring-1 ring-tan/50' : highlighted ? 'ring-1 ring-moss/40' : 'hover:border-tan/30'
       }`}
     >
       <p className="font-mono text-xs font-semibold text-zinc-100">
@@ -55,8 +61,9 @@ function OpportunityCard({
       <p className="mt-1 font-mono text-[9px] tabular-nums text-zinc-500">
         Δ {opp.delta.toFixed(2)} · Θ {opp.theta.toFixed(3)} · ν {opp.vega.toFixed(3)}
       </p>
+      <OpportunityContractVisuals opp={opp} compact />
       <p className="mt-1 font-mono text-[8px] uppercase tracking-wide text-zinc-600">Top pick · tap for analysis</p>
-    </button>
+    </motion.button>
   );
 }
 
@@ -96,6 +103,8 @@ function AnalysisPanel({
       ) : opp ? (
         <div className="space-y-3 px-3 pb-3">
           <p className="text-[11px] leading-relaxed text-zinc-300">{opp.analysis.rationale}</p>
+
+          <OpportunityContractVisuals opp={opp} />
 
           <div className="grid grid-cols-2 gap-2">
             <Stat label="P(ITM)" value={`${opp.monteCarlo.probabilityITM}%`} />
@@ -168,7 +177,7 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
-export function OpportunityDiscoveryFeed() {
+export function OpportunityDiscoveryFeed({ highlightSymbol }: { highlightSymbol?: string }) {
   const { opportunities, loading, error, refresh } = useOpportunityDiscovery();
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
   const [showChain, setShowChain] = useState(false);
@@ -217,6 +226,7 @@ export function OpportunityDiscoveryFeed() {
               key={opp.id}
               opp={opp}
               selected={selectedSymbol === opp.symbol}
+              highlighted={highlightSymbol === opp.symbol}
               onSelect={() => handleSelect(opp.symbol)}
             />
           ))

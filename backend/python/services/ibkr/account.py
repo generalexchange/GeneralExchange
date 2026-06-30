@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from services.ibkr.client import IBKRClient, get_ib
 from services.ibkr.schemas import AccountSummary
 
@@ -26,7 +27,7 @@ async def get_account_summary() -> AccountSummary:
     rows = ib.accountSummary(account)
     if not rows:
         ib.reqAccountSummary()
-        await ib.sleep(1)
+        await asyncio.sleep(1)
         rows = ib.accountSummary(account)
 
     return AccountSummary(

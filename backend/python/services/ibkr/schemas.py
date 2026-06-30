@@ -25,6 +25,8 @@ class QuoteResponse(BaseModel):
     ask: float | None = None
     last: float | None = None
     close: float | None = None
+    prev_close: float | None = None
+    open: float | None = None
     volume: float | None = None
     timestamp: datetime | None = None
     source: Literal["ibkr"] = "ibkr"

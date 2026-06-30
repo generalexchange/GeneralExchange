@@ -7,6 +7,9 @@ export const dynamic = 'force-dynamic';
 const UPSTREAM = (process.env.MONTE_CARLO_API_URL ?? '').replace(/\/$/, '');
 const API_KEY = process.env.MC_API_KEY ?? process.env.GE_API_KEY ?? '';
 const TIMEOUT_MS = Number(process.env.MONTE_CARLO_TIMEOUT_MS ?? 120_000);
+const DISCOVER_CACHE_MS = 90_000;
+
+let discoverCache: { key: string; expires: number; body: DiscoverResponse } | null = null;
 
 type RouteCtx = { params: Promise<{ path?: string[] }> };
 
@@ -45,7 +48,12 @@ export async function POST(req: NextRequest, ctx: RouteCtx) {
   if (route === 'discover') {
     const symbols = Array.isArray(body.symbols) ? (body.symbols as string[]) : undefined;
     const includeChain = Boolean(body.includeChain);
+    const cacheKey = `${(symbols ?? []).join(',')}:${includeChain}`;
+    if (discoverCache && discoverCache.key === cacheKey && Date.now() < discoverCache.expires) {
+      return NextResponse.json(discoverCache.body);
+    }
     const result: DiscoverResponse = await discoverOpportunitiesLocal(symbols, includeChain);
+    discoverCache = { key: cacheKey, expires: Date.now() + DISCOVER_CACHE_MS, body: result };
     return NextResponse.json(result);
   }
 

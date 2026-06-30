@@ -3,7 +3,7 @@
 import React from 'react';
 import { QuotePriceChart } from '@/components/dashboard/QuotePriceChart';
 import { useSpyMarketFeed } from '@/hooks/useSpyMarketFeed';
-import { useBetaVsSpy } from '@/hooks/useBetaVsSpy';
+import { SpyRiskPanel } from '@/components/dashboard/SpyRiskPanel';
 import type { Candle } from '@/components/dashboard/terminal/terminalData';
 
 type MarketTemperatureProps = {
@@ -14,8 +14,7 @@ type MarketTemperatureProps = {
 };
 
 export function MarketTemperature({ selectedSymbol, spyCandles, spyLive, spyLoading }: MarketTemperatureProps) {
-  const { quote, loading } = useSpyMarketFeed(1000);
-  const { beta, live: betaLive, loading: betaLoading } = useBetaVsSpy(selectedSymbol);
+  const { quote, loading } = useSpyMarketFeed();
   const price = quote?.price ?? 0;
   const change = quote?.change ?? 0;
   const changePct = quote?.changePct ?? 0;
@@ -47,17 +46,6 @@ export function MarketTemperature({ selectedSymbol, spyCandles, spyLive, spyLoad
         {changePct.toFixed(2)}%) Today
       </p>
 
-      <div className="mt-3 flex items-baseline justify-between border-t border-white/10 pt-3">
-        <span className="text-[10px] uppercase tracking-wider text-zinc-500">Beta vs SPY</span>
-        <span className="font-mono text-sm tabular-nums text-zinc-200">
-          {betaLoading ? '…' : beta.toFixed(2)}
-          {betaLive && !betaLoading ? (
-            <span className="ml-1 text-[9px] text-moss">live</span>
-          ) : null}
-        </span>
-      </div>
-      <p className="mt-0.5 text-right font-mono text-[9px] text-zinc-600">{selectedSymbol}</p>
-
       <div className="mt-3 h-16 overflow-hidden rounded-md border border-white/5 bg-charcoal/50">
         {spyCandles.length > 0 ? (
           <QuotePriceChart
@@ -67,12 +55,18 @@ export function MarketTemperature({ selectedSymbol, spyCandles, spyLive, spyLoad
             theme="dark"
             height={64}
             showTooltip={false}
+            extendedHours
+            live={spyLive && price > 0}
           />
         ) : (
           <div className="flex h-full items-center justify-center font-mono text-[10px] text-zinc-600">
             {loading || spyLoading ? 'Loading SPY tape…' : 'No SPY data available'}
           </div>
         )}
+      </div>
+
+      <div className="mt-3">
+        <SpyRiskPanel symbol={selectedSymbol} />
       </div>
     </section>
   );

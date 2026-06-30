@@ -1,11 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { seedQuoteFromRest, useSymbolQuote } from '@/store/marketState';
-import { subscribeMarketWs } from '@/services/wsClient';
+import { getMarketState, seedQuoteFromRest, useSymbolQuote } from '@/store/marketState';
+import { isWsConnected, subscribeMarketWs } from '@/services/wsClient';
 
-/** High-frequency SPY quote for Market Temperature (always SPY). */
-export function useSpyMarketFeed(pollMs = 1000) {
+const REST_FALLBACK_MS = 30_000;
+
+/** SPY quote for Market Temperature — WebSocket-first, REST fallback only. */
+export function useSpyMarketFeed() {
   const quote = useSymbolQuote('SPY');
   const [loading, setLoading] = useState(true);
 
@@ -15,6 +17,11 @@ export function useSpyMarketFeed(pollMs = 1000) {
     let cancelled = false;
 
     async function load() {
+      const wsPrice = getMarketState().quotes.SPY?.price ?? 0;
+      if (wsPrice > 0 && isWsConnected()) {
+        if (!cancelled) setLoading(false);
+        return;
+      }
       try {
         const res = await fetch('/api/v1/quote/SPY', { cache: 'no-store' });
         if (!res.ok || cancelled) return;
@@ -40,13 +47,17 @@ export function useSpyMarketFeed(pollMs = 1000) {
       }
     }
 
-    load();
-    const id = window.setInterval(load, pollMs);
+    void load();
+    const id = window.setInterval(load, REST_FALLBACK_MS);
     return () => {
       cancelled = true;
       window.clearInterval(id);
     };
-  }, [pollMs]);
+  }, []);
+
+  useEffect(() => {
+    if (quote?.price && quote.price > 0) setLoading(false);
+  }, [quote?.price]);
 
   return { quote, loading };
 }

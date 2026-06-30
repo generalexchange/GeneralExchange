@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from datetime import datetime, timezone
 
 from ib_insync import Contract, Option, Stock, Ticker
@@ -41,14 +42,17 @@ def _safe(v: float | None) -> float | None:
 
 def ticker_to_quote(symbol: str, sec_type: str, ticker: Ticker) -> QuoteResponse:
     m = ticker.marketPrice()
-    last = _safe(ticker.last) or _safe(m) or _safe(ticker.close)
+    last = _safe(ticker.last) or _safe(m) or _safe(ticker.bid) or _safe(ticker.ask)
+    prev = _safe(ticker.close)
     return QuoteResponse(
         symbol=symbol.upper(),
         sec_type=sec_type,
         bid=_safe(ticker.bid),
         ask=_safe(ticker.ask),
         last=last,
-        close=_safe(ticker.close),
+        close=prev,
+        prev_close=prev,
+        open=_safe(ticker.open),
         volume=_safe(ticker.volume),
         timestamp=datetime.now(timezone.utc),
     )
@@ -56,13 +60,14 @@ def ticker_to_quote(symbol: str, sec_type: str, ticker: Ticker) -> QuoteResponse
 
 async def get_quote(req: MarketDataRequest) -> QuoteResponse:
     ib = await get_ib()
+    ib.reqMarketDataType(3)
     contract = contract_from_request(req)
     qualified = await ib.qualifyContractsAsync(contract)
     if not qualified:
         raise ValueError(f"Could not qualify contract for {req.symbol}")
     contract = qualified[0]
-    ticker = ib.reqMktData(contract, "", False, False)
-    await ib.sleep(1.5)
+    ticker = ib.reqMktData(contract, "", True, False)
+    await asyncio.sleep(1.5)
     quote = ticker_to_quote(req.symbol, req.sec_type, ticker)
     ib.cancelMktData(contract)
     return quote
@@ -79,5 +84,5 @@ async def stream_contracts(symbols: list[str]) -> list[tuple[Contract, Ticker]]:
         contract = qualified[0]
         ticker = ib.reqMktData(contract, "", False, False)
         out.append((contract, ticker))
-    await ib.sleep(1.0)
+    await asyncio.sleep(1.0)
     return out

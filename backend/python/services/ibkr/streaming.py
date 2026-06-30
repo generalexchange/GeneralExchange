@@ -46,6 +46,7 @@ async def stream_stock_prices(ws: WebSocket, symbols: list[str]) -> None:
         return
 
     ib = client.ib
+    ib.reqMarketDataType(3)
     tickers = []
     contracts = []
     for sym in symbols:
@@ -97,7 +98,7 @@ async def stream_options_prices(ws: WebSocket, symbol: str) -> None:
                 if not q:
                     continue
                 ticker = ib.reqMktData(q[0], "106", False, False)
-                await ib.sleep(0.3)
+                await asyncio.sleep(0.3)
                 quote = ticker_to_quote(sym, "STK", ticker)
                 greeks = ticker.modelGreeks
                 payload = quote.model_dump()

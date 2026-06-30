@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type { DiscoverResponse, OutcomesResponse, RankedContract } from '@/lib/opportunity/types';
 import { TRADEABLE_SYMBOLS } from '@/data/symbols';
 
-const REFRESH_MS = 60_000;
+const REFRESH_MS = 120_000;
 
 export function useOpportunityDiscovery() {
   const [opportunities, setOpportunities] = useState<RankedContract[]>([]);
@@ -12,8 +12,8 @@ export function useOpportunityDiscovery() {
   const [error, setError] = useState<string | null>(null);
   const [generatedAt, setGeneratedAt] = useState<string | null>(null);
 
-  const refresh = useCallback(async () => {
-    setLoading(true);
+  const refresh = useCallback(async (background = false) => {
+    if (!background) setLoading(true);
     setError(null);
     try {
       const res = await fetch('/api/v1/opportunity/discover', {
@@ -24,18 +24,23 @@ export function useOpportunityDiscovery() {
       });
       if (!res.ok) throw new Error(`discover ${res.status}`);
       const data = (await res.json()) as DiscoverResponse;
-      setOpportunities(data.opportunities.filter((o) => !o.error));
-      setGeneratedAt(data.generatedAt);
+      const valid = data.opportunities.filter((o) => !o.error);
+      if (valid.length || !background) {
+        setOpportunities(valid);
+        setGeneratedAt(data.generatedAt);
+      }
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to load opportunities');
+      if (!background) {
+        setError(e instanceof Error ? e.message : 'Failed to load opportunities');
+      }
     } finally {
-      setLoading(false);
+      if (!background) setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    refresh();
-    const id = window.setInterval(refresh, REFRESH_MS);
+    refresh(false);
+    const id = window.setInterval(() => refresh(true), REFRESH_MS);
     return () => window.clearInterval(id);
   }, [refresh]);
 
