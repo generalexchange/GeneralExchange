@@ -45,6 +45,21 @@ function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
+async function fetchIbkrLocalHint(): Promise<string> {
+  try {
+    const base = process.env.NEXT_PUBLIC_IBKR_API_URL ?? 'http://127.0.0.1:8093';
+    const res = await fetch(`${base.replace(/\/$/, '')}/health`, { cache: 'no-store' });
+    if (res.ok) {
+      const json = (await res.json()) as { connected?: boolean; port?: number };
+      if (json.connected) return 'Waiting for first IBKR quote…';
+      return `IBKR service is running but IB Gateway (port ${json.port ?? 4002}) is not connected — log in to Gateway and enable API socket clients.`;
+    }
+  } catch {
+    /* service down */
+  }
+  return 'Start IB Gateway (port 4002), then run scripts/start-local-stack.ps1 or: cd backend/python && py -3.11 -m uvicorn services.ibkr.main:app --host 127.0.0.1 --port 8093';
+}
+
 function wsQuotePrice(sym: string): number {
   return getMarketState().quotes[sym]?.price ?? 0;
 }
@@ -243,7 +258,8 @@ export function useLiveDashboard(
           } else if (isMarketWsConfigured() && !isLocalDesktopClient()) {
             setError(isWsConnected() ? 'Waiting for first tick…' : 'Connecting to WebSocket…');
           } else if (isLocalDesktopClient()) {
-            setError('Start IB Gateway (4002) and IBKR service on localhost:8093');
+            const hint = await fetchIbkrLocalHint();
+            setError(hint);
           } else {
             setError(e instanceof Error ? e.message : 'quote unavailable');
           }

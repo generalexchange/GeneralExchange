@@ -51,7 +51,25 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
     except Exception as exc:
         logger.warning("PostgreSQL init skipped or failed: %s", exc)
     ingestion_task = asyncio.create_task(get_ingestion().start())
+
+    async def gateway_watchdog() -> None:
+        while True:
+            await asyncio.sleep(20)
+            try:
+                ing = get_ingestion()
+                client = await IBKRClient.get()
+                if client.is_connected() and not ing._tickers:
+                    await ing.start()
+            except Exception:
+                pass
+
+    watchdog_task = asyncio.create_task(gateway_watchdog())
     yield
+    watchdog_task.cancel()
+    try:
+        await watchdog_task
+    except asyncio.CancelledError:
+        pass
     ingestion_task.cancel()
     try:
         await ingestion_task
