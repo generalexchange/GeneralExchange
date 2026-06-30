@@ -91,7 +91,7 @@ export async function POST(req: NextRequest, ctx: RouteCtx) {
         calibrationRuns: 0,
         expiredCount: 0,
         hitRate: null,
-        note: 'Historical ML calibration requires MONTE_CARLO_API_URL on DigitalOcean.',
+        note: 'Historical ML calibration requires MONTE_CARLO_API_URL (local: http://127.0.0.1:8092).',
       },
     });
   }

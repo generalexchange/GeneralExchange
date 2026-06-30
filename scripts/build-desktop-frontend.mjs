@@ -3,8 +3,7 @@
  * Builds the full general.exchange UI as a static bundle for the desktop app.
  *
  * The desktop installer ships this `out/` directory inside the binary (no Node
- * server at runtime, exactly like Cursor). The bundled UI calls the live
- * general.exchange services over the network for data.
+ * server at runtime). The bundled UI talks to IBKR + Monte Carlo on 127.0.0.1.
  *
  * Server-only Route Handlers under `src/app/api/**` cannot be part of a static
  * export (`output: 'export'`) — a dynamic-segment route handler such as
@@ -14,18 +13,26 @@
  * safe on Windows/OneDrive. The regular web/Vercel build is never affected.
  */
 import { execSync } from 'node:child_process';
-import { readFileSync, writeFileSync, rmSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, rmSync, existsSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(__dirname, '..');
 
-/** Server-only route handlers to remove for the static export. */
-const ROUTE_FILES = [
-  join(repoRoot, 'src', 'app', 'api', 'v1', '[...path]', 'route.ts'),
-  join(repoRoot, 'src', 'app', 'api', 'desktop-release', 'route.ts'),
-];
+/** Recursively collect every `route.ts` under src/app/api (incompatible with static export). */
+function collectApiRouteFiles(dir) {
+  const routes = [];
+  for (const ent of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, ent.name);
+    if (ent.isDirectory()) routes.push(...collectApiRouteFiles(full));
+    else if (ent.name === 'route.ts') routes.push(full);
+  }
+  return routes;
+}
+
+const apiRoot = join(repoRoot, 'src', 'app', 'api');
+const ROUTE_FILES = existsSync(apiRoot) ? collectApiRouteFiles(apiRoot) : [];
 
 const saved = [];
 try {
@@ -48,6 +55,11 @@ try {
     env: {
       ...process.env,
       DESKTOP_BUILD: '1',
+      NEXT_PUBLIC_DESKTOP_LOCAL: '1',
+      NEXT_PUBLIC_IBKR_API_URL: process.env.NEXT_PUBLIC_IBKR_API_URL ?? 'http://127.0.0.1:8093',
+      NEXT_PUBLIC_IBKR_API_KEY: process.env.NEXT_PUBLIC_IBKR_API_KEY ?? process.env.IBKR_API_KEY ?? 'gx_ibkr_dev_key',
+      NEXT_PUBLIC_WS_URL: process.env.NEXT_PUBLIC_WS_URL ?? 'ws://127.0.0.1:8093/ws/market',
+      NEXT_PUBLIC_MONTE_CARLO_API_URL: process.env.NEXT_PUBLIC_MONTE_CARLO_API_URL ?? 'http://127.0.0.1:8092',
       NEXT_PUBLIC_DESKTOP_APP_VERSION: tauriVersion,
     },
   });

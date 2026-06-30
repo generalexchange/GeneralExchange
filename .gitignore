@@ -38,9 +38,9 @@ out
 .tools/
 
 
-# Local-only DO spec with IBKR credentials
+# Local IB Gateway credentials (never commit)
+infra/local/.env
 .do/ibkr-app.local.yaml
-infra/digitalocean/droplet-bootstrap.local.sh
 
 # Python
 __pycache__/

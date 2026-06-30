@@ -1,10 +1,8 @@
 import type { ChartInterval } from '@/types/market';
 
-// ---------------------------------------------------------------------------
-// Endpoints. The CSP in tauri.conf.json only permits these origins.
-// ---------------------------------------------------------------------------
-export const API_BASE_URL = 'https://api.general.exchange';
-export const WS_URL = 'wss://ws.general.exchange/v1/stream';
+// Local IBKR + Monte Carlo endpoints (desktop bundle and native shell).
+export const API_BASE_URL = process.env.NEXT_PUBLIC_IBKR_API_URL ?? 'http://127.0.0.1:8093';
+export const WS_URL = process.env.NEXT_PUBLIC_WS_URL ?? 'ws://127.0.0.1:8093/ws/market';
 export const WEB_APP_URL = 'https://general.exchange';
 
 // ---------------------------------------------------------------------------

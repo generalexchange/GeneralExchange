@@ -1,6 +1,6 @@
 /**
  * Monte Carlo compute API — same @gx/analytics engine as the web app.
- * Deploy to DigitalOcean (Docker) for heavy simulation I/O.
+ * Run locally on port 8092 (see docs/LOCAL_DESKTOP.md).
  */
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { evaluateTrade } from '../../packages/analytics/src/scoring/TradeEvaluationEngine';

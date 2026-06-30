@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { getMarketState, seedQuoteFromRest, useSymbolQuote } from '@/store/marketState';
 import { isWsConnected, subscribeMarketWs } from '@/services/wsClient';
+import { fetchV1 } from '@/lib/api/v1Fetch';
 
 const REST_FALLBACK_MS = 30_000;
 
@@ -23,7 +24,7 @@ export function useSpyMarketFeed() {
         return;
       }
       try {
-        const res = await fetch('/api/v1/quote/SPY', { cache: 'no-store' });
+        const res = await fetchV1('/quote/SPY', { cache: 'no-store' });
         if (!res.ok || cancelled) return;
         const json = (await res.json()) as {
           data: {
