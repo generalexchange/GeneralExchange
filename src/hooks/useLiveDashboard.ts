@@ -280,7 +280,7 @@ export function useLiveDashboard(
       cancelled = true;
       window.clearInterval(id);
     };
-  }, [symbol, chartRange, lite, fetchQuoteRest, fetchCandles, fetchChain, fetchNews, quote?.price, wsCandles.length]);
+  }, [symbol, chartRange, lite, fetchQuoteRest, fetchCandles, fetchChain, fetchNews, quote?.price, wsCandles.length, candles.length]);
 
   const displayCandles = useMemo(() => {
     const mapWs = (rows: typeof wsCandles) =>
