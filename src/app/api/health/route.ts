@@ -29,19 +29,17 @@ async function probeIbkrConnected(url: string, ms = 5000): Promise<boolean> {
 }
 
 export async function GET() {
-  const ibkrUrl = (process.env.IBKR_API_URL ?? 'http://localhost:8093').replace(/\/$/, '');
-  const ibkrStatus = await probe(ibkrUrl, '/health', 5000);
-  const ibkrGatewayConnected = ibkrStatus === 'reachable' ? await probeIbkrConnected(ibkrUrl, 5000) : false;
+  const ibkrUrl = (process.env.IBKR_API_URL ?? '').replace(/\/$/, '');
+  const ibkrDirect = process.env.USE_IBKR_DIRECT === 'true' && Boolean(ibkrUrl);
+  const ibkrStatus = ibkrDirect ? await probe(ibkrUrl, '/health', 5000) : 'unavailable';
+  const ibkrGatewayConnected =
+    ibkrDirect && ibkrStatus === 'reachable' ? await probeIbkrConnected(ibkrUrl, 5000) : false;
 
   const mcUrl = (process.env.MONTE_CARLO_API_URL ?? '').replace(/\/$/, '');
   let mcStatus: 'reachable' | 'unavailable' | 'local' = mcUrl ? 'unavailable' : 'local';
   if (mcUrl) mcStatus = await probe(mcUrl, '/health', 5000);
 
-  const wsPublic =
-    process.env.NEXT_PUBLIC_WS_URL?.trim() ||
-    (ibkrUrl.startsWith('http')
-      ? `${ibkrUrl.replace(/^https:/i, 'wss:').replace(/^http:/i, 'ws:')}/ws/market`
-      : '');
+  const wsPublic = process.env.NEXT_PUBLIC_WS_URL?.trim() || '';
   let wsStatus: 'reachable' | 'unavailable' | 'unset' = wsPublic ? 'unavailable' : 'unset';
   if (wsPublic) {
     const httpUrl = wsPublic
@@ -54,8 +52,9 @@ export async function GET() {
 
   return NextResponse.json({
     status: 'ok',
-    ibkr_api: ibkrStatus,
-    ibkr_api_url: ibkrUrl,
+    ibkr_api: ibkrDirect ? ibkrStatus : 'disabled',
+    ibkr_api_url: ibkrDirect ? ibkrUrl : null,
+    ibkr_direct: ibkrDirect,
     ibkr_connected: ibkrGatewayConnected,
     ibkr_api_reachable: ibkrStatus === 'reachable',
     ws_url: wsPublic || null,

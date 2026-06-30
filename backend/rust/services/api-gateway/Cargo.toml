@@ -1,0 +1,17 @@
+﻿[package]
+name    = "api-gateway"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "api-gateway"
+path = "src/main.rs"
+
+[dependencies]
+gx-core            = { path = "../../crates/gx-core" }
+tokio              = { workspace = true }
+tracing            = { workspace = true }
+tracing-subscriber = { workspace = true }
+anyhow             = { workspace = true }
+axum               = { workspace = true }
+serde_json         = { workspace = true }

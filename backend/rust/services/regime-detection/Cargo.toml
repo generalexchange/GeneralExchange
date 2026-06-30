@@ -1,0 +1,21 @@
+﻿[package]
+name    = "regime-detection"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "regime-detection"
+path = "src/main.rs"
+
+[dependencies]
+gx-core            = { path = "../../crates/gx-core" }
+gx-infra           = { path = "../../crates/gx-infra" }
+tokio              = { workspace = true }
+serde              = { workspace = true }
+serde_json         = { workspace = true }
+tracing            = { workspace = true }
+tracing-subscriber = { workspace = true }
+anyhow             = { workspace = true }
+clickhouse         = { workspace = true }
+redis              = { workspace = true }
+time               = { workspace = true }

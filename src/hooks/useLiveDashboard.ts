@@ -354,6 +354,7 @@ export function useLiveDashboard(
           isWsConnected() ||
           quote.source?.includes('ibkr') ||
           source?.includes('ibkr') ||
+          source?.includes('pipeline') ||
           source === 'redis'),
     ),
   };

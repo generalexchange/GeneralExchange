@@ -49,9 +49,9 @@ async function ibkrGet<T>(
   return res.json() as Promise<T>;
 }
 
-export function canUseIbkrDirect(): boolean {
-  return Boolean(IBKR_BASE);
-}
+import { canUseIbkrDirect } from './marketRouting';
+
+export { canUseIbkrDirect };
 
 /** Session open from 1m bars (9:30 ET). */
 function sessionOpenFromMinuteBars(

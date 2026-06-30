@@ -191,9 +191,9 @@ export function isWsConnected(): boolean {
   return connected && socket?.readyState === WebSocket.OPEN;
 }
 
-/** True when a WS URL is configured (build-time or discoverable via /api/health). */
+/** True when a WS URL is configured at build time (not IBKR localhost on public web). */
 export function isMarketWsConfigured(): boolean {
-  return Boolean(BUILD_TIME_WS_URL) || typeof window !== 'undefined';
+  return Boolean(BUILD_TIME_WS_URL);
 }
 
 export function getResolvedWsUrl(): string | null {

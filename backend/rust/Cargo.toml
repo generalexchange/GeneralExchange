@@ -1,0 +1,45 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/gx-core",
+    "crates/gx-infra",
+    "services/tick-normalizer",
+    "services/candle-aggregation",
+    "services/regime-detection",
+    "services/signal-worker",
+    "services/news-nlp",
+    "services/options-chain",
+    "services/data-quality",
+    "services/monte-carlo",
+    "services/backtesting",
+    "services/quant-analytics",
+    "services/api-gateway",
+]
+
+[workspace.dependencies]
+tokio              = { version = "1", features = ["full"] }
+axum               = { version = "0.7", features = ["ws"] }
+tower              = "0.4"
+tower-http         = { version = "0.5", features = ["cors", "trace"] }
+serde              = { version = "1", features = ["derive"] }
+serde_json         = "1"
+tracing            = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+anyhow             = "1"
+thiserror          = "1"
+uuid               = { version = "1", features = ["v4", "v5"] }
+chrono             = { version = "0.4", features = ["serde"] }
+rdkafka            = { version = "0.36", features = ["cmake-build"] }
+clickhouse         = { version = "0.11", features = ["uuid", "time"] }
+redis              = { version = "0.25", features = ["tokio-comp", "connection-manager"] }
+reqwest            = { version = "0.12", features = ["json"] }
+statrs             = "0.17"
+rand               = { version = "0.8", features = ["small_rng"] }
+rand_distr         = "0.4"
+ndarray            = "0.16"
+duckdb             = { version = "0.10", features = ["bundled"] }
+sha2               = "0.10"
+hex                = "0.4"
+jsonwebtoken       = "9"
+dotenvy            = "0.15"
+time               = { version = "0.3", features = ["serde", "formatting", "parsing"] }

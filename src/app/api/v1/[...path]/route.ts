@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { canUseIbkrDirect, tryIbkrDirect } from '@/lib/api/ibkrDirect';
+import { tryIbkrDirect } from '@/lib/api/ibkrDirect';
+import { tryGatewayProxy } from '@/lib/api/gatewayProxy';
+import { canUseIbkrDirect, canUseWebSynth } from '@/lib/api/marketRouting';
+import { tryWebSynth } from '@/lib/market/webSynth';
 import {
   cacheControlHeader,
   getCachedApiResponse,
@@ -29,19 +32,39 @@ function unavailableJson(status = 502) {
   return NextResponse.json(
     {
       error: 'data unavailable',
-      hint: 'Start IB Gateway and the IBKR service (IBKR_API_URL). See docs/IBKR_SETUP.md.',
+      hint: 'Live market data on web uses the pipeline or API gateway — not IBKR. Use the desktop app for IB Gateway feeds.',
       as_of: new Date().toISOString(),
     },
     { status },
   );
 }
 
-async function ibkrResponse(path: string[], search: string, searchParams: URLSearchParams) {
-  const direct = await tryIbkrDirect(path, searchParams);
-  if (!direct) return null;
-  const body = JSON.stringify(direct);
-  const ttl = setCachedApiResponse(path, search, body);
-  return jsonResponse(body, 200, ttl);
+async function marketResponse(path: string[], search: string, searchParams: URLSearchParams) {
+  if (canUseIbkrDirect()) {
+    const direct = await tryIbkrDirect(path, searchParams);
+    if (direct) {
+      const body = JSON.stringify(direct);
+      const ttl = setCachedApiResponse(path, search, body);
+      return jsonResponse(body, 200, ttl);
+    }
+  }
+
+  const gateway = await tryGatewayProxy(path, search);
+  if (gateway) {
+    const ttl = setCachedApiResponse(path, search, gateway.body);
+    return jsonResponse(gateway.body, gateway.status, ttl);
+  }
+
+  if (canUseWebSynth()) {
+    const synth = await tryWebSynth(path, searchParams);
+    if (synth) {
+      const body = JSON.stringify(synth);
+      const ttl = setCachedApiResponse(path, search, body);
+      return jsonResponse(body, 200, ttl);
+    }
+  }
+
+  return null;
 }
 
 async function forward(req: NextRequest, path: string[]) {
@@ -53,12 +76,12 @@ async function forward(req: NextRequest, path: string[]) {
     if (cached) return jsonResponse(cached.body, 200, cached.ttl);
   }
 
-  if (isGet && isMarketPath(path) && canUseIbkrDirect()) {
+  if (isGet && isMarketPath(path)) {
     try {
-      const direct = await ibkrResponse(path, search, req.nextUrl.searchParams);
-      if (direct) return direct;
+      const res = await marketResponse(path, search, req.nextUrl.searchParams);
+      if (res) return res;
     } catch (err) {
-      console.error('[api/v1] ibkr failed', path.join('/'), err);
+      console.error('[api/v1] market failed', path.join('/'), err);
     }
     const stale = getStaleCachedApiResponse(path, search);
     if (stale) return jsonResponse(stale.body, 200, stale.ttl);

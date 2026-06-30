@@ -1,5 +1,7 @@
+import { canUseIbkrDirect } from '@/lib/api/marketRouting';
 import { mapPolygonChain } from '@/lib/api/mapLiveData';
 import { ibkrOptionsChain, ibkrQuote, ibkrCandles } from '@/lib/api/ibkrDirect';
+import { synthCandles, synthOptionsChain, synthQuote } from '@/lib/market/webSynth';
 import { smaCrossBacktest } from '@/lib/monteCarloLegend/analyze';
 import { mapCandleRows } from '@/lib/api/mapLiveData';
 import type { OptionRow } from '@/components/dashboard/terminal/terminalData';
@@ -71,9 +73,21 @@ function parseExpiration(id: string): string {
   return id.match(/(\d{4}-\d{2}-\d{2})/)?.[1] ?? '';
 }
 
+async function marketQuote(symbol: string) {
+  return canUseIbkrDirect() ? ibkrQuote(symbol) : synthQuote(symbol);
+}
+
+async function marketChain(symbol: string) {
+  return canUseIbkrDirect() ? ibkrOptionsChain(symbol) : synthOptionsChain(symbol);
+}
+
+async function marketCandles(symbol: string, interval: string, limit: number) {
+  return canUseIbkrDirect() ? ibkrCandles(symbol, interval, limit) : synthCandles(symbol, interval, limit);
+}
+
 async function historicalWinRate(symbol: string): Promise<{ winRate: number; bullish: boolean }> {
   try {
-    const res = await ibkrCandles(symbol, '1d', 126);
+    const res = await marketCandles(symbol, '1d', 126);
     const rows = mapCandleRows(res.data ?? []);
     const closes = rows.map((c) => c.c).filter((c) => c > 0);
     if (closes.length < 25) return { winRate: 0.5, bullish: true };
@@ -197,8 +211,8 @@ export async function discoverOpportunitiesLocal(
   for (const symbol of symbols) {
     try {
       const [chainRes, quoteRes, hist] = await Promise.all([
-        ibkrOptionsChain(symbol),
-        ibkrQuote(symbol),
+        marketChain(symbol),
+        marketQuote(symbol),
         historicalWinRate(symbol),
       ]);
       const spot =

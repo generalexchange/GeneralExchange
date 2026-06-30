@@ -1,0 +1,21 @@
+[package]
+name    = "candle-aggregation"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "candle-aggregation"
+path = "src/main.rs"
+
+[dependencies]
+gx-core            = { path = "../../crates/gx-core" }
+gx-infra           = { path = "../../crates/gx-infra" }
+tokio              = { workspace = true }
+serde              = { workspace = true }
+serde_json         = { workspace = true }
+tracing            = { workspace = true }
+tracing-subscriber = { workspace = true }
+anyhow             = { workspace = true }
+rdkafka            = { workspace = true }
+clickhouse         = { workspace = true }
+time               = { workspace = true }
