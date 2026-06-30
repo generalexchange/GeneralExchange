@@ -70,15 +70,41 @@ export const DownloadApp: React.FC = () => {
   useEffect(() => {
     if (!release || autoDownloaded.current || platform === 'unknown') return;
     const url = platform === 'mac' ? release.mac : release.windows;
-    if (!url) return;
+    if (!url || url === GITHUB_RELEASES_URL) return;
     autoDownloaded.current = true;
     setAutoStarted(true);
     triggerDownload(url);
   }, [release, platform]);
 
-  const primary = platform === 'mac' || platform === 'windows' ? platform : 'mac';
-  const macHref = release?.mac ?? GITHUB_RELEASES_URL;
-  const winHref = release?.windows ?? GITHUB_RELEASES_URL;
+  const primary = platform === 'mac' || platform === 'windows' ? platform : 'windows';
+  const platforms = release
+    ? (
+        [
+          release.mac && {
+            id: 'mac' as const,
+            href: release.mac,
+            label: 'Download for Mac',
+            sub: release.macName?.endsWith('.app.tar.gz')
+              ? 'Universal · extract & run'
+              : 'Universal · macOS 12+',
+            ext: release.macName?.endsWith('.app.tar.gz') ? 'TAR.GZ' : 'DMG',
+          },
+          release.windows && {
+            id: 'windows' as const,
+            href: release.windows,
+            label: 'Download for Windows',
+            sub: release.windowsName ?? 'Windows 10 & 11',
+            ext: release.windowsName?.endsWith('.msi') ? 'MSI' : 'EXE',
+          },
+        ].filter(Boolean) as Array<{
+          id: 'mac' | 'windows';
+          href: string;
+          label: string;
+          sub: string;
+          ext: string;
+        }>
+      )
+    : [];
 
   return (
     <div className="min-h-screen bg-charcoal text-neutral-100">
@@ -145,30 +171,30 @@ export const DownloadApp: React.FC = () => {
           {release && (
             <>
               <p className="mt-8 text-[12px] uppercase tracking-[0.18em] text-zinc-600">Download</p>
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                {(
-                  [
-                    { id: 'mac' as const, href: macHref, label: 'Download for Mac', sub: 'Universal · macOS 12+' },
-                    { id: 'windows' as const, href: winHref, label: 'Download for Windows', sub: 'Windows 10 & 11' },
-                  ] as const
-                ).map(({ id, href, label, sub }) => {
+              <div
+                className={`mt-6 grid w-full gap-3 ${
+                  platforms.length > 1 ? 'sm:grid-cols-2' : 'max-w-xs mx-auto'
+                }`}
+              >
+                {platforms.map(({ id, href, label, sub, ext }) => {
                   const recommended = id === primary;
                   const Icon = id === 'mac' ? Apple : Monitor;
-                  const ext = id === 'mac' ? 'DMG' : 'EXE';
 
                   return (
                     <a
                       key={id}
                       href={href}
-                      className={`group flex min-w-[220px] flex-1 flex-col items-center rounded-xl px-6 py-5 transition-all duration-300 sm:max-w-[240px] ${
+                      className={`group flex min-w-0 flex-col items-center rounded-xl px-6 py-5 transition-all duration-300 ${
                         recommended
                           ? 'border border-brass/50 bg-tan text-charcoal shadow-[0_24px_60px_-20px_rgba(210,180,140,0.45)] hover:bg-tan-muted'
                           : 'border border-white/[0.1] bg-white/[0.03] text-neutral-100 hover:border-brass/30 hover:bg-white/[0.05]'
                       }`}
                     >
                       <Icon className={`mb-3 h-6 w-6 ${recommended ? 'text-charcoal' : 'text-tan'}`} />
-                      <span className="text-[15px] font-semibold tracking-wide">{label}</span>
-                      <span className={`mt-1 text-[12px] ${recommended ? 'text-charcoal/70' : 'text-zinc-500'}`}>
+                      <span className="text-center text-[15px] font-semibold tracking-wide">{label}</span>
+                      <span
+                        className={`mt-1 text-center text-[12px] ${recommended ? 'text-charcoal/70' : 'text-zinc-500'}`}
+                      >
                         {sub}
                       </span>
                       <span
@@ -184,6 +210,14 @@ export const DownloadApp: React.FC = () => {
                   );
                 })}
               </div>
+              {platform === 'mac' && !release.mac && release.windows && (
+                <p className="mt-4 text-[13px] text-zinc-500">
+                  macOS installer is not on this release yet.{' '}
+                  <a href={release.releasesUrl} className="text-tan underline-offset-4 hover:underline">
+                    Check GitHub for updates
+                  </a>
+                </p>
+              )}
             </>
           )}
 

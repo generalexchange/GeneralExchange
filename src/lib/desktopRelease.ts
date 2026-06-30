@@ -28,7 +28,8 @@ function pickWindowsAsset(assets: Array<{ name: string; browser_download_url: st
 function pickMacAsset(assets: Array<{ name: string; browser_download_url: string }>) {
   return (
     assets.find((a) => /\.dmg$/i.test(a.name) && /universal/i.test(a.name)) ??
-    assets.find((a) => /\.dmg$/i.test(a.name))
+    assets.find((a) => /\.dmg$/i.test(a.name)) ??
+    assets.find((a) => /\.app\.tar\.gz$/i.test(a.name) && /universal/i.test(a.name))
   );
 }
 

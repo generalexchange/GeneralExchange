@@ -92,6 +92,10 @@ jobs:
         if: matrix.platform == 'macos-latest'
         run: rustup target add aarch64-apple-darwin x86_64-apple-darwin
 
+      - name: Install macOS DMG bundler
+        if: matrix.platform == 'macos-latest'
+        run: brew install create-dmg
+
       - name: Cache cargo
         uses: swatinem/rust-cache@v2
         with:
