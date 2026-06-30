@@ -7,6 +7,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { User, LogOut, Settings, LayoutDashboard } from 'lucide-react';
+import { DESKTOP_LEGEND_PATH, isTauriApp } from '@/lib/desktopNav';
 import { getLegendOrigin } from '@/lib/legendUrl';
 
 export const ProfileMenu: React.FC = () => {
@@ -53,7 +54,11 @@ export const ProfileMenu: React.FC = () => {
             <button
               onClick={() => {
                 setIsOpen(false);
-                window.location.replace(getLegendOrigin());
+                if (isTauriApp()) {
+                  router.push(DESKTOP_LEGEND_PATH);
+                } else {
+                  window.location.replace(getLegendOrigin());
+                }
               }}
               className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-gray-300 hover:bg-[#2a2a2a] hover:text-white transition-colors"
             >

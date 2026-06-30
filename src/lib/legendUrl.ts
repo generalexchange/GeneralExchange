@@ -1,9 +1,9 @@
 /**
  * Legend terminal subdomain — authenticated dashboard lives at legend.general.exchange.
- * Post-login must land on the subdomain root (/), not /dashboard on the apex host.
- *
- * LEGEND_ORIGIN is independent of SITE_URL / NEXT_PUBLIC_ROOT_DOMAIN (marketing apex may differ).
+ * In the Tauri desktop bundle, Legend is served at /dashboard/ on the same origin.
  */
+
+import { isTauriApp, DESKTOP_LEGEND_PATH } from '@/lib/desktopNav';
 
 /** Canonical legend terminal origin — override via NEXT_PUBLIC_LEGEND_URL in Vercel. */
 export const LEGEND_ORIGIN = (
@@ -16,6 +16,10 @@ const LEGEND_HOST = new URL(LEGEND_ORIGIN).hostname.toLowerCase();
 
 /** Origin only, e.g. https://legend.general.exchange */
 export function getLegendOrigin(): string {
+  if (typeof window !== 'undefined' && isTauriApp()) {
+    return window.location.origin;
+  }
+
   if (typeof window !== 'undefined') {
     const { hostname, port, protocol } = window.location;
 
@@ -36,6 +40,13 @@ export function getLegendOrigin(): string {
 
 /** Full URL for the legend terminal (default path is subdomain root). */
 export function legendDashboardUrl(path = '/'): string {
+  if (typeof window !== 'undefined' && isTauriApp()) {
+    if (!path || path === '/') return DESKTOP_LEGEND_PATH;
+    const normalized = path.startsWith('/') ? path : `/${path}`;
+    if (normalized.startsWith('/dashboard')) return normalized.endsWith('/') ? normalized : `${normalized}/`;
+    return `${DESKTOP_LEGEND_PATH.replace(/\/$/, '')}${normalized}`;
+  }
+
   const origin = getLegendOrigin();
   if (!path || path === '/') return `${origin}/`;
   const normalized = path.startsWith('/') ? path : `/${path}`;

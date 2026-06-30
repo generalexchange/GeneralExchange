@@ -56,10 +56,10 @@ try {
       ...process.env,
       DESKTOP_BUILD: '1',
       NEXT_PUBLIC_DESKTOP_LOCAL: '1',
-      NEXT_PUBLIC_IBKR_API_URL: process.env.NEXT_PUBLIC_IBKR_API_URL ?? 'http://127.0.0.1:8093',
+      NEXT_PUBLIC_IBKR_API_URL: process.env.NEXT_PUBLIC_IBKR_API_URL ?? 'http://localhost:8093',
       NEXT_PUBLIC_IBKR_API_KEY: process.env.NEXT_PUBLIC_IBKR_API_KEY ?? process.env.IBKR_API_KEY ?? 'gx_ibkr_dev_key',
-      NEXT_PUBLIC_WS_URL: process.env.NEXT_PUBLIC_WS_URL ?? 'ws://127.0.0.1:8093/ws/market',
-      NEXT_PUBLIC_MONTE_CARLO_API_URL: process.env.NEXT_PUBLIC_MONTE_CARLO_API_URL ?? 'http://127.0.0.1:8092',
+      NEXT_PUBLIC_WS_URL: process.env.NEXT_PUBLIC_WS_URL ?? 'ws://localhost:8093/ws/market',
+      NEXT_PUBLIC_MONTE_CARLO_API_URL: process.env.NEXT_PUBLIC_MONTE_CARLO_API_URL ?? 'http://localhost:8092',
       NEXT_PUBLIC_DESKTOP_APP_VERSION: tauriVersion,
     },
   });

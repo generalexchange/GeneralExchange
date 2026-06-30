@@ -5,11 +5,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import { getLegendOrigin } from '@/lib/legendUrl';
+import { DESKTOP_LEGEND_PATH, isTauriApp } from '@/lib/desktopNav';
 
 const easeLux = [0.22, 1, 0.36, 1] as const;
 
 export const Login: React.FC = () => {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -23,7 +26,11 @@ export const Login: React.FC = () => {
     setIsSubmitting(true);
     setTimeout(() => {
       setIsSubmitting(false);
-      window.location.replace(getLegendOrigin());
+      if (isTauriApp()) {
+        router.replace(DESKTOP_LEGEND_PATH);
+      } else {
+        window.location.replace(getLegendOrigin());
+      }
     }, 800);
   };
 

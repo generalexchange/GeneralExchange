@@ -18,7 +18,7 @@ import {
   type CandleRow,
 } from '@/lib/api/mapLiveData';
 import { readJsonResponse } from '@/lib/api/readJsonResponse';
-import { fetchV1 } from '@/lib/api/v1Fetch';
+import { fetchV1, isLocalDesktopClient } from '@/lib/api/v1Fetch';
 import { getMarketSession, quoteCardTheme, type MarketSession } from '@/lib/marketSession';
 import { filterExtendedDayCandles, sessionOpenFromCandles } from '@/lib/extendedHoursChart';
 import type { Candle } from '@/components/dashboard/terminal/terminalData';
@@ -228,7 +228,7 @@ export function useLiveDashboard(
     async function load() {
       if (!quote?.price) setLoading(true);
 
-      if (isMarketWsConfigured()) {
+      if (isMarketWsConfigured() && !isLocalDesktopClient()) {
         const deadline = Date.now() + WS_WAIT_MS;
         while (!cancelled && Date.now() < deadline && wsQuotePrice(symbol) <= 0) {
           await sleep(250);
@@ -247,8 +247,10 @@ export function useLiveDashboard(
           if (wsPrice > 0) {
             spot = wsPrice;
             setError(null);
-          } else if (isMarketWsConfigured()) {
+          } else if (isMarketWsConfigured() && !isLocalDesktopClient()) {
             setError(isWsConnected() ? 'Waiting for first tick…' : 'Connecting to WebSocket…');
+          } else if (isLocalDesktopClient()) {
+            setError('Start IB Gateway (4002) and IBKR service on localhost:8093');
           } else {
             setError(e instanceof Error ? e.message : 'quote unavailable');
           }

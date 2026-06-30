@@ -3,9 +3,13 @@
  */
 import { envelope } from './envelope';
 
-const IBKR_BASE = (process.env.NEXT_PUBLIC_IBKR_API_URL ?? 'http://127.0.0.1:8093').replace(/\/$/, '');
+const IBKR_BASE = (process.env.NEXT_PUBLIC_IBKR_API_URL ?? 'http://localhost:8093')
+  .replace(/\/$/, '')
+  .replace('127.0.0.1', 'localhost');
 const IBKR_KEY = process.env.NEXT_PUBLIC_IBKR_API_KEY ?? '';
-const MC_BASE = (process.env.NEXT_PUBLIC_MONTE_CARLO_API_URL ?? 'http://127.0.0.1:8092').replace(/\/$/, '');
+const MC_BASE = (process.env.NEXT_PUBLIC_MONTE_CARLO_API_URL ?? 'http://localhost:8092')
+  .replace(/\/$/, '')
+  .replace('127.0.0.1', 'localhost');
 const MC_KEY = process.env.NEXT_PUBLIC_MC_API_KEY ?? '';
 
 export function isLocalDesktopClient(): boolean {
@@ -22,7 +26,20 @@ function ibkrHeaders(): Record<string, string> {
 async function ibkrGet(path: string, params: Record<string, string> = {}): Promise<Response> {
   const url = new URL(`${IBKR_BASE}${path}`);
   for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
-  const res = await fetch(url.toString(), { cache: 'no-store', headers: ibkrHeaders() });
+  const init: RequestInit = { cache: 'no-store', headers: ibkrHeaders() };
+
+  if (isLocalDesktopClient()) {
+    try {
+      const { fetch: tauriFetch } = await import('@tauri-apps/plugin-http');
+      const res = await tauriFetch(url.toString(), init);
+      if (!res.ok) throw new Error(`IBKR ${res.status}`);
+      return res;
+    } catch {
+      /* fall through to browser fetch */
+    }
+  }
+
+  const res = await fetch(url.toString(), init);
   if (!res.ok) {
     throw new Error(`IBKR ${res.status}`);
   }
@@ -36,8 +53,7 @@ async function fetchLocalV1(pathWithQuery: string): Promise<Response> {
 
   if (segments[0] === 'quote' && segments[1]) {
     const sym = segments[1].toUpperCase();
-    const raw = await ibkrGet('/market-data', { symbol: sym, sec_type: 'STK' });
-    const q = (await raw.json()) as {
+    let q: {
       last: number | null;
       bid: number | null;
       ask: number | null;
@@ -45,18 +61,71 @@ async function fetchLocalV1(pathWithQuery: string): Promise<Response> {
       close: number | null;
       open: number | null;
       timestamp?: string;
-    };
-    const price = q.last ?? q.bid ?? q.ask ?? 0;
-    const prevClose = q.prev_close ?? q.close ?? price;
+    } | null = null;
+
+    try {
+      const raw = await ibkrGet('/market-data', { symbol: sym, sec_type: 'STK' });
+      q = (await raw.json()) as typeof q;
+    } catch {
+      q = null;
+    }
+
+    let price = q?.last ?? q?.bid ?? q?.ask ?? 0;
+    let prevClose = q?.prev_close ?? q?.close ?? 0;
+    let sessionOpen = q?.open && q.open > 0 ? q.open : undefined;
+
+    if (!price || !prevClose) {
+      try {
+        const [dailyRes, minuteRes] = await Promise.all([
+          ibkrGet('/historical', {
+            symbol: sym,
+            bar_size: '1 day',
+            duration: '5 D',
+            persist: 'false',
+            cached: 'false',
+            use_rth: 'true',
+          }),
+          !sessionOpen
+            ? ibkrGet('/historical', {
+                symbol: sym,
+                bar_size: '1 min',
+                duration: '1 D',
+                persist: 'false',
+                cached: 'false',
+                use_rth: 'false',
+              })
+            : Promise.resolve(null),
+        ]);
+        const daily = (await dailyRes.json()) as {
+          bars: Array<{ timestamp: string; close: number; open: number }>;
+        };
+        const bars = daily.bars ?? [];
+        if (!price && bars.length) price = bars[bars.length - 1].close;
+        if (!prevClose && bars.length > 1) prevClose = bars[bars.length - 2].close;
+        if (!sessionOpen && minuteRes) {
+          const minute = (await minuteRes.json()) as { bars: Array<{ timestamp: string; open: number }> };
+          const hit = minute.bars?.find((b) => /T09:30:00/.test(b.timestamp));
+          if (hit && hit.open > 0) sessionOpen = hit.open;
+        }
+      } catch {
+        /* historical enrich optional */
+      }
+    }
+
+    if (!price || price <= 0) {
+      throw new Error(`IBKR no live price for ${sym}`);
+    }
+    if (!prevClose || prevClose <= 0) prevClose = price;
+
     const body = envelope(
       {
         symbol: sym,
         price,
         prevClose,
-        sessionOpen: q.open && q.open > 0 ? q.open : undefined,
+        sessionOpen,
         change: price - prevClose,
         changePct: prevClose ? ((price - prevClose) / prevClose) * 100 : 0,
-        timestamp: q.timestamp ? Date.parse(q.timestamp) : Date.now(),
+        timestamp: q?.timestamp ? Date.parse(q.timestamp) : Date.now(),
       },
       'ibkr',
     );

@@ -1,7 +1,7 @@
 {
   "name": "general-exchange-terminal",
   "private": true,
-  "version": "0.2.1",
+  "version": "0.2.2",
   "type": "module",
   "description": "general.exchange desktop app — the full platform, bundled and installable",
   "scripts": {

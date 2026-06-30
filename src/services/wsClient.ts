@@ -57,7 +57,7 @@ function handleMessage(raw: string) {
 }
 
 function marketWsUrl(base: string): string {
-  const root = base.replace(/\/$/, '');
+  const root = base.replace(/\/$/, '').replace('127.0.0.1', 'localhost');
   if (root.includes('/ws/market')) return root;
   if (root.includes('/ws/stocks')) {
     return root.replace(/\/ws\/stocks.*/i, '/ws/market');

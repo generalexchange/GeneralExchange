@@ -13,6 +13,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { DESKTOP_APP_VERSION } from '@/config/desktopApp';
 
 const easeLux = [0.22, 1, 0.36, 1] as const;
 
@@ -82,7 +83,7 @@ export function DesktopLanding() {
 
         {/* Buttons */}
         <motion.div
-          className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap"
+          className="mt-8 flex flex-col gap-3 sm:flex-row"
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.65, ease: easeLux, delay: 0.48 }}
@@ -93,28 +94,15 @@ export function DesktopLanding() {
           >
             Sign In
           </Link>
-          <Link
-            href="/pricing"
-            className="inline-flex h-12 min-w-[10rem] items-center justify-center rounded-md border border-white/20 bg-white/[0.03] px-8 text-sm font-semibold tracking-wide text-zinc-100 transition-all hover:border-tan/45 hover:bg-white/[0.08] hover:text-tan active:scale-[0.99]"
-          >
-            Pricing
-          </Link>
-          <Link
-            href="/request-access"
-            className="inline-flex h-12 min-w-[10rem] items-center justify-center rounded-md border border-brass/55 bg-black/40 px-8 text-sm font-semibold tracking-wide text-zinc-200 backdrop-blur-sm transition-all hover:border-brass hover:bg-black/60 hover:text-tan active:scale-[0.99]"
-          >
-            Create Account
-          </Link>
         </motion.div>
 
-        {/* Fine print */}
         <motion.p
           className="mt-6 text-[11px] text-zinc-600"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.75 }}
         >
-          v{typeof window !== 'undefined' && (window as Window & { __GE_VERSION__?: string }).__GE_VERSION__ ? (window as Window & { __GE_VERSION__?: string }).__GE_VERSION__ : '0.2.0'}
+          v{DESKTOP_APP_VERSION}
         </motion.p>
       </div>
     </div>
