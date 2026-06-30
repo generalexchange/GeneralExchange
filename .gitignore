@@ -45,3 +45,6 @@ infra/local/.env
 # Python
 __pycache__/
 *.py[cod]
+
+# Tauri updater signing (private key only — pubkey lives in tauri.conf.json)
+apps/desktop/.tauri-updater.key
