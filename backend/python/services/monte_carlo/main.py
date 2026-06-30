@@ -1,5 +1,5 @@
 """
-Monte Carlo compute API (Python) — DigitalOcean production service.
+Monte Carlo compute API (Python) — optional local service on port 8092.
 
 Compatible with existing Next.js proxy routes (/v1/price-path, etc.) plus
 options-specific endpoints for contract probabilities and after-hours BSM.

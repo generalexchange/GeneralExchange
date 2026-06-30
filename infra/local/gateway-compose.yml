@@ -1,9 +1,10 @@
-# Run IB Gateway on a DigitalOcean Droplet (Ubuntu 22.04, 1GB+ RAM).
-# After login to Gateway, set IB_HOST on the App Platform ibkr-api service to this droplet's IP.
+# IB Gateway on your local machine (Docker optional — or run IB Gateway natively on Windows/Mac).
 #
-#   docker compose -f gateway-compose.yml up -d
+#   cd infra/local
+#   cp .env.example .env   # fill TWS_USERID / TWS_PASSWORD
+#   docker compose up -d
 #
-# Default ports: 4002 (paper API), 5900 (VNC for 2FA if needed)
+# Paper API port: 4002  |  VNC (2FA): 5900
 
 services:
   ib-gateway:
@@ -15,7 +16,6 @@ services:
       - "5900:5900"
     volumes:
       - jts-data:/home/ibgateway/Jts
-      # Prefer TWS_PASSWORD_FILE in .env so special chars (e.g. !) are not mangled.
       - ./secrets/tws_password:/run/secrets/tws_password:ro
     ulimits:
       nofile:

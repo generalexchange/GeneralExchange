@@ -59,7 +59,7 @@
     "publisher": "Old West Solutions",
     "category": "Finance",
     "shortDescription": "general.exchange desktop app",
-    "longDescription": "The full general.exchange platform as a native desktop application — the complete trading portal and every route, bundled and installable, connecting to general.exchange services for live data.",
+    "longDescription": "The full general.exchange platform as a native desktop application — bundled UI connecting to IBKR and market services on your local machine (127.0.0.1).",
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",

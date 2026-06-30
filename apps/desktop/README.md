@@ -174,8 +174,7 @@ Replace `plugins.updater.pubkey` in `tauri.conf.json` with a real key
 
 ## Configuration
 
-- `src-tauri/tauri.conf.json` — product name, window, splash screen, CSP (only
-  `api.general.exchange` / `ws.general.exchange` are reachable), bundle targets,
+- `src-tauri/tauri.conf.json` — product name, window, splash screen, bundle targets,
   and updater config.
-- `src/lib/constants.ts` — API/WS endpoints and defaults.
+- `src/lib/constants.ts` — local API/WS endpoints (`127.0.0.1:8093`).
 - `public/splash.html` + `public/splash.png` — the launch splash screen.

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import type { DiscoverResponse, OutcomesResponse, RankedContract } from '@/lib/opportunity/types';
+import { fetchV1Post } from '@/lib/api/v1Fetch';
 import { TRADEABLE_SYMBOLS } from '@/data/symbols';
 
 const REFRESH_MS = 120_000;
@@ -16,11 +17,8 @@ export function useOpportunityDiscovery() {
     if (!background) setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/v1/opportunity/discover', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ symbols: [...TRADEABLE_SYMBOLS] }),
-        cache: 'no-store',
+      const res = await fetchV1Post('/opportunity/discover', {
+        symbols: [...TRADEABLE_SYMBOLS],
       });
       if (!res.ok) throw new Error(`discover ${res.status}`);
       const data = (await res.json()) as DiscoverResponse;
@@ -58,12 +56,7 @@ export function useOpportunityAnalysis(symbol: string | null) {
     }
     let cancelled = false;
     setLoading(true);
-    fetch('/api/v1/opportunity/analyze', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ symbol, includeChain: true }),
-      cache: 'no-store',
-    })
+    fetchV1Post('/opportunity/analyze', { symbol, includeChain: true })
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
       .then((data: RankedContract) => {
         if (!cancelled) setAnalysis(data);
@@ -90,12 +83,7 @@ export function useExpiredOutcomes(enabled: boolean) {
     if (!enabled) return;
     let cancelled = false;
     setLoading(true);
-    fetch('/api/v1/opportunity/outcomes', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ limit: 40 }),
-      cache: 'no-store',
-    })
+    fetchV1Post('/opportunity/outcomes', { limit: 40 })
       .then((r) => (r.ok ? r.json() : Promise.reject()))
       .then((json: OutcomesResponse) => {
         if (!cancelled) setData(json);

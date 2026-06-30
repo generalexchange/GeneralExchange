@@ -18,6 +18,7 @@ import {
   type CandleRow,
 } from '@/lib/api/mapLiveData';
 import { readJsonResponse } from '@/lib/api/readJsonResponse';
+import { fetchV1 } from '@/lib/api/v1Fetch';
 import { getMarketSession, quoteCardTheme, type MarketSession } from '@/lib/marketSession';
 import { filterExtendedDayCandles, sessionOpenFromCandles } from '@/lib/extendedHoursChart';
 import type { Candle } from '@/components/dashboard/terminal/terminalData';
@@ -133,7 +134,7 @@ export function useLiveDashboard(
   }, [quote?.price]);
 
   const fetchQuoteRest = useCallback(async () => {
-    const res = await fetch(`/api/v1/quote/${symbol}`, { cache: 'no-store' });
+    const res = await fetchV1(`/quote/${symbol}`, { cache: 'no-store' });
     const json = await readJsonResponse<{ data?: QuotePayload; source?: string; error?: string }>(res);
     if (!res.ok || json.error) {
       throw new Error(json.error ?? 'quote unavailable');
@@ -179,7 +180,7 @@ export function useLiveDashboard(
 
   const fetchCandles = useCallback(async () => {
     const spec = RANGE_FETCH[chartRange];
-    const res = await fetch(`/api/v1/candles/${symbol}/${spec.interval}?limit=${spec.limit}`, {
+    const res = await fetchV1(`/candles/${symbol}/${spec.interval}?limit=${spec.limit}`, {
       cache: 'no-store',
     });
     if (!res.ok) return [];
@@ -196,7 +197,7 @@ export function useLiveDashboard(
   }, [symbol, chartRange]);
 
   const fetchChain = useCallback(async (spot: number) => {
-    const res = await fetch(`/api/v1/options/chain/${symbol}`, { cache: 'no-store' });
+    const res = await fetchV1(`/options/chain/${symbol}`, { cache: 'no-store' });
     if (!res.ok) return [];
     try {
       const json = await readJsonResponse<{ data: Parameters<typeof mapPolygonChain>[0] }>(res);
@@ -209,7 +210,7 @@ export function useLiveDashboard(
   }, [symbol]);
 
   const fetchNews = useCallback(async () => {
-    const res = await fetch(`/api/v1/news/${symbol}`, { cache: 'no-store' });
+    const res = await fetchV1(`/news/${symbol}`, { cache: 'no-store' });
     if (!res.ok) return [];
     try {
       const json = await readJsonResponse<{ data: Parameters<typeof mapPolygonNews>[0] }>(res);

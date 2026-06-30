@@ -56,7 +56,7 @@ IBKR_API_KEY=your-shared-secret
 DATABASE_URL=postgresql+asyncpg://ibkr:ibkr@localhost:5432/ibkr
 DATABASE_URL_SYNC=postgresql+psycopg2://ibkr:ibkr@localhost:5432/ibkr
 
-NEXT_PUBLIC_WS_URL=ws://localhost:8093/ws/stocks?symbols=SPY,QQQ,NVDA
+NEXT_PUBLIC_WS_URL=ws://localhost:8093/ws/market
 ```
 
 **`IB_CLIENT_ID`**: Each simultaneous API connection needs a unique client ID (1, 2, 3…). If you see "client id already in use", increment it.
@@ -134,24 +134,29 @@ All REST routes except `/health` accept optional header `X-API-Key` when `IBKR_A
 
 | Path | Description |
 |------|-------------|
-| `/ws/stocks?symbols=SPY,QQQ` | Live stock prices |
+| `/ws/market` | Live quotes, indicators, and candle stream (preferred) |
+| `/ws/stocks?symbols=SPY,QQQ` | Legacy stock price stream |
 | `/ws/options?symbol=SPY` | Options / greeks stream |
 | `/ws/account` | Account summary updates |
 | `/ws/positions` | Position updates |
 
 ---
 
-## 6. Next.js frontend
+## 6. Next.js frontend (local dev)
 
-Set on Vercel or in `.env.local`:
+In `.env.local`:
 
 ```
-IBKR_API_URL=https://your-ibkr-host:8093
-IBKR_API_KEY=...
-NEXT_PUBLIC_WS_URL=wss://your-ibkr-host:8093/ws/stocks?symbols=SPY,QQQ,NVDA
+IBKR_API_URL=http://127.0.0.1:8093
+IBKR_API_KEY=gx_ibkr_dev_key
+NEXT_PUBLIC_WS_URL=ws://127.0.0.1:8093/ws/market
 ```
 
-The Legend dashboard calls `/api/v1/quote`, `/api/v1/candles`, and `/api/v1/options/chain`, which proxy to the IBKR service.
+The Legend dashboard calls `/api/v1/quote`, `/api/v1/candles`, and `/api/v1/options/chain`, which proxy to the local IBKR service.
+
+### Desktop app
+
+The Tauri installer bundles the UI as static files and calls `127.0.0.1:8093` directly (no Next.js server). See [LOCAL_DESKTOP.md](./LOCAL_DESKTOP.md).
 
 ---
 

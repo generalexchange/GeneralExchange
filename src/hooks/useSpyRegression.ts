@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { betaVsSpy } from '@/config/symbolBeta';
 import { mapCandleRows, type CandleRow } from '@/lib/api/mapLiveData';
 import { readJsonResponse } from '@/lib/api/readJsonResponse';
+import { fetchV1 } from '@/lib/api/v1Fetch';
 import {
   normalizedVsSpy,
   regressionVsSpy,
@@ -17,7 +18,7 @@ function mapRows(rows: CandleRow[]): Candle[] {
 }
 
 async function fetchDailyCandles(symbol: string, limit = 126): Promise<Candle[]> {
-  const res = await fetch(`/api/v1/candles/${symbol}/1d?limit=${limit}`, { cache: 'no-store' });
+  const res = await fetchV1(`/candles/${symbol}/1d?limit=${limit}`, { cache: 'no-store' });
   if (!res.ok) return [];
   try {
     const json = await readJsonResponse<{ data: CandleRow[] }>(res);

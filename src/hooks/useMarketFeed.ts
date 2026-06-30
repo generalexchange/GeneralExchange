@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { isMarketWsConfigured, subscribeMarketWs } from '@/services/wsClient';
+import { fetchV1 } from '@/lib/api/v1Fetch';
 import { seedCandlesFromRest, seedQuoteFromRest, useSymbolQuote } from '@/store/marketState';
 import type { Candle } from '@/components/dashboard/terminal/terminalData';
 
@@ -52,8 +53,8 @@ export function useMarketFeed(symbol: string) {
     async function load() {
       try {
         const [qRes, cRes] = await Promise.all([
-          fetch(`/api/v1/quote/${symbol}`, { cache: 'no-store' }),
-          fetch(`/api/v1/candles/${symbol}/5m?limit=78`, { cache: 'no-store' }),
+          fetchV1(`/quote/${symbol}`, { cache: 'no-store' }),
+          fetchV1(`/candles/${symbol}/5m?limit=78`, { cache: 'no-store' }),
         ]);
 
         if (cancelled) return;
