@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   isMarketWsConfigured,
+  setWsSymbolWatch,
   subscribeMarketWs,
   subscribeWsStatus,
   isWsConnected,
@@ -115,6 +116,9 @@ export function useLiveDashboard(
 
   useEffect(() => subscribeMarketWs(), []);
   useEffect(() => subscribeWsStatus(setWsOpen), []);
+  useEffect(() => {
+    setWsSymbolWatch([symbol]);
+  }, [symbol]);
 
   useEffect(() => {
     const id = window.setInterval(() => setSession(getMarketSession()), 60_000);
@@ -152,14 +156,15 @@ export function useLiveDashboard(
     return q;
   }, [symbol]);
 
-  // Keep equity quote fresh via REST (works on delayed Polygon plans without WebSocket).
+  // REST quote fallback only when stream has not delivered a price yet.
   useEffect(() => {
     let cancelled = false;
     const refreshQuote = async () => {
+      if (quote?.streamSeq && quote.price > 0) return;
       try {
         await fetchQuoteRest();
       } catch {
-        /* WS or stale cache may still have a price */
+        /* stream may still have a price */
       }
     };
     void refreshQuote();
@@ -170,7 +175,7 @@ export function useLiveDashboard(
       cancelled = true;
       window.clearInterval(id);
     };
-  }, [fetchQuoteRest]);
+  }, [fetchQuoteRest, quote?.streamSeq, quote?.price]);
 
   const fetchCandles = useCallback(async () => {
     const spec = RANGE_FETCH[chartRange];
@@ -250,7 +255,12 @@ export function useLiveDashboard(
       }
 
       if (cancelled) return;
-      const tasks: Promise<unknown>[] = [fetchCandles()];
+      const tasks: Promise<unknown>[] = [];
+      if (chartRange !== '1D' || wsCandles.length === 0) {
+        tasks.push(fetchCandles());
+      } else if (candles.length === 0) {
+        tasks.push(fetchCandles());
+      }
       if (!lite) {
         tasks.push(fetchChain(spot), fetchNews());
       }
@@ -264,13 +274,13 @@ export function useLiveDashboard(
     }
 
     load();
-    const pollMs = chartRange === '1D' ? 30_000 : 60_000;
+    const pollMs = chartRange === '1D' && wsCandles.length > 0 ? 120_000 : chartRange === '1D' ? 30_000 : 60_000;
     const id = window.setInterval(load, pollMs);
     return () => {
       cancelled = true;
       window.clearInterval(id);
     };
-  }, [symbol, chartRange, lite, fetchQuoteRest, fetchCandles, fetchChain, fetchNews, quote?.price]);
+  }, [symbol, chartRange, lite, fetchQuoteRest, fetchCandles, fetchChain, fetchNews, quote?.price, wsCandles.length]);
 
   const displayCandles = useMemo(() => {
     const mapWs = (rows: typeof wsCandles) =>
@@ -316,7 +326,8 @@ export function useLiveDashboard(
     source: quote?.source ?? source,
     live: Boolean(
       quote?.price &&
-        (wsLive ||
+        (quote.streamSeq != null ||
+          wsLive ||
           isWsConnected() ||
           quote.source?.includes('ibkr') ||
           source?.includes('ibkr') ||

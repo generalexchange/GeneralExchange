@@ -26,6 +26,7 @@ class Settings(BaseSettings):
     ibkr_api_key: str = Field(default="", validation_alias="IBKR_API_KEY")
 
     default_symbols: str = Field(default="SPY,QQQ,NVDA,AAPL,TSLA,AMD,MSFT,AMZN,META", validation_alias="WS_SYMBOLS")
+    ws_batch_ms: int = Field(default=150, validation_alias="WS_BATCH_MS")
 
 
 settings = Settings()
