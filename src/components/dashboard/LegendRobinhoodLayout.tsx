@@ -10,6 +10,9 @@ import { TRADEABLE_SYMBOLS, symbolDisplayName } from '@/data/symbols';
 import { StockQuoteHero } from '@/components/dashboard/StockQuoteHero';
 import { LegendOptionsFeed } from '@/components/dashboard/LegendOptionsFeed';
 import { MonteCarloLegendShowcase } from '@/components/dashboard/MonteCarloLegendShowcase';
+import { MarketPulseVisualizer } from '@/components/dashboard/MarketPulseVisualizer';
+import { SpyRiskPanel } from '@/components/dashboard/SpyRiskPanel';
+import { CorrelationHeatmap } from '@/components/dashboard/CorrelationHeatmap';
 import { DualLayerGreekViz } from '@/components/dashboard/DualLayerGreekViz';
 import { MarketTemperature } from '@/components/dashboard/MarketTemperature';
 import { OpportunityDiscoveryFeed } from '@/components/dashboard/OpportunityDiscoveryFeed';
@@ -94,7 +97,11 @@ export function LegendRobinhoodLayout({
 
           {advanced ? (
             <div className="space-y-3">
-              <Panel title={`${symbol} · 5M`} className="h-[280px]">
+              <Panel title={`${symbol} · 5M`} className="relative h-[280px] overflow-hidden">
+                <div className="pointer-events-none absolute inset-0 z-0 opacity-40">
+                  <MarketPulseVisualizer symbol={symbol} mode="hero" height={280} />
+                </div>
+                <div className="relative z-10 h-full">
                 {feed.candles.length ? (
                   <PriceChart ref={priceChartRef} candles={feed.candles} active />
                 ) : (
@@ -102,6 +109,7 @@ export function LegendRobinhoodLayout({
                     {feed.loading ? 'Loading candles…' : 'No candle data'}
                   </div>
                 )}
+                </div>
               </Panel>
               <Panel title="Gamma exposure" className="h-[190px]">
                 <div ref={gexRef} className="h-full">
@@ -117,6 +125,11 @@ export function LegendRobinhoodLayout({
             </div>
           ) : (
             <>
+              <div className="relative overflow-hidden rounded-xl">
+                <div className="pointer-events-none absolute inset-0 z-0 opacity-60">
+                  <MarketPulseVisualizer symbol={symbol} mode="calm" height={140} />
+                </div>
+                <div className="relative z-10">
               <StockQuoteHero
                 symbol={symbol}
                 name={symbolDisplayName(symbol)}
@@ -140,6 +153,8 @@ export function LegendRobinhoodLayout({
                 onOpenAdvanced={() => setAdvanced(true)}
                 liveDisplayPrice={smooth.displayPrice}
               />
+                </div>
+              </div>
               {feed.live && chartRange === '1D' && (
                 <LivePulseIndicator accentClass="bg-[#00C805]" visible />
               )}
@@ -170,6 +185,8 @@ export function LegendRobinhoodLayout({
         </section>
 
         <aside className="flex w-full shrink-0 flex-col gap-3 lg:w-80 lg:max-w-[320px]">
+          <SpyRiskPanel symbol={symbol} />
+          <CorrelationHeatmap highlight={symbol} />
           <MarketTemperature
             selectedSymbol={symbol}
             spyCandles={spyFeed.candles}

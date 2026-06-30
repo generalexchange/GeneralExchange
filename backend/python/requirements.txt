@@ -12,6 +12,8 @@ websockets==13.0.1
 
 # Compute
 numpy==1.26.4
+scipy==1.13.1
+pandas==2.2.2
 
 # Backtesting (Phase 3)
 duckdb==1.1.1
