@@ -52,6 +52,7 @@ export async function GET() {
   return NextResponse.json({
     available: Boolean(windows || mac),
     tag: release.tag_name,
+    version: release.tag_name.replace(/^v/i, ''),
     releasesUrl: release.html_url,
     windows: windows?.browser_download_url ?? null,
     mac: mac?.browser_download_url ?? null,

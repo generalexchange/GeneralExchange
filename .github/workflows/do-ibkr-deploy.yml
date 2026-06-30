@@ -1,4 +1,4 @@
-# Deploy IBKR + Monte Carlo to DigitalOcean on push to main
+# Deploy IBKR + Monte Carlo to DigitalOcean when credentials are configured.
 
 name: Deploy IBKR stack to DigitalOcean
 
@@ -18,16 +18,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install doctl
-        uses: digitalocean/action-doctl@v2
-        with:
-          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      - name: Deploy to DigitalOcean
+        env:
+          DO_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+        run: |
+          if [ -z "$DO_TOKEN" ]; then
+            echo "::notice::DIGITALOCEAN_ACCESS_TOKEN is not set — skipping IBKR stack deploy."
+            echo "Add the secret under Settings → Secrets and variables → Actions to enable auto-deploy."
+            exit 0
+          fi
 
-      - name: Deploy IBKR API + Postgres
-        run: doctl apps create --spec .do/ibkr-app.yaml --upsert --wait
+          curl -sSL "https://github.com/digitalocean/doctl/releases/download/v1.163.0/doctl-1.163.0-linux-amd64.tar.gz" | tar xz
+          sudo mv doctl /usr/local/bin/doctl
 
-      - name: Deploy Monte Carlo API
-        run: doctl apps create --spec .do/monte-carlo-app.yaml --upsert --wait
-
-      - name: List app URLs
-        run: doctl apps list --format Spec.Name,DefaultIngress
+          doctl auth init -t "$DO_TOKEN"
+          doctl apps create --spec .do/ibkr-app.yaml --upsert --wait
+          doctl apps create --spec .do/monte-carlo-app.yaml --upsert --wait
+          doctl apps list --format Spec.Name,DefaultIngress

@@ -40,11 +40,15 @@ export async function GET() {
   const wsPublic =
     process.env.NEXT_PUBLIC_WS_URL?.trim() ||
     (ibkrUrl.startsWith('http')
-      ? `${ibkrUrl.replace(/^https:/i, 'wss:').replace(/^http:/i, 'ws:')}/ws/stocks?symbols=SPY,QQQ,NVDA,AAPL,TSLA,AMD,MSFT,AMZN,META`
+      ? `${ibkrUrl.replace(/^https:/i, 'wss:').replace(/^http:/i, 'ws:')}/ws/market`
       : '');
   let wsStatus: 'reachable' | 'unavailable' | 'unset' = wsPublic ? 'unavailable' : 'unset';
   if (wsPublic) {
-    const httpUrl = wsPublic.replace(/^wss:/i, 'https:').replace(/^ws:/i, 'http:').replace(/\/ws\/stocks.*/i, '');
+    const httpUrl = wsPublic
+      .replace(/^wss:/i, 'https:')
+      .replace(/^ws:/i, 'http:')
+      .replace(/\/ws\/market.*/i, '')
+      .replace(/\/ws\/stocks.*/i, '');
     wsStatus = await probe(httpUrl, '/health', 5000);
   }
 

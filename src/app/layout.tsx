@@ -3,6 +3,7 @@ import { Cormorant_Garamond, Inter } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { Providers } from './providers';
 import { AgGridSetup } from '@/components/grids/AgGridSetup';
+import { UpdateNotificationBar } from '@/components/UpdateNotificationBar';
 import {
   DEFAULT_DESCRIPTION,
   DEFAULT_KEYWORDS,
@@ -90,7 +91,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${inter.variable} ${cormorant.variable} font-sans antialiased`}>
         <Providers>
           <AgGridSetup />
-          <div className="bg-stone-100 dark:bg-dark-gray min-h-screen">{children}</div>
+          <div className="bg-stone-100 dark:bg-dark-gray min-h-screen pb-14">{children}</div>
+          <UpdateNotificationBar />
           <Analytics />
         </Providers>
       </body>

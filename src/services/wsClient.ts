@@ -1,12 +1,18 @@
 /**
- * Unified WebSocket client — resolves URL at runtime from /api/health when needed.
+ * Unified WebSocket client — connects to /ws/market stream engine.
  */
 'use client';
 
-import { applyCandleUpdate, applyMarketUpdate } from '@/store/marketState';
+import {
+  applyCandleUpdate,
+  applyMarketSnapshot,
+  applyMarketStreamUpdate,
+  applyMarketUpdate,
+} from '@/store/marketState';
 import type { WsOutbound } from '@/lib/ws/types';
 
 const BUILD_TIME_WS_URL = process.env.NEXT_PUBLIC_WS_URL?.trim() ?? '';
+const DEFAULT_SYMBOLS = 'SPY,QQQ,NVDA,AAPL,TSLA,AMD,MSFT,AMZN,META';
 
 let socket: WebSocket | null = null;
 let resolvedWsUrl: string | null = BUILD_TIME_WS_URL || null;
@@ -16,10 +22,25 @@ let subscribers = 0;
 let closed = false;
 let connected = false;
 const statusListeners = new Set<(open: boolean) => void>();
+const symbolWatch = new Set<string>(DEFAULT_SYMBOLS.split(',').map((s) => s.trim()).filter(Boolean));
 
 function notifyStatus(open: boolean) {
   connected = open;
   for (const fn of statusListeners) fn(open);
+}
+
+function sendSubscribe() {
+  if (!socket || socket.readyState !== WebSocket.OPEN) return;
+  const symbols = [...symbolWatch];
+  if (!symbols.length) return;
+  socket.send(JSON.stringify({ action: 'subscribe', symbols }));
+}
+
+export function setWsSymbolWatch(symbols: string[]) {
+  for (const s of symbols) {
+    if (s) symbolWatch.add(s.toUpperCase());
+  }
+  sendSubscribe();
 }
 
 function handleMessage(raw: string) {
@@ -30,17 +51,28 @@ function handleMessage(raw: string) {
     return;
   }
   if (msg.type === 'market') applyMarketUpdate(msg.data);
+  if (msg.type === 'stream') applyMarketStreamUpdate(msg.data);
+  if (msg.type === 'snapshot') applyMarketSnapshot(msg.data);
   if (msg.type === 'candle') applyCandleUpdate(msg.data, msg.replaceLast ?? true);
 }
 
+function marketWsUrl(base: string): string {
+  const root = base.replace(/\/$/, '');
+  if (root.includes('/ws/market')) return root;
+  if (root.includes('/ws/stocks')) {
+    return root.replace(/\/ws\/stocks.*/i, '/ws/market');
+  }
+  return `${root.replace(/^https:/i, 'wss:').replace(/^http:/i, 'ws:')}/ws/market`;
+}
+
 async function resolveWsUrl(): Promise<string | null> {
-  if (resolvedWsUrl) return resolvedWsUrl;
+  if (resolvedWsUrl) return marketWsUrl(resolvedWsUrl);
   if (typeof window === 'undefined') return null;
   try {
     const res = await fetch('/api/health', { cache: 'no-store' });
     const json = (await res.json()) as { ws_url?: string | null };
     const url = json.ws_url?.trim();
-    if (url) resolvedWsUrl = url;
+    if (url) resolvedWsUrl = marketWsUrl(url);
   } catch {
     /* health probe failed */
   }
@@ -67,6 +99,7 @@ async function openConnection() {
   socket.onopen = () => {
     attempt = 0;
     notifyStatus(true);
+    sendSubscribe();
   };
 
   socket.onmessage = (ev) => handleMessage(String(ev.data));
@@ -96,6 +129,8 @@ export function subscribeMarketWs(): () => void {
   closed = false;
   if (!socket || socket.readyState === WebSocket.CLOSED) {
     void openConnection();
+  } else if (socket.readyState === WebSocket.OPEN) {
+    sendSubscribe();
   }
 
   return () => {

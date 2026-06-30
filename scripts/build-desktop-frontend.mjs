@@ -37,10 +37,19 @@ try {
   }
 
   console.log('[desktop] Building static UI bundle (next build → out/)…');
+  const tauriConfPath = join(repoRoot, 'apps', 'desktop', 'src-tauri', 'tauri.conf.json');
+  const tauriVersion = existsSync(tauriConfPath)
+    ? JSON.parse(readFileSync(tauriConfPath, 'utf8')).version
+    : '0.2.0';
+
   execSync('npx next build', {
     cwd: repoRoot,
     stdio: 'inherit',
-    env: { ...process.env, DESKTOP_BUILD: '1' },
+    env: {
+      ...process.env,
+      DESKTOP_BUILD: '1',
+      NEXT_PUBLIC_DESKTOP_APP_VERSION: tauriVersion,
+    },
   });
 
   console.log('[desktop] Static bundle ready at out/.');

@@ -4,7 +4,7 @@
 'use client';
 
 import { useSyncExternalStore } from 'react';
-import type { CandleUpdate, MarketUpdate } from '@/lib/ws/types';
+import type { CandleUpdate, MarketStreamUpdate, MarketUpdate } from '@/lib/ws/types';
 import type { Candle } from '@/components/dashboard/terminal/terminalData';
 
 export type SymbolQuote = MarketUpdate & {
@@ -14,6 +14,14 @@ export type SymbolQuote = MarketUpdate & {
   changePct?: number;
   afterHoursChange?: number;
   afterHoursChangePct?: number;
+  change1m?: number;
+  change5m?: number;
+  change15m?: number;
+  rsi?: number;
+  vwap?: number;
+  volatility?: number;
+  momentumScore?: number;
+  streamSeq?: number;
 };
 
 export type TapePrint = {
@@ -49,6 +57,68 @@ export function subscribeMarketState(fn: () => void): () => void {
 
 export function getMarketState(): MarketState {
   return state;
+}
+
+export function applyMarketStreamUpdate(update: MarketStreamUpdate) {
+  const existing = state.quotes[update.symbol];
+  const prevClose =
+    update.prev_close && update.prev_close > 0
+      ? update.prev_close
+      : existing?.prevClose != null && existing.prevClose > 0
+        ? existing.prevClose
+        : undefined;
+  const change = prevClose != null ? update.price - prevClose : existing?.change;
+  const changePct =
+    prevClose != null && prevClose > 0
+      ? ((update.price - prevClose) / prevClose) * 100
+      : existing?.changePct;
+
+  applyMarketUpdate({
+    symbol: update.symbol,
+    price: update.price,
+    volume: update.volume,
+    timestamp: update.timestamp,
+    source: 'ibkr',
+  });
+
+  const q = getMarketState().quotes[update.symbol];
+  if (!q) return;
+
+  state = {
+    ...getMarketState(),
+    quotes: {
+      ...getMarketState().quotes,
+      [update.symbol]: {
+        ...q,
+        prevClose,
+        change,
+        changePct,
+        change1m: update.change_1m ?? q.change1m,
+        change5m: update.change_5m ?? q.change5m,
+        change15m: update.change_15m ?? q.change15m,
+        rsi: update.rsi ?? q.rsi,
+        vwap: update.vwap ?? q.vwap,
+        volatility: update.volatility ?? q.volatility,
+        momentumScore: update.momentum_score ?? q.momentumScore,
+        streamSeq: update.seq ?? q.streamSeq,
+      },
+    },
+  };
+  emit();
+}
+
+/** Hydrate from /ws/market snapshot (instant state on connect). */
+export function applyMarketSnapshot(snapshot: MarketStreamUpdate & { candles_1m?: CandleUpdate[] }) {
+  applyMarketStreamUpdate(snapshot);
+  if (snapshot.candles_1m?.length) {
+    const sym = snapshot.symbol;
+    const key = `${sym}:1m`;
+    state = {
+      ...getMarketState(),
+      candles: { ...getMarketState().candles, [key]: snapshot.candles_1m.slice(-MAX_CANDLES) },
+    };
+    emit();
+  }
 }
 
 export function applyMarketUpdate(update: MarketUpdate) {

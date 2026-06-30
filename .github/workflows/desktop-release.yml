@@ -74,13 +74,19 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
-          cache-dependency-path: apps/desktop/package-lock.json
+          cache-dependency-path: |
+            package-lock.json
+            apps/desktop/package-lock.json
 
       - uses: dtolnay/rust-toolchain@stable
+        if: matrix.rust-targets != ''
         with:
           targets: ${{ matrix.rust-targets }}
+
+      - uses: dtolnay/rust-toolchain@stable
+        if: matrix.rust-targets == ''
 
       - name: Add macOS Rust targets (universal build)
         if: matrix.platform == 'macos-latest'
@@ -92,11 +98,11 @@ jobs:
           workspaces: apps/desktop/src-tauri
 
       - name: Install desktop shell dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Install web app dependencies (bundled UI)
         working-directory: ${{ github.workspace }}
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Build & release with Tauri
         uses: tauri-apps/tauri-action@v0

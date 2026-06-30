@@ -32,6 +32,8 @@ from services.ibkr.streaming import (
     stream_position_updates,
     stream_stock_prices,
 )
+from services.ibkr.market_engine.ingestion import get_ingestion
+from services.ibkr.market_engine.ws import stream_market
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -48,7 +50,14 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
         await asyncio.wait_for(asyncio.to_thread(init_db), timeout=8.0)
     except Exception as exc:
         logger.warning("PostgreSQL init skipped or failed: %s", exc)
+    ingestion_task = asyncio.create_task(get_ingestion().start())
     yield
+    ingestion_task.cancel()
+    try:
+        await ingestion_task
+    except asyncio.CancelledError:
+        pass
+    await get_ingestion().stop()
     client = IBKRClient._instance
     if client:
         await client.disconnect()
@@ -78,6 +87,14 @@ async def health() -> HealthResponse:
         client_id=settings.ib_client_id,
         account=account,
     )
+
+
+@app.get("/market/snapshot", dependencies=[Depends(verify_api_key)])
+async def market_snapshot(symbols: str = Query("")):
+    from services.ibkr.market_engine.engine import get_market_engine
+
+    syms = [s.strip() for s in symbols.split(",") if s.strip()] or None
+    return {"snapshots": get_market_engine().get_snapshots(syms)}
 
 
 @app.get("/market-data", dependencies=[Depends(verify_api_key)])
@@ -163,6 +180,11 @@ async def executions():
 async def signals(symbols: str = Query("SPY,QQQ")):
     syms = [s.strip() for s in symbols.split(",") if s.strip()]
     return await generate_signals(syms)
+
+
+@app.websocket("/ws/market")
+async def ws_market(ws: WebSocket):
+    await stream_market(ws)
 
 
 @app.websocket("/ws/stocks")

@@ -6,6 +6,24 @@ export type MarketUpdate = {
   timestamp: number;
   source: 'ibkr';
 };
+
+/** Real-time stream delta from /ws/market engine. */
+export type MarketStreamUpdate = MarketUpdate & {
+  prev_close?: number;
+  change_1m?: number;
+  change_5m?: number;
+  change_15m?: number;
+  rsi?: number;
+  vwap?: number;
+  volatility?: number;
+  momentum_score?: number;
+  seq?: number;
+};
+
+export type MarketSnapshot = MarketStreamUpdate & {
+  candles_1m?: CandleUpdate[];
+};
+
 export type CandleUpdate = {
   symbol: string;
   interval: string;
@@ -20,4 +38,7 @@ export type CandleUpdate = {
 
 export type WsOutbound =
   | { type: 'market'; data: MarketUpdate }
-  | { type: 'candle'; data: CandleUpdate; replaceLast?: boolean };
+  | { type: 'stream'; data: MarketStreamUpdate }
+  | { type: 'snapshot'; data: MarketSnapshot }
+  | { type: 'candle'; data: CandleUpdate; replaceLast?: boolean }
+  | { type: 'pong' };
