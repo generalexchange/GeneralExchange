@@ -23,6 +23,16 @@ function ibkrHeaders(): Record<string, string> {
   return h;
 }
 
+type IbkrMarketQuote = {
+  last: number | null;
+  bid: number | null;
+  ask: number | null;
+  prev_close: number | null;
+  close: number | null;
+  open: number | null;
+  timestamp?: string;
+};
+
 async function ibkrGet(path: string, params: Record<string, string> = {}): Promise<Response> {
   const url = new URL(`${IBKR_BASE}${path}`);
   for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
@@ -53,19 +63,11 @@ async function fetchLocalV1(pathWithQuery: string): Promise<Response> {
 
   if (segments[0] === 'quote' && segments[1]) {
     const sym = segments[1].toUpperCase();
-    let q: {
-      last: number | null;
-      bid: number | null;
-      ask: number | null;
-      prev_close: number | null;
-      close: number | null;
-      open: number | null;
-      timestamp?: string;
-    } | null = null;
+    let q: IbkrMarketQuote | null = null;
 
     try {
       const raw = await ibkrGet('/market-data', { symbol: sym, sec_type: 'STK' });
-      q = (await raw.json()) as typeof q;
+      q = (await raw.json()) as IbkrMarketQuote;
     } catch {
       q = null;
     }
