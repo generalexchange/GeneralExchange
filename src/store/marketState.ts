@@ -9,6 +9,7 @@ import type { Candle } from '@/components/dashboard/terminal/terminalData';
 
 export type SymbolQuote = MarketUpdate & {
   prevClose?: number;
+  sessionOpen?: number;
   change?: number;
   changePct?: number;
   afterHoursChange?: number;
@@ -53,11 +54,12 @@ export function getMarketState(): MarketState {
 export function applyMarketUpdate(update: MarketUpdate) {
   const existing = state.quotes[update.symbol];
   const prevClose =
-    existing?.prevClose != null && existing.prevClose > 0
-      ? existing.prevClose
-      : (existing?.price ?? update.price);
-  const change = update.price - prevClose;
-  const changePct = prevClose ? (change / prevClose) * 100 : 0;
+    existing?.prevClose != null && existing.prevClose > 0 ? existing.prevClose : undefined;
+  const change = prevClose != null ? update.price - prevClose : existing?.change;
+  const changePct =
+    prevClose != null && prevClose > 0
+      ? ((update.price - prevClose) / prevClose) * 100
+      : existing?.changePct;
 
   const print: TapePrint = {
     id: `${update.symbol}-${update.timestamp}-${update.price}`,
@@ -110,6 +112,7 @@ export function seedQuoteFromRest(
   payload: {
     price: number;
     prevClose: number;
+    sessionOpen?: number;
     change: number;
     changePct: number;
     afterHoursChange?: number;
@@ -125,6 +128,7 @@ export function seedQuoteFromRest(
         symbol,
         price: payload.price,
         prevClose: payload.prevClose,
+        sessionOpen: payload.sessionOpen,
         change: payload.change,
         changePct: payload.changePct,
         afterHoursChange: payload.afterHoursChange,

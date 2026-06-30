@@ -8,7 +8,7 @@ import {
 } from '@/lib/api/responseCache';
 
 export const dynamic = 'force-dynamic';
-export const maxDuration = 30;
+export const maxDuration = 60;
 
 const MARKET_PATHS = new Set(['ticks', 'candles', 'quote', 'news', 'account', 'positions', 'signals']);
 

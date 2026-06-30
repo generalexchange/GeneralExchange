@@ -13,18 +13,20 @@ import {
   YAxis,
 } from 'recharts';
 import type { Candle } from '@/components/dashboard/terminal/terminalData';
+import { ChartLiveDot } from '@/components/dashboard/ChartLiveDot';
 import {
   BAND_FILL,
   sessionZones,
   timeMarkers,
   toExtendedChartPoints,
   type ChartPoint,
+  type SessionBand,
 } from '@/lib/extendedHoursChart';
 
 export type QuoteCardTheme = 'tan' | 'dark';
 
-const CHART_HEIGHT = 240;
-const CHART_HEIGHT_EXTENDED = 260;
+const CHART_HEIGHT = 280;
+const CHART_HEIGHT_EXTENDED = 320;
 
 /** Zoom Y-axis to visible closes with padding so the line fills ~70–85% of plot height. */
 export function computeVisibleYDomain(prices: number[], paddingRatio = 0.08): [number, number] {
@@ -53,6 +55,16 @@ function ChartTooltip({
 }) {
   if (!active || !payload?.length) return null;
   const row = payload[0].payload;
+  const price = row.price ?? payload[0].value;
+
+  const sessionLabel =
+    row.band === 'pre'
+      ? 'Pre-market'
+      : row.band === 'after' || row.band === 'prev-after'
+        ? 'After-hours'
+        : row.band === 'regular'
+          ? 'Regular session'
+          : 'Extended';
 
   return (
     <div
@@ -60,7 +72,7 @@ function ChartTooltip({
         theme === 'dark' ? 'border-zinc-700 bg-zinc-900 text-zinc-100' : 'border-zinc-200 bg-white text-zinc-900'
       }`}
     >
-      <div className="font-semibold">${payload[0].value.toFixed(2)}</div>
+      <div className="font-semibold">${Number(price).toFixed(2)}</div>
       <div className={theme === 'dark' ? 'text-zinc-400' : 'text-zinc-500'}>
         {new Date(row.t).toLocaleString('en-US', {
           timeZone: 'America/New_York',
@@ -69,7 +81,7 @@ function ChartTooltip({
           hour: '2-digit',
           minute: '2-digit',
         })}{' '}
-        ET
+        ET · {sessionLabel}
       </div>
     </div>
   );
@@ -83,6 +95,7 @@ export function QuotePriceChart({
   height,
   showTooltip = true,
   extendedHours = false,
+  live = false,
 }: {
   candles: Candle[];
   up: boolean;
@@ -91,9 +104,11 @@ export function QuotePriceChart({
   height?: number;
   showTooltip?: boolean;
   extendedHours?: boolean;
+  live?: boolean;
 }) {
   const gradId = useId().replace(/:/g, '');
   const plotHeight = height ?? (extendedHours ? CHART_HEIGHT_EXTENDED : CHART_HEIGHT);
+  const strokeBg = theme === 'dark' ? '#0a0a0a' : '#f2ead3';
 
   const chartData = useMemo<ChartPoint[]>(() => {
     if (extendedHours) return toExtendedChartPoints(candles);
@@ -101,13 +116,14 @@ export function QuotePriceChart({
       index,
       t: c.t,
       price: c.c,
-      band: 'regular' as const,
+      band: 'regular' as SessionBand,
     }));
   }, [candles, extendedHours]);
 
   const yDomain = useMemo(() => computeVisibleYDomain(chartData.map((d) => d.price)), [chartData]);
   const zones = useMemo(() => (extendedHours ? sessionZones(chartData) : []), [chartData, extendedHours]);
   const markers = useMemo(() => (extendedHours ? timeMarkers(chartData) : []), [chartData, extendedHours]);
+  const lastIndex = chartData.length - 1;
 
   const stroke = up ? '#00C805' : '#FF5000';
   const baselineColor = theme === 'dark' ? '#404040' : '#b0b0b0';
@@ -119,15 +135,25 @@ export function QuotePriceChart({
   }
 
   return (
-    <div className="w-full" style={{ height: plotHeight }}>
+    <div className="relative w-full" style={{ height: plotHeight }}>
+      {extendedHours && plotHeight >= 120 && (
+        <div className="pointer-events-none absolute right-3 top-1 z-10 flex gap-2 font-mono text-[8px] uppercase tracking-wide text-zinc-500">
+          <span className="flex items-center gap-1">
+            <span className="h-1.5 w-3 rounded-sm bg-amber-400/30" /> Pre
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="h-1.5 w-3 rounded-sm bg-white/15" /> 9:30–4pm
+          </span>
+        </div>
+      )}
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart
           data={chartData}
-          margin={{ top: 6, right: 4, left: 4, bottom: extendedHours ? 22 : 0 }}
+          margin={{ top: 8, right: 12, left: 4, bottom: extendedHours ? 24 : 4 }}
         >
           <defs>
             <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={stroke} stopOpacity={0.22} />
+              <stop offset="0%" stopColor={stroke} stopOpacity={0.28} />
               <stop offset="95%" stopColor={stroke} stopOpacity={0.02} />
             </linearGradient>
           </defs>
@@ -150,8 +176,9 @@ export function QuotePriceChart({
                 key={m.label}
                 x={m.index}
                 stroke={baselineColor}
-                strokeDasharray="3 3"
-                strokeOpacity={0.5}
+                strokeDasharray={m.label === '9:30am' ? '2 2' : '3 3'}
+                strokeOpacity={m.label === '9:30am' ? 0.9 : 0.45}
+                strokeWidth={m.label === '9:30am' ? 1.5 : 1}
               />
             ))}
 
@@ -181,19 +208,29 @@ export function QuotePriceChart({
               ifOverflow="hidden"
             />
           )}
-          <Area type="linear" dataKey="price" fill={`url(#${gradId})`} stroke="none" isAnimationActive={false} />
+          <Area type="monotone" dataKey="price" fill={`url(#${gradId})`} stroke="none" isAnimationActive={false} />
           <Line
-            type="linear"
+            type="monotone"
             dataKey="price"
             stroke={stroke}
-            strokeWidth={2.5}
-            dot={false}
-            activeDot={{
-              r: 4,
-              fill: stroke,
-              stroke: theme === 'dark' ? '#0a0a0a' : '#f2ead3',
-              strokeWidth: 2,
+            strokeWidth={2.75}
+            dot={(props) => {
+              const { index, cx, cy } = props;
+              if (!live || index !== lastIndex) return <g key={`dot-${index}`} />;
+              return (
+                <ChartLiveDot key={`live-${index}`} cx={cx} cy={cy} stroke={stroke} strokeBg={strokeBg} />
+              );
             }}
+            activeDot={
+              live
+                ? false
+                : {
+                    r: 4,
+                    fill: stroke,
+                    stroke: strokeBg,
+                    strokeWidth: 2,
+                  }
+            }
             isAnimationActive={false}
           />
         </ComposedChart>

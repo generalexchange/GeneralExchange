@@ -124,70 +124,71 @@ export async function discoverOpportunitiesLocal(
   symbols: string[] = [...SYMBOLS],
   includeChain = false,
 ): Promise<DiscoverResponse> {
-  const opportunities: RankedContract[] = [];
+  const settled = await Promise.all(
+    symbols.map(async (symbol) => {
+      try {
+        const [chainRes, quoteRes] = await Promise.all([
+          ibkrOptionsChain(symbol),
+          ibkrQuote(symbol),
+        ]);
+        const spot =
+          (quoteRes.data as { price?: number } | undefined)?.price ??
+          (chainRes.data?.[0] as { underlying_price?: number } | undefined)?.underlying_price ??
+          0;
+        const rows = mapPolygonChain(chainRes.data ?? [], spot);
+        const ranked = rows
+          .map((r) => scoreRow(r, spot, symbol))
+          .filter((r): r is RankedContract => r != null)
+          .sort((a, b) => b.compositeScore - a.compositeScore);
 
-  for (const symbol of symbols) {
-    try {
-      const [chainRes, quoteRes] = await Promise.all([
-        ibkrOptionsChain(symbol),
-        ibkrQuote(symbol),
-      ]);
-      const spot =
-        (quoteRes.data as { price?: number } | undefined)?.price ??
-        (chainRes.data?.[0] as { underlying_price?: number } | undefined)?.underlying_price ??
-        0;
-      const rows = mapPolygonChain(chainRes.data ?? [], spot);
-      const ranked = rows
-        .map((r) => scoreRow(r, spot, symbol))
-        .filter((r): r is RankedContract => r != null)
-        .sort((a, b) => b.compositeScore - a.compositeScore);
+        if (!ranked.length) return null;
+        const top = ranked[0];
+        if (includeChain) top.chain = ranked.slice(0, 25);
+        return top;
+      } catch (err) {
+        return {
+          id: `${symbol}-err`,
+          symbol,
+          optionType: 'CALL' as const,
+          strike: 0,
+          expiration: '',
+          bid: 0,
+          ask: 0,
+          mid: 0,
+          volume: 0,
+          openInterest: 0,
+          iv: 0,
+          delta: 0,
+          gamma: 0,
+          theta: 0,
+          vega: 0,
+          dte: 0,
+          expectedReturn: 0,
+          confidence: 0,
+          probabilityOfProfit: 0,
+          compositeScore: 0,
+          factorScores: {
+            expected_return: 0,
+            probability_of_profit: 0,
+            liquidity: 0,
+            spread_quality: 0,
+            gamma_positioning: 0,
+            monte_carlo: 0,
+          },
+          monteCarlo: {
+            probabilityITM: 0,
+            probabilityProfitable: 0,
+            expectedPayoff: 0,
+            blackScholesPrice: 0,
+          },
+          analysis: { rationale: '', rankFactors: {} as RankedContract['factorScores'], weights: WEIGHTS },
+          error: err instanceof Error ? err.message : 'discover_failed',
+        } satisfies RankedContract;
+      }
+    }),
+  );
 
-      if (!ranked.length) continue;
-      const top = ranked[0];
-      if (includeChain) top.chain = ranked.slice(0, 25);
-      opportunities.push(top);
-    } catch (err) {
-      opportunities.push({
-        id: `${symbol}-err`,
-        symbol,
-        optionType: 'CALL',
-        strike: 0,
-        expiration: '',
-        bid: 0,
-        ask: 0,
-        mid: 0,
-        volume: 0,
-        openInterest: 0,
-        iv: 0,
-        delta: 0,
-        gamma: 0,
-        theta: 0,
-        vega: 0,
-        dte: 0,
-        expectedReturn: 0,
-        confidence: 0,
-        probabilityOfProfit: 0,
-        compositeScore: 0,
-        factorScores: {
-          expected_return: 0,
-          probability_of_profit: 0,
-          liquidity: 0,
-          spread_quality: 0,
-          gamma_positioning: 0,
-          monte_carlo: 0,
-        },
-        monteCarlo: {
-          probabilityITM: 0,
-          probabilityProfitable: 0,
-          expectedPayoff: 0,
-          blackScholesPrice: 0,
-        },
-        analysis: { rationale: '', rankFactors: {} as RankedContract['factorScores'], weights: WEIGHTS },
-        error: err instanceof Error ? err.message : 'discover_failed',
-      });
-    }
-  }
-
+  const opportunities = settled.filter((o): o is RankedContract => o != null);
   opportunities.sort((a, b) => b.compositeScore - a.compositeScore);
   return { opportunities, generatedAt: new Date().toISOString(), ml: { weights: WEIGHTS } };
 }

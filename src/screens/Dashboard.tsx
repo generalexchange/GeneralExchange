@@ -21,6 +21,7 @@ import { TRADEABLE_SYMBOLS, symbolDisplayName } from '../data/symbols';
 import { WalletButton } from '../components/dashboard/WalletButton';
 import { MarketTemperature } from '../components/dashboard/MarketTemperature';
 import { OpportunityDiscoveryFeed } from '../components/dashboard/OpportunityDiscoveryFeed';
+import { DualLayerGreekViz } from '../components/dashboard/DualLayerGreekViz';
 
 function EmptyState({ message }: { message: string }) {
   return (
@@ -36,7 +37,7 @@ export const Dashboard: React.FC = () => {
   const [chartRange, setChartRange] = useState<ChartRange>('1D');
 
   const feed = useLiveDashboard(symbol, chartRange);
-  const spyFeed = useLiveDashboard('SPY', '1D');
+  const spyFeed = useLiveDashboard('SPY', '1D', { lite: true });
 
   const spot = feed.quote?.price ?? 0;
   const [gexRef, gexInView] = useInViewport<HTMLDivElement>();
@@ -121,6 +122,7 @@ export const Dashboard: React.FC = () => {
             change={feed.quote?.change ?? 0}
             changePct={feed.quote?.changePct ?? 0}
             prevClose={feed.quote?.prevClose}
+            sessionOpen={feed.sessionOpen}
             afterHoursChange={feed.quote?.afterHoursChange}
             afterHoursChangePct={feed.quote?.afterHoursChangePct}
             candles={feed.candles}
@@ -131,6 +133,11 @@ export const Dashboard: React.FC = () => {
             onChartRangeChange={setChartRange}
             onOpenAdvanced={() => setAdvanced(true)}
           />
+          {feed.chain.length > 0 && (
+            <div className="mt-3">
+              <DualLayerGreekViz symbol={symbol} chain={feed.chain} />
+            </div>
+          )}
           </>
         )}
         </section>
@@ -143,7 +150,7 @@ export const Dashboard: React.FC = () => {
             spyLoading={spyFeed.loading}
           />
           <div className="flex min-h-[420px] flex-1 flex-col lg:min-h-[calc(100vh-8rem)]">
-            <OpportunityDiscoveryFeed />
+            <OpportunityDiscoveryFeed highlightSymbol={symbol} />
           </div>
         </aside>
       </main>

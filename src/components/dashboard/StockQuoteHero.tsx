@@ -6,7 +6,6 @@ import { Loader2, Settings } from 'lucide-react';
 import type { Candle } from '@/components/dashboard/terminal/terminalData';
 import type { ChartRange } from '@/hooks/useLiveDashboard';
 import { QuotePriceChart, CHART_HEIGHT_EXTENDED, QUOTE_CHART_HEIGHT, type QuoteCardTheme } from '@/components/dashboard/QuotePriceChart';
-import { LivePulseIndicator } from '@/components/dashboard/LivePulseIndicator';
 import { legendDashboardUrl } from '@/lib/legendUrl';
 
 export type { QuoteCardTheme };
@@ -18,6 +17,7 @@ export type StockQuoteHeroProps = {
   change: number;
   changePct: number;
   prevClose?: number;
+  sessionOpen?: number;
   afterHoursChange?: number;
   afterHoursChangePct?: number;
   candles?: Candle[];
@@ -55,6 +55,7 @@ export function StockQuoteHero({
   change,
   changePct,
   prevClose: prevCloseProp,
+  sessionOpen,
   afterHoursChange,
   afterHoursChangePct,
   candles = [],
@@ -91,7 +92,6 @@ export function StockQuoteHero({
   const ahColor = ahUp ? 'text-[#00C805]' : 'text-[#FF5000]';
   const muted = isDark ? 'text-zinc-400' : 'text-zinc-600';
   const border = isDark ? 'border-zinc-800' : 'border-zinc-300';
-  const accentDot = up ? 'bg-[#00C805]' : 'bg-[#FF5000]';
   const tabBorder = isDark ? 'border-zinc-800' : 'border-zinc-200';
   const chartH = is1D ? CHART_HEIGHT_EXTENDED : QUOTE_CHART_HEIGHT;
 
@@ -133,6 +133,13 @@ export function StockQuoteHero({
           <p className={`mt-2 text-[14px] tabular-nums ${changeColor}`}>
             {fmtSigned(change)} ({fmtSignedPct(changePct)}) <span className={muted}>Today</span>
           </p>
+          {(sessionOpen != null && sessionOpen > 0) || prevClose > 0 ? (
+            <p className={`mt-1 text-[12px] tabular-nums ${muted}`}>
+              {sessionOpen != null && sessionOpen > 0 ? <>Open ${fmtPrice(sessionOpen)}</> : null}
+              {sessionOpen != null && sessionOpen > 0 && prevClose > 0 ? ' · ' : null}
+              {prevClose > 0 ? <>Prev close ${fmtPrice(prevClose)}</> : null}
+            </p>
+          ) : null}
           {showAh && (
             <p className={`mt-0.5 text-[14px] tabular-nums ${ahColor}`}>
               {fmtSigned(afterHoursChange!)} ({fmtSignedPct(afterHoursChangePct!)}){' '}
@@ -161,11 +168,10 @@ export function StockQuoteHero({
             theme={theme}
             height={chartH}
             extendedHours={is1D}
+            live={Boolean(live && is1D)}
           />
         )}
       </div>
-
-      <LivePulseIndicator accentClass={accentDot} visible={is1D && Boolean(live)} />
 
       <div className={`flex items-center justify-between border-t px-2 pb-3 pt-2 ${tabBorder}`}>
         <div className="flex flex-wrap items-center gap-0.5">

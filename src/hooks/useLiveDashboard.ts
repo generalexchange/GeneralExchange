@@ -18,14 +18,14 @@ import {
 } from '@/lib/api/mapLiveData';
 import { readJsonResponse } from '@/lib/api/readJsonResponse';
 import { getMarketSession, quoteCardTheme, type MarketSession } from '@/lib/marketSession';
-import { filterExtendedDayCandles } from '@/lib/extendedHoursChart';
+import { filterExtendedDayCandles, sessionOpenFromCandles } from '@/lib/extendedHoursChart';
 import type { Candle } from '@/components/dashboard/terminal/terminalData';
 import type { NewsRow, OptionRow } from '@/components/dashboard/terminal/terminalData';
 
 export type ChartRange = '1D' | '1W' | '1M' | '3M' | 'YTD' | '1Y' | '5Y' | 'MAX';
 
 const RANGE_FETCH: Record<ChartRange, { interval: string; limit: number }> = {
-  '1D': { interval: '1m', limit: 200 },
+  '1D': { interval: '1m', limit: 960 },
   '1W': { interval: '15m', limit: 67 },
   '1M': { interval: '1h', limit: 120 },
   '3M': { interval: '1d', limit: 65 },
@@ -47,12 +47,19 @@ function wsQuotePrice(sym: string): number {
 }
 
 /** Pin the chart to the latest REST/WS quote when bar data is delayed. */
-function mergeLiveQuote(candles: Candle[], quote: { price: number; timestamp?: number | string } | null): Candle[] {
+function mergeLiveQuote(candles: Candle[], quote: { price: number; prevClose?: number; timestamp?: number | string } | null): Candle[] {
   if (!quote?.price) return candles;
   const price = quote.price;
   const qt = quote.timestamp ? Number(quote.timestamp) : Date.now();
+  const prev = quote.prevClose && quote.prevClose > 0 ? quote.prevClose : price;
+
   if (!candles.length) {
-    return [{ t: qt, o: price, h: price, l: price, c: price, v: 0, vwap: price }];
+    // Robinhood-style line needs at least two points — open → now.
+    const openMs = qt - 6.5 * 3_600_000;
+    return [
+      { t: openMs, o: prev, h: Math.max(prev, price), l: Math.min(prev, price), c: prev, v: 0, vwap: prev },
+      { t: qt, o: prev, h: Math.max(prev, price), l: Math.min(prev, price), c: price, v: 0, vwap: price },
+    ];
   }
   const last = candles[candles.length - 1];
   if (qt - last.t < 120_000) {
@@ -74,6 +81,7 @@ type QuotePayload = {
   symbol: string;
   price: number;
   prevClose: number;
+  sessionOpen?: number;
   change: number;
   changePct: number;
   afterHoursChange?: number;
@@ -81,8 +89,18 @@ type QuotePayload = {
   timestamp?: number | string;
 };
 
+export type LiveDashboardOptions = {
+  /** Skip options chain + news (e.g. SPY sidebar tape only). */
+  lite?: boolean;
+};
+
 /** WebSocket-first live dashboard — REST enriches prevClose / history. */
-export function useLiveDashboard(symbol: string, chartRange: ChartRange = '1D') {
+export function useLiveDashboard(
+  symbol: string,
+  chartRange: ChartRange = '1D',
+  options: LiveDashboardOptions = {},
+) {
+  const lite = options.lite ?? false;
   const quote = useSymbolQuote(symbol);
   const wsInterval = RANGE_FETCH[chartRange].interval;
   const wsCandles = useSymbolCandles(symbol, wsInterval);
@@ -124,6 +142,7 @@ export function useLiveDashboard(symbol: string, chartRange: ChartRange = '1D') 
     seedQuoteFromRest(symbol, {
       price: q.price,
       prevClose: q.prevClose,
+      sessionOpen: q.sessionOpen,
       change: q.change,
       changePct: q.changePct,
       afterHoursChange: q.afterHoursChange,
@@ -231,7 +250,11 @@ export function useLiveDashboard(symbol: string, chartRange: ChartRange = '1D') 
       }
 
       if (cancelled) return;
-      await Promise.allSettled([fetchCandles(), fetchChain(spot), fetchNews()]);
+      const tasks: Promise<unknown>[] = [fetchCandles()];
+      if (!lite) {
+        tasks.push(fetchChain(spot), fetchNews());
+      }
+      await Promise.allSettled(tasks);
 
       if (!cancelled) {
         const hasPrice = wsQuotePrice(symbol) > 0 || (quote?.price ?? 0) > 0;
@@ -247,7 +270,7 @@ export function useLiveDashboard(symbol: string, chartRange: ChartRange = '1D') 
       cancelled = true;
       window.clearInterval(id);
     };
-  }, [symbol, chartRange, fetchQuoteRest, fetchCandles, fetchChain, fetchNews, quote?.price]);
+  }, [symbol, chartRange, lite, fetchQuoteRest, fetchCandles, fetchChain, fetchNews, quote?.price]);
 
   const displayCandles = useMemo(() => {
     const mapWs = (rows: typeof wsCandles) =>
@@ -270,6 +293,8 @@ export function useLiveDashboard(symbol: string, chartRange: ChartRange = '1D') 
   }, [chartRange, wsCandles, candles, quote]);
 
   const spot = quote?.price ?? 0;
+  const sessionOpen =
+    quote?.sessionOpen ?? sessionOpenFromCandles(displayCandles) ?? undefined;
   const gex = useMemo(() => (chain.length ? computeGexFromChain(chain, spot) : []), [chain, spot]);
   const expirations = useMemo(() => chainExpirations(chain), [chain]);
 
@@ -277,6 +302,7 @@ export function useLiveDashboard(symbol: string, chartRange: ChartRange = '1D') 
 
   return {
     quote,
+    sessionOpen,
     candles: displayCandles,
     chain,
     gex,
