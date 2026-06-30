@@ -233,12 +233,19 @@ export async function fetchV1Post(path: string, body: unknown): Promise<Response
   if (isLocalDesktopClient()) {
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
     if (MC_KEY) headers['X-API-Key'] = MC_KEY;
-    return fetch(`${MC_BASE}/v1/${route}`, {
+    const url = `${MC_BASE}/v1/${route}`;
+    const init: RequestInit = {
       method: 'POST',
       headers,
       body: JSON.stringify(body),
       cache: 'no-store',
-    });
+    };
+    try {
+      const { fetch: tauriFetch } = await import('@tauri-apps/plugin-http');
+      return tauriFetch(url, init);
+    } catch {
+      return fetch(url, init);
+    }
   }
   return fetch(`/api/v1/${route}`, {
     method: 'POST',

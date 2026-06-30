@@ -270,8 +270,8 @@ export function useLiveDashboard(
       await Promise.allSettled(tasks);
 
       if (!cancelled) {
-        const hasPrice = wsQuotePrice(symbol) > 0 || (quote?.price ?? 0) > 0;
-        setLoading(!hasPrice);
+        const hasPrice = spot > 0 || wsQuotePrice(symbol) > 0 || (quote?.price ?? 0) > 0;
+        setLoading(false);
         if (hasPrice) setError(null);
       }
     }

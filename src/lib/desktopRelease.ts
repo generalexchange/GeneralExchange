@@ -1,7 +1,9 @@
 import {
   DESKTOP_APP_VERSION,
   GITHUB_RELEASES_API,
+  GITHUB_RELEASES_LIST,
   GITHUB_RELEASES_URL,
+  GH_HEADERS,
 } from '@/config/desktopApp';
 import { isVersionNewer, normalizeVersionTag } from '@/lib/compareVersions';
 
@@ -30,32 +32,55 @@ function pickMacAsset(assets: Array<{ name: string; browser_download_url: string
   );
 }
 
-/** Fetch latest desktop release from GitHub (works in browser and static desktop bundle). */
+type GithubRelease = {
+  tag_name: string;
+  html_url: string;
+  draft: boolean;
+  assets: Array<{ name: string; browser_download_url: string }>;
+};
+
+function mapGithubRelease(release: GithubRelease): DesktopReleaseInfo | null {
+  if (release.draft) return null;
+  const windows = pickWindowsAsset(release.assets);
+  const mac = pickMacAsset(release.assets);
+  if (!windows && !mac) return null;
+  const tag = release.tag_name;
+  return {
+    available: true,
+    tag,
+    version: normalizeVersionTag(tag),
+    releasesUrl: release.html_url,
+    windows: windows?.browser_download_url ?? null,
+    mac: mac?.browser_download_url ?? null,
+    windowsName: windows?.name ?? null,
+    macName: mac?.name ?? null,
+  };
+}
+
+/** Newest published (non-draft) release with installer assets. */
+export async function fetchNewestPublishedRelease(): Promise<DesktopReleaseInfo | null> {
+  try {
+    const res = await fetch(GITHUB_RELEASES_LIST, { headers: GH_HEADERS, cache: 'no-store' });
+    if (res.ok) {
+      const releases = (await res.json()) as GithubRelease[];
+      for (const release of releases) {
+        const info = mapGithubRelease(release);
+        if (info) return info;
+      }
+    }
+  } catch {
+    /* fall through */
+  }
+  return fetchLatestDesktopRelease();
+}
+
+/** Fetch latest desktop release from GitHub /releases/latest endpoint. */
 export async function fetchLatestDesktopRelease(): Promise<DesktopReleaseInfo | null> {
   try {
-    const res = await fetch(GITHUB_RELEASES_API, {
-      headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'general-exchange-web' },
-      cache: 'no-store',
-    });
+    const res = await fetch(GITHUB_RELEASES_API, { headers: GH_HEADERS, cache: 'no-store' });
     if (!res.ok) return null;
-    const release = (await res.json()) as {
-      tag_name: string;
-      html_url: string;
-      assets: Array<{ name: string; browser_download_url: string }>;
-    };
-    const windows = pickWindowsAsset(release.assets);
-    const mac = pickMacAsset(release.assets);
-    const tag = release.tag_name;
-    return {
-      available: Boolean(windows || mac),
-      tag,
-      version: normalizeVersionTag(tag),
-      releasesUrl: release.html_url,
-      windows: windows?.browser_download_url ?? null,
-      mac: mac?.browser_download_url ?? null,
-      windowsName: windows?.name ?? null,
-      macName: mac?.name ?? null,
-    };
+    const release = (await res.json()) as GithubRelease;
+    return mapGithubRelease(release);
   } catch {
     return null;
   }
@@ -77,7 +102,7 @@ export async function fetchDesktopReleaseInfo(): Promise<DesktopReleaseInfo | nu
   } catch {
     /* static desktop bundle has no API routes */
   }
-  return fetchLatestDesktopRelease();
+  return fetchNewestPublishedRelease();
 }
 
 export function pickPlatformDownloadUrl(info: DesktopReleaseInfo): string {

@@ -1,8 +1,6 @@
 /**
  * Download — the general.exchange desktop terminal.
- *
- * Detects platform, auto-starts the matching installer, and shows manual
- * Mac / Windows buttons. Uses stable GitHub release asset URLs.
+ * Resolves the newest published GitHub release at runtime (correct version + asset URLs).
  */
 
 'use client';
@@ -10,29 +8,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Apple, Monitor, Download } from 'lucide-react';
+import { Apple, Monitor, Download, ExternalLink } from 'lucide-react';
+import {
+  fetchNewestPublishedRelease,
+  type DesktopReleaseInfo,
+} from '@/lib/desktopRelease';
+import { GITHUB_RELEASES_URL } from '@/config/desktopApp';
 
 const easeLux = [0.22, 1, 0.36, 1] as const;
-
-// Always resolves to the newest published release. Asset names are kept stable
-// across versions by the CI assetNamePattern, so this never needs bumping.
-const RELEASES_BASE =
-  'https://github.com/generalexchange/GeneralExchange/releases/latest/download';
-
-const DOWNLOADS = {
-  mac: {
-    label: 'Download for Mac',
-    sub: 'Universal · macOS 12+',
-    href: `${RELEASES_BASE}/General-Exchange_universal.dmg`,
-    ext: 'DMG',
-  },
-  windows: {
-    label: 'Download for Windows',
-    sub: 'Windows 10 & 11',
-    href: `${RELEASES_BASE}/General-Exchange_x64-setup.exe`,
-    ext: 'EXE',
-  },
-} as const;
 
 type Platform = 'mac' | 'windows' | 'unknown';
 
@@ -55,22 +38,47 @@ function triggerDownload(url: string) {
 
 export const DownloadApp: React.FC = () => {
   const [platform, setPlatform] = useState<Platform>('unknown');
+  const [release, setRelease] = useState<DesktopReleaseInfo | null>(null);
+  const [loadError, setLoadError] = useState(false);
   const [autoStarted, setAutoStarted] = useState(false);
   const autoDownloaded = useRef(false);
 
   useEffect(() => {
-    const detected = detectPlatform();
-    setPlatform(detected);
+    setPlatform(detectPlatform());
 
-    if (autoDownloaded.current || detected === 'unknown') return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/desktop-release', { cache: 'no-store' });
+        const json = res.ok
+          ? ((await res.json()) as DesktopReleaseInfo)
+          : await fetchNewestPublishedRelease();
+        if (!cancelled) {
+          if (json?.available) setRelease(json);
+          else setLoadError(true);
+        }
+      } catch {
+        if (!cancelled) setLoadError(true);
+      }
+    })();
 
-    const url = detected === 'mac' ? DOWNLOADS.mac.href : DOWNLOADS.windows.href;
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!release || autoDownloaded.current || platform === 'unknown') return;
+    const url = platform === 'mac' ? release.mac : release.windows;
+    if (!url) return;
     autoDownloaded.current = true;
     setAutoStarted(true);
     triggerDownload(url);
-  }, []);
+  }, [release, platform]);
 
   const primary = platform === 'mac' || platform === 'windows' ? platform : 'mac';
+  const macHref = release?.mac ?? GITHUB_RELEASES_URL;
+  const winHref = release?.windows ?? GITHUB_RELEASES_URL;
 
   return (
     <div className="min-h-screen bg-charcoal text-neutral-100">
@@ -80,10 +88,10 @@ export const DownloadApp: React.FC = () => {
             general.exchange
           </Link>
           <Link
-            href="/tradeengine"
+            href="/dashboard"
             className="text-[12px] tracking-wide text-zinc-400 transition-colors hover:text-tan"
           >
-            Trade Engine
+            Web terminal
           </Link>
         </div>
       </header>
@@ -105,62 +113,94 @@ export const DownloadApp: React.FC = () => {
             Trade from your desk.
           </h1>
           <p className="mx-auto mt-4 max-w-md text-[15px] leading-relaxed text-zinc-400">
-            The full general.exchange terminal — live data, options chain, and order entry — as a native app.
+            The full Legend terminal — live IBKR data, options chain, and charts — as a native app
+            on your machine.
           </p>
 
+          {release && (
+            <p className="mt-6 font-mono text-[13px] text-tan/90">
+              Current release: <span className="font-semibold">v{release.version}</span>
+            </p>
+          )}
+
           {autoStarted && (
-            <p className="mt-8 text-[13px] text-tan/90">
+            <p className="mt-4 text-[13px] text-tan/90">
               Your download should start automatically. If it didn&apos;t, use the buttons below.
             </p>
           )}
 
-          <p className="mt-8 text-[12px] uppercase tracking-[0.18em] text-zinc-600">Latest release</p>
+          {loadError && !release && (
+            <p className="mt-6 text-[13px] text-rose-400/90">
+              Could not load release info.{' '}
+              <a href={GITHUB_RELEASES_URL} className="underline hover:text-rose-300">
+                Open GitHub releases
+              </a>
+            </p>
+          )}
 
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
-            {(['mac', 'windows'] as const).map((id) => {
-              const d = DOWNLOADS[id];
-              const recommended = id === primary;
-              const Icon = id === 'mac' ? Apple : Monitor;
+          {!release && !loadError && (
+            <p className="mt-8 text-[13px] text-zinc-500">Loading latest installer…</p>
+          )}
 
-              return (
-                <a
-                  key={id}
-                  href={d.href}
-                  className={`group flex min-w-[220px] flex-1 flex-col items-center rounded-xl px-6 py-5 transition-all duration-300 sm:max-w-[240px] ${
-                    recommended
-                      ? 'border border-brass/50 bg-tan text-charcoal shadow-[0_24px_60px_-20px_rgba(210,180,140,0.45)] hover:bg-tan-muted'
-                      : 'border border-white/[0.1] bg-white/[0.03] text-neutral-100 hover:border-brass/30 hover:bg-white/[0.05]'
-                  }`}
-                >
-                  <Icon className={`mb-3 h-6 w-6 ${recommended ? 'text-charcoal' : 'text-tan'}`} />
-                  <span className="text-[15px] font-semibold tracking-wide">{d.label}</span>
-                  <span className={`mt-1 text-[12px] ${recommended ? 'text-charcoal/70' : 'text-zinc-500'}`}>
-                    {d.sub}
-                  </span>
-                  <span
-                    className={`mt-3 inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider ${
-                      recommended ? 'text-charcoal/80' : 'text-zinc-400'
-                    }`}
-                  >
-                    <Download className="h-3.5 w-3.5" />
-                    {d.ext}
-                    {recommended && platform !== 'unknown' && ' · recommended'}
-                  </span>
-                </a>
-              );
-            })}
-          </div>
+          {release && (
+            <>
+              <p className="mt-8 text-[12px] uppercase tracking-[0.18em] text-zinc-600">Download</p>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
+                {(
+                  [
+                    { id: 'mac' as const, href: macHref, label: 'Download for Mac', sub: 'Universal · macOS 12+' },
+                    { id: 'windows' as const, href: winHref, label: 'Download for Windows', sub: 'Windows 10 & 11' },
+                  ] as const
+                ).map(({ id, href, label, sub }) => {
+                  const recommended = id === primary;
+                  const Icon = id === 'mac' ? Apple : Monitor;
+                  const ext = id === 'mac' ? 'DMG' : 'EXE';
+
+                  return (
+                    <a
+                      key={id}
+                      href={href}
+                      className={`group flex min-w-[220px] flex-1 flex-col items-center rounded-xl px-6 py-5 transition-all duration-300 sm:max-w-[240px] ${
+                        recommended
+                          ? 'border border-brass/50 bg-tan text-charcoal shadow-[0_24px_60px_-20px_rgba(210,180,140,0.45)] hover:bg-tan-muted'
+                          : 'border border-white/[0.1] bg-white/[0.03] text-neutral-100 hover:border-brass/30 hover:bg-white/[0.05]'
+                      }`}
+                    >
+                      <Icon className={`mb-3 h-6 w-6 ${recommended ? 'text-charcoal' : 'text-tan'}`} />
+                      <span className="text-[15px] font-semibold tracking-wide">{label}</span>
+                      <span className={`mt-1 text-[12px] ${recommended ? 'text-charcoal/70' : 'text-zinc-500'}`}>
+                        {sub}
+                      </span>
+                      <span
+                        className={`mt-3 inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider ${
+                          recommended ? 'text-charcoal/80' : 'text-zinc-400'
+                        }`}
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                        {ext}
+                        {recommended && platform !== 'unknown' && ' · recommended'}
+                      </span>
+                    </a>
+                  );
+                })}
+              </div>
+            </>
+          )}
 
           <p className="mt-8 text-[13px] text-zinc-500">
-            Signed builds · auto-updates · no browser required
-          </p>
-
-          <p className="mt-6 text-[12px] text-zinc-600">
-            Prefer the browser?{' '}
+            Requires IB Gateway + local IBKR service on your machine.{' '}
             <Link href="/dashboard" className="text-tan underline-offset-4 hover:underline">
-              Open the web terminal
+              Or use the browser terminal
             </Link>
           </p>
+
+          <a
+            href={release?.releasesUrl ?? GITHUB_RELEASES_URL}
+            className="mt-4 inline-flex items-center gap-1.5 text-[12px] text-zinc-600 transition-colors hover:text-zinc-400"
+          >
+            All releases on GitHub
+            <ExternalLink className="h-3 w-3" />
+          </a>
         </motion.div>
       </main>
     </div>

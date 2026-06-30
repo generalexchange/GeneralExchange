@@ -10,3 +10,11 @@ export const GITHUB_RELEASES_URL =
 
 export const GITHUB_RELEASES_API =
   'https://api.github.com/repos/generalexchange/GeneralExchange/releases/latest';
+
+export const GITHUB_RELEASES_LIST =
+  'https://api.github.com/repos/generalexchange/GeneralExchange/releases?per_page=15';
+
+export const GH_HEADERS = {
+  Accept: 'application/vnd.github+json',
+  'User-Agent': 'general-exchange-web',
+};
