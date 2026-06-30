@@ -9,11 +9,11 @@ import NumberFlow from '@number-flow/react';
 import { useReducedMotion } from 'framer-motion';
 import { Activity, RefreshCw, TrendingUp } from 'lucide-react';
 import { AnimatedPrice } from '@/components/dashboard/AnimatedPrice';
-import { LegendPanelSkeleton } from '@/components/dashboard/LegendPanelSkeleton';
 import { useMonteCarloLegendStream } from '@/hooks/useMonteCarloLegendStream';
 import type { OptionRow } from '@/components/dashboard/terminal/terminalData';
 import type { McPathBand, OptionMcRow, TradeMarker } from '@/lib/monteCarloLegend/analyze';
 import { blackScholes } from '@gx/analytics';
+import { isLocalDesktopClient } from '@/lib/api/v1Fetch';
 
 const PANEL = 'overflow-hidden rounded-xl border border-white/[0.08] bg-[#0a0b0e] shadow-[0_24px_48px_-28px_rgba(0,0,0,0.6)]';
 const HEAD =
@@ -247,14 +247,15 @@ function liveBsmRows(rows: OptionMcRow[], spot: number): OptionMcRow[] {
 
 export function MonteCarloLegendShowcase({ symbol, spot, chain, live }: MonteCarloLegendShowcaseProps) {
   const reduceMotion = useReducedMotion();
+  const desktop = isLocalDesktopClient();
   const { snapshot, loading, error, lastUpdated, refresh } = useMonteCarloLegendStream(symbol, spot, chain);
-  const [reveal, setReveal] = useState(0);
-  const [pulseTrade, setPulseTrade] = useState(0);
+  const [reveal, setReveal] = useState(1);
   const [calcPhase, setCalcPhase] = useState(0);
   const rafRef = useRef(0);
+  const initialLoad = loading && !snapshot;
 
   useEffect(() => {
-    if (!snapshot || reduceMotion) {
+    if (!snapshot || reduceMotion || desktop) {
       setReveal(1);
       return;
     }
@@ -268,19 +269,13 @@ export function MonteCarloLegendShowcase({ symbol, spot, chain, live }: MonteCar
     };
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [snapshot, snapshot?.computedAt, reduceMotion]);
+  }, [snapshot, snapshot?.computedAt, reduceMotion, desktop]);
 
   useEffect(() => {
-    if (!snapshot || reduceMotion) return;
-    const id = window.setInterval(() => setPulseTrade((n) => n + 1), 180);
+    if (!initialLoad) return;
+    const id = window.setInterval(() => setCalcPhase((p) => p + 1), 400);
     return () => window.clearInterval(id);
-  }, [snapshot, snapshot?.computedAt, reduceMotion]);
-
-  useEffect(() => {
-    const ms = loading ? 400 : 1400;
-    const id = window.setInterval(() => setCalcPhase((p) => p + 1), ms);
-    return () => window.clearInterval(id);
-  }, [loading, snapshot?.computedAt]);
+  }, [initialLoad]);
 
   const chart = useMemo(() => {
     if (!snapshot) return null;
@@ -299,13 +294,11 @@ export function MonteCarloLegendShowcase({ symbol, spot, chain, live }: MonteCar
   const sessionWins = useMemo(() => {
     if (!snapshot) return { wins: 0, total: 0 };
     const exits = snapshot.tradeMarkers.filter((m) => m.type === 'exit');
-    const visible = Math.min(exits.length, 8 + (pulseTrade % 12));
-    const slice = exits.slice(0, visible);
     return {
-      wins: slice.filter((m) => m.win).length,
-      total: slice.length,
+      wins: exits.filter((m) => m.win).length,
+      total: exits.length,
     };
-  }, [snapshot, pulseTrade]);
+  }, [snapshot]);
 
   const liveOptionRows = useMemo(
     () => (snapshot ? liveBsmRows(snapshot.optionRows, spot) : []),
@@ -345,7 +338,7 @@ export function MonteCarloLegendShowcase({ symbol, spot, chain, live }: MonteCar
         </div>
       </header>
 
-      <LiveCalcTicker active={loading || !!live} phase={calcPhase} />
+      {initialLoad ? <LiveCalcTicker active phase={calcPhase} /> : null}
 
       {error && !snapshot ? (
         <div className="px-4 py-6 font-mono text-[11px] text-rose-300/90">{error}</div>
@@ -526,10 +519,8 @@ export function MonteCarloLegendShowcase({ symbol, spot, chain, live }: MonteCar
             ) : null}
           </footer>
         </>
-      ) : loading ? (
-        <div className="p-4">
-          <LegendPanelSkeleton label="Monte Carlo · calibrating from IBKR" rows={6} height={32} />
-        </div>
+      ) : initialLoad ? (
+        <div className="px-4 py-6 font-mono text-[11px] text-zinc-500">Calibrating from IBKR history…</div>
       ) : null}
     </section>
   );

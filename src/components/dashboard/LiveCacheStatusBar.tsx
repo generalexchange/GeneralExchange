@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Database, Radio } from 'lucide-react';
 import { useDesktopCacheStatus } from '@/hooks/useDesktopCacheStatus';
 
@@ -29,28 +28,17 @@ export function LiveCacheStatusBar({ live, source, symbol, loading }: LiveCacheS
       <span className="inline-flex items-center gap-2">
         {live ? (
           <>
-            <span className="relative flex h-2 w-2">
-              <motion.span
-                className="absolute inline-flex h-full w-full rounded-full bg-emerald-400/80"
-                animate={{ scale: [1, 2.2], opacity: [0.7, 0] }}
-                transition={{ duration: 1.4, repeat: Infinity, ease: 'easeOut' }}
-              />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
-            </span>
+            <span className="inline-flex h-2 w-2 rounded-full bg-emerald-400" />
             <Radio className="h-3 w-3 text-emerald-400/80" />
             <span className="text-emerald-400/90">Live · {symbol}</span>
           </>
         ) : loading ? (
           <span className="inline-flex items-center gap-2 text-amber-400/90">
-            <motion.span
-              className="inline-block h-2 w-2 rounded-full bg-amber-400/80"
-              animate={{ opacity: [0.4, 1, 0.4] }}
-              transition={{ duration: 1.1, repeat: Infinity, ease: 'easeInOut' }}
-            />
+            <span className="inline-block h-2 w-2 rounded-full bg-amber-400/80" />
             Pulling {symbol}…
           </span>
         ) : (
-          <span className="text-zinc-500">Waiting for data</span>
+          <span className="text-zinc-500">Waiting for IBKR data</span>
         )}
       </span>
 

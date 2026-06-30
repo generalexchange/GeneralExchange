@@ -48,7 +48,8 @@ export function useSpyRegression(symbol: string): SpyRegressionState {
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
+    const hadRegression = regression != null;
+    if (!hadRegression) setLoading(true);
     setError(null);
 
     (async () => {
@@ -88,7 +89,7 @@ export function useSpyRegression(symbol: string): SpyRegressionState {
     return () => {
       cancelled = true;
     };
-  }, [symbol, cachePulse]);
+  }, [symbol, cachePulse]); // eslint-disable-line react-hooks/exhaustive-deps -- stale-while-revalidate
 
   return {
     regression,

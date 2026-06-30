@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown, ChevronUp, History, Layers, List, Loader2, X } from 'lucide-react';
 import {
   useExpiredOutcomes,
@@ -41,12 +40,9 @@ function OpportunityCard({
   onSelect: () => void;
 }) {
   return (
-    <motion.button
+    <button
       type="button"
       onClick={onSelect}
-      layout
-      initial={{ opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
       className={`mb-2 w-full rounded-md border p-2.5 text-left transition-colors ${glowClass(opp.confidence)} ${
         selected ? 'ring-1 ring-tan/50' : highlighted ? 'ring-1 ring-moss/40' : 'hover:border-tan/30'
       }`}
@@ -66,7 +62,7 @@ function OpportunityCard({
       </p>
       <OpportunityContractVisuals opp={opp} compact />
       <p className="mt-1 font-mono text-[8px] uppercase tracking-wide text-zinc-600">Top pick · tap for analysis</p>
-    </motion.button>
+    </button>
   );
 }
 
@@ -86,12 +82,7 @@ function AnalysisPanel({
   if (!opp && !loading) return null;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, height: 0 }}
-      animate={{ opacity: 1, height: 'auto' }}
-      exit={{ opacity: 0, height: 0 }}
-      className="border-t border-white/10 bg-black/30"
-    >
+    <div className="border-t border-white/10 bg-black/30">
       <div className="flex items-center justify-between px-3 py-2">
         <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-tan">Opportunity analysis</p>
         <button type="button" onClick={onClose} className="rounded p-1 text-zinc-500 hover:text-zinc-200" aria-label="Close">
@@ -167,7 +158,7 @@ function AnalysisPanel({
           )}
         </div>
       ) : null}
-    </motion.div>
+    </div>
   );
 }
 
@@ -280,17 +271,15 @@ export function OpportunityDiscoveryFeed({
         </div>
       ) : null}
 
-      <AnimatePresence>
-        {selectedSymbol && (
-          <AnalysisPanel
-            opp={analysis}
-            loading={analysisLoading}
-            showChain={showChain}
-            onToggleChain={() => setShowChain((v) => !v)}
-            onClose={() => setSelectedSymbol(null)}
-          />
-        )}
-      </AnimatePresence>
+      {selectedSymbol ? (
+        <AnalysisPanel
+          opp={analysis}
+          loading={analysisLoading}
+          showChain={showChain}
+          onToggleChain={() => setShowChain((v) => !v)}
+          onClose={() => setSelectedSymbol(null)}
+        />
+      ) : null}
 
       <footer className="shrink-0 border-t border-white/10 p-2">
         <button

@@ -1,10 +1,10 @@
 'use client';
 
 /**
- * Animated price display — uses @number-flow/react (MIT, github.com/barvian/number-flow).
- * Robinhood-style rolling digit transitions for live feeds.
+ * Animated price display — uses @number-flow/react on web; static on desktop IBKR.
  */
 import NumberFlow from '@number-flow/react';
+import { isLocalDesktopClient } from '@/lib/api/v1Fetch';
 
 type AnimatedPriceProps = {
   value: number;
@@ -12,9 +12,13 @@ type AnimatedPriceProps = {
   suffix?: string;
   decimals?: number;
   className?: string;
-  /** Faster transitions for HFT tape (ms). */
+  /** Faster transitions for HFT tape (ms). Set 0 to disable animation. */
   durationMs?: number;
 };
+
+function fmt(value: number, decimals: number) {
+  return value.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
 
 export function AnimatedPrice({
   value,
@@ -26,6 +30,18 @@ export function AnimatedPrice({
 }: AnimatedPriceProps) {
   if (!Number.isFinite(value) || value <= 0) {
     return <span className={className}>—</span>;
+  }
+
+  const staticDisplay = isLocalDesktopClient() || durationMs === 0;
+
+  if (staticDisplay) {
+    return (
+      <span className={`inline-flex items-baseline tabular-nums ${className}`}>
+        {prefix}
+        {fmt(value, decimals)}
+        {suffix}
+      </span>
+    );
   }
 
   return (
@@ -55,6 +71,21 @@ export function AnimatedSignedChange({
 }) {
   const sign = value > 0 ? '+' : value < 0 ? '' : '';
   const abs = Math.abs(value);
+  if (isLocalDesktopClient()) {
+    if (isPct) {
+      return (
+        <span className={className}>
+          {sign}
+          {abs.toFixed(2)}%
+        </span>
+      );
+    }
+    return (
+      <span className={className}>
+        {sign}${fmt(abs, 2)}
+      </span>
+    );
+  }
   if (isPct) {
     return (
       <span className={className}>

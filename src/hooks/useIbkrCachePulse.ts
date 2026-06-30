@@ -16,10 +16,16 @@ export function useIbkrCachePulse(): number {
     if (!cache.active) return;
     const prev = lastFetchRef.current;
     if (prev != null && cache.lastFetchAt != null && cache.lastFetchAt !== prev) {
-      setPulse((n) => n + 1);
+      const latest = cache.recent[0];
+      const key = latest?.key ?? '';
+      // Chain polls fire every few seconds — skip so analytics panels stay stable.
+      const isChainPoll = key.includes('options/chain') || key.includes('options-chain');
+      if (!latest?.hit && !isChainPoll) {
+        setPulse((n) => n + 1);
+      }
     }
     lastFetchRef.current = cache.lastFetchAt;
-  }, [cache.active, cache.lastFetchAt]);
+  }, [cache.active, cache.lastFetchAt, cache.recent]);
 
   return pulse;
 }

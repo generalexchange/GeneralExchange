@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   isMarketWsConfigured,
   setWsSymbolWatch,
@@ -122,6 +122,7 @@ export function useLiveDashboard(
   const [error, setError] = useState<string | null>(null);
   const [wsOpen, setWsOpen] = useState(false);
   const [session, setSession] = useState<MarketSession>(() => getMarketSession());
+  const hasQuoteRef = useRef(false);
 
   useEffect(() => subscribeMarketWs(), []);
   useEffect(() => subscribeWsStatus(setWsOpen), []);
@@ -135,7 +136,14 @@ export function useLiveDashboard(
   }, []);
 
   useEffect(() => {
+    hasQuoteRef.current = false;
+    setLoading(true);
+    setError(null);
+  }, [symbol]);
+
+  useEffect(() => {
     if (quote?.price && quote.price > 0) {
+      hasQuoteRef.current = true;
       setError(null);
       setLoading(false);
     }
@@ -162,10 +170,12 @@ export function useLiveDashboard(
       afterHoursChangePct: q.afterHoursChangePct,
       timestamp: q.timestamp ? Number(q.timestamp) : Date.now(),
     });
+    hasQuoteRef.current = true;
+    setLoading(false);
+    setError(null);
     return q;
   }, [symbol]);
 
-  // REST quote fallback only when stream has not delivered a price yet.
   useEffect(() => {
     let cancelled = false;
     const refreshQuote = async () => {
@@ -230,11 +240,12 @@ export function useLiveDashboard(
     }
   }, [symbol]);
 
+  // Initial bootstrap — only toggles loading when we have no quote yet.
   useEffect(() => {
     let cancelled = false;
 
-    async function load() {
-      if (!quote?.price) setLoading(true);
+    async function bootstrap() {
+      if (!hasQuoteRef.current) setLoading(true);
 
       if (isMarketWsConfigured() && !isLocalDesktopClient()) {
         const deadline = Date.now() + WS_WAIT_MS;
@@ -248,9 +259,8 @@ export function useLiveDashboard(
       try {
         const q = await fetchQuoteRest();
         spot = q.price;
-        if (!cancelled) setError(null);
       } catch (e) {
-        if (!cancelled) {
+        if (!cancelled && !hasQuoteRef.current) {
           const wsPrice = wsQuotePrice(symbol);
           if (wsPrice > 0) {
             spot = wsPrice;
@@ -267,34 +277,43 @@ export function useLiveDashboard(
       }
 
       if (cancelled) return;
-      const tasks: Promise<unknown>[] = [];
-      if (chartRange !== '1D' || wsCandles.length === 0) {
-        tasks.push(fetchCandles());
-      } else if (candles.length === 0) {
-        tasks.push(fetchCandles());
-      }
-      if (!lite) {
+
+      const tasks: Promise<unknown>[] = [fetchCandles()];
+      if (!lite && spot > 0) {
         tasks.push(fetchChain(spot), fetchNews());
       }
       await Promise.allSettled(tasks);
 
       if (!cancelled) {
         const hasPrice = spot > 0 || wsQuotePrice(symbol) > 0 || (quote?.price ?? 0) > 0;
-        setLoading(false);
-        if (hasPrice) setError(null);
+        if (hasPrice) {
+          hasQuoteRef.current = true;
+          setLoading(false);
+          setError(null);
+        }
       }
     }
 
-    load();
-    const pollMs = chartRange === '1D' && wsCandles.length > 0 ? 120_000 : chartRange === '1D' ? 30_000 : 60_000;
-    const id = window.setInterval(load, pollMs);
+    void bootstrap();
     return () => {
       cancelled = true;
-      window.clearInterval(id);
     };
-  }, [symbol, chartRange, lite, fetchQuoteRest, fetchCandles, fetchChain, fetchNews, quote?.price, wsCandles.length, candles.length]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- bootstrap on symbol/range change only
+  }, [symbol, chartRange, lite, fetchQuoteRest, fetchCandles, fetchChain, fetchNews]);
 
-  // Fast options chain refresh for live bid/ask feed (Legend).
+  // Background refresh — never clears UI or sets loading.
+  useEffect(() => {
+    const pollMs =
+      chartRange === '1D' ? 90_000 : chartRange === '1W' ? 120_000 : 180_000;
+    const id = window.setInterval(() => {
+      void fetchQuoteRest().catch(() => {});
+      void fetchCandles();
+      const spot = quote?.price ?? wsQuotePrice(symbol);
+      if (!lite && spot > 0) void fetchChain(spot);
+    }, pollMs);
+    return () => window.clearInterval(id);
+  }, [symbol, chartRange, lite, fetchQuoteRest, fetchCandles, fetchChain, quote?.price]);
+
   useEffect(() => {
     if (lite) return;
     const spot = quote?.price ?? wsQuotePrice(symbol);
@@ -343,7 +362,7 @@ export function useLiveDashboard(
     expirations,
     session,
     cardTheme: quoteCardTheme(session),
-    loading,
+    loading: loading && !(quote?.price && quote.price > 0),
     error,
     wsConnected: wsOpen,
     source: quote?.source ?? source,
@@ -353,9 +372,7 @@ export function useLiveDashboard(
           wsLive ||
           isWsConnected() ||
           quote.source?.includes('ibkr') ||
-          source?.includes('ibkr') ||
-          source?.includes('pipeline') ||
-          source === 'redis'),
+          source?.includes('ibkr')),
     ),
   };
 }

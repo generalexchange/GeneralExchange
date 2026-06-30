@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import type { RankedContract } from '@/lib/opportunity/types';
 
 function McRing({ itm, profit, accent }: { itm: number; profit: number; accent: string }) {
@@ -51,13 +50,7 @@ function GreekBar({ label, value, max, color }: { label: string; value: number; 
     <div className="flex items-center gap-1.5">
       <span className="w-3 font-mono text-[8px] text-zinc-500">{label}</span>
       <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/10">
-        <motion.div
-          className="h-full rounded-full"
-          style={{ backgroundColor: color }}
-          initial={{ width: 0 }}
-          animate={{ width: `${pct}%` }}
-          transition={{ duration: 0.5, ease: 'easeOut' }}
-        />
+        <div className="h-full rounded-full" style={{ backgroundColor: color, width: `${pct}%` }} />
       </div>
       <span className="w-10 text-right font-mono text-[8px] tabular-nums text-zinc-400">{value.toFixed(2)}</span>
     </div>
@@ -92,12 +85,12 @@ export function OpportunityContractVisuals({
       <div className="flex items-start gap-3">
         <McRing itm={opp.monteCarlo.probabilityITM} profit={opp.monteCarlo.probabilityProfitable} accent={accent} />
         <div className="flex-1 space-y-1.5">
-          <p className="font-mono text-[9px] uppercase tracking-wide text-zinc-500">Monte Carlo</p>
+          <p className="font-mono text-[9px] uppercase tracking-wide text-zinc-500">Monte Carlo · IBKR</p>
           <p className="font-mono text-[10px] text-zinc-300">
             P(ITM) {opp.monteCarlo.probabilityITM}% · P(profit) {opp.monteCarlo.probabilityProfitable}%
           </p>
           <p className="font-mono text-[10px] text-zinc-400">
-            Expected payoff ${opp.monteCarlo.expectedPayoff.toFixed(2)}
+            Expected payoff ${opp.monteCarlo.expectedPayoff.toFixed(2)} · BSM mid ${opp.monteCarlo.blackScholesPrice.toFixed(2)}
           </p>
         </div>
       </div>
@@ -114,12 +107,10 @@ export function OpportunityContractVisuals({
         <p className="mb-1 font-mono text-[9px] uppercase tracking-wide text-zinc-500">Factor scores</p>
         <div className="flex h-10 items-end gap-0.5">
           {Object.entries(opp.factorScores).map(([key, val]) => (
-            <motion.div
+            <div
               key={key}
               className="flex-1 rounded-t bg-tan/60"
-              initial={{ height: 0 }}
-              animate={{ height: `${Math.max(8, val * 100)}%` }}
-              transition={{ duration: 0.45, delay: 0.05 }}
+              style={{ height: `${Math.max(8, val * 100)}%` }}
               title={key}
             />
           ))}

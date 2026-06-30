@@ -25,7 +25,8 @@ export function CorrelationHeatmap({ highlight }: { highlight: string }) {
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
+    const hadData = out != null;
+    if (!hadData) setLoading(true);
     (async () => {
       const symbols = [...new Set([highlight.toUpperCase(), ...WATCH])].slice(0, 6);
       const entries = await Promise.all(symbols.map(async (s) => [s, await fetchCloses(s)] as const));
@@ -39,9 +40,9 @@ export function CorrelationHeatmap({ highlight }: { highlight: string }) {
     return () => {
       cancelled = true;
     };
-  }, [highlight, cachePulse]);
+  }, [highlight, cachePulse]); // eslint-disable-line react-hooks/exhaustive-deps -- stale-while-revalidate
 
-  if (loading) {
+  if (loading && !out) {
     return <LegendPanelSkeleton label="Correlation matrix · IBKR" rows={4} height={24} />;
   }
   if (!out || out.symbols.length < 2) {

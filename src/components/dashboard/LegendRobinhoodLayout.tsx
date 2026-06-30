@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * Legend — Robinhood-style terminal layout with HFT-smoothed quotes + live options feed.
+ * Legend — Robinhood-style terminal layout with IBKR live feed (desktop) / API (web).
  */
 import React, { useRef, useState } from 'react';
 import { LineChart, Table2 } from 'lucide-react';
@@ -10,7 +10,6 @@ import { symbolDisplayName } from '@/data/symbols';
 import { SymbolSearchBar } from '@/components/dashboard/SymbolSearchBar';
 import { StockQuoteHero } from '@/components/dashboard/StockQuoteHero';
 import { MonteCarloLegendShowcase } from '@/components/dashboard/MonteCarloLegendShowcase';
-import { MarketPulseVisualizer } from '@/components/dashboard/MarketPulseVisualizer';
 import { SpyRiskPanel } from '@/components/dashboard/SpyRiskPanel';
 import { CorrelationHeatmap } from '@/components/dashboard/CorrelationHeatmap';
 import { DualLayerGreekViz } from '@/components/dashboard/DualLayerGreekViz';
@@ -18,13 +17,12 @@ import { MarketTemperature } from '@/components/dashboard/MarketTemperature';
 import { OpportunityDiscoveryFeed } from '@/components/dashboard/OpportunityDiscoveryFeed';
 import { LiveCacheStatusBar } from '@/components/dashboard/LiveCacheStatusBar';
 import { LivePulseIndicator } from '@/components/dashboard/LivePulseIndicator';
-import { LegendPanelSkeleton } from '@/components/dashboard/LegendPanelSkeleton';
 import { Panel } from '@/components/dashboard/terminal/panels';
 import { PriceChart, type PriceChartHandle } from '@/components/charts/PriceChart';
 import { GEXBarChart } from '@/components/charts/GEXBarChart';
 import { useInViewport } from '@/components/charts/useInViewport';
 import { useMarketStream } from '@/services/marketStream';
-import { useInterpolatedQuote } from '@/hooks/useInterpolatedQuote';
+import { isLocalDesktopClient } from '@/lib/api/v1Fetch';
 import { isMarketWsConfigured } from '@/services/wsClient';
 
 type Feed = ReturnType<typeof useLiveDashboard>;
@@ -45,12 +43,12 @@ export function LegendRobinhoodLayout({
   feed,
 }: LegendRobinhoodLayoutProps) {
   const [advanced, setAdvanced] = useState(false);
-  const smooth = useInterpolatedQuote(symbol);
+  const desktop = isLocalDesktopClient();
   const spyFeed = useLiveDashboard('SPY', '1D', { lite: true });
-  const displayPrice = smooth.displayPrice > 0 ? smooth.displayPrice : feed.quote?.price ?? 0;
+  const displayPrice = feed.quote?.price ?? 0;
   const change = feed.quote?.change ?? 0;
-  const smoothChange =
-    feed.quote?.prevClose && displayPrice > 0 ? displayPrice - feed.quote.prevClose : change;
+  const smoothChange = change;
+  const chainReady = feed.chain.length > 0;
 
   const [gexRef, gexInView] = useInViewport<HTMLDivElement>();
   const priceChartRef = useRef<PriceChartHandle | null>(null);
@@ -89,14 +87,13 @@ export function LegendRobinhoodLayout({
           {advanced ? (
             <div className="space-y-3">
               <Panel title={`${symbol} · 5M`} className="relative h-[280px] overflow-hidden">
-                <div className="pointer-events-none absolute inset-0 z-0 opacity-40">
-                  <MarketPulseVisualizer symbol={symbol} mode="hero" height={280} />
-                </div>
                 <div className="relative z-10 h-full">
                   {feed.candles.length ? (
                     <PriceChart ref={priceChartRef} candles={feed.candles} active />
                   ) : feed.loading ? (
-                    <LegendPanelSkeleton label="Candles · IBKR" rows={5} height={36} className="h-full border-0 bg-transparent" />
+                    <div className="flex h-full items-center justify-center font-mono text-[11px] text-zinc-500">
+                      Loading IBKR candles…
+                    </div>
                   ) : (
                     <div className="flex h-full items-center justify-center font-mono text-[11px] text-zinc-500">
                       No candle data
@@ -108,8 +105,10 @@ export function LegendRobinhoodLayout({
                 <div ref={gexRef} className="h-full">
                   {feed.gex.length ? (
                     <GEXBarChart gex={feed.gex} price={displayPrice} active={gexInView} />
-                  ) : feed.loading ? (
-                    <LegendPanelSkeleton label="GEX · options chain" rows={4} height={28} className="h-full border-0 bg-transparent" />
+                  ) : !chainReady && feed.loading ? (
+                    <div className="flex h-full items-center justify-center font-mono text-[11px] text-zinc-500">
+                      Loading options chain…
+                    </div>
                   ) : (
                     <div className="flex h-full items-center justify-center font-mono text-[11px] text-zinc-500">
                       Options chain required for GEX
@@ -121,20 +120,13 @@ export function LegendRobinhoodLayout({
           ) : (
             <>
               <div className="relative overflow-hidden rounded-xl">
-                <div className="pointer-events-none absolute inset-0 z-0 opacity-60">
-                  <MarketPulseVisualizer symbol={symbol} mode="calm" height={140} />
-                </div>
                 <div className="relative z-10">
                   <StockQuoteHero
                     symbol={symbol}
                     name={symbolDisplayName(symbol)}
                     price={displayPrice}
                     change={smoothChange}
-                    changePct={
-                      feed.quote?.prevClose && feed.quote.prevClose > 0
-                        ? (smoothChange / feed.quote.prevClose) * 100
-                        : feed.quote?.changePct ?? 0
-                    }
+                    changePct={feed.quote?.changePct ?? 0}
                     prevClose={feed.quote?.prevClose}
                     sessionOpen={feed.sessionOpen}
                     afterHoursChange={feed.quote?.afterHoursChange}
@@ -146,13 +138,12 @@ export function LegendRobinhoodLayout({
                     chartRange={chartRange}
                     onChartRangeChange={onChartRangeChange}
                     onOpenAdvanced={() => setAdvanced(true)}
-                    liveDisplayPrice={smooth.displayPrice}
                   />
                 </div>
               </div>
-              {feed.live && chartRange === '1D' && (
+              {feed.live && chartRange === '1D' && !desktop ? (
                 <LivePulseIndicator accentClass="bg-[#00C805]" visible />
-              )}
+              ) : null}
               <div className="mt-3">
                 <MonteCarloLegendShowcase
                   symbol={symbol}
@@ -183,7 +174,7 @@ export function LegendRobinhoodLayout({
               highlightSymbol={symbol}
               chain={feed.chain}
               spot={displayPrice}
-              chainLoading={feed.loading}
+              chainLoading={!chainReady && feed.loading}
               live={feed.live}
             />
           </div>

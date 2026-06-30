@@ -10,10 +10,6 @@ import { TOKEN_ECONOMICS } from '@/config/tokenEconomics';
 // TODO: wire SPL token balance fetch when NEXT_PUBLIC_GE_TOKEN_MINT is configured
 // TODO: wire USDC balance via token account when NEXT_PUBLIC_USDC_MINT is configured
 
-const MOCK_TX = [
-  { amount: '—', service: 'Connect wallet to view history', at: '—' },
-] as const;
-
 export function WalletButton() {
   const { publicKey, connected, disconnect } = useWallet();
   const { setVisible } = useWalletModal();
@@ -74,15 +70,8 @@ export function WalletButton() {
               </span>
             </div>
           </div>
-          <div className="max-h-32 overflow-auto border-t border-white/10 px-4 py-2">
-            <p className="mb-1 text-[9px] uppercase tracking-wider text-zinc-600">Recent</p>
-            {MOCK_TX.map((row, i) => (
-              <div key={i} className="flex justify-between gap-2 py-1 font-mono text-[10px] text-zinc-500">
-                <span>{row.amount}</span>
-                <span className="truncate">{row.service}</span>
-                <span>{row.at}</span>
-              </div>
-            ))}
+          <div className="border-t border-white/10 px-4 py-2">
+            <p className="font-mono text-[10px] text-zinc-600">Transaction history requires on-chain integration.</p>
           </div>
           <div className="flex flex-col gap-1 border-t border-white/10 p-2">
             <Link

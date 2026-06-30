@@ -37,17 +37,22 @@ export function useMonteCarloLegendStream(
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<number | null>(null);
   const runId = useRef(0);
+  const hasSnapshotRef = useRef(false);
+  useEffect(() => {
+    hasSnapshotRef.current = false;
+    setSnapshot(null);
+  }, [symbol]);
 
   const chainSig = chain
     .slice(0, 12)
     .map((r) => `${r.id}:${r.mid.toFixed(2)}`)
     .join('|');
 
-  const run = useCallback(async () => {
+  const run = useCallback(async (background = false) => {
     if (!enabled || !symbol) return;
     const id = ++runId.current;
-    setLoading(true);
-    setError(null);
+    if (!background && !hasSnapshotRef.current) setLoading(true);
+    if (!background) setError(null);
 
     try {
       const [symRes, spyRes] = await Promise.all([
@@ -88,6 +93,7 @@ export function useMonteCarloLegendStream(
 
       if (id !== runId.current) return;
       setSnapshot(next);
+      hasSnapshotRef.current = true;
       setLastUpdated(next.computedAt);
     } catch (err) {
       if (id !== runId.current) return;
@@ -100,9 +106,9 @@ export function useMonteCarloLegendStream(
   }, [symbol, spot, chainSig, enabled]);
 
   useEffect(() => {
-    void run();
+    void run(false);
     if (!enabled) return;
-    const timer = window.setInterval(() => void run(), refreshMs);
+    const timer = window.setInterval(() => void run(true), refreshMs);
     return () => window.clearInterval(timer);
   }, [run, refreshMs, enabled, cachePulse]);
 
