@@ -55,6 +55,7 @@
     "ag-grid-community": "^32.3.9",
     "ag-grid-enterprise": "^32.3.9",
     "ag-grid-react": "^32.3.9",
+    "bs58": "^6.0.0",
     "d3-scale": "^4.0.2",
     "echarts": "^5.6.0",
     "echarts-for-react": "^3.0.6",
