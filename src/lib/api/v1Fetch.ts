@@ -2,6 +2,13 @@
  * Market API fetch — Next.js proxy on web, direct IBKR on desktop bundle.
  */
 import { envelope } from './envelope';
+import {
+  DESKTOP_CACHE_TTL,
+  readDesktopCache,
+  recordCacheHit,
+  recordCacheMiss,
+  writeDesktopCache,
+} from './desktopCache';
 
 const IBKR_BASE = (process.env.NEXT_PUBLIC_IBKR_API_URL ?? 'http://localhost:8093')
   .replace(/\/$/, '')
@@ -60,6 +67,15 @@ async function fetchLocalV1(pathWithQuery: string): Promise<Response> {
   const [pathPart, query = ''] = pathWithQuery.split('?');
   const params = new URLSearchParams(query);
   const segments = pathPart.split('/').filter(Boolean);
+  const cacheKey = pathWithQuery;
+
+  const cached = readDesktopCache(cacheKey);
+  if (cached && !cached.stale) {
+    recordCacheHit(cacheKey);
+    return Response.json(cached.json);
+  }
+
+  if (!cached) recordCacheMiss();
 
   if (segments[0] === 'quote' && segments[1]) {
     const sym = segments[1].toUpperCase();
@@ -131,7 +147,9 @@ async function fetchLocalV1(pathWithQuery: string): Promise<Response> {
       },
       'ibkr',
     );
-    return Response.json(body);
+    const res = Response.json(body);
+    writeDesktopCache(cacheKey, await res.clone().json(), DESKTOP_CACHE_TTL.quote);
+    return res;
   }
 
   if (segments[0] === 'candles' && segments.length >= 3) {
@@ -177,7 +195,9 @@ async function fetchLocalV1(pathWithQuery: string): Promise<Response> {
       volume: b.volume,
       vwap: b.vwap ?? b.close,
     }));
-    return Response.json(envelope(bars, 'ibkr'));
+    const res = Response.json(envelope(bars, 'ibkr'));
+    writeDesktopCache(cacheKey, await res.clone().json(), DESKTOP_CACHE_TTL.candles);
+    return res;
   }
 
   if (segments[0] === 'options' && segments[1] === 'chain' && segments[2]) {
@@ -210,7 +230,9 @@ async function fetchLocalV1(pathWithQuery: string): Promise<Response> {
         underlying_price: json.underlying_price ?? 0,
       };
     });
-    return Response.json(envelope(data, 'ibkr'));
+    const res = Response.json(envelope(data, 'ibkr'));
+    writeDesktopCache(cacheKey, await res.clone().json(), DESKTOP_CACHE_TTL.chain);
+    return res;
   }
 
   if (segments[0] === 'news') {

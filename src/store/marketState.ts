@@ -6,6 +6,7 @@
 import { useSyncExternalStore } from 'react';
 import type { CandleUpdate, MarketStreamUpdate, MarketUpdate } from '@/lib/ws/types';
 import type { Candle } from '@/components/dashboard/terminal/terminalData';
+import { CANDLE_RING_CAPACITY, TAPE_RING_CAPACITY } from '@/config/marketFeedCache';
 
 export type SymbolQuote = MarketUpdate & {
   prevClose?: number;
@@ -38,8 +39,8 @@ type MarketState = {
   tape: Record<string, TapePrint[]>;
 };
 
-const MAX_CANDLES = 500;
-const MAX_TAPE = 120;
+const MAX_CANDLES = CANDLE_RING_CAPACITY;
+const MAX_TAPE = TAPE_RING_CAPACITY;
 const EMPTY_CANDLES: CandleUpdate[] = [];
 const EMPTY_TAPE: TapePrint[] = [];
 

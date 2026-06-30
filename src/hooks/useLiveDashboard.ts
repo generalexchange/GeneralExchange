@@ -21,6 +21,7 @@ import { readJsonResponse } from '@/lib/api/readJsonResponse';
 import { fetchV1, isLocalDesktopClient } from '@/lib/api/v1Fetch';
 import { getMarketSession, quoteCardTheme, type MarketSession } from '@/lib/marketSession';
 import { filterExtendedDayCandles, sessionOpenFromCandles } from '@/lib/extendedHoursChart';
+import { OPTIONS_CHAIN_POLL_MS } from '@/config/marketFeedCache';
 import type { Candle } from '@/components/dashboard/terminal/terminalData';
 import type { NewsRow, OptionRow } from '@/components/dashboard/terminal/terminalData';
 
@@ -284,6 +285,17 @@ export function useLiveDashboard(
       window.clearInterval(id);
     };
   }, [symbol, chartRange, lite, fetchQuoteRest, fetchCandles, fetchChain, fetchNews, quote?.price, wsCandles.length, candles.length]);
+
+  // Fast options chain refresh for live bid/ask feed (Legend).
+  useEffect(() => {
+    if (lite) return;
+    const spot = quote?.price ?? wsQuotePrice(symbol);
+    if (!spot) return;
+    const id = window.setInterval(() => {
+      void fetchChain(spot);
+    }, OPTIONS_CHAIN_POLL_MS);
+    return () => window.clearInterval(id);
+  }, [lite, symbol, quote?.price, fetchChain]);
 
   const displayCandles = useMemo(() => {
     const mapWs = (rows: typeof wsCandles) =>

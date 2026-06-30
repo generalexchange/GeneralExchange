@@ -6,6 +6,7 @@ import React from 'react';
 import Link from 'next/link';
 import { MapPin } from 'lucide-react';
 import { marketingSubdomainUrl } from '@/lib/subdomains';
+import { legendHref } from '@/lib/legendUrl';
 
 export const InstitutionalFooter: React.FC = () => {
   return (
@@ -83,8 +84,8 @@ export const InstitutionalFooter: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard" className="text-sm text-neutral-400 hover:text-tan transition-colors">
-                  Dashboard
+                <Link href={legendHref()} className="text-sm text-neutral-400 hover:text-tan transition-colors">
+                  Legend
                 </Link>
               </li>
             </ul>

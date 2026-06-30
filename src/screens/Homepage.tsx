@@ -1,10 +1,8 @@
 /**
  * Homepage — full-viewport Exchange / Risk / Library / Backspace narrative.
  *
- * When running inside the Tauri desktop shell (`window.__TAURI_INTERNALS__`
- * is present), the homepage is replaced with DesktopLanding — the full-bleed
- * illustration + animated Sign In / Create Account buttons. The rest of the
- * app (login, dashboard, all routes) works identically in both contexts.
+ * When running inside the Tauri desktop shell, the homepage is replaced with
+ * DesktopLanding (hero + inline login). After sign-in, users land on Legend at /legend/.
  */
 
 'use client';

@@ -2,16 +2,26 @@
 
 import { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { isDesktopBlockedPath } from '@/lib/desktopNav';
+import {
+  DESKTOP_LEGEND_PATH,
+  isDesktopBlockedPath,
+  isDesktopLegacyDashboardPath,
+} from '@/lib/desktopNav';
 
-/** Keep the desktop installer on landing → login → legend; block marketing site routes. */
+/** Desktop: landing → login → Legend; block marketing routes; retire /dashboard. */
 export function DesktopRouteGuard() {
   const pathname = usePathname();
   const router = useRouter();
 
   useEffect(() => {
-    if (!pathname || !isDesktopBlockedPath(pathname)) return;
-    router.replace('/');
+    if (!pathname) return;
+    if (isDesktopLegacyDashboardPath(pathname)) {
+      router.replace(DESKTOP_LEGEND_PATH);
+      return;
+    }
+    if (isDesktopBlockedPath(pathname)) {
+      router.replace('/');
+    }
   }, [pathname, router]);
 
   return null;

@@ -13,6 +13,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { legendHref } from '@/lib/legendUrl';
 import { motion } from 'framer-motion';
 import { Navbar } from '@/components/Navbar';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
@@ -243,7 +244,7 @@ export const Warehouse: React.FC = () => {
                 actually behaving.
               </p>
               <div className="mt-8 flex w-full flex-col gap-3 sm:flex-row">
-                <Link href="/dashboard" className={btnPrimary}>
+                <Link href={legendHref()} className={btnPrimary}>
                   Open the platform
                 </Link>
                 <Link href="/tradeengine" className={btnOutline}>

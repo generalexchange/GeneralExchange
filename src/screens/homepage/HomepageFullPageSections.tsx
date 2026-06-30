@@ -18,6 +18,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { legendHref } from '@/lib/legendUrl';
 import { useTypewriter, Cursor } from 'react-simple-typewriter';
 import { motion } from 'framer-motion';
 import { SectionShell } from '@/components/homepage/SectionShell';
@@ -254,7 +255,7 @@ export function HomepageFullPageSections() {
           <StrategyLibraryIllustration />
         </div>
         <SectionActions>
-          <Link href="/dashboard" className={btnSection}>
+          <Link href={legendHref()} className={btnSection}>
             Browse the library
           </Link>
         </SectionActions>

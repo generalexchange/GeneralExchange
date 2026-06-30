@@ -1,26 +1,25 @@
-import { Suspense } from 'react';
-import { Dashboard } from '@/screens/Dashboard';
-import { buildPageMetadata } from '@/lib/seo';
+'use client';
 
-export const metadata = buildPageMetadata({
-  title: 'Dashboard',
-  description: 'Institutional dashboard for paper session, library assets, and BackSpace scratch on General Exchange.',
-  path: '/dashboard',
-  noIndex: true,
-});
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { DESKTOP_LEGEND_PATH, isTauriApp } from '@/lib/desktopNav';
+import { getLegendOrigin } from '@/lib/legendUrl';
 
-function DashboardFallback() {
+/** Legacy /dashboard — always send users to Legend (subdomain or desktop /legend/). */
+export default function DashboardRedirectPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isTauriApp()) {
+      router.replace(DESKTOP_LEGEND_PATH);
+      return;
+    }
+    window.location.replace(getLegendOrigin());
+  }, [router]);
+
   return (
-    <div className="min-h-screen bg-charcoal flex items-center justify-center text-zinc-500 text-sm">
-      Loading dashboard…
+    <div className="flex min-h-screen items-center justify-center bg-charcoal text-sm text-zinc-500">
+      Redirecting to Legend…
     </div>
-  );
-}
-
-export default function DashboardPage() {
-  return (
-    <Suspense fallback={<DashboardFallback />}>
-      <Dashboard />
-    </Suspense>
   );
 }

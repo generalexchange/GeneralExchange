@@ -1,5 +1,6 @@
 /**
  * Unified WebSocket client — connects to /ws/market stream engine.
+ * Ticks pass through micro-batch buffer before marketState (HFT cache layer).
  */
 'use client';
 
@@ -9,6 +10,12 @@ import {
   applyMarketStreamUpdate,
   applyMarketUpdate,
 } from '@/store/marketState';
+import {
+  consumePendingStream,
+  ingestMarketStreamUpdate,
+  ingestMarketUpdate,
+  onMicroBatchFlush,
+} from '@/lib/marketTickBuffer';
 import type { WsOutbound } from '@/lib/ws/types';
 
 const BUILD_TIME_WS_URL = process.env.NEXT_PUBLIC_WS_URL?.trim() ?? '';
@@ -23,10 +30,40 @@ let closed = false;
 let connected = false;
 const statusListeners = new Set<(open: boolean) => void>();
 const symbolWatch = new Set<string>(DEFAULT_SYMBOLS.split(',').map((s) => s.trim()).filter(Boolean));
+let batchBridgeInstalled = false;
 
 function notifyStatus(open: boolean) {
   connected = open;
   for (const fn of statusListeners) fn(open);
+}
+
+function ensureBatchBridge() {
+  if (batchBridgeInstalled) return;
+  batchBridgeInstalled = true;
+  onMicroBatchFlush((snapshots) => {
+    for (const snap of snapshots) {
+      const sym = snap.symbol;
+      const stream = consumePendingStream(sym);
+
+      if (stream) {
+        applyMarketStreamUpdate({
+          ...stream,
+          price: snap.lastPrice,
+          volume: snap.volumeDelta || stream.volume,
+          timestamp: snap.timestamp,
+          seq: snap.seq,
+        });
+      } else {
+        applyMarketUpdate({
+          symbol: sym,
+          price: snap.lastPrice,
+          volume: snap.volumeDelta,
+          timestamp: snap.timestamp,
+          source: 'ibkr',
+        });
+      }
+    }
+  });
 }
 
 function sendSubscribe() {
@@ -50,8 +87,9 @@ function handleMessage(raw: string) {
   } catch {
     return;
   }
-  if (msg.type === 'market') applyMarketUpdate(msg.data);
-  if (msg.type === 'stream') applyMarketStreamUpdate(msg.data);
+  ensureBatchBridge();
+  if (msg.type === 'market') ingestMarketUpdate(msg.data);
+  if (msg.type === 'stream') ingestMarketStreamUpdate(msg.data);
   if (msg.type === 'snapshot') applyMarketSnapshot(msg.data);
   if (msg.type === 'candle') applyCandleUpdate(msg.data, msg.replaceLast ?? true);
 }
@@ -127,6 +165,7 @@ export function subscribeMarketWs(): () => void {
 
   subscribers += 1;
   closed = false;
+  ensureBatchBridge();
   if (!socket || socket.readyState === WebSocket.CLOSED) {
     void openConnection();
   } else if (socket.readyState === WebSocket.OPEN) {

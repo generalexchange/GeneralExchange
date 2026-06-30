@@ -1,6 +1,6 @@
 /**
- * Legend terminal subdomain — authenticated dashboard lives at legend.general.exchange.
- * In the Tauri desktop bundle, Legend is served at /dashboard/ on the same origin.
+ * Legend terminal subdomain — trade engine at legend.general.exchange.
+ * Desktop bundle serves the same UI at /legend/ on the local origin.
  */
 
 import { isTauriApp, DESKTOP_LEGEND_PATH } from '@/lib/desktopNav';
@@ -28,6 +28,10 @@ export function getLegendOrigin(): string {
       return `${protocol}//legend.localhost:${p}`;
     }
 
+    if (isLegendHost(hostname)) {
+      return `${protocol}//${hostname}${port ? `:${port}` : ''}`;
+    }
+
     return LEGEND_ORIGIN;
   }
 
@@ -38,19 +42,33 @@ export function getLegendOrigin(): string {
   return LEGEND_ORIGIN;
 }
 
-/** Full URL for the legend terminal (default path is subdomain root). */
+/** Full URL for Legend (subdomain root on web, /legend/ in desktop). */
 export function legendDashboardUrl(path = '/'): string {
   if (typeof window !== 'undefined' && isTauriApp()) {
     if (!path || path === '/') return DESKTOP_LEGEND_PATH;
     const normalized = path.startsWith('/') ? path : `/${path}`;
-    if (normalized.startsWith('/dashboard')) return normalized.endsWith('/') ? normalized : `${normalized}/`;
+    if (normalized.startsWith('/legend')) {
+      return normalized.endsWith('/') ? normalized : `${normalized}/`;
+    }
+    if (normalized.startsWith('/dashboard')) {
+      return DESKTOP_LEGEND_PATH;
+    }
     return `${DESKTOP_LEGEND_PATH.replace(/\/$/, '')}${normalized}`;
   }
 
   const origin = getLegendOrigin();
   if (!path || path === '/') return `${origin}/`;
   const normalized = path.startsWith('/') ? path : `/${path}`;
+  if (normalized.startsWith('/legend') || normalized.startsWith('/dashboard')) {
+    const stripped = normalized.replace(/^\/(legend|dashboard)\/?/, '/') || '/';
+    return stripped === '/' ? `${origin}/` : `${origin}${stripped}`;
+  }
   return `${origin}${normalized}`;
+}
+
+/** Marketing-site links → Legend terminal. */
+export function legendHref(path = '/'): string {
+  return legendDashboardUrl(path);
 }
 
 export function isLegendHost(host: string): boolean {
@@ -58,7 +76,6 @@ export function isLegendHost(host: string): boolean {
   return h === 'legend.localhost' || h.startsWith('legend.');
 }
 
-/** True when host is a legacy/wrong legend hostname that should 308 to LEGEND_ORIGIN. */
 export function isNonCanonicalLegendHost(host: string): boolean {
   const h = host.split(':')[0]?.toLowerCase() ?? '';
   if (!isLegendHost(h) || h === 'legend.localhost') return false;

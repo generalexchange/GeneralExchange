@@ -63,7 +63,7 @@ export const ProfileMenu: React.FC = () => {
               className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-gray-300 hover:bg-[#2a2a2a] hover:text-white transition-colors"
             >
               <LayoutDashboard className="w-4 h-4" />
-              <span>Dashboard</span>
+              <span>Legend</span>
             </button>
             <button
               className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-gray-300 hover:bg-[#2a2a2a] hover:text-white transition-colors"

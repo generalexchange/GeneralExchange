@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Eye, EyeOff } from 'lucide-react';
@@ -13,11 +13,15 @@ const easeLux = [0.22, 1, 0.36, 1] as const;
 
 export const Login: React.FC = () => {
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+
+  useEffect(() => {
+    if (isTauriApp()) router.replace('/');
+  }, [router]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,9 +38,10 @@ export const Login: React.FC = () => {
     }, 800);
   };
 
+  if (isTauriApp()) return null;
+
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden bg-charcoal">
-      {/* Ambient glow */}
       <div
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_55%_at_50%_-10%,rgba(46,90,58,0.13),transparent_55%)]"
         aria-hidden
@@ -46,7 +51,6 @@ export const Login: React.FC = () => {
         aria-hidden
       />
 
-      {/* Header */}
       <header className="relative z-10 flex items-center justify-between border-b border-white/[0.06] px-6 py-4 sm:px-10">
         <Link href="/" className="flex items-center gap-3 group">
           <div className="h-7 w-7 overflow-hidden rounded-md border border-[#8B7D6B]/45">
@@ -67,7 +71,6 @@ export const Login: React.FC = () => {
         </p>
       </header>
 
-      {/* Main */}
       <main className="relative z-10 flex flex-1 items-center justify-center px-4 py-12">
         <motion.div
           className="w-full max-w-[400px]"
@@ -75,7 +78,6 @@ export const Login: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, ease: easeLux }}
         >
-          {/* Eyebrow */}
           <p className="sc-serif mb-3 text-[11px] uppercase tracking-[0.22em] text-tan/75">
             Terminal access
           </p>
@@ -87,10 +89,8 @@ export const Login: React.FC = () => {
             Sign in to your general.exchange account.
           </p>
 
-          {/* Card */}
           <div className="mt-8 rounded-xl border border-white/[0.07] bg-dark-gray shadow-[0_32px_80px_-24px_rgba(0,0,0,0.7)]">
             <form onSubmit={handleSubmit} className="space-y-4 p-7 sm:p-8">
-              {/* Email */}
               <label className="block">
                 <span className="block text-[11px] uppercase tracking-wider text-zinc-500 mb-1.5">
                   Email address
@@ -106,7 +106,6 @@ export const Login: React.FC = () => {
                 />
               </label>
 
-              {/* Password */}
               <label className="block">
                 <div className="mb-1.5 flex items-center justify-between">
                   <span className="text-[11px] uppercase tracking-wider text-zinc-500">
@@ -146,27 +145,15 @@ export const Login: React.FC = () => {
                 </p>
               )}
 
-              {/* Submit */}
               <button
                 type="submit"
                 disabled={isSubmitting || !email || !password}
                 className="mt-2 inline-flex h-11 w-full items-center justify-center rounded-md bg-tan text-sm font-semibold tracking-wide text-charcoal shadow-[0_8px_24px_-8px_rgba(210,180,140,0.35)] transition-all hover:bg-tan-muted active:scale-[0.99] disabled:bg-white/10 disabled:text-zinc-500 disabled:shadow-none"
               >
-                {isSubmitting ? (
-                  <span className="flex items-center gap-2">
-                    <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                    </svg>
-                    Signing in…
-                  </span>
-                ) : (
-                  'Sign In'
-                )}
+                {isSubmitting ? 'Signing in…' : 'Sign In'}
               </button>
             </form>
 
-            {/* Divider */}
             <div className="border-t border-white/[0.06] px-7 py-5 sm:px-8">
               <p className="text-center text-[13px] text-zinc-500">
                 No account?{' '}
@@ -179,22 +166,9 @@ export const Login: React.FC = () => {
               </p>
             </div>
           </div>
-
-          <p className="mt-6 text-center text-[12px] text-zinc-600">
-            By signing in you agree to our{' '}
-            <Link href="/terms-and-conditions" className="underline underline-offset-2 hover:text-zinc-400 transition-colors">
-              Terms
-            </Link>{' '}
-            and{' '}
-            <Link href="/privacy-policy" className="underline underline-offset-2 hover:text-zinc-400 transition-colors">
-              Privacy Policy
-            </Link>
-            .
-          </p>
         </motion.div>
       </main>
 
-      {/* Footer */}
       <footer className="relative z-10 border-t border-white/[0.06] py-5 text-center">
         <p className="text-[12px] text-zinc-600">
           © {new Date().getFullYear()} Old West Solutions. All rights reserved.

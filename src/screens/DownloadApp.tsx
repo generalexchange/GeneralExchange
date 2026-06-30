@@ -14,6 +14,7 @@ import {
   type DesktopReleaseInfo,
 } from '@/lib/desktopRelease';
 import { GITHUB_RELEASES_URL } from '@/config/desktopApp';
+import { legendHref } from '@/lib/legendUrl';
 
 const easeLux = [0.22, 1, 0.36, 1] as const;
 
@@ -114,7 +115,7 @@ export const DownloadApp: React.FC = () => {
             general.exchange
           </Link>
           <Link
-            href="/dashboard"
+            href={legendHref()}
             className="text-[12px] tracking-wide text-zinc-400 transition-colors hover:text-tan"
           >
             Web terminal
@@ -223,7 +224,7 @@ export const DownloadApp: React.FC = () => {
 
           <p className="mt-8 text-[13px] text-zinc-500">
             Requires IB Gateway + local IBKR service on your machine.{' '}
-            <Link href="/dashboard" className="text-tan underline-offset-4 hover:underline">
+            <Link href={legendHref()} className="text-tan underline-offset-4 hover:underline">
               Or use the browser terminal
             </Link>
           </p>
