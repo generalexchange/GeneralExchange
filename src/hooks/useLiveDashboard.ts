@@ -28,7 +28,7 @@ import type { NewsRow, OptionRow } from '@/components/dashboard/terminal/termina
 export type ChartRange = '1D' | '1W' | '1M' | '3M' | 'YTD' | '1Y' | '5Y' | 'MAX';
 
 const RANGE_FETCH: Record<ChartRange, { interval: string; limit: number }> = {
-  '1D': { interval: '1m', limit: 960 },
+  '1D': { interval: '1m', limit: 1200 },
   '1W': { interval: '15m', limit: 67 },
   '1M': { interval: '1h', limit: 120 },
   '3M': { interval: '1d', limit: 65 },
@@ -54,16 +54,8 @@ function mergeLiveQuote(candles: Candle[], quote: { price: number; prevClose?: n
   if (!quote?.price) return candles;
   const price = quote.price;
   const qt = quote.timestamp ? Number(quote.timestamp) : Date.now();
-  const prev = quote.prevClose && quote.prevClose > 0 ? quote.prevClose : price;
 
-  if (!candles.length) {
-    // Robinhood-style line needs at least two points — open → now.
-    const openMs = qt - 6.5 * 3_600_000;
-    return [
-      { t: openMs, o: prev, h: Math.max(prev, price), l: Math.min(prev, price), c: prev, v: 0, vwap: prev },
-      { t: qt, o: prev, h: Math.max(prev, price), l: Math.min(prev, price), c: price, v: 0, vwap: price },
-    ];
-  }
+  if (!candles.length) return [];
   const last = candles[candles.length - 1];
   if (qt - last.t < 120_000) {
     return [

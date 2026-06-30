@@ -4,17 +4,15 @@ import React from 'react';
 import { QuotePriceChart } from '@/components/dashboard/QuotePriceChart';
 import { AnimatedPrice, AnimatedSignedChange } from '@/components/dashboard/AnimatedPrice';
 import { useSpyMarketFeed } from '@/hooks/useSpyMarketFeed';
-import { SpyRiskPanel } from '@/components/dashboard/SpyRiskPanel';
 import type { Candle } from '@/components/dashboard/terminal/terminalData';
 
 type MarketTemperatureProps = {
-  selectedSymbol: string;
   spyCandles: Candle[];
   spyLive: boolean;
   spyLoading?: boolean;
 };
 
-export function MarketTemperature({ selectedSymbol, spyCandles, spyLive, spyLoading }: MarketTemperatureProps) {
+export function MarketTemperature({ spyCandles, spyLive, spyLoading }: MarketTemperatureProps) {
   const { quote, loading } = useSpyMarketFeed();
   const price = quote?.price ?? 0;
   const change = quote?.change ?? 0;
@@ -66,10 +64,6 @@ export function MarketTemperature({ selectedSymbol, spyCandles, spyLive, spyLoad
             {loading || spyLoading ? 'Loading SPY tape…' : 'No SPY data available'}
           </div>
         )}
-      </div>
-
-      <div className="mt-3">
-        <SpyRiskPanel symbol={selectedSymbol} />
       </div>
     </section>
   );

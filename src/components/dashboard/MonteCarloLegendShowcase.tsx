@@ -9,6 +9,7 @@ import NumberFlow from '@number-flow/react';
 import { useReducedMotion } from 'framer-motion';
 import { Activity, RefreshCw, TrendingUp } from 'lucide-react';
 import { AnimatedPrice } from '@/components/dashboard/AnimatedPrice';
+import { LegendPanelSkeleton } from '@/components/dashboard/LegendPanelSkeleton';
 import { useMonteCarloLegendStream } from '@/hooks/useMonteCarloLegendStream';
 import type { OptionRow } from '@/components/dashboard/terminal/terminalData';
 import type { McPathBand, OptionMcRow, TradeMarker } from '@/lib/monteCarloLegend/analyze';
@@ -526,9 +527,8 @@ export function MonteCarloLegendShowcase({ symbol, spot, chain, live }: MonteCar
           </footer>
         </>
       ) : loading ? (
-        <div className="flex items-center justify-center gap-2 px-4 py-12 font-mono text-[11px] text-zinc-500">
-          <RefreshCw className="h-4 w-4 animate-spin" />
-          Calibrating from IBKR history…
+        <div className="p-4">
+          <LegendPanelSkeleton label="Monte Carlo · calibrating from IBKR" rows={6} height={32} />
         </div>
       ) : null}
     </section>

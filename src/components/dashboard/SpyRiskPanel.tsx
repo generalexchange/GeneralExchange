@@ -3,6 +3,7 @@
 import React, { useMemo } from 'react';
 import { Line, LineChart, ResponsiveContainer, YAxis } from 'recharts';
 import { useSpyRegression } from '@/hooks/useSpyRegression';
+import { LegendPanelSkeleton } from '@/components/dashboard/LegendPanelSkeleton';
 
 type SpyRiskPanelProps = {
   symbol: string;
@@ -31,7 +32,7 @@ function Metric({
 }
 
 export function SpyRiskPanel({ symbol }: SpyRiskPanelProps) {
-  const { regression, series, live, loading } = useSpyRegression(symbol);
+  const { regression, series, live, loading, error } = useSpyRegression(symbol);
 
   const chartData = useMemo(() => {
     if (!series) return [];
@@ -50,6 +51,19 @@ export function SpyRiskPanel({ symbol }: SpyRiskPanelProps) {
         ? 'rose'
         : undefined;
 
+  if (loading && !regression) {
+    return <LegendPanelSkeleton label="Risk vs SPY · IBKR" rows={4} height={36} />;
+  }
+
+  if (error && !regression) {
+    return (
+      <section className="rounded-lg border border-rose-500/20 bg-dark-gray/90 p-3">
+        <h3 className="font-mono text-[10px] uppercase tracking-[0.18em] text-zinc-400">Risk vs SPY</h3>
+        <p className="mt-2 font-mono text-[10px] text-rose-300">{error}</p>
+      </section>
+    );
+  }
+
   return (
     <section className="rounded-lg border border-white/10 bg-dark-gray/90 p-3 shadow-lg backdrop-blur-sm">
       <div className="mb-2 flex items-center justify-between">
@@ -57,10 +71,10 @@ export function SpyRiskPanel({ symbol }: SpyRiskPanelProps) {
           <h3 className="font-mono text-[10px] uppercase tracking-[0.18em] text-zinc-400">Risk vs SPY</h3>
           <p className="font-mono text-[9px] text-zinc-600">
             {loading
-              ? 'Loading historical…'
+              ? 'Refreshing IBKR bars…'
               : live && regression
-                ? `${regression.sampleDays}d IBKR daily bars`
-                : 'Static fallback'}
+                ? `${regression.sampleDays}d IBKR daily · live OLS`
+                : 'Awaiting IBKR'}
           </p>
         </div>
         {live && !loading ? (
@@ -69,20 +83,16 @@ export function SpyRiskPanel({ symbol }: SpyRiskPanelProps) {
       </div>
 
       <div className="grid grid-cols-3 gap-1.5">
-        <Metric
-          label="Beta"
-          value={loading ? '…' : (regression?.beta ?? 1).toFixed(2)}
-          sub="vs SPY"
-        />
+        <Metric label="Beta" value={(regression?.beta ?? 0).toFixed(2)} sub="vs SPY" />
         <Metric
           label="Alpha"
-          value={loading ? '…' : `${regression?.alphaAnnualizedPct != null && regression.alphaAnnualizedPct >= 0 ? '+' : ''}${(regression?.alphaAnnualizedPct ?? 0).toFixed(1)}%`}
+          value={`${regression?.alphaAnnualizedPct != null && regression.alphaAnnualizedPct >= 0 ? '+' : ''}${(regression?.alphaAnnualizedPct ?? 0).toFixed(1)}%`}
           sub="ann."
           accent={alphaAccent}
         />
         <Metric
           label="Corr"
-          value={loading ? '…' : (regression?.correlation ?? 0).toFixed(2)}
+          value={(regression?.correlation ?? 0).toFixed(2)}
           sub={regression ? `R² ${regression.rSquared.toFixed(2)}` : undefined}
         />
       </div>
@@ -92,27 +102,13 @@ export function SpyRiskPanel({ symbol }: SpyRiskPanelProps) {
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
               <YAxis hide domain={['auto', 'auto']} />
-              <Line
-                type="monotone"
-                dataKey="spy"
-                stroke="#71717a"
-                strokeWidth={1.5}
-                dot={false}
-                isAnimationActive={false}
-              />
-              <Line
-                type="monotone"
-                dataKey="symbol"
-                stroke="#d2b48c"
-                strokeWidth={2}
-                dot={false}
-                isAnimationActive={false}
-              />
+              <Line type="monotone" dataKey="spy" stroke="#71717a" strokeWidth={1.5} dot={false} isAnimationActive={false} />
+              <Line type="monotone" dataKey="symbol" stroke="#d2b48c" strokeWidth={2} dot={false} isAnimationActive={false} />
             </LineChart>
           </ResponsiveContainer>
         ) : (
           <div className="flex h-full items-center justify-center font-mono text-[9px] text-zinc-600">
-            {loading ? 'Computing…' : 'Need more daily history'}
+            {loading ? 'Loading normalized series…' : 'Insufficient aligned history'}
           </div>
         )}
       </div>
@@ -121,9 +117,6 @@ export function SpyRiskPanel({ symbol }: SpyRiskPanelProps) {
         <span className="text-tan">{symbol}</span>
         <span>SPY</span>
       </div>
-      <p className="mt-1 font-mono text-[8px] leading-relaxed text-zinc-600">
-        Alpha = excess return vs CAPM (β·SPY). Correlation = daily return co-movement.
-      </p>
     </section>
   );
 }

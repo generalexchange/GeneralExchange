@@ -4,6 +4,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { fetchV1 } from '@/lib/api/v1Fetch';
 import { mapCandleRows, type CandleRow } from '@/lib/api/mapLiveData';
 import { readJsonResponse } from '@/lib/api/readJsonResponse';
+import { useIbkrCachePulse } from '@/hooks/useIbkrCachePulse';
+import type { SymbolSentimentSnapshot } from '@/lib/sentiment/fetchNewsFeed';
 import {
   analyzeLegendMonteCarlo,
   type McLegendSnapshot,
@@ -29,8 +31,9 @@ export function useMonteCarloLegendStream(
 ): MonteCarloLegendStream {
   const refreshMs = options?.refreshMs ?? REFRESH_MS;
   const enabled = options?.enabled ?? true;
+  const cachePulse = useIbkrCachePulse();
   const [snapshot, setSnapshot] = useState<McLegendSnapshot | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<number | null>(null);
   const runId = useRef(0);
@@ -62,12 +65,24 @@ export function useMonteCarloLegendStream(
         spyHistory = mapCandleRows(spyJson.data ?? []);
       }
 
+      let sentiment: SymbolSentimentSnapshot | null = null;
+      try {
+        const sentRes = await fetchV1(`/sentiment/${encodeURIComponent(symbol)}?beta=1`);
+        if (sentRes.ok) {
+          const sentJson = await readJsonResponse<{ data?: SymbolSentimentSnapshot }>(sentRes);
+          sentiment = sentJson.data ?? null;
+        }
+      } catch {
+        /* news optional */
+      }
+
       const next = analyzeLegendMonteCarlo({
         symbol,
         spot,
         history,
         spyHistory,
         chain,
+        sentiment,
         seed: 20260629 + symbol.charCodeAt(0),
       });
 
@@ -89,7 +104,7 @@ export function useMonteCarloLegendStream(
     if (!enabled) return;
     const timer = window.setInterval(() => void run(), refreshMs);
     return () => window.clearInterval(timer);
-  }, [run, refreshMs, enabled]);
+  }, [run, refreshMs, enabled, cachePulse]);
 
   return { snapshot, loading, error, lastUpdated, refresh: run };
 }

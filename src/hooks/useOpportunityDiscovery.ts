@@ -5,9 +5,9 @@ import type { DiscoverResponse, OutcomesResponse, RankedContract } from '@/lib/o
 import { fetchV1Post } from '@/lib/api/v1Fetch';
 import { TRADEABLE_SYMBOLS } from '@/data/symbols';
 
-const REFRESH_MS = 120_000;
+const REFRESH_MS = 90_000;
 
-export function useOpportunityDiscovery() {
+export function useOpportunityDiscovery(focusSymbol?: string) {
   const [opportunities, setOpportunities] = useState<RankedContract[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -16,16 +16,21 @@ export function useOpportunityDiscovery() {
   const refresh = useCallback(async (background = false) => {
     if (!background) setLoading(true);
     setError(null);
+    const syms = focusSymbol
+      ? [...new Set([focusSymbol.toUpperCase(), ...TRADEABLE_SYMBOLS])]
+      : [...TRADEABLE_SYMBOLS];
     try {
-      const res = await fetchV1Post('/opportunity/discover', {
-        symbols: [...TRADEABLE_SYMBOLS],
-      });
+      const res = await fetchV1Post('/opportunity/discover', { symbols: syms });
       if (!res.ok) throw new Error(`discover ${res.status}`);
       const data = (await res.json()) as DiscoverResponse;
-      const valid = data.opportunities.filter((o) => !o.error);
+      const valid = data.opportunities.filter((o) => !o.error && o.strike > 0 && o.mid > 0);
+      valid.sort((a, b) => b.expectedReturn - a.expectedReturn || b.compositeScore - a.compositeScore);
       if (valid.length || !background) {
         setOpportunities(valid);
         setGeneratedAt(data.generatedAt);
+      }
+      if (!valid.length && !background) {
+        setError('No IBKR options opportunities — check chain feed');
       }
     } catch (e) {
       if (!background) {
@@ -34,7 +39,7 @@ export function useOpportunityDiscovery() {
     } finally {
       if (!background) setLoading(false);
     }
-  }, []);
+  }, [focusSymbol]);
 
   useEffect(() => {
     refresh(false);

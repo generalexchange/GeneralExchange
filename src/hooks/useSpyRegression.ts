@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { betaVsSpy } from '@/config/symbolBeta';
 import { mapCandleRows, type CandleRow } from '@/lib/api/mapLiveData';
 import { readJsonResponse } from '@/lib/api/readJsonResponse';
 import { fetchV1 } from '@/lib/api/v1Fetch';
+import { useIbkrCachePulse } from '@/hooks/useIbkrCachePulse';
 import {
   normalizedVsSpy,
   regressionVsSpy,
@@ -33,20 +33,23 @@ export type SpyRegressionState = {
   series: NormalizedSeries | null;
   live: boolean;
   loading: boolean;
-  beta: number;
+  error: string | null;
+  beta: number | null;
 };
 
-/** Historical alpha, beta, correlation vs SPY from IBKR daily bars. */
+/** Historical alpha, beta, correlation vs SPY from IBKR daily bars — no static fallbacks. */
 export function useSpyRegression(symbol: string): SpyRegressionState {
-  const fallbackBeta = betaVsSpy(symbol);
+  const cachePulse = useIbkrCachePulse();
   const [regression, setRegression] = useState<SpyRegression | null>(null);
   const [series, setSeries] = useState<NormalizedSeries | null>(null);
   const [live, setLive] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
+    setError(null);
 
     (async () => {
       const sym = symbol.toUpperCase();
@@ -56,6 +59,15 @@ export function useSpyRegression(symbol: string): SpyRegressionState {
       ]);
       if (cancelled) return;
 
+      if (symCandles.length < 20 || spyCandles.length < 20) {
+        setRegression(null);
+        setSeries(null);
+        setLive(false);
+        setError('Need 20+ IBKR daily bars for SPY regression');
+        setLoading(false);
+        return;
+      }
+
       const reg = regressionVsSpy(symCandles, spyCandles);
       const norm = normalizedVsSpy(symCandles, spyCandles);
 
@@ -63,17 +75,12 @@ export function useSpyRegression(symbol: string): SpyRegressionState {
         setRegression(reg);
         setSeries(norm);
         setLive(true);
+        setError(null);
       } else {
-        setRegression({
-          beta: fallbackBeta,
-          alphaDaily: 0,
-          alphaAnnualizedPct: 0,
-          correlation: sym === 'SPY' ? 1 : 0.75,
-          rSquared: sym === 'SPY' ? 1 : 0.56,
-          sampleDays: 0,
-        });
+        setRegression(null);
         setSeries(null);
         setLive(false);
+        setError('Regression unavailable — check IBKR history alignment');
       }
       setLoading(false);
     })();
@@ -81,13 +88,14 @@ export function useSpyRegression(symbol: string): SpyRegressionState {
     return () => {
       cancelled = true;
     };
-  }, [symbol, fallbackBeta]);
+  }, [symbol, cachePulse]);
 
   return {
     regression,
     series,
     live,
     loading,
-    beta: regression?.beta ?? fallbackBeta,
+    error,
+    beta: regression?.beta ?? null,
   };
 }

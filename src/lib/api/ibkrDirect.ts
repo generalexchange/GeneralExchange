@@ -20,10 +20,15 @@ type QuotePayload = {
   price: number;
   prevClose: number;
   sessionOpen?: number;
+  sessionClose?: number;
   change: number;
   changePct: number;
+  afterHoursChange?: number;
+  afterHoursChangePct?: number;
   timestamp?: number;
 };
+
+import { afterHoursFromPrice, regularSessionCloseFromMinuteBars } from './sessionQuote';
 
 async function ibkrGet<T>(
   path: string,
@@ -74,6 +79,8 @@ export async function ibkrQuote(symbol: string) {
   let price = q?.last ?? q?.bid ?? q?.ask ?? 0;
   let prevClose = q?.prev_close ?? q?.close ?? 0;
   let sessionOpen = q?.open && q.open > 0 ? q.open : undefined;
+  let sessionClose: number | undefined;
+  let minuteBars: Array<{ timestamp: string; close: number; open: number }> | null = null;
 
   if (!price || !prevClose || !sessionOpen) {
     try {
@@ -83,29 +90,51 @@ export async function ibkrQuote(symbol: string) {
           { symbol: sym, bar_size: '1 day', duration: '5 D', persist: 'false', cached: 'false', use_rth: 'true' },
           QUOTE_TIMEOUT_MS,
         ),
-        !sessionOpen
-          ? ibkrGet<{ bars: Array<{ timestamp: string; open: number }> }>(
-              '/historical',
-              {
-                symbol: sym,
-                bar_size: '1 min',
-                duration: '1 D',
-                persist: 'false',
-                cached: 'false',
-                use_rth: 'false',
-              },
-              QUOTE_TIMEOUT_MS,
-            )
-          : Promise.resolve(null),
+        ibkrGet<{ bars: Array<{ timestamp: string; close: number; open: number }> }>(
+          '/historical',
+          {
+            symbol: sym,
+            bar_size: '1 min',
+            duration: '1 D',
+            persist: 'false',
+            cached: 'false',
+            use_rth: 'false',
+          },
+          QUOTE_TIMEOUT_MS,
+        ),
       ]);
+      minuteBars = minute.bars ?? [];
       const bars = daily.bars ?? [];
       if (!price && bars.length) price = bars[bars.length - 1].close;
       if (!prevClose && bars.length > 1) prevClose = bars[bars.length - 2].close;
-      if (!sessionOpen && minute?.bars?.length) {
-        sessionOpen = sessionOpenFromMinuteBars(minute.bars);
+      if (!sessionOpen && minuteBars.length) {
+        sessionOpen = sessionOpenFromMinuteBars(minuteBars);
       }
+      sessionClose = regularSessionCloseFromMinuteBars(minuteBars);
     } catch {
       /* historical enrich optional */
+    }
+  } else {
+    try {
+      const minute = await ibkrGet<{ bars: Array<{ timestamp: string; close: number; open: number }> }>(
+        '/historical',
+        {
+          symbol: sym,
+          bar_size: '1 min',
+          duration: '1 D',
+          persist: 'false',
+          cached: 'false',
+          use_rth: 'false',
+        },
+        QUOTE_TIMEOUT_MS,
+      );
+      minuteBars = minute.bars ?? [];
+      sessionClose = regularSessionCloseFromMinuteBars(minuteBars);
+      if (!sessionOpen && minuteBars.length) {
+        sessionOpen = sessionOpenFromMinuteBars(minuteBars);
+      }
+    } catch {
+      /* optional */
     }
   }
 
@@ -117,6 +146,7 @@ export async function ibkrQuote(symbol: string) {
   }
   const change = price - prevClose;
   const changePct = (change / prevClose) * 100;
+  const ah = afterHoursFromPrice(price, sessionClose);
 
   return envelope(
     {
@@ -124,8 +154,10 @@ export async function ibkrQuote(symbol: string) {
       price,
       prevClose,
       sessionOpen,
+      sessionClose,
       change,
       changePct,
+      ...ah,
       timestamp: q?.timestamp ? Date.parse(q.timestamp) : Date.now(),
     } satisfies QuotePayload,
     'ibkr',
@@ -238,7 +270,7 @@ export async function tryIbkrDirect(path: string[], searchParams: URLSearchParam
   if (!canUseIbkrDirect() || path.length < 2) return null;
   const requested = Number(searchParams.get('limit') ?? 0);
   const defaultLimit =
-    path[2] === '1m' ? 960 : path[2] === '1d' ? 126 : path[2] === '5m' ? 390 : path[2] === '15m' ? 260 : 200;
+    path[2] === '1m' ? 1200 : path[2] === '1d' ? 126 : path[2] === '5m' ? 390 : path[2] === '15m' ? 260 : 200;
   const limit = requested > 0 ? requested : defaultLimit;
 
   try {

@@ -7,22 +7,18 @@
 
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { HomepageFullPageSections } from './homepage/HomepageFullPageSections';
 import { DesktopLanding } from '../components/desktop/DesktopLanding';
 
-function useIsTauri() {
-  const [isTauri, setIsTauri] = useState(false);
-  useEffect(() => {
-    setIsTauri(typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window);
-  }, []);
-  return isTauri;
+function detectTauri(): boolean {
+  return typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
 }
 
 export const Homepage: React.FC = () => {
-  const isTauri = useIsTauri();
+  const [isTauri] = useState(detectTauri);
 
   if (isTauri) return <DesktopLanding />;
 

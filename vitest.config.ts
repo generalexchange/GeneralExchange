@@ -8,10 +8,11 @@ export default defineConfig({
   resolve: {
     alias: {
       '@gx/analytics': path.resolve(__dirname, 'packages/analytics/src'),
+      '@': path.resolve(__dirname, 'src'),
     },
   },
   test: {
-    include: ['packages/**/tests/**/*.test.ts'],
+    include: ['packages/**/tests/**/*.test.ts', 'src/**/*.test.ts'],
     environment: 'node',
   },
 });

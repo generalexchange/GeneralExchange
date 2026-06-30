@@ -41,7 +41,14 @@ export function LiveCacheStatusBar({ live, source, symbol, loading }: LiveCacheS
             <span className="text-emerald-400/90">Live · {symbol}</span>
           </>
         ) : loading ? (
-          <span className="text-amber-400/90">Pulling {symbol}…</span>
+          <span className="inline-flex items-center gap-2 text-amber-400/90">
+            <motion.span
+              className="inline-block h-2 w-2 rounded-full bg-amber-400/80"
+              animate={{ opacity: [0.4, 1, 0.4] }}
+              transition={{ duration: 1.1, repeat: Infinity, ease: 'easeInOut' }}
+            />
+            Pulling {symbol}…
+          </span>
         ) : (
           <span className="text-zinc-500">Waiting for data</span>
         )}

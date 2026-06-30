@@ -6,9 +6,9 @@
 import React, { useRef, useState } from 'react';
 import { LineChart, Table2 } from 'lucide-react';
 import { useLiveDashboard, type ChartRange } from '@/hooks/useLiveDashboard';
-import { TRADEABLE_SYMBOLS, symbolDisplayName } from '@/data/symbols';
+import { symbolDisplayName } from '@/data/symbols';
+import { SymbolSearchBar } from '@/components/dashboard/SymbolSearchBar';
 import { StockQuoteHero } from '@/components/dashboard/StockQuoteHero';
-import { LegendOptionsFeed } from '@/components/dashboard/LegendOptionsFeed';
 import { MonteCarloLegendShowcase } from '@/components/dashboard/MonteCarloLegendShowcase';
 import { MarketPulseVisualizer } from '@/components/dashboard/MarketPulseVisualizer';
 import { SpyRiskPanel } from '@/components/dashboard/SpyRiskPanel';
@@ -18,6 +18,7 @@ import { MarketTemperature } from '@/components/dashboard/MarketTemperature';
 import { OpportunityDiscoveryFeed } from '@/components/dashboard/OpportunityDiscoveryFeed';
 import { LiveCacheStatusBar } from '@/components/dashboard/LiveCacheStatusBar';
 import { LivePulseIndicator } from '@/components/dashboard/LivePulseIndicator';
+import { LegendPanelSkeleton } from '@/components/dashboard/LegendPanelSkeleton';
 import { Panel } from '@/components/dashboard/terminal/panels';
 import { PriceChart, type PriceChartHandle } from '@/components/charts/PriceChart';
 import { GEXBarChart } from '@/components/charts/GEXBarChart';
@@ -64,22 +65,12 @@ export function LegendRobinhoodLayout({
 
       <main className="mx-auto flex w-full max-w-[1920px] flex-1 flex-col gap-3 p-2 lg:flex-row lg:gap-4 lg:p-3">
         <section className="min-w-0 flex-1">
-          <div className="mb-3 flex items-center justify-between rounded-md border border-white/[0.08] bg-charcoal/70 px-3 py-2">
-            <select
-              value={symbol}
-              onChange={(e) => onSymbolChange(e.target.value)}
-              className="rounded border border-white/[0.1] bg-dark-gray px-2 py-1 font-mono text-sm text-tan focus:outline-none"
-            >
-              {TRADEABLE_SYMBOLS.map((s) => (
-                <option key={s} value={s}>
-                  {s} · {symbolDisplayName(s)}
-                </option>
-              ))}
-            </select>
+          <div className="mb-3 flex items-center justify-between gap-2 rounded-md border border-white/[0.08] bg-charcoal/70 px-3 py-2">
+            <SymbolSearchBar value={symbol} onChange={onSymbolChange} />
             <button
               type="button"
               onClick={() => setAdvanced((v) => !v)}
-              className={`flex items-center gap-1.5 rounded border px-2.5 py-1 font-mono text-[11px] uppercase tracking-wide transition-colors ${
+              className={`flex shrink-0 items-center gap-1.5 rounded border px-2.5 py-1 font-mono text-[11px] uppercase tracking-wide transition-colors ${
                 advanced ? 'border-tan/40 bg-tan/15 text-tan' : 'border-white/[0.1] text-zinc-400 hover:text-zinc-200'
               }`}
             >
@@ -102,19 +93,23 @@ export function LegendRobinhoodLayout({
                   <MarketPulseVisualizer symbol={symbol} mode="hero" height={280} />
                 </div>
                 <div className="relative z-10 h-full">
-                {feed.candles.length ? (
-                  <PriceChart ref={priceChartRef} candles={feed.candles} active />
-                ) : (
-                  <div className="flex h-full items-center justify-center font-mono text-[11px] text-zinc-500">
-                    {feed.loading ? 'Loading candles…' : 'No candle data'}
-                  </div>
-                )}
+                  {feed.candles.length ? (
+                    <PriceChart ref={priceChartRef} candles={feed.candles} active />
+                  ) : feed.loading ? (
+                    <LegendPanelSkeleton label="Candles · IBKR" rows={5} height={36} className="h-full border-0 bg-transparent" />
+                  ) : (
+                    <div className="flex h-full items-center justify-center font-mono text-[11px] text-zinc-500">
+                      No candle data
+                    </div>
+                  )}
                 </div>
               </Panel>
               <Panel title="Gamma exposure" className="h-[190px]">
                 <div ref={gexRef} className="h-full">
                   {feed.gex.length ? (
                     <GEXBarChart gex={feed.gex} price={displayPrice} active={gexInView} />
+                  ) : feed.loading ? (
+                    <LegendPanelSkeleton label="GEX · options chain" rows={4} height={28} className="h-full border-0 bg-transparent" />
                   ) : (
                     <div className="flex h-full items-center justify-center font-mono text-[11px] text-zinc-500">
                       Options chain required for GEX
@@ -130,29 +125,29 @@ export function LegendRobinhoodLayout({
                   <MarketPulseVisualizer symbol={symbol} mode="calm" height={140} />
                 </div>
                 <div className="relative z-10">
-              <StockQuoteHero
-                symbol={symbol}
-                name={symbolDisplayName(symbol)}
-                price={displayPrice}
-                change={smoothChange}
-                changePct={
-                  feed.quote?.prevClose && feed.quote.prevClose > 0
-                    ? (smoothChange / feed.quote.prevClose) * 100
-                    : feed.quote?.changePct ?? 0
-                }
-                prevClose={feed.quote?.prevClose}
-                sessionOpen={feed.sessionOpen}
-                afterHoursChange={feed.quote?.afterHoursChange}
-                afterHoursChangePct={feed.quote?.afterHoursChangePct}
-                candles={feed.candles}
-                live={feed.live}
-                loading={feed.loading}
-                theme={feed.cardTheme}
-                chartRange={chartRange}
-                onChartRangeChange={onChartRangeChange}
-                onOpenAdvanced={() => setAdvanced(true)}
-                liveDisplayPrice={smooth.displayPrice}
-              />
+                  <StockQuoteHero
+                    symbol={symbol}
+                    name={symbolDisplayName(symbol)}
+                    price={displayPrice}
+                    change={smoothChange}
+                    changePct={
+                      feed.quote?.prevClose && feed.quote.prevClose > 0
+                        ? (smoothChange / feed.quote.prevClose) * 100
+                        : feed.quote?.changePct ?? 0
+                    }
+                    prevClose={feed.quote?.prevClose}
+                    sessionOpen={feed.sessionOpen}
+                    afterHoursChange={feed.quote?.afterHoursChange}
+                    afterHoursChangePct={feed.quote?.afterHoursChangePct}
+                    candles={feed.candles}
+                    live={feed.live}
+                    loading={feed.loading}
+                    theme={feed.cardTheme}
+                    chartRange={chartRange}
+                    onChartRangeChange={onChartRangeChange}
+                    onOpenAdvanced={() => setAdvanced(true)}
+                    liveDisplayPrice={smooth.displayPrice}
+                  />
                 </div>
               </div>
               {feed.live && chartRange === '1D' && (
@@ -171,15 +166,6 @@ export function LegendRobinhoodLayout({
                   <DualLayerGreekViz symbol={symbol} chain={feed.chain} />
                 </div>
               )}
-              <div className="mt-3">
-                <LegendOptionsFeed
-                  symbol={symbol}
-                  spot={displayPrice}
-                  chain={feed.chain}
-                  loading={feed.loading}
-                  live={feed.live}
-                />
-              </div>
             </>
           )}
         </section>
@@ -188,13 +174,18 @@ export function LegendRobinhoodLayout({
           <SpyRiskPanel symbol={symbol} />
           <CorrelationHeatmap highlight={symbol} />
           <MarketTemperature
-            selectedSymbol={symbol}
             spyCandles={spyFeed.candles}
             spyLive={spyFeed.live}
             spyLoading={spyFeed.loading}
           />
           <div className="flex min-h-[360px] flex-1 flex-col lg:min-h-[calc(100vh-8rem)]">
-            <OpportunityDiscoveryFeed highlightSymbol={symbol} />
+            <OpportunityDiscoveryFeed
+              highlightSymbol={symbol}
+              chain={feed.chain}
+              spot={displayPrice}
+              chainLoading={feed.loading}
+              live={feed.live}
+            />
           </div>
         </aside>
       </main>

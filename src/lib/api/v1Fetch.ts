@@ -9,6 +9,7 @@ import {
   recordCacheMiss,
   writeDesktopCache,
 } from './desktopCache';
+import { afterHoursFromPrice, regularSessionCloseFromMinuteBars } from './sessionQuote';
 
 const IBKR_BASE = (process.env.NEXT_PUBLIC_IBKR_API_URL ?? 'http://localhost:8093')
   .replace(/\/$/, '')
@@ -77,6 +78,15 @@ async function fetchLocalV1(pathWithQuery: string): Promise<Response> {
 
   if (!cached) recordCacheMiss();
 
+  if (segments[0] === 'sentiment' && segments[1]) {
+    const { fetchSymbolSentiment } = await import('@/lib/sentiment/fetchNewsFeed');
+    const beta = Number(params.get('beta') ?? 1);
+    const data = await fetchSymbolSentiment(segments[1].toUpperCase(), beta);
+    const res = Response.json({ data, source: 'google-news-rss' });
+    writeDesktopCache(cacheKey, await res.clone().json(), DESKTOP_CACHE_TTL.sentiment);
+    return res;
+  }
+
   if (segments[0] === 'quote' && segments[1]) {
     const sym = segments[1].toUpperCase();
     let q: IbkrMarketQuote | null = null;
@@ -91,40 +101,46 @@ async function fetchLocalV1(pathWithQuery: string): Promise<Response> {
     let price = q?.last ?? q?.bid ?? q?.ask ?? 0;
     let prevClose = q?.prev_close ?? q?.close ?? 0;
     let sessionOpen = q?.open && q.open > 0 ? q.open : undefined;
+    let sessionClose: number | undefined;
+
+    try {
+      const minuteRes = await ibkrGet('/historical', {
+        symbol: sym,
+        bar_size: '1 min',
+        duration: '1 D',
+        persist: 'false',
+        cached: 'false',
+        use_rth: 'false',
+      });
+      const minute = (await minuteRes.json()) as {
+        bars: Array<{ timestamp: string; close: number; open: number }>;
+      };
+      const mBars = minute.bars ?? [];
+      sessionClose = regularSessionCloseFromMinuteBars(mBars);
+      if (!sessionOpen) {
+        const hit = mBars.find((b) => /T09:30:00/.test(b.timestamp));
+        if (hit && hit.open > 0) sessionOpen = hit.open;
+      }
+    } catch {
+      /* optional */
+    }
 
     if (!price || !prevClose) {
       try {
-        const [dailyRes, minuteRes] = await Promise.all([
-          ibkrGet('/historical', {
-            symbol: sym,
-            bar_size: '1 day',
-            duration: '5 D',
-            persist: 'false',
-            cached: 'false',
-            use_rth: 'true',
-          }),
-          !sessionOpen
-            ? ibkrGet('/historical', {
-                symbol: sym,
-                bar_size: '1 min',
-                duration: '1 D',
-                persist: 'false',
-                cached: 'false',
-                use_rth: 'false',
-              })
-            : Promise.resolve(null),
-        ]);
+        const dailyRes = await ibkrGet('/historical', {
+          symbol: sym,
+          bar_size: '1 day',
+          duration: '5 D',
+          persist: 'false',
+          cached: 'false',
+          use_rth: 'true',
+        });
         const daily = (await dailyRes.json()) as {
           bars: Array<{ timestamp: string; close: number; open: number }>;
         };
         const bars = daily.bars ?? [];
         if (!price && bars.length) price = bars[bars.length - 1].close;
         if (!prevClose && bars.length > 1) prevClose = bars[bars.length - 2].close;
-        if (!sessionOpen && minuteRes) {
-          const minute = (await minuteRes.json()) as { bars: Array<{ timestamp: string; open: number }> };
-          const hit = minute.bars?.find((b) => /T09:30:00/.test(b.timestamp));
-          if (hit && hit.open > 0) sessionOpen = hit.open;
-        }
       } catch {
         /* historical enrich optional */
       }
@@ -135,14 +151,18 @@ async function fetchLocalV1(pathWithQuery: string): Promise<Response> {
     }
     if (!prevClose || prevClose <= 0) prevClose = price;
 
+    const ah = afterHoursFromPrice(price, sessionClose);
+
     const body = envelope(
       {
         symbol: sym,
         price,
         prevClose,
         sessionOpen,
+        sessionClose,
         change: price - prevClose,
         changePct: prevClose ? ((price - prevClose) / prevClose) * 100 : 0,
+        ...ah,
         timestamp: q?.timestamp ? Date.parse(q.timestamp) : Date.now(),
       },
       'ibkr',
@@ -183,7 +203,7 @@ async function fetchLocalV1(pathWithQuery: string): Promise<Response> {
         vwap?: number;
       }>;
     };
-    const cap = limit > 0 ? limit : interval === '1m' ? 960 : 200;
+    const cap = limit > 0 ? limit : interval === '1m' ? 1200 : 200;
     const bars = (json.bars ?? []).slice(-cap).map((b) => ({
       symbol: sym,
       interval,

@@ -1,6 +1,7 @@
 export type OpportunityFactorScores = {
   expected_return: number;
   probability_of_profit: number;
+  historical_edge?: number;
   liquidity: number;
   spread_quality: number;
   gamma_positioning: number;

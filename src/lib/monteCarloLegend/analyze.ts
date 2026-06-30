@@ -15,6 +15,8 @@ import {
 import type { Candle } from '@/components/dashboard/terminal/terminalData';
 import type { OptionRow } from '@/components/dashboard/terminal/terminalData';
 import { regressionVsSpy } from '@/lib/spyRegression';
+import { computeGameTheoryRegime, rsiFromCloses } from '@/lib/regime/gameTheoryRegime';
+import type { SymbolSentimentSnapshot } from '@/lib/sentiment/fetchNewsFeed';
 
 const RISK_FREE = 0.043;
 const MARKET_RETURN = 0.09;
@@ -91,27 +93,36 @@ export interface McLegendSnapshot {
   capmExpectedReturn: number;
   marketRegime: 'trending' | 'mean_reverting' | 'compressed_vol' | 'elevated_vol';
   regimeLabel: string;
+  sentimentScore: number;
+  institutionalBuyProb: number;
+  gameTheoryEquilibrium: 'bullish' | 'bearish' | 'neutral';
   computedAt: number;
 }
 
-function classifyRegime(
-  vol: number,
-  drift: number,
-  correlation: number,
-): { marketRegime: McLegendSnapshot['marketRegime']; regimeLabel: string } {
-  if (vol > 0.35) {
-    return { marketRegime: 'elevated_vol', regimeLabel: 'Elevated vol' };
-  }
-  if (vol < 0.18) {
-    return { marketRegime: 'compressed_vol', regimeLabel: 'Compressed vol' };
-  }
-  if (drift > 0.04 && correlation > 0.5) {
-    return { marketRegime: 'trending', regimeLabel: 'Trending · SPY-linked' };
-  }
-  if (Math.abs(drift) < 0.02) {
-    return { marketRegime: 'mean_reverting', regimeLabel: 'Mean-reverting' };
-  }
-  return { marketRegime: 'trending', regimeLabel: 'Trending' };
+function chainLiquidityScore(chain: OptionRow[]): number {
+  if (!chain.length) return 0;
+  const atm = chain.filter((r) => r.mid > 0 && r.openInterest > 0);
+  if (!atm.length) return 0;
+  const score =
+    atm.reduce((s, r) => s + Math.log1p(r.volume) + Math.log1p(r.openInterest), 0) / atm.length;
+  return Math.min(1, Math.max(0, score / 12));
+}
+
+function chainStructureScore(chain: OptionRow[], spot: number): number {
+  if (!chain.length || spot <= 0) return 0;
+  const near = chain.filter((r) => r.mid > 0 && Math.abs(r.strike - spot) / spot < 0.08);
+  if (!near.length) return 0;
+  const spreadQuality =
+    near.reduce((s, r) => {
+      const spread = r.ask - r.bid || r.mid * 0.08;
+      return s + Math.max(0, 1 - spread / Math.max(r.mid, 0.01));
+    }, 0) / near.length;
+  const gammaScore = near.reduce((s, r) => s + Math.abs(r.gamma) * r.openInterest, 0) / near.length;
+  return Math.min(1, Math.max(0, 0.6 * spreadQuality + 0.4 * Math.min(1, gammaScore / 400)));
+}
+
+export function smaCrossBacktest(closes: number[], fast = 8, slow = 21) {
+  return backtestSmaCross(closes, fast, slow);
 }
 
 function quantile(sortedAsc: number[], frac: number): number {
@@ -184,7 +195,7 @@ function realizedStats(closes: number[]): { drift: number; vol: number } {
     const cur = closes[i];
     if (prev > 0 && cur > 0) rets.push(Math.log(cur / prev));
   }
-  if (rets.length < 2) return { drift: 0.08, vol: 0.25 };
+  if (rets.length < 2) return { drift: 0, vol: 0.2 };
   const mu = rets.reduce((s, r) => s + r, 0) / rets.length;
   const variance =
     rets.reduce((s, r) => s + (r - mu) ** 2, 0) / Math.max(1, rets.length - 1);
@@ -249,11 +260,11 @@ function backtestSmaCross(closes: number[], fast = 8, slow = 21) {
 
   return {
     markers,
-    winRate: total > 0 ? wins / total : 0.54,
+    winRate: total > 0 ? wins / total : 0,
     total,
     wins,
-    avgWin: winN > 0 ? sumWin / winN : 0.022,
-    avgLoss: lossN > 0 ? sumLoss / lossN : 0.014,
+    avgWin: winN > 0 ? sumWin / winN : 0,
+    avgLoss: lossN > 0 ? sumLoss / lossN : 0,
   };
 }
 
@@ -335,12 +346,13 @@ export interface AnalyzeLegendInput {
   history: Candle[];
   spyHistory?: Candle[];
   chain: OptionRow[];
+  sentiment?: SymbolSentimentSnapshot | null;
   seed?: number;
 }
 
 /** Full Legend MC snapshot — runs locally via @gx/analytics (no network round-trip). */
 export function analyzeLegendMonteCarlo(input: AnalyzeLegendInput): McLegendSnapshot {
-  const { symbol, spot, history, chain, spyHistory } = input;
+  const { symbol, spot, history, chain, spyHistory, sentiment } = input;
   const seed = input.seed ?? 42;
   const closes = history.map((c) => c.c).filter((c) => c > 0);
   const times = history.map((c) => c.t);
@@ -350,32 +362,62 @@ export function analyzeLegendMonteCarlo(input: AnalyzeLegendInput): McLegendSnap
   const histOffset = closes.length - histCloses.length;
 
   const { drift: rawDrift, vol: realizedVol } = realizedStats(closes);
-  const drift = rawDrift;
+  const rsi = rsiFromCloses(closes);
   const vol = Math.max(0.12, Math.min(0.85, realizedVol));
 
   const spyReg =
     spyHistory && spyHistory.length > 10 ? regressionVsSpy(history, spyHistory) : null;
-  const beta = spyReg?.beta ?? (symbol === 'SPY' ? 1 : 1.05);
+  if (!spyReg && symbol !== 'SPY') {
+    throw new Error(`Insufficient SPY history for beta/regression on ${symbol}`);
+  }
+  const beta = spyReg?.beta ?? 1;
   const alphaAnnualizedPct = spyReg?.alphaAnnualizedPct ?? 0;
-  const correlationVsSpy = spyReg?.correlation ?? (symbol === 'SPY' ? 1 : 0.72);
-  const rSquared = spyReg?.rSquared ?? correlationVsSpy * correlationVsSpy;
-  const capmOut = capm({ riskFreeRate: RISK_FREE, marketReturn: MARKET_RETURN, beta });
-  const { marketRegime, regimeLabel } = classifyRegime(vol, drift, correlationVsSpy);
+  const correlationVsSpy = spyReg?.correlation ?? 1;
+  const rSquared = spyReg?.rSquared ?? 1;
 
   const backtest = backtestSmaCross(closes);
-  const tradeMarkers = backtest.markers.map((m) => ({
-    ...m,
-    barIndex: m.barIndex - histOffset,
-  })).filter((m) => m.barIndex >= 0 && m.barIndex < histCloses.length);
+  const momentumWinRate =
+    closes.length >= 21
+      ? closes[closes.length - 1] > closes[closes.length - 21]
+        ? 0.58
+        : 0.42
+      : 0.5;
+  const historicalWinRate = backtest.total > 0 ? backtest.winRate : momentumWinRate;
+
+  const gameTheory = computeGameTheoryRegime({
+    realizedVol: vol,
+    drift: rawDrift * (sentiment ? 1 + sentiment.sentiment * 0.15 : 1),
+    beta,
+    correlationVsSpy,
+    historicalWinRate,
+    rsi,
+    sentiment: sentiment ?? null,
+  });
+
+  const adjustedDrift = rawDrift * gameTheory.driftMultiplier;
+  const adjustedWinRate = Math.min(0.95, Math.max(0.05, historicalWinRate + gameTheory.winRateAdj));
+
+  const capmOut = capm({ riskFreeRate: RISK_FREE, marketReturn: MARKET_RETURN, beta });
+  const liquidity = chainLiquidityScore(chain);
+  const marketStructureScore = chainStructureScore(chain, spot);
+  const sentimentNorm = sentiment ? (sentiment.sentiment + 1) / 2 : 0.5;
+
+  const tradeMarkers = backtest.markers
+    .map((m) => ({
+      ...m,
+      barIndex: m.barIndex - histOffset,
+    }))
+    .filter((m) => m.barIndex >= 0 && m.barIndex < histCloses.length);
 
   const mcHorizonDays = 30;
   const mcSteps = mcHorizonDays;
   const timeHorizon = mcHorizonDays / TRADING_DAYS;
+  const refPrice = spot > 0 ? spot : histCloses.at(-1) ?? 0;
 
   const pathRun = simulatePricePaths({
-    currentPrice: spot > 0 ? spot : histCloses[histCloses.length - 1] ?? 100,
+    currentPrice: refPrice,
     volatility: vol,
-    drift,
+    drift: adjustedDrift,
     timeHorizon,
     steps: mcSteps,
     simulationCount: 3200,
@@ -384,15 +426,17 @@ export function analyzeLegendMonteCarlo(input: AnalyzeLegendInput): McLegendSnap
   });
 
   const probSpotUp =
-    pathRun.terminalPrices.filter((p) => p > (spot > 0 ? spot : histCloses.at(-1) ?? 0)).length /
+    pathRun.terminalPrices.filter((p) => p > refPrice).length /
     Math.max(1, pathRun.terminalPrices.length);
 
+  const avgWinLossRatio = backtest.avgLoss > 0 ? backtest.avgWin / backtest.avgLoss : 1.4;
+
   const strategy = simulateStrategyOutcome({
-    winRate: backtest.winRate,
-    averageWin: backtest.avgLoss > 0 ? backtest.avgWin / backtest.avgLoss : 1.6,
+    winRate: adjustedWinRate,
+    averageWin: avgWinLossRatio,
     averageLoss: 1,
-    tradeFrequency: Math.max(8, backtest.total || 12),
-    accountSize: 100_000,
+    tradeFrequency: Math.max(8, backtest.total || Math.round(historicalWinRate * 24)),
+    accountSize: refPrice * 1000,
     positionSize: 0.12,
     simulationCount: 6000,
     seed: seed + 1,
@@ -402,27 +446,27 @@ export function analyzeLegendMonteCarlo(input: AnalyzeLegendInput): McLegendSnap
   const evaluation = evaluateTrade({
     symbol,
     market: {
-      currentPrice: spot > 0 ? spot : histCloses.at(-1) ?? 100,
+      currentPrice: refPrice,
       volatility: vol,
-      drift,
+      drift: adjustedDrift,
       riskFreeRate: RISK_FREE,
       marketReturn: MARKET_RETURN,
       beta,
     },
     signal: {
-      signalStrength: backtest.winRate,
-      liquidity: 0.72,
-      regime: marketRegime,
-      sentiment: 0.55,
-      marketStructureScore: 0.68,
+      signalStrength: adjustedWinRate,
+      liquidity,
+      regime: gameTheory.marketRegime,
+      sentiment: sentimentNorm,
+      marketStructureScore,
     },
     setup: {
       timeHorizon,
-      winRate: backtest.winRate,
-      averageWin: backtest.avgLoss > 0 ? backtest.avgWin / backtest.avgLoss : 1.6,
+      winRate: adjustedWinRate,
+      averageWin: avgWinLossRatio,
       averageLoss: 1,
-      tradeFrequency: Math.max(8, backtest.total || 12),
-      accountSize: 100_000,
+      tradeFrequency: Math.max(8, backtest.total || Math.round(historicalWinRate * 24)),
+      accountSize: refPrice * 1000,
       positionSize: 0.12,
     },
     simulationCount: 5000,
@@ -430,9 +474,9 @@ export function analyzeLegendMonteCarlo(input: AnalyzeLegendInput): McLegendSnap
   });
 
   const optionTerminal = simulatePricePaths({
-    currentPrice: spot > 0 ? spot : histCloses.at(-1) ?? 100,
+    currentPrice: refPrice,
     volatility: vol,
-    drift,
+    drift: adjustedDrift,
     timeHorizon: nearAtmOptions(chain, spot, 1)[0]
       ? yearsToExpiry(parseExpiry(nearAtmOptions(chain, spot, 1)[0].id))
       : timeHorizon,
@@ -448,10 +492,10 @@ export function analyzeLegendMonteCarlo(input: AnalyzeLegendInput): McLegendSnap
 
   return {
     symbol,
-    spot: spot > 0 ? spot : histCloses.at(-1) ?? 0,
+    spot: refPrice,
     realizedVol: vol,
-    drift,
-    historicalWinRate: backtest.winRate,
+    drift: adjustedDrift,
+    historicalWinRate: adjustedWinRate,
     historicalTrades: backtest.total,
     historicalWins: backtest.wins,
     avgWin: backtest.avgWin,
@@ -475,8 +519,11 @@ export function analyzeLegendMonteCarlo(input: AnalyzeLegendInput): McLegendSnap
     correlationVsSpy,
     rSquared,
     capmExpectedReturn: capmOut.expectedReturn,
-    marketRegime,
-    regimeLabel,
+    marketRegime: gameTheory.marketRegime,
+    regimeLabel: gameTheory.label,
+    sentimentScore: sentiment?.sentiment ?? 0,
+    institutionalBuyProb: gameTheory.institutionalBuyProb,
+    gameTheoryEquilibrium: gameTheory.equilibrium,
     computedAt: Date.now(),
   };
 }

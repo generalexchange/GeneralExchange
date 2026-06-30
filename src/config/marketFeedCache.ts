@@ -32,6 +32,7 @@ export const DESKTOP_REST_CACHE_MS = {
   quote: 1_500,
   candles: 12_000,
   chain: 8_000,
+  sentiment: 90_000,
 } as const;
 
 /** Server /api/v1 response cache (seconds). Short for quotes; SWR extends perceived freshness. */

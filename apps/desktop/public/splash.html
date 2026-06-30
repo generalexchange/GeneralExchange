@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>General Exchange Terminal</title>
+    <title>general.exchange</title>
     <style>
       :root {
         color-scheme: dark;
@@ -17,27 +17,35 @@
       body {
         width: 100%;
         height: 100%;
+        min-height: 100%;
         overflow: hidden;
         background: #14151a;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       }
       .stage {
-        position: relative;
+        position: fixed;
+        inset: 0;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 100vw;
-        height: 100vh;
+        padding: 24px;
         background:
           radial-gradient(ellipse 80% 60% at 50% 8%, rgba(46, 90, 58, 0.18), transparent 60%),
           radial-gradient(ellipse 60% 50% at 50% 100%, rgba(210, 180, 140, 0.1), transparent 60%),
           #14151a;
       }
+      .content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
       .frame {
-        width: 168px;
-        height: 168px;
-        border-radius: 22px;
+        width: 180px;
+        height: 180px;
+        border-radius: 24px;
         overflow: hidden;
         border: 1px solid rgba(139, 125, 107, 0.55);
         box-shadow: 0 30px 70px -20px rgba(0, 0, 0, 0.8);
@@ -50,16 +58,16 @@
         filter: brightness(0.7) contrast(1.25) saturate(0.85) sepia(0.12);
       }
       .wordmark {
-        margin-top: 26px;
-        font-size: 15px;
+        margin-top: 28px;
+        font-size: 16px;
         letter-spacing: 0.22em;
         color: rgba(210, 180, 140, 0.92);
         text-transform: lowercase;
         animation: fade 0.9s ease 0.15s both;
       }
       .bar {
-        margin-top: 22px;
-        width: 140px;
+        margin-top: 24px;
+        width: 160px;
         height: 2px;
         border-radius: 2px;
         background: rgba(255, 255, 255, 0.08);
@@ -105,11 +113,13 @@
   </head>
   <body>
     <div class="stage">
-      <div class="frame">
-        <img src="splash.png" alt="General Exchange" />
+      <div class="content">
+        <div class="frame">
+          <img src="splash.png" alt="general.exchange" />
+        </div>
+        <div class="wordmark">general.exchange</div>
+        <div class="bar"></div>
       </div>
-      <div class="wordmark">general.exchange</div>
-      <div class="bar"></div>
     </div>
   </body>
 </html>

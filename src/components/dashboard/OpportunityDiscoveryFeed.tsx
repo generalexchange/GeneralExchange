@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronDown, ChevronUp, History, Layers, Loader2, X } from 'lucide-react';
+import { ChevronDown, ChevronUp, History, Layers, List, Loader2, X } from 'lucide-react';
 import {
   useExpiredOutcomes,
   useOpportunityAnalysis,
@@ -10,10 +10,13 @@ import {
 } from '@/hooks/useOpportunityDiscovery';
 import type { RankedContract } from '@/lib/opportunity/types';
 import { OpportunityContractVisuals } from '@/components/dashboard/OpportunityContractVisuals';
+import { LegendOptionsFeed } from '@/components/dashboard/LegendOptionsFeed';
+import type { OptionRow } from '@/components/dashboard/terminal/terminalData';
 
 const FACTOR_LABELS: Record<string, string> = {
   expected_return: 'Expected return',
   probability_of_profit: 'P(profit)',
+  historical_edge: 'Historical edge',
   liquidity: 'Liquidity',
   spread_quality: 'Spread quality',
   gamma_positioning: 'Gamma positioning',
@@ -177,18 +180,38 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
-export function OpportunityDiscoveryFeed({ highlightSymbol }: { highlightSymbol?: string }) {
-  const { opportunities, loading, error, refresh } = useOpportunityDiscovery();
+export function OpportunityDiscoveryFeed({
+  highlightSymbol,
+  chain = [],
+  spot = 0,
+  chainLoading = false,
+  live = false,
+}: {
+  highlightSymbol?: string;
+  chain?: OptionRow[];
+  spot?: number;
+  chainLoading?: boolean;
+  live?: boolean;
+}) {
+  const { opportunities, loading, error, refresh } = useOpportunityDiscovery(highlightSymbol);
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
   const [showChain, setShowChain] = useState(false);
+  const [showOptionsFeed, setShowOptionsFeed] = useState(false);
   const [showExpired, setShowExpired] = useState(false);
   const { analysis, loading: analysisLoading } = useOpportunityAnalysis(selectedSymbol);
   const { data: expiredData, loading: expiredLoading } = useExpiredOutcomes(showExpired);
 
-  const sorted = useMemo(
-    () => [...opportunities].sort((a, b) => b.confidence - a.confidence),
-    [opportunities],
-  );
+  const sorted = useMemo(() => {
+    const list = [...opportunities].sort(
+      (a, b) => b.expectedReturn - a.expectedReturn || b.confidence - a.confidence,
+    );
+    if (highlightSymbol) {
+      const focus = list.filter((o) => o.symbol === highlightSymbol);
+      const rest = list.filter((o) => o.symbol !== highlightSymbol);
+      return [...focus, ...rest];
+    }
+    return list;
+  }, [opportunities, highlightSymbol]);
 
   const handleSelect = (symbol: string) => {
     setShowChain(false);
@@ -200,15 +223,27 @@ export function OpportunityDiscoveryFeed({ highlightSymbol }: { highlightSymbol?
       <header className="flex shrink-0 items-center justify-between border-b border-white/10 px-3 py-2.5">
         <div>
           <h3 className="font-mono text-[10px] uppercase tracking-[0.18em] text-zinc-400">Opportunity Discovery</h3>
-          <p className="text-[9px] text-zinc-600">1 top contract per symbol · ML-ranked</p>
+          <p className="text-[9px] text-zinc-600">Options chain · historical edge · IBKR live</p>
         </div>
-        <button
-          type="button"
-          onClick={() => refresh()}
-          className="font-mono text-[9px] uppercase tracking-wide text-zinc-500 hover:text-tan"
-        >
-          Refresh
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setShowOptionsFeed((v) => !v)}
+            className={`flex items-center gap-1 rounded border px-2 py-1 font-mono text-[9px] uppercase tracking-wide transition-colors ${
+              showOptionsFeed ? 'border-tan/40 text-tan' : 'border-white/10 text-zinc-500 hover:text-tan'
+            }`}
+          >
+            <List className="h-3 w-3" />
+            Options feed
+          </button>
+          <button
+            type="button"
+            onClick={() => refresh()}
+            className="font-mono text-[9px] uppercase tracking-wide text-zinc-500 hover:text-tan"
+          >
+            Refresh
+          </button>
+        </div>
       </header>
 
       <div className="min-h-0 flex-1 overflow-y-auto px-2 py-2">
@@ -232,6 +267,18 @@ export function OpportunityDiscoveryFeed({ highlightSymbol }: { highlightSymbol?
           ))
         )}
       </div>
+
+      {showOptionsFeed && highlightSymbol ? (
+        <div className="shrink-0 border-b border-white/10 p-2">
+          <LegendOptionsFeed
+            symbol={highlightSymbol}
+            spot={spot}
+            chain={chain}
+            loading={chainLoading}
+            live={live}
+          />
+        </div>
+      ) : null}
 
       <AnimatePresence>
         {selectedSymbol && (

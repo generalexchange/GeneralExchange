@@ -6,6 +6,8 @@ import { fetchV1 } from '@/lib/api/v1Fetch';
 import { mapCandleRows, type CandleRow } from '@/lib/api/mapLiveData';
 import { readJsonResponse } from '@/lib/api/readJsonResponse';
 import { divergingColor } from '@/components/charts/chartTokens';
+import { LegendPanelSkeleton } from '@/components/dashboard/LegendPanelSkeleton';
+import { useIbkrCachePulse } from '@/hooks/useIbkrCachePulse';
 
 const WATCH = ['SPY', 'QQQ', 'AAPL', 'NVDA', 'MSFT'] as const;
 
@@ -19,6 +21,7 @@ async function fetchCloses(symbol: string): Promise<number[]> {
 export function CorrelationHeatmap({ highlight }: { highlight: string }) {
   const [out, setOut] = useState<CorrelationOutput | null>(null);
   const [loading, setLoading] = useState(true);
+  const cachePulse = useIbkrCachePulse();
 
   useEffect(() => {
     let cancelled = false;
@@ -36,14 +39,10 @@ export function CorrelationHeatmap({ highlight }: { highlight: string }) {
     return () => {
       cancelled = true;
     };
-  }, [highlight]);
+  }, [highlight, cachePulse]);
 
   if (loading) {
-    return (
-      <div className="rounded-lg border border-white/10 bg-dark-gray/90 p-3 font-mono text-[9px] text-zinc-500">
-        Computing correlation matrix…
-      </div>
-    );
+    return <LegendPanelSkeleton label="Correlation matrix · IBKR" rows={4} height={24} />;
   }
   if (!out || out.symbols.length < 2) {
     return (

@@ -1,15 +1,20 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
-import { mockGreekSeries, type GreekSeries } from '@/data/greekPathsMock';
+import React, { useMemo } from 'react';
+import { useGreekHistory } from '@/hooks/useGreekHistory';
 import type { OptionRow } from '@/components/dashboard/terminal/terminalData';
+import { LegendPanelSkeleton } from '@/components/dashboard/LegendPanelSkeleton';
 
 type DualLayerGreekVizProps = {
   symbol: string;
   chain: OptionRow[];
 };
 
-function GreekSparkline({ series }: { series: GreekSeries }) {
+function GreekSparkline({
+  series,
+}: {
+  series: { name: string; live: number[]; predicted: number[]; divergence: string };
+}) {
   const w = 200;
   const h = 44;
   const pad = 4;
@@ -48,25 +53,12 @@ function GreekSparkline({ series }: { series: GreekSeries }) {
         )}
       </div>
       <svg viewBox={`0 0 ${w} ${h}`} className="h-11 w-full" preserveAspectRatio="none" aria-hidden>
-        <polyline
-          fill="none"
-          stroke="currentColor"
-          strokeDasharray="4 3"
-          strokeWidth="1.5"
-          className="text-zinc-500/70"
-          points={toPath(series.predicted)}
-        />
-        <polyline
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          className="text-tan"
-          points={toPath(series.live)}
-        />
+        <polyline fill="none" stroke="currentColor" strokeDasharray="4 3" strokeWidth="1.5" className="text-zinc-500/70" points={toPath(series.predicted)} />
+        <polyline fill="none" stroke="currentColor" strokeWidth="2" className="text-tan" points={toPath(series.live)} />
       </svg>
       <div className="mt-1 flex justify-between font-mono text-[9px] tabular-nums text-zinc-600">
-        <span>Predicted</span>
-        <span className="text-zinc-400">Live</span>
+        <span>EMA forecast</span>
+        <span className="text-zinc-400">IBKR live</span>
       </div>
     </div>
   );
@@ -74,21 +66,16 @@ function GreekSparkline({ series }: { series: GreekSeries }) {
 
 export function DualLayerGreekViz({ symbol, chain }: DualLayerGreekVizProps) {
   const atm = useMemo(() => {
-    const calls = chain.filter((r) => r.type === 'CALL' && r.moneyness === 'ATM');
-    return calls[0] ?? chain[0];
+    const calls = chain.filter((r) => r.type === 'CALL' && r.mid > 0);
+    if (!calls.length) return chain.find((r) => r.mid > 0);
+    return calls.reduce((best, r) =>
+      Math.abs(r.strike - (chain[0]?.strike ?? r.strike)) < Math.abs(best.strike - (chain[0]?.strike ?? best.strike))
+        ? r
+        : best,
+    calls[0]);
   }, [chain]);
 
-  const [series, setSeries] = useState<GreekSeries[]>(() =>
-    mockGreekSeries(symbol, atm ? { delta: atm.delta, theta: atm.theta, vega: atm.vega } : undefined),
-  );
-
-  useEffect(() => {
-    setSeries(mockGreekSeries(symbol, atm ? { delta: atm.delta, theta: atm.theta, vega: atm.vega } : undefined));
-    const id = window.setInterval(() => {
-      setSeries(mockGreekSeries(symbol, atm ? { delta: atm.delta, theta: atm.theta, vega: atm.vega } : undefined));
-    }, 2000);
-    return () => window.clearInterval(id);
-  }, [symbol, atm]);
+  const { series, hasHistory } = useGreekHistory(symbol, atm);
 
   const cardBorder =
     series.some((s) => s.divergence === 'extreme')
@@ -97,20 +84,31 @@ export function DualLayerGreekViz({ symbol, chain }: DualLayerGreekVizProps) {
         ? 'border-amber-400/30'
         : 'border-white/10';
 
+  if (!atm) {
+    return (
+      <section className="rounded-lg border border-white/10 bg-dark-gray/90 p-3">
+        <p className="font-mono text-[10px] text-zinc-500">Greek projections require IBKR options chain</p>
+      </section>
+    );
+  }
+
+  if (!hasHistory) {
+    return <LegendPanelSkeleton label="Greek history · IBKR chain poll" rows={3} height={44} />;
+  }
+
   return (
-    <article className={`break-inside-avoid rounded-lg border bg-dark-gray/70 p-4 ${cardBorder}`}>
-      <header className="mb-3">
-        <h3 className="font-mono text-[10px] uppercase tracking-[0.18em] text-zinc-400">Greek Trajectories</h3>
-        <p className="mt-0.5 font-mono text-xs text-zinc-300">{symbol} · 5m horizon</p>
-      </header>
-      <div className="space-y-2">
+    <section className={`rounded-lg border bg-dark-gray/90 p-3 shadow-lg backdrop-blur-sm ${cardBorder}`}>
+      <div className="mb-2 flex items-center justify-between">
+        <h3 className="font-mono text-[10px] uppercase tracking-[0.18em] text-zinc-400">Greek projections</h3>
+        <span className="font-mono text-[9px] text-zinc-600">
+          ATM ${atm.strike.toFixed(0)} · live IBKR
+        </span>
+      </div>
+      <div className="grid gap-2 sm:grid-cols-3">
         {series.map((s) => (
           <GreekSparkline key={s.name} series={s} />
         ))}
       </div>
-      <p className="mt-3 font-mono text-[9px] leading-relaxed text-zinc-600">
-        Dashed = Monte Carlo projection · Solid = live options feed
-      </p>
-    </article>
+    </section>
   );
 }

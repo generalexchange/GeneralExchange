@@ -44,7 +44,7 @@ export function sessionBandForTimestamp(t: number, now = Date.now()): SessionBan
   if (isWeekend) return 'overnight';
   if (mins >= 240 && mins < 570) return 'pre';
   if (mins >= 570 && mins < 960) return 'regular';
-  if (mins >= 960 && mins < 1200) return 'after';
+  if (mins >= 960 && mins < 1440) return 'after';
   return 'overnight';
 }
 
