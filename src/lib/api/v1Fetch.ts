@@ -271,10 +271,82 @@ export async function fetchV1(path: string, init?: RequestInit): Promise<Respons
   return fetch(`/api/v1${normalized}`, init);
 }
 
-/** POST /api/v1/opportunity/* — Next.js route on web, local Monte Carlo on desktop. */
+async function opportunityLocalFallback(route: string, body: unknown): Promise<Response> {
+  const { discoverOpportunitiesClient, analyzeOpportunityClient } = await import(
+    '@/lib/opportunity/discoverClient'
+  );
+  const payload = (body ?? {}) as Record<string, unknown>;
+
+  if (route === 'opportunity/discover') {
+    const symbols = Array.isArray(payload.symbols) ? (payload.symbols as string[]) : undefined;
+    const includeChain = Boolean(payload.includeChain);
+    const data = await discoverOpportunitiesClient(symbols, includeChain);
+    return Response.json(data);
+  }
+
+  if (route === 'opportunity/analyze') {
+    const symbol = String(payload.symbol ?? 'SPY');
+    const top = await analyzeOpportunityClient(symbol);
+    if (!top) {
+      return Response.json({ error: 'no_contracts' }, { status: 404 });
+    }
+    return Response.json(top);
+  }
+
+  if (route === 'opportunity/outcomes') {
+    return Response.json({
+      outcomes: [],
+      ml: {
+        weights: {
+          expected_return: 0.22,
+          probability_of_profit: 0.22,
+          historical_edge: 0.18,
+          liquidity: 0.12,
+          spread_quality: 0.12,
+          gamma_positioning: 0.08,
+          monte_carlo: 0.06,
+        },
+        calibrationRuns: 0,
+        expiredCount: 0,
+        hitRate: null,
+      },
+    });
+  }
+
+  return Response.json({ error: 'unknown_route', path: route }, { status: 404 });
+}
+
+/** POST /api/v1/opportunity/* — Next.js route on web, Monte Carlo or IBKR-local on desktop. */
 export async function fetchV1Post(path: string, body: unknown): Promise<Response> {
   const route = path.replace(/^\/api\/v1\//, '').replace(/^\//, '');
+  const isOpportunity = route.startsWith('opportunity/');
+
   if (isLocalDesktopClient()) {
+    if (isOpportunity) {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (MC_KEY) headers['X-API-Key'] = MC_KEY;
+      const url = `${MC_BASE}/v1/${route}`;
+      const init: RequestInit = {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(body),
+        cache: 'no-store',
+      };
+      try {
+        let res: Response;
+        try {
+          const { fetch: tauriFetch } = await import('@tauri-apps/plugin-http');
+          res = await tauriFetch(url, init);
+        } catch {
+          res = await fetch(url, init);
+        }
+        if (res.ok) return res;
+      } catch {
+        /* Monte Carlo service offline — rank via IBKR in-process */
+      }
+      return opportunityLocalFallback(route, body);
+    }
+
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
     if (MC_KEY) headers['X-API-Key'] = MC_KEY;
     const url = `${MC_BASE}/v1/${route}`;
@@ -291,6 +363,7 @@ export async function fetchV1Post(path: string, body: unknown): Promise<Response
       return fetch(url, init);
     }
   }
+
   return fetch(`/api/v1/${route}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

@@ -69,6 +69,30 @@ if ($health) {
 
 if ($health -and $health.connected) {
   Write-Host "`nStack ready. Open Legend or run: npm run dev" -ForegroundColor Green
+
+  $mcHealth = $null
+  try {
+    $mcHealth = Invoke-RestMethod -Uri "http://127.0.0.1:8092/health" -TimeoutSec 2
+  } catch { }
+
+  if (-not $mcHealth) {
+    $rustMc = Join-Path $Root "backend\rust\target\release\monte-carlo.exe"
+    if (-not (Test-Path $rustMc)) {
+      Write-Host "Building Rust monte-carlo (release)..." -ForegroundColor Yellow
+      Push-Location (Join-Path $Root "backend\rust")
+      cargo build -p monte-carlo --release 2>&1 | Out-Null
+      Pop-Location
+    }
+    if (Test-Path $rustMc) {
+      Write-Host "Starting Rust monte-carlo on http://127.0.0.1:8092 ..." -ForegroundColor Yellow
+      Start-Process powershell -ArgumentList @(
+        "-NoExit", "-Command",
+        "cd '$Root'; `$env:IBKR_API_URL='http://127.0.0.1:8093'; & '$rustMc'"
+      )
+    }
+  } else {
+    Write-Host "Monte Carlo service on :8092 - running ($($mcHealth.service))" -ForegroundColor Green
+  }
 } elseif ($health) {
   Write-Host "`nIBKR service is up but not connected to Gateway - finish Gateway login/API settings, then refresh Legend." -ForegroundColor Yellow
 } else {

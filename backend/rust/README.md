@@ -13,7 +13,8 @@ Migration from Python/Go services to `backend/rust/`.
 | `options-chain` | Done — synth BSM + Polygon + Redis cache |
 | `regime-detection` | Done — 1h candle regime classifier |
 | `signal-worker` | Done — multi-topic signal composer |
-| `news-nlp`, `data-quality`, `monte-carlo`, `backtesting`, `quant-analytics`, `api-gateway` | Scaffold |
+| `monte-carlo` | Done — opportunity discover/analyze/outcomes on `:8092` (IBKR-backed) |
+| `news-nlp`, `data-quality`, `backtesting`, `quant-analytics`, `api-gateway` | Scaffold |
 
 ## IBKR exception
 
@@ -25,6 +26,7 @@ Migration from Python/Go services to `backend/rust/`.
 cd backend/rust
 cargo test -p gx-core
 cargo build --release -p options-chain
+cargo build --release -p monte-carlo   # POST /v1/opportunity/* on :8092
 ```
 
 `gx-core` tests run without cmake. Kafka worker binaries require **cmake** + VS build tools on Windows.
