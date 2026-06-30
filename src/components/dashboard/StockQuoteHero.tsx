@@ -6,6 +6,7 @@ import { Loader2, Settings } from 'lucide-react';
 import type { Candle } from '@/components/dashboard/terminal/terminalData';
 import type { ChartRange } from '@/hooks/useLiveDashboard';
 import { QuotePriceChart, CHART_HEIGHT_EXTENDED, QUOTE_CHART_HEIGHT, type QuoteCardTheme } from '@/components/dashboard/QuotePriceChart';
+import { AnimatedPrice, AnimatedSignedChange } from '@/components/dashboard/AnimatedPrice';
 import { legendDashboardUrl } from '@/lib/legendUrl';
 
 export type { QuoteCardTheme };
@@ -28,6 +29,7 @@ export type StockQuoteHeroProps = {
   onChartRangeChange?: (range: ChartRange) => void;
   onOpenAdvanced?: () => void;
   className?: string;
+  liveDisplayPrice?: number;
 };
 
 const RANGES: ChartRange[] = ['1D', '1W', '1M', '3M', 'YTD', '1Y', '5Y', 'MAX'];
@@ -66,6 +68,7 @@ export function StockQuoteHero({
   onChartRangeChange,
   onOpenAdvanced,
   className = '',
+  liveDisplayPrice,
 }: StockQuoteHeroProps) {
   const [localRange, setLocalRange] = useState<ChartRange>('1D');
   const range = chartRangeProp ?? localRange;
@@ -127,11 +130,14 @@ export function StockQuoteHero({
           ) : null}
           {price > 0 && (
             <>
-          <p className={`mt-3 text-[34px] font-normal leading-none tabular-nums tracking-tight sm:text-[40px] ${priceColor}`}>
-            ${fmtPrice(price)}
+          <p className={`mt-3 text-[34px] font-normal leading-none tracking-tight sm:text-[40px] ${priceColor}`}>
+            <AnimatedPrice value={price} prefix="$" decimals={2} durationMs={260} className={priceColor} />
           </p>
-          <p className={`mt-2 text-[14px] tabular-nums ${changeColor}`}>
-            {fmtSigned(change)} ({fmtSignedPct(changePct)}) <span className={muted}>Today</span>
+          <p className={`mt-2 text-[14px] ${changeColor}`}>
+            <AnimatedSignedChange value={change} className={changeColor} />
+            {' '}
+            (<AnimatedSignedChange value={changePct} isPct className={changeColor} />){' '}
+            <span className={muted}>Today</span>
           </p>
           {(sessionOpen != null && sessionOpen > 0) || prevClose > 0 ? (
             <p className={`mt-1 text-[12px] tabular-nums ${muted}`}>
@@ -169,6 +175,7 @@ export function StockQuoteHero({
             height={chartH}
             extendedHours={is1D}
             live={Boolean(live && is1D)}
+            liveDisplayPrice={liveDisplayPrice}
           />
         )}
       </div>

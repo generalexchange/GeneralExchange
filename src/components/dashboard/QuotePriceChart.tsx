@@ -96,6 +96,7 @@ export function QuotePriceChart({
   showTooltip = true,
   extendedHours = false,
   live = false,
+  liveDisplayPrice,
 }: {
   candles: Candle[];
   up: boolean;
@@ -105,6 +106,8 @@ export function QuotePriceChart({
   showTooltip?: boolean;
   extendedHours?: boolean;
   live?: boolean;
+  /** Frame-interpolated price for live dot (avoids stair-step on batched ticks). */
+  liveDisplayPrice?: number;
 }) {
   const gradId = useId().replace(/:/g, '');
   const plotHeight = height ?? (extendedHours ? CHART_HEIGHT_EXTENDED : CHART_HEIGHT);
@@ -112,13 +115,18 @@ export function QuotePriceChart({
 
   const chartData = useMemo<ChartPoint[]>(() => {
     if (extendedHours) return toExtendedChartPoints(candles);
-    return candles.map((c, index) => ({
+    const base = candles.map((c, index) => ({
       index,
       t: c.t,
       price: c.c,
       band: 'regular' as SessionBand,
     }));
-  }, [candles, extendedHours]);
+    if (live && liveDisplayPrice != null && liveDisplayPrice > 0 && base.length) {
+      const last = base[base.length - 1];
+      return [...base.slice(0, -1), { ...last, price: liveDisplayPrice }];
+    }
+    return base;
+  }, [candles, extendedHours, live, liveDisplayPrice]);
 
   const yDomain = useMemo(() => computeVisibleYDomain(chartData.map((d) => d.price)), [chartData]);
   const zones = useMemo(() => (extendedHours ? sessionZones(chartData) : []), [chartData, extendedHours]);

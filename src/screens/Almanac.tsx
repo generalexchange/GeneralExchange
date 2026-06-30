@@ -6,6 +6,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { legendHref } from '@/lib/legendUrl';
 import { Navbar } from '@/components/Navbar';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 
@@ -31,7 +32,7 @@ export const Almanac: React.FC = () => {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                href="/dashboard"
+                href={legendHref()}
                 className="inline-flex items-center justify-center rounded-lg bg-tan px-6 py-3 text-sm font-semibold text-charcoal transition-colors hover:bg-tan-muted"
               >
                 Open dashboard

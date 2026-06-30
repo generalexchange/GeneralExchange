@@ -7,6 +7,7 @@
 
 import React, { useRef } from 'react';
 import Link from 'next/link';
+import { legendHref } from '@/lib/legendUrl';
 import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion';
 import { Navbar } from '@/components/Navbar';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
@@ -297,7 +298,7 @@ export const TradeEngine: React.FC = () => {
               <Link href="/request-access" className={btnPrimary}>
                 Request access
               </Link>
-              <Link href="/dashboard" className={btnOutline}>
+              <Link href={legendHref()} className={btnOutline}>
                 Open the terminal
               </Link>
             </div>

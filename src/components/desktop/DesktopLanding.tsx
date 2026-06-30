@@ -1,26 +1,38 @@
 'use client';
 
 /**
- * DesktopLanding — shown instead of the homepage when running inside the
- * Tauri desktop shell. Displays the full-bleed illustration with animated
- * "Sign In" / "Create Account" buttons that rise from the bottom.
- *
- * After the user taps a button they are routed to the web login or request-
- * access page, which are both bundled inside the desktop app.
+ * Desktop splash — full-bleed homepage hero with inline login (no marketing homepage).
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
+import { Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import { DESKTOP_APP_VERSION } from '@/config/desktopApp';
+import { DESKTOP_LEGEND_PATH } from '@/lib/desktopNav';
 
 const easeLux = [0.22, 1, 0.36, 1] as const;
 
 export function DesktopLanding() {
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim() || !password.trim()) return;
+    setIsSubmitting(true);
+    window.setTimeout(() => {
+      setIsSubmitting(false);
+      router.replace(DESKTOP_LEGEND_PATH);
+    }, 600);
+  };
+
   return (
     <div className="relative flex h-screen w-screen flex-col overflow-hidden bg-[#0e0f13]">
-      {/* Full-bleed illustration */}
       <div className="absolute inset-0">
         <Image
           src="/images/generalexchangehorse.png"
@@ -29,81 +41,93 @@ export function DesktopLanding() {
           priority
           className="object-cover brightness-[0.48] contrast-[1.22] saturate-[0.75] sepia-[0.18]"
         />
-        {/* Dark vignette so text is always readable */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(to bottom, rgba(14,15,19,0.35) 0%, rgba(14,15,19,0.1) 38%, rgba(14,15,19,0.75) 70%, rgba(14,15,19,0.97) 100%)',
+              'linear-gradient(to bottom, rgba(14,15,19,0.4) 0%, rgba(14,15,19,0.15) 35%, rgba(14,15,19,0.82) 65%, rgba(14,15,19,0.98) 100%)',
           }}
           aria-hidden
         />
-        {/* Subtle green tint at top */}
         <div
           className="absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_0%,rgba(46,90,58,0.22),transparent_60%)]"
           aria-hidden
         />
       </div>
 
-      {/* Top branding */}
       <motion.div
         className="relative z-10 flex items-center justify-between px-8 pt-8"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: easeLux, delay: 0.15 }}
+        transition={{ duration: 0.6, ease: easeLux, delay: 0.1 }}
       >
         <div>
           <p className="font-display text-[22px] font-normal tracking-[-0.01em] text-neutral-100">
             general.exchange
           </p>
-          <p className="mt-0.5 text-[10px] uppercase tracking-[0.28em] text-tan/60">
-            By: Old West Solutions
-          </p>
+          <p className="mt-0.5 text-[10px] uppercase tracking-[0.28em] text-tan/60">Legend terminal</p>
         </div>
+        <p className="font-mono text-[10px] text-zinc-600">v{DESKTOP_APP_VERSION}</p>
       </motion.div>
 
-      {/* Bottom content — wordmark + CTAs */}
-      <div className="relative z-10 mt-auto px-8 pb-14">
-        {/* Tagline */}
+      <div className="relative z-10 flex flex-1 flex-col items-center justify-end px-6 pb-10 sm:px-8 sm:pb-14">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          className="w-full max-w-[400px]"
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.65, ease: easeLux, delay: 0.3 }}
+          transition={{ duration: 0.65, ease: easeLux, delay: 0.25 }}
         >
-          <h1 className="font-display text-[clamp(2rem,6vw,3.2rem)] font-normal leading-[1.06] tracking-[-0.025em] text-neutral-50">
-            The institutional
-            <br />
-            trading terminal.
-          </h1>
-          <p className="mt-4 max-w-sm text-[14px] leading-[1.72] text-zinc-400">
-            Research, backtest, and execute — connected to Interactive Brokers,
-            powered by real market data.
-          </p>
-        </motion.div>
+          <div className="rounded-2xl border border-white/[0.1] bg-[#0e0f13]/75 p-6 shadow-[0_32px_80px_-24px_rgba(0,0,0,0.85)] backdrop-blur-xl sm:p-7">
+            <p className="text-center font-display text-xl tracking-tight text-neutral-50">Sign in</p>
+            <p className="mt-1.5 text-center text-[13px] text-zinc-500">Local terminal · IBKR on your machine</p>
 
-        {/* Buttons */}
-        <motion.div
-          className="mt-8 flex flex-col gap-3 sm:flex-row"
-          initial={{ opacity: 0, y: 28 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.65, ease: easeLux, delay: 0.48 }}
-        >
-          <Link
-            href="/login"
-            className="inline-flex h-12 min-w-[10rem] items-center justify-center rounded-md bg-tan px-8 text-sm font-semibold tracking-wide text-charcoal shadow-[0_12px_40px_-12px_rgba(210,180,140,0.45)] transition-all hover:bg-tan-muted active:scale-[0.99]"
-          >
-            Sign In
-          </Link>
-        </motion.div>
+            <form onSubmit={handleSubmit} className="mt-6 space-y-3.5">
+              <label className="block">
+                <span className="mb-1.5 block text-[10px] uppercase tracking-wider text-zinc-500">Email</span>
+                <input
+                  type="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  placeholder="you@example.com"
+                  className="h-11 w-full rounded-lg border border-white/[0.09] bg-black/35 px-3.5 text-sm text-neutral-100 placeholder-zinc-600 outline-none focus:border-brass/50"
+                />
+              </label>
 
-        <motion.p
-          className="mt-6 text-[11px] text-zinc-600"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.75 }}
-        >
-          v{DESKTOP_APP_VERSION}
-        </motion.p>
+              <label className="block">
+                <span className="mb-1.5 block text-[10px] uppercase tracking-wider text-zinc-500">Password</span>
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    placeholder="••••••••"
+                    className="h-11 w-full rounded-lg border border-white/[0.09] bg-black/35 px-3.5 pr-10 text-sm text-neutral-100 placeholder-zinc-600 outline-none focus:border-brass/50"
+                  />
+                  <button
+                    type="button"
+                    tabIndex={-1}
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-zinc-500 hover:text-zinc-300"
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </label>
+
+              <button
+                type="submit"
+                disabled={isSubmitting || !email || !password}
+                className="mt-2 inline-flex h-11 w-full items-center justify-center rounded-lg bg-tan text-sm font-semibold tracking-wide text-charcoal transition hover:bg-tan-muted disabled:bg-white/10 disabled:text-zinc-500"
+              >
+                {isSubmitting ? 'Opening Legend…' : 'Enter terminal'}
+              </button>
+            </form>
+          </div>
+        </motion.div>
       </div>
     </div>
   );

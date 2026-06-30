@@ -2,6 +2,7 @@
 
 import React, { useEffect, useId, useState } from 'react';
 import Link from 'next/link';
+import { legendHref } from '@/lib/legendUrl';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
 import type { IntelligenceRibbonProps, VolRegime } from './mockMlDashboardData';
@@ -169,7 +170,7 @@ function IntelligenceModal({
                         <p className="text-[11px] text-zinc-600 mt-0.5">Directional hit rate · rolling book</p>
                       </div>
                       <Link
-                        href="/dashboard?tab=library"
+                        href={`${legendHref()}?tab=library`}
                         onClick={onClose}
                         className="text-[11px] font-semibold uppercase tracking-wide text-institutional-green hover:text-tan border border-institutional-green/40 rounded-lg px-3 py-2 transition-colors"
                       >

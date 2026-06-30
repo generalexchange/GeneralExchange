@@ -1,5 +1,5 @@
 /**
- * Logged-in dashboard sidebar — institutional dark theme
+ * Logged-in Legend sidebar — institutional dark theme
  */
 
 'use client';
@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LayoutDashboard, Library, Orbit } from 'lucide-react';
 import { useDashboardView } from '@/hooks/useDashboardView';
+import { legendHref } from '@/lib/legendUrl';
 
 function navLinkClass(active: boolean): string {
   return `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors border ${
@@ -21,29 +22,31 @@ function navLinkClass(active: boolean): string {
 export const DashboardSidebar: React.FC = () => {
   const pathname = usePathname();
   const view = useDashboardView();
-  const onDashboard = pathname === '/dashboard';
+  const onLegend = pathname === '/legend' || pathname?.startsWith('/legend/');
+
+  const legendRoot = legendHref();
 
   return (
     <aside className="hidden lg:flex w-56 xl:w-60 shrink-0 flex-col border-r border-white/[0.08] bg-charcoal min-h-[calc(100vh-4rem)] sticky top-16 self-start">
       <div className="p-4 xl:p-5">
         <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-500 mb-4 px-2">Workspace</p>
-        <nav className="space-y-1" aria-label="Dashboard">
-          {onDashboard ? (
+        <nav className="space-y-1" aria-label="Legend">
+          {onLegend ? (
             <>
-              <Link href="/dashboard" className={navLinkClass(view === 'overview')}>
+              <Link href={legendRoot} className={navLinkClass(view === 'overview')}>
                 <span className="text-tan/80">
                   <LayoutDashboard size={18} strokeWidth={1.5} />
                 </span>
-                <span className="font-medium">Dashboard</span>
+                <span className="font-medium">Legend</span>
               </Link>
               <div className="ml-2 pl-3 border-l border-white/[0.08] space-y-1 my-1">
-                <Link href="/dashboard?tab=library" className={navLinkClass(view === 'library')}>
+                <Link href={`${legendRoot}?tab=library`} className={navLinkClass(view === 'library')}>
                   <span className="text-tan/80">
                     <Library size={18} strokeWidth={1.5} />
                   </span>
                   <span className="font-medium">Library</span>
                 </Link>
-                <Link href="/dashboard?tab=backspace" className={navLinkClass(view === 'backspace')}>
+                <Link href={`${legendRoot}?tab=backspace`} className={navLinkClass(view === 'backspace')}>
                   <span className="text-tan/80">
                     <Orbit size={18} strokeWidth={1.5} />
                   </span>
@@ -52,11 +55,11 @@ export const DashboardSidebar: React.FC = () => {
               </div>
             </>
           ) : (
-            <Link href="/dashboard" className={navLinkClass(false)}>
+            <Link href={legendRoot} className={navLinkClass(false)}>
               <span className="text-tan/80">
                 <LayoutDashboard size={18} strokeWidth={1.5} />
               </span>
-              <span className="font-medium">Dashboard</span>
+              <span className="font-medium">Legend</span>
             </Link>
           )}
         </nav>

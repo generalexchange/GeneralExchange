@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { QuotePriceChart } from '@/components/dashboard/QuotePriceChart';
+import { AnimatedPrice, AnimatedSignedChange } from '@/components/dashboard/AnimatedPrice';
 import { useSpyMarketFeed } from '@/hooks/useSpyMarketFeed';
 import { SpyRiskPanel } from '@/components/dashboard/SpyRiskPanel';
 import type { Candle } from '@/components/dashboard/terminal/terminalData';
@@ -32,18 +33,20 @@ export function MarketTemperature({ selectedSymbol, spyCandles, spyLive, spyLoad
 
       <p className="mt-3 font-display text-2xl font-semibold tracking-tight text-tan">SPY</p>
 
-      <p className="mt-1 font-mono text-3xl tabular-nums tracking-tight text-zinc-50">
-        {loading && !price
-          ? '—'
-          : price > 0
-            ? `$${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-            : 'No data'}
+      <p className="mt-1 font-mono text-3xl tracking-tight text-zinc-50">
+        {loading && !price ? (
+          '—'
+        ) : price > 0 ? (
+          <AnimatedPrice value={price} prefix="$" decimals={2} durationMs={240} />
+        ) : (
+          'No data'
+        )}
       </p>
 
-      <p className={`mt-1 font-mono text-sm tabular-nums ${up ? 'text-moss' : 'text-rose-400'}`}>
-        {change >= 0 ? '+' : ''}
-        {change.toFixed(2)} ({changePct >= 0 ? '+' : ''}
-        {changePct.toFixed(2)}%) Today
+      <p className={`mt-1 font-mono text-sm ${up ? 'text-moss' : 'text-rose-400'}`}>
+        <AnimatedSignedChange value={change} className={up ? 'text-moss' : 'text-rose-400'} />
+        {' '}
+        (<AnimatedSignedChange value={changePct} isPct className={up ? 'text-moss' : 'text-rose-400'} />) Today
       </p>
 
       <div className="mt-3 h-16 overflow-hidden rounded-md border border-white/5 bg-charcoal/50">

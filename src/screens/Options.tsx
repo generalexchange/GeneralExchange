@@ -11,6 +11,7 @@
 
 import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
+import { legendHref } from '@/lib/legendUrl';
 import { ProfileMenu } from '../components/ProfileMenu';
 import { OptionsChainPanel, GexByStrike, PositionBuilder } from '../components/dashboard/terminal/panels';
 import { VolSurface, SkewPanel, TermStructure, FlowPanel, IntelGrid } from '../components/options/optionsPanels';
@@ -28,7 +29,7 @@ function Header() {
         <div className="flex items-center gap-4">
           <Link href="/" className="font-display text-base tracking-tight text-neutral-100">general.exchange</Link>
           <nav className="hidden items-center gap-1 md:flex">
-            {[['Dashboard', '/dashboard'], ['Backtest', '/backspace'], ['Options', '/options'], ['Risk', '/risk-management']].map(([l, h]) => (
+            {[['Legend', legendHref()], ['Backtest', '/backspace'], ['Options', '/options'], ['Risk', '/risk-management']].map(([l, h]) => (
               <Link key={l} href={h} className={`rounded px-2.5 py-1 text-[12px] tracking-wide transition-colors ${l === 'Options' ? 'bg-white/[0.06] text-tan' : 'text-zinc-400 hover:text-zinc-100'}`}>{l}</Link>
             ))}
           </nav>

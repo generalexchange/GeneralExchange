@@ -7,14 +7,13 @@ const ROOT_DOMAIN = (process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? 'general.exchange').
 const SUBDOMAIN_TO_PATH: Record<string, string> = {
   company: '/company',
   university: '/university',
-  legend: '/dashboard',
+  legend: '/legend',
 };
 
 function subdomainFromHost(host: string): string | null {
   const h = host.split(':')[0]?.toLowerCase() ?? '';
   if (!h) return null;
 
-  // Legend terminal — any apex (legend.general.exchange, legend.generalexchange.com, etc.)
   if (isLegendHost(h)) return 'legend';
 
   if (h === `www.${ROOT_DOMAIN}` || h === ROOT_DOMAIN) return null;
@@ -46,22 +45,22 @@ export function middleware(request: NextRequest) {
   const sub = subdomainFromHost(host);
   const { pathname, search } = request.nextUrl;
 
-  // Legacy legend hosts (e.g. legend.generalexchange.com) → canonical legend.general.exchange
   if (isNonCanonicalLegendHost(host)) {
     const target = new URL(`${LEGEND_ORIGIN}${pathname}${search}`);
     return NextResponse.redirect(target, 308);
   }
 
-  // Apex / www / Vercel: never keep /dashboard on non-legend hosts — go to legend subdomain root
-  if (pathname.startsWith('/dashboard') && sub !== 'legend') {
-    const target = new URL(`${legendRedirectOrigin(host)}/${search}`);
+  // Apex / marketing hosts: /dashboard and /legend → canonical Legend subdomain root
+  if ((pathname.startsWith('/dashboard') || pathname.startsWith('/legend')) && sub !== 'legend') {
+    const suffix = pathname.replace(/^\/(dashboard|legend)\/?/, '');
+    const target = new URL(`${legendRedirectOrigin(host)}/${suffix}${search}`);
     return NextResponse.redirect(target, 307);
   }
 
-  // legend.* with /dashboard in the bar → canonical subdomain root (still serves dashboard via rewrite)
-  if (sub === 'legend' && pathname.startsWith('/dashboard')) {
+  // legend.* — strip /legend or /dashboard from the bar; subdomain root serves Legend
+  if (sub === 'legend' && (pathname.startsWith('/legend') || pathname.startsWith('/dashboard'))) {
     const url = request.nextUrl.clone();
-    url.pathname = '/';
+    url.pathname = pathname.replace(/^\/(legend|dashboard)\/?/, '/') || '/';
     return NextResponse.redirect(url, 308);
   }
 

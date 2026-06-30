@@ -8,6 +8,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { legendHref } from '@/lib/legendUrl';
 import { motion } from 'framer-motion';
 import { Navbar } from '@/components/Navbar';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
@@ -78,8 +79,8 @@ export const Backspace: React.FC = () => {
                 operator-ready decision context.
               </p>
               <div className="mt-8 flex w-full flex-col gap-3 sm:flex-row">
-                <Link href="/dashboard" className={btnPrimary}>
-                  Open Dashboard
+                <Link href={legendHref()} className={btnPrimary}>
+                  Open Legend
                 </Link>
                 <Link href="/tradeengine" className={btnOutline}>
                   Trade Engine
