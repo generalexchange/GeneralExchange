@@ -84,12 +84,12 @@
   },
   "plugins": {
     "updater": {
-      "active": true,
+      "active": false,
       "endpoints": [
-        "https://releases.general.exchange/{{target}}/{{arch}}/{{current_version}}"
+        "https://github.com/generalexchange/GeneralExchange/releases/latest/download/latest.json"
       ],
       "dialog": false,
-      "pubkey": "REPLACE_WITH_TAURI_UPDATER_PUBLIC_KEY"
+      "pubkey": ""
     }
   }
 }
