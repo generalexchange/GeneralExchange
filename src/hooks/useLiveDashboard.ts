@@ -19,6 +19,7 @@ import {
 } from '@/lib/api/mapLiveData';
 import { readJsonResponse } from '@/lib/api/readJsonResponse';
 import { fetchV1, isLocalDesktopClient } from '@/lib/api/v1Fetch';
+import { useGxEngineFeed } from '@/hooks/useGxEngineFeed';
 import { getMarketSession, quoteCardTheme, type MarketSession } from '@/lib/marketSession';
 import { filterExtendedDayCandles, sessionOpenFromCandles } from '@/lib/extendedHoursChart';
 import { OPTIONS_CHAIN_POLL_MS } from '@/config/marketFeedCache';
@@ -111,6 +112,8 @@ export function useLiveDashboard(
   options: LiveDashboardOptions = {},
 ) {
   const lite = options.lite ?? false;
+  const desktop = isLocalDesktopClient();
+  const gx = useGxEngineFeed(symbol);
   const quote = useSymbolQuote(symbol);
   const wsInterval = RANGE_FETCH[chartRange].interval;
   const wsCandles = useSymbolCandles(symbol, wsInterval);
@@ -148,6 +151,15 @@ export function useLiveDashboard(
       setLoading(false);
     }
   }, [quote?.price]);
+
+  useEffect(() => {
+    if (gx.tickLive) {
+      hasQuoteRef.current = true;
+      setError(null);
+      setLoading(false);
+      setSource('gx-engine');
+    }
+  }, [gx.tickLive, gx.ticker?.price]);
 
   const fetchQuoteRest = useCallback(async () => {
     const res = await fetchV1(`/quote/${symbol}`, { cache: 'no-store' });
@@ -267,9 +279,15 @@ export function useLiveDashboard(
             setError(null);
           } else if (isMarketWsConfigured() && !isLocalDesktopClient()) {
             setError(isWsConnected() ? 'Waiting for first tick…' : 'Connecting to WebSocket…');
-          } else if (isLocalDesktopClient()) {
-            const hint = await fetchIbkrLocalHint();
-            setError(hint);
+          } else if (desktop) {
+            if (gx.connectionStatus === 'reconnecting') {
+              setError('Connecting to gx-engine…');
+            } else if (gx.connectionStatus === 'connected') {
+              setError('Waiting for first tick from gx-engine…');
+            } else {
+              const hint = await fetchIbkrLocalHint();
+              setError(hint);
+            }
           } else {
             setError(e instanceof Error ? e.message : 'quote unavailable');
           }
@@ -350,7 +368,8 @@ export function useLiveDashboard(
   const gex = useMemo(() => (chain.length ? computeGexFromChain(chain, spot) : []), [chain, spot]);
   const expirations = useMemo(() => chainExpirations(chain), [chain]);
 
-  const wsLive = quote?.source === 'ibkr';
+  const wsLive = quote?.source === 'ibkr' || quote?.source === 'gx-engine';
+  const gxLive = gx.tickLive;
 
   return {
     quote,
@@ -365,13 +384,17 @@ export function useLiveDashboard(
     loading: loading && !(quote?.price && quote.price > 0),
     error,
     wsConnected: wsOpen,
-    source: quote?.source ?? source,
+    source: quote?.source ?? (gxLive ? 'gx-engine' : source),
+    gxConnected: gx.connected,
+    gxReconnecting: gx.connectionStatus === 'reconnecting',
     live: Boolean(
       quote?.price &&
-        (quote.streamSeq != null ||
+        (gxLive ||
+          quote.streamSeq != null ||
           wsLive ||
           isWsConnected() ||
           quote.source?.includes('ibkr') ||
+          quote.source?.includes('gx-engine') ||
           source?.includes('ibkr')),
     ),
   };

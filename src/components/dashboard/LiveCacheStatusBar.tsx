@@ -16,9 +16,18 @@ type LiveCacheStatusBarProps = {
   source?: string | null;
   symbol: string;
   loading?: boolean;
+  gxConnected?: boolean;
+  gxReconnecting?: boolean;
 };
 
-export function LiveCacheStatusBar({ live, source, symbol, loading }: LiveCacheStatusBarProps) {
+export function LiveCacheStatusBar({
+  live,
+  source,
+  symbol,
+  loading,
+  gxConnected,
+  gxReconnecting,
+}: LiveCacheStatusBarProps) {
   const cache = useDesktopCacheStatus();
   const lastAge =
     cache.lastFetchAt != null ? Date.now() - cache.lastFetchAt : cache.lastHitAt != null ? Date.now() - cache.lastHitAt : null;
@@ -43,6 +52,15 @@ export function LiveCacheStatusBar({ live, source, symbol, loading }: LiveCacheS
       </span>
 
       {source ? <span className="text-zinc-600">src {source}</span> : null}
+
+      {gxConnected ? (
+        <span className="inline-flex items-center gap-1.5 text-emerald-500/80">
+          <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400" />
+          gx-engine
+        </span>
+      ) : gxReconnecting ? (
+        <span className="text-amber-500/80">gx-engine reconnecting…</span>
+      ) : null}
 
       {cache.active ? (
         <span className="inline-flex items-center gap-1.5 text-zinc-600">

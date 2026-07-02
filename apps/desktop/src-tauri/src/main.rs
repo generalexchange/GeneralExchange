@@ -2,6 +2,9 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod commands;
+mod engine;
+
+use engine::start_gx_engine;
 
 use tauri::{
     menu::{MenuBuilder, MenuItemBuilder, PredefinedMenuItem},
@@ -42,6 +45,11 @@ fn main() {
             commands::check_for_update,
         ])
         .setup(|app| {
+            if let Ok(dir) = app.path().app_local_data_dir() {
+                let log_dir = dir.join("event-logs");
+                start_gx_engine(&log_dir);
+            }
+
             let show = MenuItemBuilder::with_id("show", "Show Terminal").build(app)?;
             let status = MenuItemBuilder::with_id("status", "Connection: starting…")
                 .enabled(false)
@@ -112,6 +120,12 @@ fn main() {
                 }
             }
         })
-        .run(tauri::generate_context!())
-        .expect("error while running General Exchange Terminal");
+        .build(tauri::generate_context!())
+        .expect("error while running General Exchange Terminal")
+        .run(|app, event| {
+            if let tauri::RunEvent::Exit = event {
+                engine::stop_gx_engine();
+            }
+            let _ = app;
+        });
 }

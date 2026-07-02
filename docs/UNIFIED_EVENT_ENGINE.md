@@ -33,7 +33,7 @@ py -3.11 -m services.ibkr.tick_ingest
 npm run dev
 ```
 
-Set `NEXT_PUBLIC_GX_ENGINE_WS=ws://127.0.0.1:8765/ws` and wrap Legend with `GxEngineProvider`.
+Set `NEXT_PUBLIC_GX_ENGINE_WS=ws://127.0.0.1:8765/ws` and open Legend — desktop Tauri auto-starts `gx-engine`; panels receive ticks via `GxEngineProvider` → `syncGxToMarketState` → existing `marketState` hooks.
 
 Or use `scripts/start-local-stack.ps1` which starts IBKR REST, monte-carlo, and gx-engine when built.
 

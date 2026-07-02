@@ -24,6 +24,7 @@ import { useInViewport } from '@/components/charts/useInViewport';
 import { useMarketStream } from '@/services/marketStream';
 import { isLocalDesktopClient } from '@/lib/api/v1Fetch';
 import { isMarketWsConfigured } from '@/services/wsClient';
+import { useGxEngineFeed } from '@/hooks/useGxEngineFeed';
 
 type Feed = ReturnType<typeof useLiveDashboard>;
 
@@ -44,6 +45,7 @@ export function LegendRobinhoodLayout({
 }: LegendRobinhoodLayoutProps) {
   const [advanced, setAdvanced] = useState(false);
   const desktop = isLocalDesktopClient();
+  const gxFeed = useGxEngineFeed(symbol);
   const spyFeed = useLiveDashboard('SPY', '1D', { lite: true });
   const displayPrice = feed.quote?.price ?? 0;
   const change = feed.quote?.change ?? 0;
@@ -59,7 +61,14 @@ export function LegendRobinhoodLayout({
 
   return (
     <div className="flex min-h-[calc(100vh-3rem)] flex-col bg-charcoal">
-      <LiveCacheStatusBar live={feed.live} source={feed.source} symbol={symbol} loading={feed.loading} />
+      <LiveCacheStatusBar
+        live={feed.live}
+        source={feed.source}
+        symbol={symbol}
+        loading={feed.loading}
+        gxConnected={feed.gxConnected}
+        gxReconnecting={feed.gxReconnecting}
+      />
 
       <main className="mx-auto flex w-full max-w-[1920px] flex-1 flex-col gap-3 p-2 lg:flex-row lg:gap-4 lg:p-3">
         <section className="min-w-0 flex-1">
@@ -141,7 +150,7 @@ export function LegendRobinhoodLayout({
                   />
                 </div>
               </div>
-              {feed.live && chartRange === '1D' && !desktop ? (
+              {feed.live && chartRange === '1D' && (!desktop || gxFeed.connected) ? (
                 <LivePulseIndicator accentClass="bg-[#00C805]" visible />
               ) : null}
               <div className="mt-3">

@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useMemo, useRef } from 'react';
 import { GxSocketClient } from '@/lib/ws/GxSocketClient';
+import { syncGxCandle, syncGxMarketData } from '@/lib/gx/syncGxToMarketState';
 import { useGxStore } from '@/stores/gxStore';
 import type { WsChannel } from '@gx/event-schema';
 
@@ -53,8 +54,12 @@ export function GxEngineProvider({
     const onDisconnected = () => setConnectionStatus('reconnecting');
     const onMd = (e: Parameters<typeof applyMarketData>[0]) => {
       applyMarketData(e);
+      syncGxMarketData(e);
     };
-    const onCandle = (e: Parameters<typeof applyCandle>[0]) => applyCandle(e);
+    const onCandle = (e: Parameters<typeof applyCandle>[0]) => {
+      applyCandle(e);
+      syncGxCandle(e);
+    };
     const onPortfolio = (e: Parameters<typeof applyPortfolio>[0]) => applyPortfolio(e);
     const onSignal = (e: Parameters<typeof applySignal>[0]) => applySignal(e);
 

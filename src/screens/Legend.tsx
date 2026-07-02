@@ -19,11 +19,12 @@ export const Legend: React.FC = () => {
   const [symbol, setSymbol] = useState<string>(TRADEABLE_SYMBOLS[0]);
   const [chartRange, setChartRange] = useState<ChartRange>('1D');
   const desktop = isTauriApp();
+  const gxEnabled = desktop || Boolean(process.env.NEXT_PUBLIC_GX_ENGINE_WS);
 
   const feed = useLiveDashboard(symbol, chartRange);
 
   return (
-    <GxEngineProvider enabled={desktop} symbols={TRADEABLE_SYMBOLS}>
+    <GxEngineProvider enabled={gxEnabled} symbols={TRADEABLE_SYMBOLS}>
       <div className="min-h-screen bg-[#0a0b0e] text-zinc-100">
         <header className="sticky top-0 z-30 h-12 border-b border-white/[0.06] bg-[#0a0b0e]/95 backdrop-blur-xl">
           <div className="mx-auto flex h-12 max-w-[1920px] items-center justify-between px-3 sm:px-5">

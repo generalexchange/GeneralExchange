@@ -7,6 +7,7 @@ import {
   useOpportunityAnalysis,
   useOpportunityDiscovery,
 } from '@/hooks/useOpportunityDiscovery';
+import { useGxEngineFeed } from '@/hooks/useGxEngineFeed';
 import type { RankedContract } from '@/lib/opportunity/types';
 import { OpportunityContractVisuals } from '@/components/dashboard/OpportunityContractVisuals';
 import { LegendOptionsFeed } from '@/components/dashboard/LegendOptionsFeed';
@@ -185,6 +186,8 @@ export function OpportunityDiscoveryFeed({
   live?: boolean;
 }) {
   const { opportunities, loading, error, refresh } = useOpportunityDiscovery(highlightSymbol);
+  const gx = useGxEngineFeed(highlightSymbol ?? 'SPY');
+  const engineSignal = gx.signals[0];
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
   const [showChain, setShowChain] = useState(false);
   const [showOptionsFeed, setShowOptionsFeed] = useState(false);
@@ -215,6 +218,12 @@ export function OpportunityDiscoveryFeed({
         <div>
           <h3 className="font-mono text-[10px] uppercase tracking-[0.18em] text-zinc-400">Opportunity Discovery</h3>
           <p className="text-[9px] text-zinc-600">Options chain · historical edge · IBKR live</p>
+          {engineSignal && engineSignal.direction !== 'flat' ? (
+            <p className="mt-1 font-mono text-[9px] text-tan/90">
+              gx-engine {engineSignal.direction.toUpperCase()} ·{' '}
+              {Math.round(engineSignal.confidence * 100)}% conf
+            </p>
+          ) : null}
         </div>
         <div className="flex items-center gap-2">
           <button
