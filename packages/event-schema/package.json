@@ -1,0 +1,13 @@
+{
+  "name": "@gx/event-schema",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Unified event contract for GeneralExchange Legend — System Integration Whitepaper v1.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "sideEffects": false
+}

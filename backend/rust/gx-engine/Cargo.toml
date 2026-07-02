@@ -1,0 +1,30 @@
+[package]
+name    = "gx-engine"
+version = "0.1.0"
+edition = "2021"
+description = "Unified event-driven trade engine — GeneralExchange Legend Whitepaper v1.0"
+
+[[bin]]
+name = "gx-engine"
+path = "src/main.rs"
+
+[dependencies]
+gx-core            = { path = "../crates/gx-core" }
+tokio              = { workspace = true }
+tracing            = { workspace = true }
+tracing-subscriber = { workspace = true }
+anyhow             = { workspace = true }
+serde              = { workspace = true }
+serde_json         = { workspace = true }
+chrono             = { workspace = true }
+uuid               = { workspace = true }
+axum               = { workspace = true }
+tower-http         = { workspace = true }
+rand               = { workspace = true }
+rand_distr         = { workspace = true }
+zmq                = "0.10"
+rmp-serde          = "1.3"
+futures-util       = "0.3"
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["macros", "rt-multi-thread"] }

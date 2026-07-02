@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
+    "gx-engine",
     "crates/gx-core",
     "crates/gx-infra",
     "services/tick-normalizer",

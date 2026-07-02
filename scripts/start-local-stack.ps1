@@ -93,6 +93,29 @@ if ($health -and $health.connected) {
   } else {
     Write-Host "Monte Carlo service on :8092 - running ($($mcHealth.service))" -ForegroundColor Green
   }
+
+  $gxEngine = Join-Path $Root "backend\rust\target\release\gx-engine.exe"
+  if (-not (Test-Path $gxEngine)) {
+    $gxEngine = Join-Path $Root "backend\rust\target\debug\gx-engine.exe"
+  }
+  if (-not (Test-Path $gxEngine)) {
+    Write-Host "Building gx-engine (unified event bus)..." -ForegroundColor Yellow
+    Push-Location (Join-Path $Root "backend\rust")
+    cargo build -p gx-engine --release 2>&1 | Out-Null
+    Pop-Location
+    $gxEngine = Join-Path $Root "backend\rust\target\release\gx-engine.exe"
+  }
+  $gxHealth = Test-Port 8765
+  if (-not $gxHealth -and (Test-Path $gxEngine)) {
+    $logDir = Join-Path $env:LOCALAPPDATA "GeneralExchange\event-logs"
+    Write-Host "Starting gx-engine WebSocket on ws://127.0.0.1:8765/ws ..." -ForegroundColor Yellow
+    Start-Process powershell -ArgumentList @(
+      "-NoExit", "-Command",
+      "& '$gxEngine' --ws-port 8765 --zmq-pull tcp://127.0.0.1:5557 --log-dir '$logDir'"
+    )
+  } elseif ($gxHealth) {
+    Write-Host "gx-engine WebSocket on :8765 - running" -ForegroundColor Green
+  }
 } elseif ($health) {
   Write-Host "`nIBKR service is up but not connected to Gateway - finish Gateway login/API settings, then refresh Legend." -ForegroundColor Yellow
 } else {
